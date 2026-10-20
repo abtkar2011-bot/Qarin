@@ -691,9 +691,21 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const data = await res.json();
     if (!data.items) throw new Error(data.error || 'eBay error');
     const rng = makeRng('ebay', normalize(query));
-    return data.items.filter(it => it.price > 0 && safeUrl(it.url)).map(it => ({
-      platform: 'ebay', title: it.title, price: it.price,
-      rating: it.sellerPct ? Math.round(Math.min(5, it.sellerPct / 20) * 10) / 10 : 4.5,
+    const en = toEnglish(query).toLowerCase();
+    const ACCESSORY = /\b(case|cover|holder|clips?|cable|cord|organi[sz]er|replacement|ear ?tips|strap|band|adapter|sticker|skin|protector|stand|mount|pouch)\b/i;
+    let items = data.items.filter(it => it.price > 0 && safeUrl(it.url));
+    // استبعاد الإكسسوارات إذا ما كان البحث عنها
+    if (!ACCESSORY.test(en)) items = items.filter(it => !ACCESSORY.test(it.title));
+    // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
+    if (items.length >= 4) {
+      const sorted = items.map(it => it.price).sort((a, b) => a - b);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      items = items.filter(it => it.price >= median * 0.2);
+    }
+    return items.map(it => ({
+      platform: 'ebay', title: it.title, price: it.price, sellerRated: true,
+      sellerPct: it.sellerPct || null,
+      rating: it.sellerPct ? Math.round(Math.min(5, it.sellerPct / 20) * 10) / 10 : PRIOR_RATING,
       reviews: it.sellerScore || 0, url: safeUrl(it.url),
       image: safeUrl(it.image) || placeholder('🛍️', rng),
       original: it.original && it.original > it.price ? it.original : null,
@@ -716,14 +728,16 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const logs = list.map(p => Math.log(Math.max(p.price, 0.01)));
     const lo = Math.min(...logs), hi = Math.max(...logs);
     list.forEach((p, i) => {
-      p.adj = bayes(p.rating, p.reviews ?? p.orders ?? 0);
+      // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
+      p.adj = p.sellerRated ? bayes(p.rating, 8) : bayes(p.rating, p.reviews ?? p.orders ?? 0);
       const priceScore = hi > lo ? 1 - (logs[i] - lo) / (hi - lo) : 1;
       const qualityScore = Math.min(1, Math.max(0, (p.adj - 3) / 2));
       p.score = Math.round(1000 * ((1 - priceWeight) * qualityScore + priceWeight * priceScore)) / 10;
     });
     const best = list.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = list.reduce((a, b) => b.price < a.price ? b : a);
-    const top = list.reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
+    const rated = list.filter(p => !p.sellerRated);
+    const top = (rated.length ? rated : list).reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
     best.badges.push('best');
     if (cheapest !== best) cheapest.badges.push('cheapest');
     if (top !== best) top.badges.push('top_rated');
@@ -733,8 +747,12 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   function bestReason(best, list) {
     const avgPrice = list.reduce((s, p) => s + p.price, 0) / list.length;
     const avgRating = list.reduce((s, p) => s + p.rating, 0) / list.length;
-    let text = `تقييم ${best.rating.toFixed(1)} من 5`;
-    if (best.reviews) text += ` من ${best.reviews.toLocaleString('en-US')} مراجعة`;
+    let text;
+    if (best.sellerRated) text = best.sellerPct ? `بائع موثوق بتقييم إيجابي ${best.sellerPct}%` : 'منتج من eBay';
+    else {
+      text = `تقييم ${best.rating.toFixed(1)} من 5`;
+      if (best.reviews) text += ` من ${best.reviews.toLocaleString('en-US')} مراجعة`;
+    }
     const diff = (avgPrice - best.price) / avgPrice * 100;
     if (diff >= 3) text += ` وسعر أقل من متوسط النتائج بنسبة ${diff.toFixed(0)}%`;
     else if (diff <= -3) text += ` وجودة أعلى من المتوسط (${avgRating.toFixed(1)}) مقابل فرق سعر بسيط`;
@@ -773,7 +791,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '';
+  const reviewsText = p => p.sellerRated
+    ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
+    : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
+  const ratingNum = p => p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
     return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="background:${pl.color};color:${pl.text}">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
@@ -794,7 +815,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
         <div class="badges">${p.badges.map(b => `<span class="badge ${b}">${BADGES[b]}</span>`).join('')}</div></div>
       <div class="pbody">
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
-        <div class="rating">${stars(p.rating)}<b><bdi>${p.rating.toFixed(1)}/5</bdi></b><span>${reviewsText(p)}</span></div>
+        <div class="rating">${stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
@@ -810,7 +831,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
       <div class="body">
         <span class="ribbon">🏆 الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
-        <div class="rating">${stars(p.rating)}<b><bdi>${p.rating.toFixed(1)}/5</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
+        <div class="rating">${stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
         <div class="reason">💡 ${esc(bestReason(p, list))}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
@@ -822,7 +843,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
   function kpisHtml(list) {
     const cheapest = list.reduce((a, b) => b.price < a.price ? b : a);
-    const top = list.reduce((a, b) => (b.rating > a.rating || (b.rating === a.rating && (b.reviews || 0) > (a.reviews || 0))) ? b : a);
+    const rl = list.filter(p => !p.sellerRated).length ? list.filter(p => !p.sellerRated) : list;
+    const top = rl.reduce((a, b) => (b.rating > a.rating || (b.rating === a.rating && (b.reviews || 0) > (a.reviews || 0))) ? b : a);
     const avg = list.reduce((s, p) => s + p.price, 0) / list.length;
     const nPlat = new Set(list.map(p => p.platform)).size;
     const items = [
@@ -873,7 +895,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
         ${th('reviews', 'المراجعات')}${th('score', 'مؤشر القيمة')}<th scope="col">التوصيل (أيام)</th><th scope="col">شحن مجاني</th><th scope="col">الرابط</th></tr></thead>
       <tbody>${rows.map(p => `<tr>
         <td><img src="${p.image}" alt=""></td><td class="title">${esc(p.title)}</td><td>${pill(p.platform, true)}</td>
-        <td class="n">${money(p.price)}</td><td class="n">${p.rating.toFixed(1)} ⭐</td><td class="n">${(p.reviews || 0).toLocaleString('en-US')}</td>
+        <td class="n">${money(p.price)}</td><td class="n">${p.sellerRated ? `<span title="تقييم البائع">${ratingNum(p)} 🏪</span>` : `${p.rating.toFixed(1)} ⭐`}</td><td class="n">${(p.reviews || 0).toLocaleString('en-US')}</td>
         <td class="n">${p.score.toFixed(0)}<span class="bar"><span style="width:${p.score.toFixed(0)}%"></span></span></td>
         <td class="n"><bdi>${esc(p.shipping || '')}</bdi></td><td>${p.freeShip ? '✓' : '—'}</td>
         <td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a></td></tr>`).join('')}</tbody>
@@ -901,7 +923,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const ordered = [...list].sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">ℹ️<div><b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
+      <div class="notice">ℹ️<div>${EBAY_API ? '<b>منتجات إيباي حقيقية</b> بأسعارها وروابطها المباشرة (وتقييمها هو تقييم البائع). باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
