@@ -747,7 +747,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     if (!res.ok) throw new Error('ali ' + res.status);
     const data = await res.json();
     const rng = makeRng('aliexpress', normalize(query));
-    const items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url)).slice(0, limit);
+    // نعرض الأرخص أول
+    const items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url)).sort((a, b) => a.price - b.price).slice(0, limit);
     if (!items.length) throw new Error('ali empty');
     aliLive = true;
     return items.map(it => ({
@@ -849,10 +850,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'بدون تقييم بعد') : p.sellerRated
+  const reviewsText = p => p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
-  const ratingNum = p => p.unrated ? '—' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
+  const ratingNum = p => p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
     return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="background:${pl.color};color:${pl.text}">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
@@ -873,7 +874,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
         <div class="badges">${p.badges.map(b => `<span class="badge ${b}">${BADGES[b]}</span>`).join('')}</div></div>
       <div class="pbody">
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
-        <div class="rating">${stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
+        <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
@@ -889,7 +890,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
       <div class="body">
         <span class="ribbon">🏆 الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
-        <div class="rating">${stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
+        <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
         <div class="reason">💡 ${esc(bestReason(p, list))}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}

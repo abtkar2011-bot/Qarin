@@ -133,7 +133,10 @@ def main():
         old = num(pick(row, "oldprice", "old_price", "original_price"))
         disc = (old - price) / old * 100 if old > price else 0
         # المبيعات والتقييم أولًا، ثم الخصم والسعر الأرخص
-        score = orders * 10 + rating * 100 + disc + 60 / (1 + price) ** 0.5 + (5 if image else 0)
+        if price < 1.5:  # أرخص من كذا غالبًا قطع غيار أو منتجات رديئة
+            continue
+        # السعر الأرخص أهم شي، بعده المبيعات والتقييم والخصم
+        score = orders * 10 + rating * 100 + 300 / (1 + price) + disc * 0.2 + (5 if image else 0)
         for slug, pat in PATTERNS.items():
             if not pat.search(name):
                 continue
