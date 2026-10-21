@@ -679,29 +679,41 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     'shoes', 'backpack', 'bag', 'air fryer', 'smartphone', 'laptop', 'charger', 'phone case', 'sunglasses', 'perfume',
     'camera', 'computer mouse', 'keyboard', 'tv', 'vacuum cleaner', 'blender'];
   let aliLive = false;
-  const AR_EN = { 'سماعات لاسلكية': 'wireless earbuds', 'سماعات': 'headphones', 'فستان صيفي': 'summer dress', 'فستان': 'dress',
-    'ساعة ذكية': 'smart watch', 'ساعة': 'watch', 'حذاء رياضي': 'running shoes', 'حذاء': 'shoes', 'حقيبة ظهر': 'backpack',
-    'حقيبة': 'bag', 'قلاية هوائية': 'air fryer', 'جوال': 'smartphone', 'هاتف': 'smartphone', 'لابتوب': 'laptop',
-    'شاحن': 'charger', 'كفر جوال': 'phone case', 'نظارة شمسية': 'sunglasses', 'عطر': 'perfume', 'كاميرا': 'camera',
-    'ماوس': 'computer mouse', 'لوحة مفاتيح': 'keyboard', 'تلفزيون': 'tv', 'مكنسة': 'vacuum cleaner', 'خلاط': 'blender' };
+  // كلمات عربية (جذور تشمل المفرد والجمع واللهجات) ← كلمة البحث الإنجليزية
+  const AR_EN = {
+    'سماعات لاسلكيه': 'wireless earbuds', 'سماعه لاسلكيه': 'wireless earbuds', 'سماعات بلوتوث': 'wireless earbuds',
+    'سماعه بلوتوث': 'wireless earbuds', 'ايربودز': 'wireless earbuds', 'ايربود': 'wireless earbuds', 'سماع': 'headphones',
+    'هيدفون': 'headphones', 'فستان صيفي': 'summer dress', 'فستان': 'dress', 'فساتين': 'dress',
+    'ساعه ذكيه': 'smart watch', 'ساعات ذكيه': 'smart watch', 'سمارت واتش': 'smart watch', 'ساع': 'watch',
+    'حذاء رياضي': 'running shoes', 'احذيه رياضيه': 'running shoes', 'جزمه': 'running shoes', 'سنيكرز': 'running shoes',
+    'حذاء': 'shoes', 'احذيه': 'shoes', 'نعال': 'shoes', 'صندل': 'shoes',
+    'حقيبه ظهر': 'backpack', 'شنطه ظهر': 'backpack', 'حقيب': 'bag', 'حقائب': 'bag', 'شنط': 'bag',
+    'قلايه هوائيه': 'air fryer', 'قلايه': 'air fryer', 'جوال': 'smartphone', 'هاتف': 'smartphone', 'موبايل': 'smartphone', 'تلفون': 'smartphone',
+    'لابتوب': 'laptop', 'لاب توب': 'laptop', 'كمبيوتر محمول': 'laptop', 'شاحن': 'charger', 'باور بانك': 'charger',
+    'كفر': 'phone case', 'غطاء جوال': 'phone case', 'نظار': 'sunglasses', 'عطر': 'perfume', 'عطور': 'perfume',
+    'كاميرا': 'camera', 'كاميرات': 'camera', 'ماوس': 'computer mouse', 'فاره': 'computer mouse',
+    'كيبورد': 'keyboard', 'لوحه مفاتيح': 'keyboard', 'تلفزيون': 'tv', 'شاشه': 'tv', 'بروجكتر': 'tv',
+    'مكنس': 'vacuum cleaner', 'خلاط': 'blender', 'عصاره': 'blender' };
   const toEnglish = q => {
     const n = normalize(q);
     if (!/[؀-ۿ]/.test(q)) return q;
     for (const [ar, en] of Object.entries(AR_EN).sort((a, b) => b[0].length - a[0].length)) if (n.includes(normalize(ar))) return en;
-    return q;
+    return null;  // كلمة عربية ما نعرف ترجمتها
   };
   const safeUrl = u => (typeof u === 'string' && /^https:\/\//.test(u)) ? u.replace(/"/g, '%22') : '';
   async function fetchEbay(query, limit) {
-    const res = await fetch(EBAY_API + '?q=' + encodeURIComponent(toEnglish(query)) + '&limit=' + limit);
+    const en = toEnglish(query);
+    if (!en) throw new Error('no translation');
+    const res = await fetch(EBAY_API + '?q=' + encodeURIComponent(en) + '&limit=' + limit);
     if (!res.ok) throw new Error('eBay ' + res.status);
     const data = await res.json();
     if (!data.items) throw new Error(data.error || 'eBay error');
     const rng = makeRng('ebay', normalize(query));
-    const en = toEnglish(query).toLowerCase();
+    const enLow = en.toLowerCase();
     const ACCESSORY = /\b(case|cover|holder|clips?|cable|cord|organi[sz]er|replacement|ear ?tips|strap|band|adapter|sticker|skin|protector|stand|mount|pouch)\b/i;
     let items = data.items.filter(it => it.price > 0 && safeUrl(it.url));
     // استبعاد الإكسسوارات إذا ما كان البحث عنها
-    if (!ACCESSORY.test(en)) items = items.filter(it => !ACCESSORY.test(it.title));
+    if (!ACCESSORY.test(enLow)) items = items.filter(it => !ACCESSORY.test(it.title));
     // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
     if (items.length >= 4) {
       const sorted = items.map(it => it.price).sort((a, b) => a - b);
@@ -723,7 +735,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
   const fixImg = u => typeof u === 'string' ? u.trim().replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://') : '';
   function aliSlug(query) {
-    const en = toEnglish(query).toLowerCase();
+    const en = (toEnglish(query) || '').toLowerCase();
+    if (!en) return null;
     const hit = [...ALI_KEYWORDS].sort((a, b) => b.length - a.length).find(k => en.includes(k));
     return hit ? hit.replace(/ /g, '-') : null;
   }
@@ -1020,10 +1033,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
       if (!instant) await sleep(400 + Math.random() * 800);  // محاكاة زمن استجابة المتاجر
       if (k === 'aliexpress') {
         try { results[k] = await fetchAli(query, state.limit); }
-        catch (e) { results[k] = generate(k, query, state.limit); }
+        catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم علي إكسبرس
       } else if (k === 'ebay' && EBAY_API) {
         try { results[k] = await fetchEbay(query, state.limit); }
-        catch (e) { console.warn(e); results[k] = generate(k, query, state.limit); }
+        catch (e) { console.warn(e); results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إيباي
       } else results[k] = generate(k, query, state.limit);
       const row = $('st-' + k);
       if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span>${PLATFORMS[k].name}: ${results[k].length} منتج`;
