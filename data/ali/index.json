@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-21 15:10 UTC",
- "rows": 969439,
+ "updated": "2026-10-21 17:15 UTC",
+ "rows": 1623378,
  "columns": [
   "id",
   "name",
@@ -13,9 +13,9 @@
   "price"
  ],
  "counts": {
-  "wireless earbuds": 10,
+  "wireless earbuds": 14,
   "headphones": 24,
-  "summer dress": 2,
+  "summer dress": 24,
   "dress": 24,
   "smart watch": 24,
   "watch": 24,
