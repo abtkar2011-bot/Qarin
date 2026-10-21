@@ -673,6 +673,12 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   // ================= بيانات حقيقية من eBay =================
   // رابط سيرفر Cloudflare الخاص بـ eBay (اتركه فاضي لاستخدام البيانات التوضيحية)
   const EBAY_API = 'https://qarin-ebay.abtkar2011.workers.dev/';
+  // منتجات علي إكسبرس الحقيقية: ملفات صغيرة يحدّثها GitHub يوميًا داخل مجلد data/ali
+  const ALI_DATA = 'data/ali/';
+  const ALI_KEYWORDS = ['wireless earbuds', 'headphones', 'summer dress', 'dress', 'smart watch', 'watch', 'running shoes',
+    'shoes', 'backpack', 'bag', 'air fryer', 'smartphone', 'laptop', 'charger', 'phone case', 'sunglasses', 'perfume',
+    'camera', 'computer mouse', 'keyboard', 'tv', 'vacuum cleaner', 'blender'];
+  let aliLive = false;
   const AR_EN = { 'سماعات لاسلكية': 'wireless earbuds', 'سماعات': 'headphones', 'فستان صيفي': 'summer dress', 'فستان': 'dress',
     'ساعة ذكية': 'smart watch', 'ساعة': 'watch', 'حذاء رياضي': 'running shoes', 'حذاء': 'shoes', 'حقيبة ظهر': 'backpack',
     'حقيبة': 'bag', 'قلاية هوائية': 'air fryer', 'جوال': 'smartphone', 'هاتف': 'smartphone', 'لابتوب': 'laptop',
@@ -714,6 +720,31 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     }));
   }
 
+  function aliSlug(query) {
+    const en = toEnglish(query).toLowerCase();
+    const hit = [...ALI_KEYWORDS].sort((a, b) => b.length - a.length).find(k => en.includes(k));
+    return hit ? hit.replace(/ /g, '-') : null;
+  }
+  async function fetchAli(query, limit) {
+    const slug = aliSlug(query);
+    if (!slug) throw new Error('no ali file');
+    const res = await fetch(ALI_DATA + slug + '.json');
+    if (!res.ok) throw new Error('ali ' + res.status);
+    const data = await res.json();
+    const rng = makeRng('aliexpress', normalize(query));
+    const items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url)).slice(0, limit);
+    if (!items.length) throw new Error('ali empty');
+    aliLive = true;
+    return items.map(it => ({
+      platform: 'aliexpress', title: it.title, price: it.price, unrated: !it.rating,
+      rating: it.rating || PRIOR_RATING, reviews: it.orders || 0, url: safeUrl(it.url),
+      image: safeUrl(it.image) || placeholder('🛍️', rng),
+      original: it.original && it.original > it.price ? it.original : null,
+      orders: it.orders || null, shipping: '', freeShip: false, nativePrice: null, real: true,
+      score: 0, adj: 0, badges: [],
+    }));
+  }
+
   const discountPct = p => (p.original && p.original > p.price) ? Math.round((1 - p.price / p.original) * 100) : 0;
 
   // ================= خوارزمية «الخيار الأفضل» =================
@@ -729,14 +760,14 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const lo = Math.min(...logs), hi = Math.max(...logs);
     list.forEach((p, i) => {
       // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
-      p.adj = p.sellerRated ? bayes(p.rating, 8) : bayes(p.rating, p.reviews ?? p.orders ?? 0);
+      p.adj = (p.sellerRated || p.unrated) ? bayes(p.rating, 8) : bayes(p.rating, p.reviews ?? p.orders ?? 0);
       const priceScore = hi > lo ? 1 - (logs[i] - lo) / (hi - lo) : 1;
       const qualityScore = Math.min(1, Math.max(0, (p.adj - 3) / 2));
       p.score = Math.round(1000 * ((1 - priceWeight) * qualityScore + priceWeight * priceScore)) / 10;
     });
     const best = list.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = list.reduce((a, b) => b.price < a.price ? b : a);
-    const rated = list.filter(p => !p.sellerRated);
+    const rated = list.filter(p => !p.sellerRated && !p.unrated);
     const top = (rated.length ? rated : list).reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
     best.badges.push('best');
     if (cheapest !== best) cheapest.badges.push('cheapest');
@@ -748,7 +779,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const avgPrice = list.reduce((s, p) => s + p.price, 0) / list.length;
     const avgRating = list.reduce((s, p) => s + p.rating, 0) / list.length;
     let text;
-    if (best.sellerRated) text = best.sellerPct ? `بائع موثوق بتقييم إيجابي ${best.sellerPct}%` : 'منتج من eBay';
+    if (best.unrated) text = 'منتج رائج على علي إكسبريس';
+    else if (best.sellerRated) text = best.sellerPct ? `بائع موثوق بتقييم إيجابي ${best.sellerPct}%` : 'منتج من eBay';
     else {
       text = `تقييم ${best.rating.toFixed(1)} من 5`;
       if (best.reviews) text += ` من ${best.reviews.toLocaleString('en-US')} مراجعة`;
@@ -791,10 +823,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => p.sellerRated
+  const reviewsText = p => p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'بدون تقييم بعد') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
-  const ratingNum = p => p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
+  const ratingNum = p => p.unrated ? '—' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
     return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="background:${pl.color};color:${pl.text}">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
@@ -843,7 +875,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
   function kpisHtml(list) {
     const cheapest = list.reduce((a, b) => b.price < a.price ? b : a);
-    const rl = list.filter(p => !p.sellerRated).length ? list.filter(p => !p.sellerRated) : list;
+    const rl = list.filter(p => !p.sellerRated && !p.unrated).length ? list.filter(p => !p.sellerRated && !p.unrated) : list;
     const top = rl.reduce((a, b) => (b.rating > a.rating || (b.rating === a.rating && (b.reviews || 0) > (a.reviews || 0))) ? b : a);
     const avg = list.reduce((s, p) => s + p.price, 0) / list.length;
     const nPlat = new Set(list.map(p => p.platform)).size;
@@ -895,7 +927,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
         ${th('reviews', 'المراجعات')}${th('score', 'مؤشر القيمة')}<th scope="col">التوصيل (أيام)</th><th scope="col">شحن مجاني</th><th scope="col">الرابط</th></tr></thead>
       <tbody>${rows.map(p => `<tr>
         <td><img src="${p.image}" alt=""></td><td class="title">${esc(p.title)}</td><td>${pill(p.platform, true)}</td>
-        <td class="n">${money(p.price)}</td><td class="n">${p.sellerRated ? `<span title="تقييم البائع">${ratingNum(p)} 🏪</span>` : `${p.rating.toFixed(1)} ⭐`}</td><td class="n">${(p.reviews || 0).toLocaleString('en-US')}</td>
+        <td class="n">${money(p.price)}</td><td class="n">${p.unrated ? '—' : p.sellerRated ? `<span title="تقييم البائع">${ratingNum(p)} 🏪</span>` : `${p.rating.toFixed(1)} ⭐`}</td><td class="n">${(p.reviews || 0).toLocaleString('en-US')}</td>
         <td class="n">${p.score.toFixed(0)}<span class="bar"><span style="width:${p.score.toFixed(0)}%"></span></span></td>
         <td class="n"><bdi>${esc(p.shipping || '')}</bdi></td><td>${p.freeShip ? '✓' : '—'}</td>
         <td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a></td></tr>`).join('')}</tbody>
@@ -923,7 +955,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const ordered = [...list].sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">ℹ️<div>${EBAY_API ? '<b>منتجات إيباي حقيقية</b> بأسعارها وروابطها المباشرة (وتقييمها هو تقييم البائع). باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
+      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة (تقييم إيباي هو تقييم البائع). باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -971,7 +1003,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const results = {};
     await Promise.all(KEYS.map(async k => {
       if (!instant) await sleep(400 + Math.random() * 800);  // محاكاة زمن استجابة المتاجر
-      if (k === 'ebay' && EBAY_API) {
+      if (k === 'aliexpress') {
+        try { results[k] = await fetchAli(query, state.limit); }
+        catch (e) { results[k] = generate(k, query, state.limit); }
+      } else if (k === 'ebay' && EBAY_API) {
         try { results[k] = await fetchEbay(query, state.limit); }
         catch (e) { console.warn(e); results[k] = generate(k, query, state.limit); }
       } else results[k] = generate(k, query, state.limit);
@@ -1001,7 +1036,10 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
     $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
-    $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${k === 'ebay' && EBAY_API ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${k === 'ebay' && EBAY_API ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join('');
+    const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive);
+    const renderSources = () => { $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
+    renderSources();
+    fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
