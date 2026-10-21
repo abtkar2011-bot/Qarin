@@ -1,0 +1,64 @@
+{
+ "updated": "2026-10-21 15:10 UTC",
+ "rows": 969439,
+ "columns": [
+  "id",
+  "name",
+  "url",
+  "category",
+  "currencyid",
+  "param",
+  "picture",
+  "oldprice",
+  "price"
+ ],
+ "counts": {
+  "wireless earbuds": 10,
+  "headphones": 24,
+  "summer dress": 2,
+  "dress": 24,
+  "smart watch": 24,
+  "watch": 24,
+  "running shoes": 24,
+  "shoes": 24,
+  "backpack": 24,
+  "bag": 24,
+  "air fryer": 24,
+  "smartphone": 24,
+  "laptop": 24,
+  "charger": 24,
+  "phone case": 24,
+  "sunglasses": 24,
+  "perfume": 24,
+  "camera": 24,
+  "computer mouse": 24,
+  "keyboard": 24,
+  "tv": 24,
+  "vacuum cleaner": 24,
+  "blender": 24
+ },
+ "sample": [
+  {
+   "id": "1005008323946186",
+   "name": "Men's Street Wear T-shirts Need Beer Graphic Tee Shirt Homme Funny Low Battery Need Beer Novelty T-Shirt Drinking Party ",
+   "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
+   "category": "Tops & Tees",
+   "currencyid": "USD",
+   "param": "discount|78%|;commissionRate|16.92%|;shopId|912241089|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S172fc6f366b745ee9c860beecc74b4a4D.jpg",
+   "oldprice": "7.99",
+   "price": "1.76"
+  },
+  {
+   "id": "1005009873540616",
+   "name": "CERN Large Hydron Collider -LHC Design T-Shirt man t shirts graphic t shirts cotton 100% T-Shirt",
+   "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
+   "category": "Tops & Tees",
+   "currencyid": "USD",
+   "param": "discount|50%|;commissionRate|6.92%|;shopId|1104803232|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S2e88e38cd92c43a6a40174cd6902f088P.jpg",
+   "oldprice": "2.17",
+   "price": "1.08"
+  }
+ ]
+}
