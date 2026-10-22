@@ -993,7 +993,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const ordered = [...list].sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة (تقييم إيباي هو تقييم البائع). باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
+      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة. باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
