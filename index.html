@@ -734,6 +734,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
   const fixImg = u => typeof u === 'string' ? u.trim().replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://') : '';
+  const PARTS = /\b(case|cover|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
   function aliSlug(query) {
     const en = (toEnglish(query) || '').toLowerCase();
     if (!en) return null;
@@ -747,8 +748,17 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     if (!res.ok) throw new Error('ali ' + res.status);
     const data = await res.json();
     const rng = makeRng('aliexpress', normalize(query));
+    // نشيل القطع والإكسسوارات (بطاريات، شواحن، أحزمة...) إلا إذا كان البحث عنها
+    const enQ = (toEnglish(query) || '').toLowerCase();
+    let items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url));
+    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
+    if (items.length >= 4) {
+      const ps = items.map(it => it.price).sort((a, b) => a - b);
+      const med = ps[Math.floor(ps.length / 2)];
+      items = items.filter(it => it.price >= med * 0.25);
+    }
     // نعرض الأرخص أول
-    const items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url)).sort((a, b) => a.price - b.price).slice(0, limit);
+    items = items.sort((a, b) => a.price - b.price).slice(0, limit);
     if (!items.length) throw new Error('ali empty');
     aliLive = true;
     return items.map(it => ({
