@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-22 03:21 UTC",
- "rows": 4474358,
+ "updated": "2026-10-23 03:08 UTC",
+ "rows": 2632621,
  "columns": [
   "id",
   "name",
@@ -13,7 +13,7 @@
   "price"
  ],
  "counts": {
-  "wireless earbuds": 40,
+  "wireless earbuds": 25,
   "headphones": 40,
   "summer dress": 40,
   "dress": 40,
@@ -39,26 +39,26 @@
  },
  "sample": [
   {
-   "id": "1005008323946186",
-   "name": "Men's Street Wear T-shirts Need Beer Graphic Tee Shirt Homme Funny Low Battery Need Beer Novelty T-Shirt Drinking Party ",
+   "id": "1005012890616729",
+   "name": "Hot Selling New Men's Fitness T-shirt Fashionable Casual Sports Short Sleeved Summer Breathable Quick Drying Loose O-nec",
    "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
    "category": "Tops & Tees",
    "currencyid": "USD",
-   "param": "discount|78%|;commissionRate|16.92%|;shopId|912241089|;",
-   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S172fc6f366b745ee9c860beecc74b4a4D.jpg",
-   "oldprice": "7.99",
-   "price": "1.76"
+   "param": "discount|85%|;commissionRate|6.92%|;shopId|1104972127|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/Sb36b06652f444028959a194ff831dd2aE.jpg",
+   "oldprice": "15.51",
+   "price": "2.33"
   },
   {
-   "id": "1005009873540616",
-   "name": "CERN Large Hydron Collider -LHC Design T-Shirt man t shirts graphic t shirts cotton 100% T-Shirt",
+   "id": "1005009437180722",
+   "name": "Knights Templar Pattern Tops Fashion Cool Street Personality T-Shirts Summer Short Sleeve O-Neck Loose Tops Big Size Cas",
    "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
    "category": "Tops & Tees",
    "currencyid": "USD",
-   "param": "discount|50%|;commissionRate|6.92%|;shopId|1104803232|;",
-   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S2e88e38cd92c43a6a40174cd6902f088P.jpg",
-   "oldprice": "2.17",
-   "price": "1.08"
+   "param": "discount|55%|;commissionRate|6.92%|;shopId|1104945065|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/Sfa6c39e045f844e5a1214882f7b62667H.jpg",
+   "oldprice": "7.45",
+   "price": "3.36"
   }
  ]
 }
