@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>إحصائيات قارِن</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+:root {
+  --bg: #F6F5FB; --surface: #FFFFFF; --surface-2: #F1EFF8; --fg: #1F2937; --muted: #6B6880; --line: #E6E2F1;
+  --accent: #7C3AED; --accent-strong: #5B21B6; --gold: #F59E0B; --good: #059669; --bad: #DC2626; --star-off: #E2E0EA;
+  --tint-1: #D1FAE5; --tint-2: #EDE9FE; --tint-3: #FEF3C7; --tint-4: #FCE7F3;
+  --shadow: 0 4px 18px rgba(76, 29, 149, 0.07);
+  --font: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F0D17; --surface: #1A1726; --surface-2: #252036; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+    --accent: #A78BFA; --accent-strong: #C4B5FD; --gold: #FBBF24; --good: #34D399; --bad: #F87171; --star-off: #3B3652;
+    --tint-1: #0F3B2E; --tint-2: #2E2357; --tint-3: #3A2C0E; --tint-4: #45162F; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F0D17; --surface: #1A1726; --surface-2: #252036; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+  --accent: #A78BFA; --accent-strong: #C4B5FD; --gold: #FBBF24; --good: #34D399; --bad: #F87171; --star-off: #3B3652;
+  --tint-1: #0F3B2E; --tint-2: #2E2357; --tint-3: #3A2C0E; --tint-4: #45162F; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.6; }
+.num { font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 16px; }
+.hero { border-radius: 24px; padding: 24px 26px; color: #FFFFFF; background: linear-gradient(120deg, #6D28D9 0%, #A21CAF 45%, #DB2777 72%, #F59E0B 100%); }
+.hero h1 { margin: 0 0 4px; font-size: 2rem; font-weight: 800; }
+.hero p { margin: 0; opacity: 0.95; }
+.hero a { color: #FFFFFF; font-weight: 800; }
+.live { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 3px 12px; border-radius: 999px; font-size: 0.86rem; font-weight: 700; }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: #34D399; box-shadow: 0 0 0 3px rgba(52,211,153,0.35); }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; box-shadow: var(--shadow); min-width: 0; }
+.kpi small { display: block; color: var(--muted); font-weight: 700; font-size: 0.85rem; }
+.kpi b { display: block; font-size: 1.9rem; font-weight: 800; line-height: 1.3; }
+.kpi em { font-style: normal; color: var(--muted); font-size: 0.8rem; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; box-shadow: var(--shadow); min-width: 0; }
+.card h2 { margin: 0 0 12px; font-size: 1.15rem; font-weight: 800; }
+.chart { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding-top: 22px; direction: ltr; }
+.col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
+.col .v { font-size: 0.75rem; font-weight: 800; color: var(--fg); }
+.col .b { width: 100%; max-width: 34px; background: linear-gradient(180deg, #A78BFA, #7C3AED); border-radius: 6px 6px 2px 2px; min-height: 3px; }
+.col .d { font-size: 0.68rem; color: var(--muted); margin-top: 4px; white-space: nowrap; }
+.hrow { display: grid; grid-template-columns: minmax(0, 110px) minmax(0, 1fr) 44px; gap: 10px; align-items: center; margin: 8px 0; font-size: 0.92rem; }
+.hrow .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.hrow .t { height: 14px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.hrow .f { height: 100%; border-radius: 99px; background: var(--accent); }
+.hrow b { text-align: left; }
+.big-rate { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.big-rate b { font-size: 2.6rem; font-weight: 800; }
+.stars { --r: 0%; position: relative; display: inline-block; font-size: 1.4rem; letter-spacing: 2px; color: var(--star-off); direction: ltr; }
+.stars::before { content: "★★★★★"; }
+.stars::after { content: "★★★★★"; position: absolute; inset: 0; width: var(--r); overflow: hidden; color: var(--gold); }
+.comments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.cm { background: var(--surface-2); border-radius: 14px; padding: 10px 14px; }
+.cm .s { color: var(--gold); letter-spacing: 1px; }
+.cm small { color: var(--muted); }
+.empty { color: var(--muted); text-align: center; padding: 18px; }
+.err { background: var(--tint-4); color: var(--bad); border-radius: 14px; padding: 12px 16px; font-weight: 700; display: none; }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid2, .comments { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>📊 إحصائيات قارِن</h1>
+    <p>أرقام حقيقية ومباشرة من زوّار الموقع وتقييماتهم. <a href="./">← ارجع لقارِن</a></p>
+    <span class="live"><i></i><span id="upd">جارِ التحميل...</span></span>
+  </header>
+  <div class="err" id="err">ما قدرنا نجيب الإحصائيات الحين. حدّث الصفحة بعد شوي.</div>
+
+  <section class="kpis">
+    <div class="kpi"><small>👥 زوّار مختلفين</small><b class="num" id="kVisitors">—</b><em>كل شخص ينحسب مرة</em></div>
+    <div class="kpi"><small>🟢 زوّار اليوم</small><b class="num" id="kToday">—</b><em>بتوقيت عمان</em></div>
+    <div class="kpi"><small>👀 إجمالي الزيارات</small><b class="num" id="kVisits">—</b><em>كل فتحة للموقع</em></div>
+    <div class="kpi"><small>🔍 عمليات البحث</small><b class="num" id="kSearches">—</b><em>بحث سوّاه الزوار</em></div>
+    <div class="kpi"><small>⭐ متوسط التقييم</small><b class="num" id="kAvg">—</b><em id="kRatings">—</em></div>
+  </section>
+
+  <section class="card">
+    <h2>📈 الزوّار يوميًا (آخر 14 يوم)</h2>
+    <div class="chart" id="chart"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>🔥 أكثر عمليات البحث</h2>
+      <div id="top"></div>
+    </section>
+    <section class="card">
+      <h2>⭐ تقييمات المستخدمين</h2>
+      <div class="big-rate"><b class="num" id="rAvg">—</b><div><span class="stars" id="rStars"></span><div style="color:var(--muted)" id="rCount"></div></div></div>
+      <div id="dist"></div>
+      <h2 style="margin-top:16px">🎯 هل ساعدهم قارِن يلقون سعر أفضل؟</h2>
+      <div id="found"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>💬 آخر آراء المستخدمين</h2>
+    <div class="comments" id="comments"></div>
+  </section>
+</div>
+<script>
+(() => {
+  const API = 'https://qarin-ebay.abtkar2011.workers.dev/';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const n = v => Number(v || 0).toLocaleString('en-US');
+  const hrow = (label, v, max, color) => `<div class="hrow"><span class="lbl" title="${esc(label)}">${esc(label)}</span><div class="t"><div class="f" style="width:${max ? Math.max(3, v / max * 100) : 0}%;${color ? 'background:' + color : ''}"></div></div><b class="num">${n(v)}</b></div>`;
+
+  function lastDays(k) {
+    const out = [];
+    for (let i = k - 1; i >= 0; i--) out.push(new Date(Date.now() + 4 * 3600e3 - i * 86400e3).toISOString().slice(0, 10));
+    return out;
+  }
+
+  function draw(d) {
+    $('kVisitors').textContent = n(d.visitors);
+    $('kToday').textContent = n(d.visitorsToday);
+    $('kVisits').textContent = n(d.visits);
+    $('kSearches').textContent = n(d.searches);
+    $('kAvg').innerHTML = d.ratings ? `<bdi dir="ltr">${d.avgStars.toFixed(1)} / 5</bdi>` : '—';
+    $('kRatings').textContent = n(d.ratings) + ' تقييم';
+
+    const byDay = Object.fromEntries((d.perDay || []).map(r => [r.day, r.u]));
+    const days = lastDays(14), vals = days.map(x => byDay[x] || 0), max = Math.max(1, ...vals);
+    $('chart').innerHTML = days.map((x, i) => `<div class="col"><span class="v">${vals[i] || ''}</span><div class="b" style="height:${vals[i] / max * 100}%"></div><span class="d">${i === 0 || x.slice(8) === '01' ? x.slice(8) + '/' + x.slice(5, 7) : x.slice(8)}</span></div>`).join('');
+
+    const top = d.topSearches || [], tmax = top.length ? top[0].c : 0;
+    $('top').innerHTML = top.length ? top.map(r => hrow(r.q, r.c, tmax)).join('') : '<div class="empty">لسا ما فيه عمليات بحث.</div>';
+
+    $('rAvg').textContent = d.ratings ? d.avgStars.toFixed(1) : '—';
+    $('rStars').style.setProperty('--r', (d.avgStars / 5 * 100).toFixed(0) + '%');
+    $('rCount').textContent = `من ${n(d.ratings)} تقييم`;
+    const dist = Object.fromEntries((d.starsDist || []).map(r => [r.stars, r.c])), dmax = Math.max(1, ...Object.values(dist));
+    $('dist').innerHTML = [5, 4, 3, 2, 1].map(s => hrow(s + ' ★', dist[s] || 0, dmax, 'var(--gold)')).join('');
+
+    const F = { yes: ['👍 نعم', 'var(--good)'], some: ['🤏 نوعًا ما', 'var(--gold)'], no: ['👎 لا', 'var(--bad)'] };
+    const found = Object.fromEntries((d.found || []).map(r => [r.found, r.c])), ftot = Object.values(found).reduce((a, b) => a + b, 0);
+    $('found').innerHTML = ftot ? ['yes', 'some', 'no'].map(k => hrow(F[k][0] + (ftot ? ` (${Math.round((found[k] || 0) / ftot * 100)}%)` : ''), found[k] || 0, ftot, F[k][1])).join('') : '<div class="empty">لسا ما فيه إجابات.</div>';
+
+    const cm = d.comments || [];
+    $('comments').innerHTML = cm.length ? cm.map(c => `<div class="cm"><span class="s">${'★'.repeat(c.stars)}</span><div>${esc(c.comment)}</div><small>${esc(c.day)}</small></div>`).join('') : '<div class="empty">لسا ما فيه آراء مكتوبة.</div>';
+
+    $('upd').textContent = 'مباشر · آخر تحديث ' + new Date().toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  async function load() {
+    try {
+      const r = await fetch(API + 'stats', { cache: 'no-store' });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      $('err').style.display = 'none';
+      draw(d);
+    } catch (e) {
+      $('err').style.display = 'block';
+      $('upd').textContent = 'غير متصل';
+    }
+  }
+  load();
+  setInterval(load, 60000);
+})();
+</script>
+</body>
+</html>

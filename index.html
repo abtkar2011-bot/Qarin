@@ -293,6 +293,67 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
 .footer { text-align: center; color: var(--muted); font-size: 0.8rem; line-height: 1.8; margin-top: 18px; }
 
+/* ---------- أزرار البطاقة: المفضلة والمقارنة ---------- */
+.card-acts { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; z-index: 2; }
+.card-acts button { width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; font-size: 16px; display: grid; place-items: center;
+  background: rgba(255,255,255,0.92); color: #1F2937; box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
+.card-acts button.on { background: var(--accent); color: #FFFFFF; }
+.card-acts button.fav.on { background: #E11D48; }
+.pcard .img .disc { left: auto; right: 10px; top: 44px; }
+.drop-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--tint-1); color: var(--good); font-weight: 800; font-size: 0.8rem; }
+.no-real { background: var(--notice-bg); border: 1px solid var(--notice-line); color: var(--notice-fg); border-radius: 14px; padding: 10px 14px; font-size: 0.92rem; }
+
+/* ---------- الشريط السفلي والنوافذ ---------- */
+.dock { position: fixed; z-index: 60; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-start; direction: rtl; }
+.dock button { border: 0; cursor: pointer; font: inherit; font-weight: 800; padding: 10px 16px; border-radius: 999px; box-shadow: var(--shadow-hover); }
+.dock .rate-fab { background: linear-gradient(135deg, #F59E0B, #F97316); color: #FFFFFF; }
+.dock .fav-fab { background: var(--surface); color: var(--fg); border: 1px solid var(--line); }
+.cmp-bar { position: fixed; z-index: 61; right: 50%; transform: translateX(50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: none; gap: 10px; align-items: center; background: var(--fg); color: var(--bg); padding: 8px 10px 8px 16px; border-radius: 999px;
+  box-shadow: var(--shadow-hover); direction: rtl; max-width: calc(100vw - 32px); }
+.cmp-bar.on { display: flex; white-space: nowrap; }
+body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+.cmp-bar button { border: 0; cursor: pointer; font: inherit; font-weight: 800; border-radius: 999px; padding: 8px 14px; }
+.cmp-bar .go { background: var(--accent); color: #FFFFFF; }
+.cmp-bar .clear { background: transparent; color: inherit; opacity: 0.8; }
+.modal { position: fixed; inset: 0; z-index: 80; background: var(--scrim); display: none; align-items: center; justify-content: center; padding: 16px; direction: rtl; }
+.modal.on { display: flex; }
+.modal .box { background: var(--surface); color: var(--fg); border-radius: 22px; width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 20px; box-shadow: var(--shadow-hover); }
+.modal .box.wide { width: min(920px, 100%); }
+.modal h3 { margin: 0 0 10px; font-size: 1.3rem; font-weight: 800; }
+.modal .x { float: left; border: 0; background: var(--surface-2); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+.stars-pick { display: flex; gap: 6px; direction: ltr; justify-content: center; margin: 10px 0 14px; }
+.stars-pick button { border: 0; background: none; font-size: 40px; cursor: pointer; color: var(--star-off); padding: 0; line-height: 1; }
+.stars-pick button.on { color: var(--gold); }
+.opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; }
+.opts button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 8px 16px; cursor: pointer; font: inherit; font-weight: 700; }
+.opts button.on { background: var(--accent); color: #FFFFFF; border-color: var(--accent); }
+.modal textarea { width: 100%; min-height: 80px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); padding: 10px 12px; font: inherit; color: inherit; resize: vertical; }
+.modal .send { width: 100%; margin-top: 12px; padding: 12px; font-size: 1.05rem; }
+.modal .muted { color: var(--muted); font-size: 0.88rem; }
+.fav-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fav-row img { width: 56px; height: 42px; object-fit: cover; border-radius: 8px; }
+.fav-row .t { font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fav-row .sub { font-size: 0.82rem; color: var(--muted); }
+.fav-row .acts { display: flex; gap: 6px; }
+.fav-row .acts a, .fav-row .acts button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 6px 10px; font: inherit; font-size: 0.82rem; font-weight: 700; color: inherit; text-decoration: none; cursor: pointer; }
+.up { color: var(--bad); font-weight: 800; } .down { color: var(--good); font-weight: 800; }
+.cmp-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: 0.9rem; }
+.cmp-table th { position: static; width: 110px; }
+.cmp-table td { text-align: center; }
+.cmp-table td.win { background: var(--tint-1); font-weight: 800; }
+.cmp-table img { width: 100%; max-width: 140px; height: 100px; object-fit: cover; border-radius: 10px; margin: 0 auto; }
+.cmp-scroll { overflow-x: auto; }
+.cmp-scroll table { min-width: 520px; }
+.toast { position: fixed; z-index: 90; top: calc(16px + env(safe-area-inset-top, 0px)); right: 50%; transform: translateX(50%); background: var(--fg); color: var(--bg);
+  padding: 10px 18px; border-radius: 999px; font-weight: 800; box-shadow: var(--shadow-hover); display: none; direction: rtl; max-width: calc(100vw - 32px); text-align: center; }
+.toast.on { display: block; }
+.ask-rate { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: linear-gradient(135deg, var(--best-1), var(--best-2));
+  border: 1px solid var(--best-line); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
+.ask-rate button { border: 0; cursor: pointer; font: inherit; font-weight: 800; border-radius: 999px; padding: 8px 16px; background: var(--accent); color: #FFFFFF; }
+.footer a { color: var(--accent-strong); font-weight: 700; }
+
 /* ---------- الشاشات الصغيرة ---------- */
 @media (max-width: 1150px) {
   .plat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -420,9 +481,51 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
     <footer class="footer">
       قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بشي إن أو تيمو أو علي إكسبريس أو نون.<br>
-      الأسعار والتقييمات المعروضة توضيحية للاسترشاد فقط، والسعر النهائي في المتجر قد يختلف (الشحن والضرائب).
+      الأسعار والتقييمات المعروضة توضيحية للاسترشاد فقط، والسعر النهائي في المتجر قد يختلف (الشحن والضرائب).<br>
+      <a href="stats.html">📊 إحصائيات قارِن المباشرة</a>
     </footer>
   </main>
+</div>
+
+<div class="dock">
+  <button type="button" class="fav-fab" id="favFab">❤️ المفضلة <span id="favCount" class="num">0</span></button>
+  <button type="button" class="rate-fab" id="rateFab">⭐ قيّم قارِن</button>
+</div>
+<div class="cmp-bar" id="cmpBar"><span id="cmpTxt"></span><button type="button" class="go" id="cmpGo">⚖️ قارن الآن</button><button type="button" class="clear" id="cmpClear">مسح</button></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="modal" id="rateModal" role="dialog" aria-modal="true" aria-labelledby="rateTitle">
+  <div class="box">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="rateTitle">⭐ وش رأيك في قارِن؟</h3>
+    <p class="muted">رأيك يساعدنا نطوّر الموقع، ويأخذ 10 ثواني بس.</p>
+    <div class="stars-pick" id="starsPick">
+      <button type="button" data-s="1" aria-label="نجمة">★</button><button type="button" data-s="2" aria-label="نجمتين">★</button><button type="button" data-s="3" aria-label="3 نجوم">★</button><button type="button" data-s="4" aria-label="4 نجوم">★</button><button type="button" data-s="5" aria-label="5 نجوم">★</button>
+    </div>
+    <b>هل ساعدك قارِن تلقى سعر أفضل؟</b>
+    <div class="opts" id="foundPick"><button type="button" data-f="yes">👍 نعم</button><button type="button" data-f="some">🤏 نوعًا ما</button><button type="button" data-f="no">👎 لا</button></div>
+    <label for="rateComment"><b>اقتراحك أو رأيك (اختياري)</b></label>
+    <textarea id="rateComment" maxlength="300" placeholder="مثلاً: أتمنى تضيفون متجر..."></textarea>
+    <button type="button" class="btn-primary send" id="rateSend">إرسال التقييم</button>
+    <p class="muted" id="rateMsg"></p>
+  </div>
+</div>
+
+<div class="modal" id="favModal" role="dialog" aria-modal="true" aria-labelledby="favTitle">
+  <div class="box">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="favTitle">❤️ المفضلة وتنبيه الأسعار</h3>
+    <p class="muted">نحفظ سعر المنتج وقت ما تضيفه، ولما تبحث عنه مرة ثانية نقول لك إذا نزل أو ارتفع.</p>
+    <div id="favList"></div>
+  </div>
+</div>
+
+<div class="modal" id="cmpModal" role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
+  <div class="box wide">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="cmpTitle">⚖️ مقارنة المنتجات</h3>
+    <div class="cmp-scroll" id="cmpBody"></div>
+  </div>
 </div>
 
 <script>
@@ -693,13 +796,43 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     'كفر': 'phone case', 'غطاء جوال': 'phone case', 'نظار': 'sunglasses', 'عطر': 'perfume', 'عطور': 'perfume',
     'كاميرا': 'camera', 'كاميرات': 'camera', 'ماوس': 'computer mouse', 'فاره': 'computer mouse',
     'كيبورد': 'keyboard', 'لوحه مفاتيح': 'keyboard', 'تلفزيون': 'tv', 'شاشه': 'tv', 'بروجكتر': 'tv',
-    'مكنس': 'vacuum cleaner', 'خلاط': 'blender', 'عصاره': 'blender' };
+    'مكنس': 'vacuum cleaner', 'خلاط': 'blender', 'عصاره': 'blender',
+    'ايفون': 'iphone', 'سامسونج': 'samsung galaxy', 'ايباد': 'ipad', 'تابلت': 'tablet', 'جهاز لوحي': 'tablet',
+    'بلايستيشن': 'playstation', 'بلاي ستيشن': 'playstation', 'اكس بوكس': 'xbox', 'نينتندو': 'nintendo switch', 'يد تحكم': 'game controller',
+    'العاب': 'toys', 'لعبه': 'toy', 'دميه': 'doll', 'ليقو': 'lego', 'سياره تحكم': 'rc car',
+    'سماعه راس': 'headphones', 'سبيكر': 'bluetooth speaker', 'مكبر صوت': 'bluetooth speaker', 'ميكروفون': 'microphone', 'مايك': 'microphone',
+    'راوتر': 'wifi router', 'فلاش': 'usb flash drive', 'هارد': 'external hard drive', 'ذاكره': 'memory card', 'طابعه': 'printer', 'شاشه كمبيوتر': 'monitor',
+    'كرسي العاب': 'gaming chair', 'كرسي': 'chair', 'طاوله': 'table', 'مكتب': 'desk', 'سرير': 'bed', 'مخده': 'pillow', 'لحاف': 'blanket',
+    'مصباح': 'lamp', 'اضاءه': 'led light', 'ليد': 'led strip', 'مروحه': 'fan', 'مكيف': 'air conditioner', 'دفايه': 'heater',
+    'قميص': 'shirt', 'تيشيرت': 't-shirt', 'بنطلون': 'pants', 'جينز': 'jeans', 'جاكيت': 'jacket', 'معطف': 'coat', 'هودي': 'hoodie',
+    'عبايه': 'abaya', 'دشداشه': 'thobe', 'كمه': 'kuma cap', 'مصر': 'turban scarf', 'شيله': 'hijab scarf', 'حجاب': 'hijab',
+    'نظاره': 'sunglasses', 'خاتم': 'ring', 'سلسله': 'necklace', 'قلاده': 'necklace', 'اسواره': 'bracelet', 'حلق': 'earrings', 'محفظه': 'wallet', 'بوك': 'wallet',
+    'مكياج': 'makeup', 'روج': 'lipstick', 'كريم': 'face cream', 'شامبو': 'shampoo', 'ماكينه حلاقه': 'electric shaver', 'سشوار': 'hair dryer', 'مكواه شعر': 'hair straightener',
+    'قدر': 'cooking pot', 'مقلاه': 'frying pan', 'صحون': 'plates', 'اكواب': 'cups', 'ماكينه قهوه': 'coffee machine', 'غلايه': 'electric kettle', 'ميكرويف': 'microwave', 'ثلاجه': 'refrigerator', 'غساله': 'washing machine', 'مكواه': 'iron',
+    'دراجه': 'bicycle', 'سكوتر': 'electric scooter', 'خيمه': 'camping tent', 'كوره': 'football', 'دمبل': 'dumbbells', 'سجاده صلاه': 'prayer mat', 'مصحف': 'quran',
+    'قلم': 'pen', 'دفتر': 'notebook', 'شنطه مدرسه': 'school backpack', 'الوان': 'colored pencils', 'كتاب': 'book',
+    'كاميرا مراقبه': 'security camera', 'درون': 'drone', 'نظاره واقع افتراضي': 'vr headset', 'ساعه حائط': 'wall clock' };
+  const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
   const toEnglish = q => {
     const n = normalize(q);
     if (!/[؀-ۿ]/.test(q)) return q;
+    if (TR.has(n)) return TR.get(n);
     for (const [ar, en] of Object.entries(AR_EN).sort((a, b) => b[0].length - a[0].length)) if (n.includes(normalize(ar))) return en;
     return null;  // كلمة عربية ما نعرف ترجمتها
   };
+  // لكلمة عربية مو في القاموس: نترجمها بخدمة ترجمة مجانية (ولو ما اشتغلت نكمّل عادي)
+  async function resolveEnglish(q) {
+    const n = normalize(q);
+    if (!/[؀-ۿ]/.test(q) || toEnglish(q) || TR.has(n)) return;
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 3500);
+      const r = await fetch('https://api.mymemory.translated.net/get?langpair=ar|en&q=' + encodeURIComponent(q.trim().slice(0, 80)), { signal: ctl.signal });
+      clearTimeout(t);
+      const d = await r.json();
+      let en = (d && d.responseData && d.responseData.translatedText || '').toLowerCase().replace(/[^a-z0-9 \-]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (en && en.length >= 2 && en.length <= 60) TR.set(n, en);
+    } catch (e) { /* الترجمة غير متاحة */ }
+  }
   const safeUrl = u => (typeof u === 'string' && /^https:\/\//.test(u)) ? u.replace(/"/g, '%22') : '';
   async function fetchEbay(query, limit) {
     const en = toEnglish(query);
@@ -845,6 +978,24 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   }
 
   // ================= الحالة =================
+  // ================= الزوار والتقييمات =================
+  const API = EBAY_API;  // نفس سيرفر Cloudflare
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* التخزين غير متاح */ } },
+  };
+  let vid = store.get('qarin.vid', '');
+  if (!/^[a-z0-9]{8,40}$/.test(vid)) { vid = (Math.random().toString(36).slice(2) + Date.now().toString(36)).slice(0, 20); store.set('qarin.vid', vid); }
+  function track(kind, q) {
+    if (!API) return;
+    try { fetch(API + 'event', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, keepalive: true,
+      body: JSON.stringify({ vid, kind, q: (q || '').slice(0, 60) }) }).catch(() => {}); } catch (e) { /* تجاهل */ }
+  }
+  const pkey = p => p.platform + '|' + p.title;
+  let favs = store.get('qarin.favs', {});      // المفضلة: مفتاح المنتج ← بياناته وسعره وقت الحفظ
+  let cmp = [];                                  // المنتجات المختارة للمقارنة (لين 3)
+  let userSearches = 0;
+
   const state = {
     query: '', products: [], loading: false, limit: 8, currency: 'OMR', platforms: new Set(KEYS),
     sort: 'best', minRating: 0, freeOnly: false, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 },
@@ -877,15 +1028,30 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   }
   const nativeHtml = p => p.nativePrice ? `<span class="native">(<bdi>${p.nativePrice.toLocaleString('en-US')}</bdi> د.إ في المتجر)</span>` : '';
 
+  function dropHtml(p) {
+    const f = favs[pkey(p)];
+    if (!f) return '';
+    const diff = (p.price - f.saved) / f.saved * 100;
+    if (diff <= -1) return `<span class="drop-badge">📉 نزل السعر ${Math.abs(diff).toFixed(0)}% من وقت ما حفظته</span>`;
+    if (diff >= 1) return `<span class="drop-badge" style="background:var(--tint-4);color:var(--bad)">📈 ارتفع ${diff.toFixed(0)}%</span>`;
+    return '';
+  }
+  function actsHtml(p) {
+    const k = esc(pkey(p));
+    const isFav = !!favs[pkey(p)], isCmp = cmp.some(c => pkey(c) === pkey(p));
+    return `<div class="card-acts"><button type="button" class="fav${isFav ? ' on' : ''}" data-fav="${k}" aria-label="أضف للمفضلة" aria-pressed="${isFav}">${isFav ? '❤' : '♡'}</button>
+      <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">⚖️</button></div>`;
+  }
   function productCard(p) {
     const d = discountPct(p);
     return `<article class="pcard${p.badges.includes('best') ? ' is-best' : ''}">
-      <div class="img"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">${pill(p.platform)}${d >= 5 ? `<span class="disc">-${d}%</span>` : ''}
+      <div class="img"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">${pill(p.platform)}${actsHtml(p)}${d >= 5 ? `<span class="disc">-${d}%</span>` : ''}
         <div class="badges">${p.badges.map(b => `<span class="badge ${b}">${BADGES[b]}</span>`).join('')}</div></div>
       <div class="pbody">
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
+        ${dropHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
         ${shopBtn(p)}
@@ -913,13 +1079,14 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
   function kpisHtml(list) {
     const cheapest = list.reduce((a, b) => b.price < a.price ? b : a);
     const rl = list.filter(p => !p.sellerRated && !p.unrated).length ? list.filter(p => !p.sellerRated && !p.unrated) : list;
+    const noRatings = !list.some(p => !p.sellerRated && !p.unrated);
     const top = rl.reduce((a, b) => (b.rating > a.rating || (b.rating === a.rating && (b.reviews || 0) > (a.reviews || 0))) ? b : a);
     const avg = list.reduce((s, p) => s + p.price, 0) / list.length;
     const nPlat = new Set(list.map(p => p.platform)).size;
     const items = [
       ['💰', 'var(--tint-1)', 'أقل سعر', money(cheapest.price), PLATFORMS[cheapest.platform].name],
       ['📊', 'var(--tint-2)', 'متوسط السعر', money(avg), `عبر ${list.length} منتج`],
-      ['⭐', 'var(--tint-3)', 'أعلى تقييم', `<bdi>${top.rating.toFixed(1)} / 5</bdi>`, PLATFORMS[top.platform].name],
+      ['⭐', 'var(--tint-3)', 'أعلى تقييم', noRatings ? '—' : `<bdi>${top.rating.toFixed(1)} / 5</bdi>`, noRatings ? 'ما فيه تقييمات للمنتجات' : PLATFORMS[top.platform].name],
       ['🛍️', 'var(--tint-4)', 'عدد النتائج', `${list.length}`, `من ${nPlat} منصات`],
     ];
     return `<div class="kpis">${items.map(([ico, bg, label, val, sub]) =>
@@ -1005,6 +1172,12 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const sum = summarize(list);
     const tabs = [['cards', `🛍️ جميع المنتجات (${list.length})`], ['compare', '📊 مقارنة المنصات'], ['table', '📋 جدول تفصيلي']];
     const realList = list.filter(p => p.real);
+    if (!realList.length) html += `<div class="no-real">🔎 ما لقينا منتجات حقيقية لهالبحث في إيباي وعلي إكسبريس. جرّب كلمة ثانية، أو اكتب اسم المنتج بالإنجليزي.</div>`;
+    if (userSearches >= 2 && !store.get('qarin.rated', false) && !store.get('qarin.askDismissed', false))
+      html += `<div class="ask-rate">⭐ عجبك قارِن؟ قيّمه بـ10 ثواني وساعدنا نطوّره <span><button type="button" data-open-rate>قيّم الحين</button> <button type="button" data-dismiss-ask style="background:transparent;color:inherit">لاحقًا</button></span></div>`;
+    let favChanged = false;
+    list.forEach(p => { const f = favs[pkey(p)]; if (f && f.last !== p.price) { f.last = p.price; favChanged = true; } });
+    if (favChanged) store.set('qarin.favs', favs);
     html += (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
         <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div></div>
@@ -1029,6 +1202,7 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     const key = normalize(query) + '|' + state.limit;
     const cached = cache.get(key);
     if (cached) {
+      if (!instant) { userSearches++; track('search', query); }
       state.products = cached.map(p => ({ ...p }));
       status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${cached.length} منتج من ${KEYS.length} منصات</div>`;
       state.loading = false;
@@ -1036,9 +1210,12 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
       return;
     }
     state.loading = true;
+    if (!instant) { userSearches++; track('search', query); }
     status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن «${esc(query)}» في ${KEYS.length} منصات...</b>${KEYS.map(k =>
       `<div class="row" id="st-${k}"><span class="spinner"></span>${PLATFORMS[k].name}</div>`).join('')}</div>`;
     $('results').innerHTML = skeletonHtml(8);
+    await resolveEnglish(query);
+    if (id !== searchId) return;
     const results = {};
     await Promise.all(KEYS.map(async k => {
       if (!instant) await sleep(400 + Math.random() * 800);  // محاكاة زمن استجابة المتاجر
@@ -1067,6 +1244,122 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     ['OMR', 'USD'].forEach(x => $('cur' + x).setAttribute('aria-checked', String(x === c)));
     try { localStorage.setItem('qarin.currency', c); } catch (e) { /* التخزين غير متاح */ }
     render();
+  }
+
+  // ================= المفضلة والمقارنة والتقييم =================
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('on');
+    clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove('on'), 2600);
+  }
+  const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k);
+  function openModal(id) { $(id).classList.add('on'); }
+  function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); }
+  function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; }
+  function toggleFav(k) {
+    if (favs[k]) { delete favs[k]; toast('انشال من المفضلة'); }
+    else {
+      const p = findProduct(k); if (!p) return;
+      favs[k] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image,
+        saved: p.price, last: p.price, at: Date.now(), q: state.query };
+      toast('❤️ انحفظ في المفضلة، وبننبهك إذا تغيّر سعره');
+    }
+    store.set('qarin.favs', favs); updateFavCount(); render();
+  }
+  function renderFavs() {
+    const keys = Object.keys(favs).sort((a, b) => favs[b].at - favs[a].at);
+    if (!keys.length) { $('favList').innerHTML = '<p class="muted">ما عندك منتجات محفوظة. اضغط ♡ على أي منتج عشان تحفظه.</p>'; return; }
+    $('favList').innerHTML = keys.map(k => {
+      const f = favs[k], diff = (f.last - f.saved) / f.saved * 100;
+      const ch = Math.abs(diff) < 1 ? '<span class="muted">نفس السعر</span>' : diff < 0 ? `<span class="down">📉 نزل ${Math.abs(diff).toFixed(0)}%</span>` : `<span class="up">📈 ارتفع ${diff.toFixed(0)}%</span>`;
+      return `<div class="fav-row">${f.image ? `<img referrerpolicy="no-referrer" src="${esc(f.image)}" alt="">` : '<span style="font-size:28px;text-align:center">🛍️</span>'}
+        <div style="min-width:0"><div class="t" title="${esc(f.title)}">${esc(f.title)}</div>
+        <div class="sub">${PLATFORMS[f.platform] ? PLATFORMS[f.platform].name : ''} · حفظته بـ ${money(f.saved)} · آخر سعر ${money(f.last)} · ${ch}</div></div>
+        <div class="acts">${f.q ? `<button type="button" data-fav-search="${esc(f.q)}">🔄 تحقق</button>` : ''}<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a><button type="button" data-fav-del="${esc(k)}">🗑️</button></div></div>`;
+    }).join('');
+  }
+  function toggleCmp(k) {
+    const i = cmp.findIndex(c => pkey(c) === k);
+    if (i >= 0) cmp.splice(i, 1);
+    else {
+      if (cmp.length >= 3) { toast('تقدر تقارن 3 منتجات بالكثير'); return; }
+      const p = findProduct(k); if (!p) return;
+      cmp.push({ ...p });
+    }
+    updateCmpBar(); render();
+  }
+  function updateCmpBar() {
+    $('cmpBar').classList.toggle('on', cmp.length > 0);
+    document.body.classList.toggle('cmp-on', cmp.length > 0);
+    $('cmpTxt').textContent = cmp.length < 2 ? '⚖️ اختر منتج ثاني' : `⚖️ ${cmp.length} منتجات`;
+    $('cmpGo').disabled = cmp.length < 2; $('cmpGo').style.opacity = cmp.length < 2 ? 0.5 : 1;
+  }
+  function renderCmp() {
+    const minP = Math.min(...cmp.map(p => p.price));
+    const rated = cmp.filter(p => !p.unrated && !p.sellerRated);
+    const maxR = rated.length ? Math.max(...rated.map(p => p.rating)) : null;
+    const maxS = Math.max(...cmp.map(p => p.score || 0));
+    const row = (label, f) => `<tr><th scope="row">${label}</th>${cmp.map(f).join('')}</tr>`;
+    const cell = (win, html) => `<td class="${win ? 'win' : ''}">${html}</td>`;
+    $('cmpBody').innerHTML = `<table class="cmp-table"><tbody>
+      ${row('', p => `<td><img referrerpolicy="no-referrer" src="${p.image}" alt=""></td>`)}
+      ${row('المنتج', p => `<td style="font-weight:700">${esc(p.title)}</td>`)}
+      ${row('المتجر', p => `<td>${pill(p.platform, true)}</td>`)}
+      ${row('السعر', p => cell(p.price === minP, `${money(p.price)}${p.price === minP ? '<br>💰 الأرخص' : ''}`))}
+      ${row('الخصم', p => `<td>${discountPct(p) >= 5 ? '-' + discountPct(p) + '%' : '—'}</td>`)}
+      ${row('التقييم', p => cell(maxR !== null && !p.unrated && !p.sellerRated && p.rating === maxR, `${ratingNum(p)}<br><small>${esc(reviewsText(p))}</small>`))}
+      ${row('التوصيل', p => `<td>${p.shipping ? esc(p.shipping) + ' أيام' : '—'}</td>`)}
+      ${row('شحن مجاني', p => `<td>${p.freeShip ? '✓' : '—'}</td>`)}
+      ${row('مؤشر القيمة', p => cell((p.score || 0) === maxS, `${(p.score || 0).toFixed(0)}/100`))}
+      ${row('', p => `<td>${shopBtn(p)}</td>`)}
+    </tbody></table>`;
+  }
+  let rateStars = 0, rateFound = '';
+  async function sendRating() {
+    if (!rateStars) { $('rateMsg').textContent = 'اختر عدد النجوم أول ⭐'; return; }
+    $('rateSend').disabled = true; $('rateMsg').textContent = 'جارِ الإرسال...';
+    try {
+      const r = await fetch(API + 'rate', { method: 'POST', headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ vid, stars: rateStars, found: rateFound, comment: $('rateComment').value.trim().slice(0, 300) }) });
+      if (!r.ok) throw new Error('rate ' + r.status);
+      store.set('qarin.rated', true);
+      $('rateFab').textContent = '✓ شكرًا لتقييمك';
+      closeModals(); toast('🙏 شكرًا! وصل تقييمك');
+      render();
+    } catch (e) { $('rateMsg').textContent = 'ما قدرنا نرسل التقييم، جرّب بعد شوي.'; }
+    $('rateSend').disabled = false;
+  }
+  function initExtras() {
+    updateFavCount(); updateCmpBar();
+    if (store.get('qarin.rated', false)) $('rateFab').textContent = '✓ شكرًا لتقييمك';
+    $('rateFab').addEventListener('click', () => { $('rateMsg').textContent = ''; openModal('rateModal'); });
+    $('favFab').addEventListener('click', () => { renderFavs(); openModal('favModal'); });
+    $('cmpGo').addEventListener('click', () => { if (cmp.length >= 2) { renderCmp(); openModal('cmpModal'); } });
+    $('cmpClear').addEventListener('click', () => { cmp = []; updateCmpBar(); render(); });
+    $('starsPick').addEventListener('click', e => {
+      const b = e.target.closest('[data-s]'); if (!b) return;
+      rateStars = +b.dataset.s;
+      $('starsPick').querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.s <= rateStars));
+    });
+    $('foundPick').addEventListener('click', e => {
+      const b = e.target.closest('[data-f]'); if (!b) return;
+      rateFound = b.dataset.f;
+      $('foundPick').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    });
+    $('rateSend').addEventListener('click', sendRating);
+    document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) closeModals(); }));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+    $('favList').addEventListener('click', e => {
+      const del = e.target.closest('[data-fav-del]');
+      if (del) { delete favs[del.dataset.favDel]; store.set('qarin.favs', favs); updateFavCount(); renderFavs(); render(); return; }
+      const sq = e.target.closest('[data-fav-search]');
+      if (sq) { closeModals(); search(sq.dataset.favSearch, false); }
+    });
+    $('results').addEventListener('click', e => {
+      const f = e.target.closest('[data-fav]'); if (f) { toggleFav(f.dataset.fav); return; }
+      const c = e.target.closest('[data-cmp]'); if (c) { toggleCmp(c.dataset.cmp); return; }
+      if (e.target.closest('[data-open-rate]')) { $('rateMsg').textContent = ''; openModal('rateModal'); return; }
+      if (e.target.closest('[data-dismiss-ask]')) { store.set('qarin.askDismissed', true); render(); }
+    });
   }
 
   function init() {
@@ -1119,6 +1412,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
     $('scrim').addEventListener('click', closeF);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeF(); });
 
+    initExtras();
+    track('visit');
     setCurrency(state.currency);
     search(SUGGESTIONS[0], true);  // يفتح الموقع على بحث جاهز كمثال
   }
