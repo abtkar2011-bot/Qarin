@@ -1,5 +1,14 @@
 <!doctype html><html><head><meta name="mitgo-verification" content="ad1a1e9a-a5c5-4615-ae72-e39fe8fcf711" /><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>قارِن</title>
+<meta name="description" content="قارِن: ابحث مرة وحدة وقارن الأسعار والجودة في علي إكسبرس وإيباي وإتسي، واحصل على الخيار الأفضل.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#7C3AED">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="قارِن">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,6 +309,11 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 .card-acts button.on { background: var(--accent); color: #FFFFFF; }
 .card-acts button.fav.on { background: #E11D48; }
 .pcard .img .disc { left: auto; right: 10px; top: 44px; }
+.hist { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; font-size: 0.8rem; font-weight: 700; }
+.hist .h-good { color: var(--good); }
+.hist .h-bad { color: var(--bad); }
+.hist .spark-wrap { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 500; }
+.hist .spark { width: 96px; height: 24px; color: var(--accent); flex: none; }
 .drop-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--tint-1); color: var(--good); font-weight: 800; font-size: 0.8rem; }
 .no-real { background: var(--notice-bg); border: 1px solid var(--notice-line); color: var(--notice-fg); border-radius: 14px; padding: 10px 14px; font-size: 0.92rem; }
 
@@ -353,6 +367,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   border: 1px solid var(--best-line); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
 .ask-rate button { border: 0; cursor: pointer; font: inherit; font-weight: 800; border-radius: 999px; padding: 8px 16px; background: var(--accent); color: #FFFFFF; }
 .footer a { color: var(--accent-strong); font-weight: 700; }
+.footer .etsy-note { display: inline-block; margin-top: 6px; font-size: 0.72rem; opacity: 0.8; }
+#installSteps ol { margin: 8px 0 0; padding-inline-start: 22px; line-height: 2; }
 
 /* ---------- السلة المتعددة ---------- */
 .basket-box { display: flex; flex-direction: column; gap: 8px; background: linear-gradient(135deg, var(--best-2), var(--tint-4)); border: 1px solid var(--line); border-radius: 20px; padding: 12px 14px; }
@@ -559,7 +575,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     <footer class="footer">
       قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.<br>
       الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.<br>
-      <a href="stats.html">📊 إحصائيات قارِن المباشرة</a>
+      بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <b>بدون ما يزيد السعر عليك</b>.<br>
+      <a href="about.html">ℹ️ من نحن</a> · <a href="privacy.html">🔒 الخصوصية</a> · <a href="stats.html">📊 الإحصائيات</a> · <a href="#" id="installLink">📲 ثبّت التطبيق</a><br>
+      <span dir="ltr" lang="en" class="etsy-note">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</span>
     </footer>
   </main>
 </div>
@@ -604,6 +622,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     <h3 id="cartTitle">🛒 سلتك</h3>
     <p class="muted">أضف المنتجات اللي تعجبك من أي متجر، ونقسّمها لك حسب المتجر مع مجموع كل واحد.</p>
     <div id="cartBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="box">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="installTitle">📲 ثبّت «قارِن» على جوالك</h3>
+    <p class="muted">بيطلع لك «قارِن» كأيقونة على الشاشة الرئيسية ويفتح مثل التطبيق. مجاني وما يحتاج متجر تطبيقات.</p>
+    <div id="installSteps"></div>
   </div>
 </div>
 
@@ -913,7 +940,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   async function fetchEbay(query, limit) {
     const en = toEnglish(query);
     if (!en) throw new Error('no translation');
-    const res = await fetch(EBAY_API + '?q=' + encodeURIComponent(en) + '&limit=20');  // نطلب أكثر لأننا بنفلتر
+    const res = await fetch(EBAY_API + '?q=' + encodeURIComponent(en) + '&limit=50');  // نطلب أكثر لأننا بنفلتر
     if (!res.ok) throw new Error('eBay ' + res.status);
     const data = await res.json();
     if (!data.items) throw new Error(data.error || 'eBay error');
@@ -942,7 +969,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       shipCost: typeof it.shipCost === 'number' ? it.shipCost : null,
       total: it.price + (typeof it.shipCost === 'number' ? it.shipCost : 0),
       score: 0, adj: 0, badges: [],
-    })).slice(0, limit);
+    })).slice(0, Math.max(limit, 50));
   }
 
   async function fetchEtsy(query, limit) {
@@ -959,7 +986,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     items = noAcc(items, enLow);
     if (!items.length) throw new Error('etsy empty');
     etsyLive = true;
-    return items.slice(0, limit).map(it => ({
+    return items.slice(0, Math.max(limit, 50)).map(it => ({
       platform: 'etsy', title: it.title, price: it.price, unrated: true, rating: PRIOR_RATING,
       reviews: it.favorites || 0, url: safeUrl(it.url), image: safeUrl(it.image) || placeholder('🎁', rng),
       original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true, favs: it.favorites || 0,
@@ -1000,7 +1027,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     return ws.filter(hit).length >= 2;
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
-  const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit)\b/i;
+  const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit|watch ?hands|needles?|nh3[456]|miyota|movement parts)\b/i;
   // إكسسوارات إضافية (أحزمة، علب، وسائد...) نشيلها إلا إذا كانت هي المطلوبة
   const ACC2 = /\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b/i;
   // منتجات ما نعرضها أبدًا: منتجات للكبار، وتدخين وفيب
@@ -1109,6 +1136,16 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     let pool = [...hits].filter(([, v]) => v >= need);
     const head = lists.find(l => l.tok === toks[toks.length - 1]);  // آخر كلمة غالبًا نوع المنتج
     if (pool.length < 8 && head) pool = head.ids.map(id => [id, hits.get(id)]);
+    // ذكاء الأقسام: نخلي الأقسام اللي فيها هالكلمة «نوع المنتج» (ساعة ← أقسام الساعات، مو قطع التصليح)
+    if (head) {
+      const b = await aliJSON(ALI_IDX + 't/' + (fnv(head.tok) % meta.nb) + '.json').catch(() => ({}));
+      const cl = b._c && b._c[head.tok];
+      if (cl) {
+        const allowed = new Set(cl.filter((_, i) => i % 2 === 0));
+        const f = pool.filter(([id]) => allowed.has(aliCat(meta, id)));
+        if (f.length >= 10) pool = f;
+      }
+    }
     // نوزّع على الأقسام: القسم اللي فيه تطابق أكثر ياخذ نصيب أكبر، وداخل القسم الأفضل أولًا
     if (!meta.badCats) meta.badCats = new Set(meta.cats.map((c, i) => BLOCK_CAT.test(c[1]) ? i : -1).filter(i => i >= 0));
     const byCat = new Map();
@@ -1138,32 +1175,52 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     }
     return p + encodeURIComponent(d1 + encodeURIComponent(t) + d2) + q;
   }
-  async function fetchAli(query, limit) {
-    const meta = await aliMeta();
-    if (!meta) return fetchAliOld(query, limit);  // لو الفهرس الجديد مو موجود نرجع للطريقة القديمة
-    const enQ = (toEnglish(query) || '').toLowerCase().trim();
-    if (!enQ) throw new Error('no translation');
-    const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
+  // بحث علي إكسبرس المباشر (من سيرفر Cloudflare): فيه تقييم المنتج وعدد الطلبات
+  async function fetchAliLive(enQ) {
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 8000);
+      const r = await fetch(EBAY_API + 'ali?q=' + encodeURIComponent(enQ), { signal: ctl.signal });
+      clearTimeout(t);
+      const d = await r.json();
+      return Array.isArray(d.items) ? d.items.map(it => ({ ...it, live: true })) : [];
+    } catch (e) { return []; }
+  }
+  // بحث في فهرس كل منتجات علي إكسبرس (ملفات data/s)
+  async function aliIndexItems(meta, enQ, alts) {
     const sets = await Promise.all(alts.map((a, i) => aliCandidates(meta, a, i ? 40 : 120)));
     const picked = [], seen = new Set();
     for (let i = 0; picked.length < 160 && sets.some(s => i < s.length); i++) {
       for (const s of sets) if (i < s.length && !seen.has(s[i])) { seen.add(s[i]); picked.push(s[i]); }
     }
-    if (!picked.length) throw new Error('ali empty');
-    // نجيب ملفات المنتجات (الملفات اللي فيها نتائج أكثر أول، وبحد أقصى 12 ملف)
+    if (!picked.length) return [];
+    // نجيب ملفات المنتجات (الملفات اللي فيها نتائج أكثر أول، وبحد أقصى 10 ملفات)
     const S = meta.shard, per = new Map();
     picked.forEach(id => { const s = Math.floor(id / S); per.set(s, (per.get(s) || 0) + 1); });
     const shards = [...per].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([s]) => s);
     const data = new Map(await Promise.all(shards.map(async s => [s, await aliJSON(ALI_IDX + 'p/' + s + '.json').catch(() => null)])));
-    const rng = makeRng('aliexpress', normalize(query));
-    let items = [];
+    const items = [];
     for (const id of picked) {
       const rows = data.get(Math.floor(id / S));
       const r = rows && rows[id % S];
       if (!r) continue;
       const img = r[4] ? (/^https?:/.test(r[4]) ? r[4] : meta.img + r[4]) : '';
-      items.push({ title: r[1], price: r[2], original: r[3] || null, url: aliLink(meta, r[0], r[5]), image: img });
+      items.push({ id: String(r[0]), title: r[1], price: r[2], original: r[3] || null, url: aliLink(meta, r[0], r[5]), image: img, hist: r[6] || 0 });
     }
+    return items;
+  }
+  async function fetchAli(query, limit) {
+    const enQ = (toEnglish(query) || '').toLowerCase().trim();
+    if (!enQ) throw new Error('no translation');
+    const liveP = fetchAliLive(enQ);
+    const meta = await aliMeta();
+    const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
+    let idx = [];
+    if (meta) { try { idx = await aliIndexItems(meta, enQ, alts); } catch (e) { idx = []; } }
+    const live = await liveP;
+    if (!meta && !live.length) return fetchAliOld(query, limit);  // لو الفهرس الجديد مو موجود نرجع للطريقة القديمة
+    // ندمج: المباشر أول، وبعده الفهرس (بدون تكرار نفس المنتج)
+    const seenIds = new Set(); let items = [];
+    for (const it of [...live, ...idx]) { if (it.id && seenIds.has(it.id)) continue; seenIds.add(it.id); items.push(it); }
     items = items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enQ));
     if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
@@ -1179,7 +1236,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     items.forEach(it => {
       const tt = aliTokens(it.title);
       it.pos = tt.findIndex(w => heads.has(w));
-      it.rel = (it.pos < 0 ? -40 : -Math.min(it.pos, 30)) + 4 * qt.filter(w => tt.includes(w)).length;
+      it.rel = (it.pos < 0 ? -40 : -Math.min(it.pos, 30)) + 4 * qt.filter(w => tt.includes(w)).length + (it.live ? 6 : 0);
     });
     const early = items.filter(it => it.pos >= 0 && it.pos <= 8);
     if (early.length >= 12) items = early;
@@ -1187,15 +1244,19 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     items = items.slice(0, Math.max(limit, 60));
     if (!items.length) throw new Error('ali empty');
     aliLive = true;
-    return items.map(it => ({
-      platform: 'aliexpress', title: it.title, price: it.price, unrated: true,
-      rating: PRIOR_RATING, reviews: 0, url: safeUrl(it.url),
-      image: safeUrl(fixImg(it.image)) || placeholder('🛍️', rng),
-      original: it.original && it.original > it.price ? it.original : null,
-      orders: null, shipping: '', freeShip: false, nativePrice: null, real: true,
-      shipCost: null, total: it.price,
-      score: 0, adj: 0, badges: [],
-    }));
+    const rng = makeRng('aliexpress', normalize(query));
+    return items.map(it => {
+      const stars5 = it.ratingPct ? Math.round(Math.min(5, it.ratingPct / 20) * 10) / 10 : 0;
+      return {
+        platform: 'aliexpress', title: it.title, price: it.price, unrated: !stars5,
+        rating: stars5 || PRIOR_RATING, reviews: it.orders || 0, url: safeUrl(it.url),
+        image: safeUrl(fixImg(it.image)) || placeholder('🛍️', rng),
+        original: it.original && it.original > it.price ? it.original : null,
+        orders: it.orders || null, shipping: it.shipDays ? `${it.shipDays} يوم` : '', freeShip: false, nativePrice: null, real: true,
+        shipCost: null, total: it.price, hist: it.hist || 0, ratingPct: it.ratingPct || null,
+        score: 0, adj: 0, badges: [],
+      };
+    });
   }
 
   const discountPct = p => (p.original && p.original > p.price) ? Math.round((1 - p.price / p.original) * 100) : 0;
@@ -1307,7 +1368,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
+  const reviewsText = p => (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
   const ratingNum = p => p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
@@ -1321,7 +1382,31 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     else if (p.shipCost > 0) items.push(`<span>🚚 + ${money(p.shipCost)} شحن لعمان</span>`);
     else if (p.real) items.push('<span>🚚 الشحن يظهر في صفحة المتجر</span>');
     if (p.orders) items.push(`<span>🔥 <bdi>${p.orders.toLocaleString('en-US')}</bdi> مبيع</span>`);
+    if (p.platform === 'aliexpress' && p.shipping) items.push(`<span>⏱️ يوصل خلال <bdi>${esc(p.shipping)}</bdi></span>`);
     return items.join('');
+  }
+  // سجل السعر (من تحميل علي إكسبرس اليومي): نزول حقيقي، أو خصم وهمي، ورسم صغير للسعر
+  function sparkline(pts) {
+    const span = Math.max(...pts.map(p => p[0]), 1);
+    const vals = pts.map(p => p[1]), lo = Math.min(...vals), hi = Math.max(...vals);
+    const X = d => (2 + (span - d) / span * 116).toFixed(1), Y = c => (hi === lo ? 14 : 4 + (hi - c) / (hi - lo) * 20).toFixed(1);
+    let path = '';
+    pts.forEach(([d, c], i) => { path += i ? `H${X(d)}V${Y(c)}` : `M${X(d)} ${Y(c)}`; });
+    return `<span class="spark-wrap"><svg class="spark" viewBox="0 0 120 28" role="img" aria-label="تغيّر السعر خلال ${span} يوم"><path d="${path}H118" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><small>📈 السعر آخر ${span} يوم</small></span>`;
+  }
+  function histHtml(p) {
+    const h = p.hist;
+    if (!Array.isArray(h) || !h[0]) return '';
+    const [days, lo, hi, p7] = h, cur = Math.round(p.price * 100), win = Math.min(days, 30);
+    const notes = [];
+    if (p7 && cur <= p7 * 0.9) notes.push(`<span class="h-good">🔥 نزل ${Math.round((1 - cur / p7) * 100)}% عن الأسبوع الماضي</span>`);
+    else if (days >= 7 && lo && cur <= lo && hi > lo) notes.push(`<span class="h-good">📉 أرخص سعر خلال ${win} يوم</span>`);
+    if (days >= 7 && discountPct(p) >= 20 && hi && hi < p.original * 100 * 0.9) notes.push(`<span class="h-bad">⚠️ الخصم غالبًا وهمي: ما شفنا سعره ${money(p.original)} ولا مرة خلال آخر ${win} يوم</span>`);
+    const pts = [];
+    for (let i = 4; i + 1 < h.length; i += 2) pts.push([h[i], h[i + 1]]);
+    const chart = pts.length >= 2 ? sparkline(pts) : '';
+    if (!notes.length && !chart) return '';
+    return `<div class="hist">${notes.join('')}${chart}</div>`;
   }
   const totalHtml = p => p.shipCost > 0 ? `<div class="with-ship">المجموع مع الشحن: <b>${money(p.total)}</b></div>` : '';
   const nativeHtml = p => p.nativePrice ? `<span class="native">(<bdi>${p.nativePrice.toLocaleString('en-US')}</bdi> د.إ في المتجر)</span>` : '';
@@ -1369,7 +1454,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
-        ${totalHtml(p)}${dropHtml(p)}
+        ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
         ${cartBtn(p)}${shopBtn(p)}
@@ -1389,6 +1474,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
           <span class="meta">مؤشر القيمة <b class="num">${p.score.toFixed(0)}</b>/100</span></div>
+        ${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="row">${cartBtn(p)}${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
       </div></section>`;
@@ -1693,6 +1779,21 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   }
   const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k);
   function openModal(id) { $(id).classList.add('on'); }
+  // ================= تثبيت «قارِن» كتطبيق (PWA) =================
+  let installEvt = null;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  async function openInstall() {
+    if (installEvt) { installEvt.prompt(); try { await installEvt.userChoice; } catch (e) { /* تجاهل */ } installEvt = null; return; }
+    const ios = /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document;
+    $('installSteps').innerHTML = isStandalone() ? '<p>✅ «قارِن» مثبّت عندك وتفتحه الحين كتطبيق.</p>' : ios
+      ? '<ol><li>اضغط زر <b>المشاركة</b> <span aria-hidden="true">⬆️</span> (في سفاري تحت أو فوق، وفي كروم جنب الرابط).</li><li>انزل واختر <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«إضافة»</b>. خلاص! 🎉</li></ol>'
+      : '<ol><li>افتح قائمة المتصفح <b>⋮</b> (فوق).</li><li>اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اضغط <b>«تثبيت»</b>. خلاص! 🎉</li></ol>';
+    openModal('installModal');
+  }
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
   function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); }
   function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; }
   function toggleFav(k) {
@@ -1780,6 +1881,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     });
     if (store.get('qarin.rated', false)) $('rateFab').textContent = '✓ شكرًا لتقييمك';
     $('rateFab').addEventListener('click', () => { $('rateMsg').textContent = ''; openModal('rateModal'); });
+    $('installLink').addEventListener('click', e => { e.preventDefault(); openInstall(); });
     $('favFab').addEventListener('click', () => { renderFavs(); openModal('favModal'); });
     $('cmpGo').addEventListener('click', () => { if (cmp.length >= 2) { renderCmp(); openModal('cmpModal'); } });
     $('cmpClear').addEventListener('click', () => { cmp = []; updateCmpBar(); render(); });

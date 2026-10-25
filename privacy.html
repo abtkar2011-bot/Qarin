@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الخصوصية — قارِن</title>
+<meta name="description" content="كيف يتعامل قارِن مع بياناتك: بدون حسابات، وبدون أسماء أو إيميلات.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#7C3AED">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+:root {
+  --bg: #F6F5FB; --surface: #FFFFFF; --fg: #1F2937; --muted: #6B6880; --line: #E6E2F1;
+  --accent-strong: #5B21B6;
+  --shadow: 0 4px 18px rgba(76, 29, 149, 0.07);
+  --font: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F0D17; --surface: #1A1726; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+    --accent-strong: #C4B5FD; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F0D17; --surface: #1A1726; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+  --accent-strong: #C4B5FD; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.9; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 16px; }
+.hero { border-radius: 24px; padding: 24px 26px; color: #FFFFFF; background: linear-gradient(120deg, #6D28D9 0%, #A21CAF 45%, #DB2777 72%, #F59E0B 100%); }
+.hero h1 { margin: 0 0 4px; font-size: 1.9rem; font-weight: 800; line-height: 1.4; }
+.hero p { margin: 0; opacity: 0.95; }
+.hero a { color: #FFFFFF; font-weight: 800; }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px 22px; box-shadow: var(--shadow); }
+h2 { margin: 0 0 6px; font-size: 1.2rem; font-weight: 800; }
+p { margin: 6px 0; }
+ul, ol { margin: 6px 0; padding-inline-start: 22px; }
+li { margin: 2px 0; }
+a { color: var(--accent-strong); font-weight: 700; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.en { direction: ltr; text-align: left; font-size: 0.85rem; color: var(--muted); }
+.back { display: inline-block; margin-top: 10px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 999px; text-decoration: none; }
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>🔒 سياسة الخصوصية</h1>
+    <p>باختصار: <b>ما نطلب اسمك ولا إيميلك ولا رقمك</b>، وما عندنا حسابات.</p>
+    <a class="back" href="./">← ارجع للبحث</a>
+  </header>
+
+  <section>
+    <h2>📊 وش نسجّل؟</h2>
+    <ul>
+      <li><b>رقم زائر عشوائي</b> ينحفظ في متصفحك بس، عشان نعرف كم زائر دخل (ما يدل على هويتك).</li>
+      <li><b>كلمات البحث</b> اللي تكتبها، عشان نعرف وش يدوّر عليه الناس ونحسّن النتائج.</li>
+      <li><b>تقييمك وتعليقك</b> لو أرسلتهم من زر «قيّم قارِن».</li>
+    </ul>
+    <p>هذي البيانات محفوظة في <b>Cloudflare</b>. وانتبه: <b>أكثر الكلمات بحثًا والتعليقات تنعرض للعامة</b> في <a href="stats.html">صفحة الإحصائيات</a>، فلا تكتب في التعليق أي معلومة شخصية.</p>
+  </section>
+
+  <section>
+    <h2>📱 وش ينحفظ في جهازك بس؟</h2>
+    <p><b>المفضلة</b> و<b>السلة</b> وإعداداتك تنحفظ في متصفحك، وما توصلنا أبدًا. لو مسحت بيانات المتصفح تنمسح.</p>
+  </section>
+
+  <section>
+    <h2>🔁 مع مين نشارك البحث؟</h2>
+    <ul>
+      <li><b>المتاجر (علي إكسبرس، إيباي، إتسي):</b> نرسل لهم <b>كلمة البحث بس</b> عشان نجيب المنتجات.</li>
+      <li><b>خدمة ترجمة (MyMemory):</b> لو كتبت كلمة عربية مو موجودة في قاموسنا، نرسلها لها عشان نترجمها للإنجليزي.</li>
+      <li><b>الروابط اللي تلصقها:</b> السيرفر حقنا يفتح الرابط عشان يقرأ اسم المنتج بس.</li>
+      <li><b>الاستضافة والخطوط:</b> الموقع على GitHub Pages والخط من Google Fonts، وهذي الخدمات تشوف عنوان IP مثل أي موقع.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🛒 لما تضغط على منتج</h2>
+    <p>تنتقل لموقع المتجر، وهناك تنطبق <b>سياسة خصوصية المتجر نفسه</b>. بعض الروابط روابط تسويق بالعمولة، وممكن المتجر أو شبكة العمولة يحفظون «كوكيز» عشان يعرفون إنك جيت من «قارِن». هذا ما يغيّر السعر عليك.</p>
+  </section>
+
+  <section>
+    <h2>🧹 تبي نمسح بياناتك؟</h2>
+    <p>كل اللي عندنا مربوط برقم عشوائي، مو باسمك. تقدر تمسح بيانات الموقع من إعدادات متصفحك، وتقدر تكتب لنا من زر «قيّم قارِن» لو عندك أي طلب.</p>
+    <p class="muted">آخر تحديث: 25 أكتوبر 2026</p>
+  </section>
+  <footer><a href="./">🔎 ارجع لـ«قارِن»</a> · <a href="about.html">ℹ️ من نحن</a> · <a href="privacy.html">🔒 الخصوصية</a> · <a href="stats.html">📊 الإحصائيات</a></footer>
+</div>
+</body>
+</html>

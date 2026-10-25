@@ -38,7 +38,11 @@ jobs:
       - name: Decide
         id: need
         run: |
-          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ steps.saved.outputs.cache-matched-key }}" ]; then
+          # نعيد التحميل كل يوم، أو لو تغيّر build_feed.py. غير كذا نستخدم المنتجات المحفوظة (نشر سريع)
+          want=$(sha256sum build_feed.py | cut -c1-16)
+          have=$(cat products/.builder 2>/dev/null || true)
+          echo "builder: want=$want have=$have"
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ steps.saved.outputs.cache-matched-key }}" ] && [ "$want" = "$have" ]; then
             echo "build=no" >> "$GITHUB_OUTPUT"; echo "Using saved products"
           else
             echo "build=yes" >> "$GITHUB_OUTPUT"; echo "Downloading all products"
@@ -49,12 +53,30 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore price history
+        if: steps.need.outputs.build == 'yes'
+        uses: actions/cache/restore@v4
+        with:
+          path: history
+          key: qarin-history-${{ github.run_id }}
+          restore-keys: qarin-history-
+
       - name: Build product index (all AliExpress products)
         if: steps.need.outputs.build == 'yes'
         env:
           ADMITAD_FEED_URL: ${{ secrets.ADMITAD_FEED_URL }}
           OUT_DIR: products
-        run: python build_feed.py
+          HISTORY_DIR: history
+        run: |
+          python build_feed.py
+          sha256sum build_feed.py | cut -c1-16 > products/.builder
+
+      - name: Save price history
+        if: steps.need.outputs.build == 'yes'
+        uses: actions/cache/save@v4
+        with:
+          path: history
+          key: qarin-history-${{ github.run_id }}
 
       - name: Save products for next time
         if: steps.need.outputs.build == 'yes'
@@ -65,9 +87,9 @@ jobs:
 
       - name: Put the site together
         run: |
+          mkdir -p _site
+          for f in *; do case "$f" in build_feed.py|products|history|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
-          cp *.html _site/
-          if [ -d data ]; then cp -r data/. _site/data/; fi
           cp -r products _site/data/s
           echo "files: $(find _site -type f | wc -l)"; du -sh _site
 

@@ -16,6 +16,74 @@ CAP = 4000         # أقصى عدد منتجات نحفظه لكل كلمة (ا
 MIN_PRICE = 1.0
 TITLE_MAX = 120
 IMG_PREFIX = "https://ae-pic-a1.aliexpress-media.com/kf/"
+HISTORY_DIR = os.environ.get("HISTORY_DIR", "history")  # سجل الأسعار اليومي (يُحفظ بين التشغيلات)
+WINDOW = 60        # كم يوم نحتفظ فيه بسجل الأسعار
+
+
+def today():
+    return int(os.environ.get("DAY_OVERRIDE") or time.time() // 86400)
+
+
+# ===== سجل الأسعار: لكل منتج  [آخر يوم شفناه, يوم, سعر بالسنت, يوم, سعر, ...] (بس لما يتغير السعر) =====
+def load_history():
+    path = os.path.join(HISTORY_DIR, "prices.json.gz")
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as f:
+            data = json.load(f)
+        print(f"history: {len(data.get('p', {}))} products", flush=True)
+        return data.get("p", {})
+    except FileNotFoundError:
+        print("history: starting fresh", flush=True)
+    except Exception as e:  # ملف خربان: نبدأ من جديد بدل ما يوقف كل شي
+        print("history unreadable, starting fresh:", e, flush=True)
+    return {}
+
+
+def save_history(hist, day):
+    for k in [k for k, e in hist.items() if e[0] < day - WINDOW]:
+        del hist[k]
+    os.makedirs(HISTORY_DIR, exist_ok=True)
+    tmp = os.path.join(HISTORY_DIR, "prices.json.gz.tmp")
+    with gzip.open(tmp, "wt", encoding="utf-8", compresslevel=6) as f:
+        json.dump({"v": 1, "day": day, "p": hist}, f, separators=(",", ":"))
+    os.replace(tmp, os.path.join(HISTORY_DIR, "prices.json.gz"))
+    return len(hist)
+
+
+def track(hist, key, cents, day):
+    e = hist.get(key)
+    if e is None:
+        hist[key] = e = [day, day, cents]
+        return e
+    e[0] = day
+    if e[-2] == day:
+        e[-1] = cents
+    elif e[-1] != cents:
+        e += [day, cents]
+    while len(e) >= 5 and e[3] <= day - WINDOW:  # نقاط قديمة ما نحتاجها
+        del e[1:3]
+    return e
+
+
+def summary(e, day):
+    """[أيام المتابعة, أقل سعر 30 يوم, أعلى سعر 30 يوم, السعر قبل 7 أيام, ثم آخر 6 تغييرات (قبل كم يوم, السعر)]"""
+    pts = list(zip(e[1::2], e[2::2]))
+    tracked = min(day - pts[0][0], WINDOW)
+    if tracked < 1:
+        return 0
+    lo = hi = None
+    p7 = 0
+    for j, (d, c) in enumerate(pts):
+        nd = pts[j + 1][0] if j + 1 < len(pts) else day + 1
+        if nd > day - 30:
+            lo = c if lo is None else min(lo, c)
+            hi = c if hi is None else max(hi, c)
+        if d <= day - 7 < nd:
+            p7 = c
+    out = [tracked, lo, hi, p7]
+    for d, c in pts[-6:]:
+        out += [day - d, c]
+    return out
 
 # ===== تقسيم العنوان إلى كلمات (نفس الدالة بالضبط موجودة في index.html) =====
 STOP = set("""for with and the of in on to a an by from or at as is it be up out your you my new hot sale free
@@ -230,15 +298,31 @@ def main():
 
     # الترتيب: حسب القسم، وداخل القسم الأفضل أولًا (عشان نتائج البحث تكون في ملفات قليلة)
     prods.sort(key=lambda p: (p[0], p[1]))
+    day = today()
+    hist = load_history()
     shutil.rmtree(OUT_DIR, ignore_errors=True)
     os.makedirs(os.path.join(OUT_DIR, "p"))
     os.makedirs(os.path.join(OUT_DIR, "t"))
 
     cats = []
     post = {}
+    catpos = {}   # كلمة ← الأقسام اللي تجي فيها الكلمة في أول العنوان (يعني هي نوع المنتج)
+    hsum = []
+    with_history = 0
     for i, p in enumerate(prods):
         if not cats or cats[-1][1] != p[0]:
             cats.append([i, p[0]])
+        ci = len(cats) - 1
+        h = summary(track(hist, str(p[2]), round(p[4] * 100), day), day)
+        hsum.append(h)
+        if h:
+            with_history += 1
+        for t in p[8][:4]:
+            d = catpos.get(t)
+            if d is None:
+                catpos[t] = {ci: 1}
+            else:
+                d[ci] = d.get(ci, 0) + 1
         for t in p[8]:
             lst = post.get(t)
             if lst is None:
@@ -247,7 +331,9 @@ def main():
                 lst.append(i)
     for k in range(0, len(prods), SHARD):
         dump(os.path.join(OUT_DIR, "p", f"{k // SHARD}.json"),
-             [[p[2], p[3], p[4], p[5], p[6], p[7]] for p in prods[k:k + SHARD]])
+             [[p[2], p[3], p[4], p[5], p[6], p[7], hsum[k + j]] for j, p in enumerate(prods[k:k + SHARD])])
+    hist_size = save_history(hist, day)
+    del hist
 
     buckets = [dict() for _ in range(NB)]
     kept_tokens = 0
@@ -258,19 +344,28 @@ def main():
         if n > CAP:
             lst = sorted(sorted(lst, key=lambda i: prods[i][1])[:CAP])
         deltas = [n, lst[0]] + [lst[j] - lst[j - 1] for j in range(1, len(lst))]
-        buckets[fnv(t) % NB][t] = deltas
+        b = buckets[fnv(t) % NB]
+        b[t] = deltas
         kept_tokens += 1
+        cp = catpos.get(t)
+        if cp:
+            tot = sum(cp.values())
+            if tot >= 30:
+                top = [(c, v) for c, v in sorted(cp.items(), key=lambda x: -x[1])[:6] if v / tot >= 0.08]
+                if top:
+                    b.setdefault("_c", {})[t] = [x for c, v in top for x in (c, round(100 * v / tot))]
     for b, d in enumerate(buckets):
         dump(os.path.join(OUT_DIR, "t", f"{b}.json"), d)
 
     t = tpl[0] or ("", "", "", "")
     dump(os.path.join(OUT_DIR, "meta.json"), {
-        "v": 1, "n": len(prods), "shard": SHARD, "nb": NB, "cap": CAP,
+        "v": 2, "n": len(prods), "day": day, "shard": SHARD, "nb": NB, "cap": CAP,
         "updated": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
         "img": IMG_PREFIX, "tpl": list(t), "npi": [NPI_A, NPI_B], "cats": cats,
     })
     with open(os.path.join(OUT_DIR, "info.json"), "w", encoding="utf-8") as f:
         json.dump({"rows": total, "products": len(prods), "tokens": kept_tokens, "full_links": full_links, "blocked": blocked,
+                   "with_history": with_history, "history_size": hist_size,
                    "categories": len(cats), "seconds": round(time.time() - t0), "columns": header,
                    "sample": sample}, f, ensure_ascii=False, indent=1)
     print(f"done: {len(prods)} products, {kept_tokens} words, {len(cats)} categories, "
