@@ -166,6 +166,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .btn-primary:hover { filter: brightness(1.08); }
 .currency { display: flex; flex-direction: column; gap: 6px; flex: 0 1 auto; }
 .currency .lbl { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+.cur-sel { font: inherit; font-weight: 800; padding: 10px 14px; border-radius: 14px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); cursor: pointer; min-width: 190px; }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
 .seg button { border: 0; background: transparent; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; white-space: nowrap; color: var(--muted); }
 .seg button[aria-checked="true"] { background: var(--accent); color: #FFFFFF; }
@@ -515,11 +516,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
     <section class="side-sec">
       <h3>سعر الصرف</h3>
-      <div class="rate-box">
-        1 دولار أمريكي = <b class="num"><bdi>0.3845</bdi></b> ر.ع.<br>
-        1 ريال عماني = <b class="num"><bdi>2.6008</bdi></b> دولار
-        <small>سعر الربط الرسمي للبنك المركزي العُماني، وهو ثابت منذ 1986.</small>
-      </div>
+      <div class="rate-box" id="rateBox"></div>
     </section>
 
     <section class="side-sec">
@@ -545,10 +542,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       </form>
       <div class="currency">
         <span class="lbl" id="curLbl">💱 عملة العرض</span>
-        <div class="seg" role="radiogroup" aria-labelledby="curLbl">
-          <button type="button" role="radio" data-cur="OMR" id="curOMR">ريال عماني</button>
-          <button type="button" role="radio" data-cur="USD" id="curUSD">دولار أمريكي</button>
-        </div>
+        <select id="curSel" class="cur-sel" aria-labelledby="curLbl"></select>
       </div>
     </div>
 
@@ -661,8 +655,19 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // ================= العملات (الريال العماني مربوط بالدولار) =================
   const OMR_PER_USD = 1 / 2.6008;
   const AED_PER_USD = 3.6725;
-  const RATES = { USD: 1, OMR: OMR_PER_USD };
-  const CURRENCIES = { OMR: { symbol: 'ر.ع.', dec: 3 }, USD: { symbol: '$', dec: 2 } };
+  // عملات الخليج مربوطة بالدولار (سعرها ثابت)، والدينار الكويتي واليورو نجيب سعرهم اليوم من الإنترنت
+  const CURRENCIES = {
+    OMR: { name: 'ريال عماني', flag: '🇴🇲', symbol: 'ر.ع.', dec: 3, rate: OMR_PER_USD, peg: 'سعر الربط الرسمي للبنك المركزي العُماني، ثابت منذ 1986.' },
+    AED: { name: 'درهم إماراتي', flag: '🇦🇪', symbol: 'د.إ', dec: 2, rate: AED_PER_USD, peg: 'سعر ربط رسمي ثابت بالدولار.' },
+    SAR: { name: 'ريال سعودي', flag: '🇸🇦', symbol: 'ر.س', dec: 2, rate: 3.75, peg: 'سعر ربط رسمي ثابت بالدولار.' },
+    QAR: { name: 'ريال قطري', flag: '🇶🇦', symbol: 'ر.ق', dec: 2, rate: 3.64, peg: 'سعر ربط رسمي ثابت بالدولار.' },
+    KWD: { name: 'دينار كويتي', flag: '🇰🇼', symbol: 'د.ك', dec: 3, rate: 0.3108 },
+    BHD: { name: 'دينار بحريني', flag: '🇧🇭', symbol: 'د.ب', dec: 3, rate: 0.376, peg: 'سعر ربط رسمي ثابت بالدولار.' },
+    EUR: { name: 'يورو', flag: '🇪🇺', symbol: '€', dec: 2, rate: 0.893 },
+    USD: { name: 'دولار أمريكي', flag: '🇺🇸', symbol: '$', dec: 2, rate: 1 },
+  };
+  const RATES = Object.fromEntries(Object.entries(CURRENCIES).map(([k, c]) => [k, c.rate]));
+  let fxDate = '';
 
   const PRIORITY = [['السعر أولًا', 0.95], ['يميل للسعر', 0.75], ['متوازن', 0.5], ['يميل للجودة', 0.25], ['الجودة أولًا', 0.05]];
   const tot = p => p.total || p.price;  // السعر مع الشحن إذا كان معروف
@@ -1365,12 +1370,29 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   };
   const cache = new Map();
   const FETCH_N = 30;  // نجيب أكثر من المعروض عشان الترتيب يتغيّر فوري لما تغيّر الأولوية
-  try { const c = localStorage.getItem('qarin.currency'); if (c === 'USD' || c === 'OMR') state.currency = c; } catch (e) { /* التخزين غير متاح */ }
+  try { const c = localStorage.getItem('qarin.currency'); if (CURRENCIES[c]) state.currency = c; } catch (e) { /* التخزين غير متاح */ }
 
   function money(usd) {
-    const v = usd * RATES[state.currency];
-    return state.currency === 'USD' ? `<bdi>$${fmt(v, 2)}</bdi>` : `<bdi>${fmt(v, 3)} ${CURRENCIES.OMR.symbol}</bdi>`;
+    const k = CURRENCIES[state.currency] ? state.currency : 'OMR', c = CURRENCIES[k];
+    const v = usd * RATES[k];
+    return (k === 'USD' || k === 'EUR') ? `<bdi>${c.symbol}${fmt(v, c.dec)}</bdi>` : `<bdi>${fmt(v, c.dec)} ${c.symbol}</bdi>`;
   }
+  function renderRates() {
+    const box = $('rateBox');
+    if (!box) return;
+    const k = state.currency, c = CURRENCIES[k], r = RATES[k];
+    if (k === 'USD') { box.innerHTML = 'الأسعار بالدولار الأمريكي، مثل ما تعطيها المتاجر.<small>غيّر «عملة العرض» فوق عشان تشوفها بعملتك.</small>'; return; }
+    const note = c.peg || (fxDate ? `سعر السوق اليوم (${esc(fxDate)}). يتغيّر كل يوم.` : 'سعر تقريبي، والسعر الفعلي يتغيّر كل يوم.');
+    box.innerHTML = `1 دولار أمريكي = <b class="num"><bdi>${fmt(r, 4)}</bdi></b> ${c.symbol}<br>1 ${c.name} = <b class="num"><bdi>${fmt(1 / r, 4)}</bdi></b> دولار<small>${note}</small>`;
+  }
+  // سعر الدينار الكويتي واليورو اليوم (خدمة مجانية بدون مفتاح). لو ما اشتغلت نستخدم السعر التقريبي
+  fetch('https://open.er-api.com/v6/latest/USD').then(r => r.json()).then(d => {
+    if (!d || !d.rates) return;
+    for (const k of ['KWD', 'EUR']) if (d.rates[k] > 0) RATES[k] = d.rates[k];
+    fxDate = d.time_last_update_unix ? new Date(d.time_last_update_unix * 1000).toISOString().slice(0, 10) : '';
+    renderRates();
+    if (state.currency === 'KWD' || state.currency === 'EUR') render();
+  }).catch(() => {});
 
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
@@ -1418,22 +1440,6 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   const totalHtml = p => p.shipCost > 0 ? `<div class="with-ship">المجموع مع الشحن: <b>${money(p.total)}</b></div>` : '';
   const nativeHtml = p => p.nativePrice ? `<span class="native">(<bdi>${p.nativePrice.toLocaleString('en-US')}</bdi> د.إ في المتجر)</span>` : '';
 
-  // متاجر ما تعطي أسعارها للمطورين: زر يفتح البحث عن المنتج داخل موقع المتجر
-  const GULF = [
-    ['بوتيكات', 'boutiqaat.com', 'تجميل'], ['سنتربوينت', 'centrepointstores.com', 'أزياء'], ['آي هيرب', 'iherb.com', 'صحة'],
-    ['لولو', 'luluhypermarket.com', 'هايبرماركت'], ['هوم سنتر', 'homecentre.com', 'أثاث'], ['ماكس', 'maxfashion.com', 'أزياء'],
-    ['ستايلي', 'stylishop.com', 'أزياء'], ['ايكيا', 'ikea.com/om', 'أثاث'], ['اكسترا', 'extra.com', 'إلكترونيات'],
-    ['درعه', '', 'عبايات'], ['ترنديول', 'trendyol.com', 'أزياء'], ['السعد هوم', '', 'منزل'],
-    ['نيكست', 'nextdirect.com', 'أزياء'], ['اتش اند ام', 'hm.com', 'أزياء'], ['نمشي', 'namshi.com', 'أزياء'],
-    ['شرف دي جي', 'sharafdg.com', 'إلكترونيات'], ['زارا', 'zara.com', 'أزياء'], ['ميني سو', '', 'منوعات'], ['اديداس', 'adidas.com', 'رياضة'],
-  ];
-  function gulfHtml(query) {
-    const en = toEnglish(query) || query.trim();
-    const link = ([name, domain]) => 'https://www.google.com/search?q=' + encodeURIComponent(domain ? `${en} site:${domain}` : `${name} ${query.trim()} عمان`);
-    return `<section class="gulf" aria-label="متاجر الخليج"><h3>🛍️ ابحث عن «${esc(query)}» في متاجر الخليج</h3>
-      <p>هذي المتاجر ما تشارك أسعارها مع المطورين، فكل زر يفتح نتائج «${esc(query)}» داخل موقع المتجر مباشرة.</p>
-      <div class="gulf-grid">${GULF.map(g => `<a href="${esc(link(g))}" target="_blank" rel="noopener noreferrer">${esc(g[0])} <small>${esc(g[2])}</small></a>`).join('')}</div></section>`;
-  }
   function dropHtml(p) {
     const f = favs[pkey(p)];
     if (!f) return '';
@@ -1642,7 +1648,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
         <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div></div>
         <div class="panel${state.tab === 'compare' ? ' on' : ''}" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">${platformsHtml(sum)}${barsHtml(sum)}</div>
-        <div class="panel${state.tab === 'table' ? ' on' : ''}" id="panel-table" role="tabpanel" aria-labelledby="tab-table">${tableHtml(list)}</div></div>` + gulfHtml(state.query);
+        <div class="panel${state.tab === 'table' ? ' on' : ''}" id="panel-table" role="tabpanel" aria-labelledby="tab-table">${tableHtml(list)}</div></div>`;
     box.innerHTML = html;
   }
 
@@ -1773,9 +1779,11 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
   // ================= الإعدادات والأحداث =================
   function setCurrency(c) {
+    if (!CURRENCIES[c]) c = 'OMR';
     state.currency = c;
-    ['OMR', 'USD'].forEach(x => $('cur' + x).setAttribute('aria-checked', String(x === c)));
+    $('curSel').value = c;
     try { localStorage.setItem('qarin.currency', c); } catch (e) { /* التخزين غير متاح */ }
+    renderRates();
     render();
   }
 
@@ -1941,7 +1949,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
-    document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setCurrency(b.dataset.cur)));
+    $('curSel').innerHTML = Object.entries(CURRENCIES).map(([k, c]) => `<option value="${k}">${c.flag} ${c.name}</option>`).join('');
+    $('curSel').addEventListener('change', e => setCurrency(e.target.value));
     $('platformChecks').addEventListener('change', e => {
       const k = e.target.dataset.plat; if (!k) return;
       e.target.checked ? state.platforms.add(k) : state.platforms.delete(k);
