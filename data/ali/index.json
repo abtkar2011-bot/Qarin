@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-24 03:15 UTC",
- "rows": 3329939,
+ "updated": "2026-10-25 02:54 UTC",
+ "rows": 962259,
  "columns": [
   "id",
   "name",
@@ -13,13 +13,13 @@
   "price"
  ],
  "counts": {
-  "wireless earbuds": 40,
+  "wireless earbuds": 10,
   "headphones": 40,
-  "summer dress": 40,
+  "summer dress": 13,
   "dress": 40,
   "smart watch": 40,
   "watch": 40,
-  "running shoes": 40,
+  "running shoes": 34,
   "shoes": 40,
   "backpack": 40,
   "bag": 40,
@@ -39,26 +39,26 @@
  },
  "sample": [
   {
-   "id": "1005008323946186",
-   "name": "Men's Street Wear T-shirts Need Beer Graphic Tee Shirt Homme Funny Low Battery Need Beer Novelty T-Shirt Drinking Party ",
+   "id": "1005013316666995",
+   "name": "New Zealand Football Jersey Customizable with Name and Number, V-Neck, National Team Football Shirt for Men, Youth, and ",
    "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
    "category": "Tops & Tees",
    "currencyid": "USD",
-   "param": "discount|78%|;commissionRate|16.92%|;shopId|912241089|;",
-   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S172fc6f366b745ee9c860beecc74b4a4D.jpg",
-   "oldprice": "7.99",
-   "price": "1.76"
+   "param": "discount|73%|;commissionRate|6.92%|;shopId|1104655051|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/Se8ab8d84a280406c9c280fcdf4ce8e343.jpg",
+   "oldprice": "16.88",
+   "price": "4.56"
   },
   {
-   "id": "1005003008215552",
-   "name": "Animal tiger 3d printing fashion men's and women's T-shirt casual O-neck loose men's clothing breathable hip-hop T-shirt",
+   "id": "1005008231716875",
+   "name": "2024 New Men's Autumn And Winter Solid Color Lapel Leisure Sports Polo Shirt Zipper Striped Long Sleeve High Elasticity",
    "url": "https://rzekl.com/g/1e8d114494683a5815dd16525dc3e8/?ulp=https%3A%2F%2Fs.click.aliexpress.com%2Fdeep_link.htm%3Faff_short",
    "category": "Tops & Tees",
    "currencyid": "USD",
-   "param": "discount|78%|;commissionRate|11.53%|;shopId|912241089|;",
-   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/H85762ed8d9924cd793c0d80c35611221j.jpg",
-   "oldprice": "7.99",
-   "price": "1.76"
+   "param": "discount|85%|;commissionRate|6.92%|;shopId|1102665442|;",
+   "picture": "https://ae-pic-a1.aliexpress-media.com/kf/S29e30c7b1a1d49e3b51957cce83e2191n.jpg",
+   "oldprice": "30.89",
+   "price": "4.64"
   }
  ]
 }
