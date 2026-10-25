@@ -920,13 +920,219 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     'كاميرا مراقبه': 'security camera', 'سماعه بلوتوث كبيره': 'headphones', 'بنطال': 'pants', 'فانيله': 't-shirt', 'تيشرت': 't-shirt',
     'بلوزه': 'shirt', 'جاكت': 'jacket', 'شنطه يد': 'bag', 'نظارات': 'sunglasses', 'اقراط': 'earrings', 'خواتم': 'ring', 'ساعه جداريه': 'wall clock',
     'كفرات': 'phone case', 'سجاده': 'prayer mat', 'العاب اطفال': 'toys', 'مكعبات': 'lego', 'مايكروفون': 'microphone', 'سماعه كمبيوتر': 'headphones', 'درون': 'drone', 'نظاره واقع افتراضي': 'vr headset', 'ساعه حائط': 'wall clock' };
+  // كلمات إضافية للمعجم (أجهزة، منزل، أزياء، تجميل، رياضة، أطفال، مدرسة، عدد...)
+  Object.assign(AR_EN, {
+    // صفات (لون، خامة، لمين) تنضاف لكلمة البحث: «ساعة رجالي ذهبي» ← «gold men watch»
+    "ذهبي": "gold", "فضي": "silver", "اسود": "black", "ابيض": "white", "احمر": "red", "ازرق": "blue", "اخضر": "green", "اصفر": "yellow",
+    "وردي": "pink", "بنفسجي": "purple", "رمادي": "gray", "بني": "brown", "بيج": "beige", "كحلي": "navy", "برتقالي": "orange", "سوداء": "black", "بيضاء": "white", "حمراء": "red", "زرقاء": "blue", "خضراء": "green", "صفراء": "yellow",
+    "جلد": "leather", "خشب": "wooden", "قطن": "cotton", "حرير": "silk", "ستانلس": "stainless steel", "رجالي": "men", "نسائي": "women",
+    "اطفال": "kids", "بناتي": "girls", "ولادي": "boys", "مدرسه": "school", "لاسلكي": "wireless", "بلوتوث": "bluetooth", "مقاوم للماء": "waterproof",
+    "ضد الماء": "waterproof", "محمول": "portable", "كهربائي": "electric", "ذكي": "smart", "كبير": "large", "صغير": "small",
+    "مسكه جوال": "phone grip ring holder", "خاتم جوال": "phone ring holder", "سلاسل": "necklace", "كيبل ايفون": "iphone cable",
+    "سماعه سلكيه": "wired earphones", "سماعات سلكيه": "wired earphones", "سماعه قيمنق": "gaming headset", "سماعات قيمنق": "gaming headset",
+    "سماعه عازله": "noise cancelling headphones", "سماعات عازله": "noise cancelling headphones", "سماعه ابل": "airpods", "ايربودز برو": "airpods pro",
+    "سماعه استوديو": "studio headphones", "شاحن سياره": "car charger", "شاحن لاسلكي": "wireless charger", "شاحن متنقل": "power bank",
+    "شاحن ايفون": "iphone charger", "كيبل": "usb cable", "كابل": "usb cable", "سلك شحن": "charging cable",
+    "وصله": "adapter", "محول": "adapter", "فيشه": "power strip", "افياش": "power strip",
+    "جراب": "phone case", "حمايه شاشه": "screen protector", "لزقه شاشه": "screen protector", "استاند جوال": "phone stand",
+    "حامل جوال": "phone holder", "حامل جوال سياره": "car phone holder", "عصا سيلفي": "selfie stick", "ترايبود": "tripod",
+    "حامل ثلاثي": "tripod", "رنق لايت": "ring light", "اضاءه تصوير": "ring light", "ابل واتش": "apple watch",
+    "شاومي": "xiaomi", "هواوي": "huawei", "ريدمي": "redmi", "اوبو": "oppo",
+    "ريلمي": "realme", "انفنكس": "infinix", "نوكيا": "nokia", "جالكسي": "samsung galaxy",
+    "سامسونق": "samsung galaxy", "بكسل": "google pixel", "تيلفون": "smartphone", "تلفون ذكي": "smartphone",
+    "ماك بوك": "macbook", "كمبيوتر مكتبي": "desktop computer", "كمبيوتر قيمنق": "gaming pc", "معالج": "cpu processor",
+    "كرت شاشه": "graphics card", "رامات": "ram memory", "ذاكره رام": "ram memory", "هارد ديسك": "hard drive",
+    "هارديسك": "hard drive", "اس اس دي": "ssd", "فلاشه": "usb flash drive", "ماوس باد": "mouse pad",
+    "لوحه ماوس": "mouse pad", "كاميرا ويب": "webcam", "ويب كام": "webcam", "شاشه قيمنق": "gaming monitor",
+    "حامل لابتوب": "laptop stand", "شنطه لابتوب": "laptop bag", "حقيبه لابتوب": "laptop bag", "مبرد لابتوب": "laptop cooling pad",
+    "موزع يو اس بي": "usb hub", "مقوي شبكه": "wifi extender", "مقوي واي فاي": "wifi extender", "كيبل نت": "ethernet cable",
+    "حبر طابعه": "printer ink", "ورق طباعه": "printer paper", "سكانر": "scanner", "قلم ذكي": "stylus pen",
+    "قلم ايباد": "stylus pen for ipad", "كفر ايباد": "ipad case", "كيندل": "kindle", "قارئ كتب": "ebook reader",
+    "ساوند بار": "soundbar", "مسرح منزلي": "home theater", "رسيفر": "tv receiver", "ريسيفر": "tv receiver",
+    "تي في بوكس": "tv box", "اندرويد بوكس": "android tv box", "جهاز عرض": "projector", "ريموت": "remote control",
+    "كاميرا رقميه": "digital camera", "كاميرا فوريه": "instant camera", "عدسه كاميرا": "camera lens", "كاميرا سياره": "dash cam",
+    "داش كام": "dash cam", "جو برو": "gopro action camera", "كاميرا اكشن": "action camera", "ميكرفون": "microphone",
+    "بلي ستيشن": "playstation", "بلاستيشن": "playstation", "سويتش": "nintendo switch", "جوستيك": "game controller",
+    "العاب فيديو": "video games", "شريط لعبه": "video game", "في ار": "vr headset", "كرسي قيمنق": "gaming chair",
+    "ماوس قيمنق": "gaming mouse", "كيبورد قيمنق": "gaming keyboard", "قيمنق": "gaming", "سوار ذكي": "fitness tracker",
+    "باند ذكي": "fitness tracker", "خاتم ذكي": "smart ring", "نظاره ذكيه": "smart glasses", "سماعه ذكيه": "smart speaker",
+    "جرس باب": "video doorbell", "قفل ذكي": "smart lock", "لمبه ذكيه": "smart bulb", "مقبس ذكي": "smart plug",
+    "طائره درون": "drone", "طياره تحكم": "rc airplane", "هوفربورد": "hoverboard", "دراجه كهربائيه": "electric bike",
+    "بطاريه": "battery", "بطاريات": "batteries", "كشاف": "flashlight", "مصباح يدوي": "flashlight",
+    "لمبه": "led bulb", "لمبات": "led bulb", "ثريا": "chandelier", "نجفه": "chandelier",
+    "اباجوره": "table lamp", "ابجوره": "table lamp", "شريط ليد": "led strip", "اضاءه ليد": "led strip lights",
+    "روبوت": "robot toy", "مكيف متنقل": "portable air conditioner", "مبرد هواء": "air cooler", "مروحه سقف": "ceiling fan",
+    "مروحه يدويه": "handheld fan", "مرطب جو": "humidifier", "مرطب هواء": "humidifier", "فواحه": "aroma diffuser",
+    "معطر جو": "air freshener", "منقي هواء": "air purifier", "فلتر ماء": "water filter", "براد ماء": "water dispenser",
+    "كولر ماء": "water dispenser", "فريزر": "freezer", "غساله صحون": "dishwasher", "نشافه": "clothes dryer",
+    "مكواه بخار": "steam iron", "مكواه ملابس": "clothes iron", "مكنسه روبوت": "robot vacuum", "ممسحه": "mop",
+    "سخان ماء": "water heater", "فرن": "oven", "فرن كهربائي": "electric oven", "موقد": "stove",
+    "شوايه": "grill", "شوايه كهربائيه": "electric grill", "محمصه": "toaster", "توستر": "toaster",
+    "صانعه وافل": "waffle maker", "خلاط يدوي": "hand blender", "محضره طعام": "food processor", "عجانه": "stand mixer",
+    "خفاقه": "hand mixer", "مضرب بيض": "egg beater", "عصاره برتقال": "citrus juicer", "مطحنه": "grinder",
+    "مطحنه قهوه": "coffee grinder", "مكينه قهوه": "coffee machine", "اسبريسو": "espresso machine", "كبسولات قهوه": "coffee capsules",
+    "كتلي": "electric kettle", "ترمس": "thermos", "دله": "dallah arabic coffee pot", "دلال": "dallah arabic coffee pot",
+    "فناجين": "arabic coffee cups", "فنجان": "coffee cup", "استكان": "tea glass", "ابريق": "teapot",
+    "براد شاي": "teapot", "طباخ ارز": "rice cooker", "قدر ضغط": "pressure cooker", "طنجره": "cooking pot",
+    "جدر": "cooking pot", "صينيه": "baking tray", "صواني": "baking tray", "صحن": "plate",
+    "اطباق": "plates", "ملاعق": "spoons", "ملعقه": "spoon", "شوكه": "fork",
+    "شوكات": "forks", "سكاكين": "kitchen knife set", "سكين": "kitchen knife", "لوح تقطيع": "cutting board",
+    "مقشره": "peeler", "مبشره": "grater", "علب حفظ": "food storage containers", "علبه حفظ": "food storage container",
+    "حافظه طعام": "lunch box", "لانش بوكس": "lunch box", "قاروره ماء": "water bottle", "قنينه ماء": "water bottle",
+    "مطاره": "water bottle", "زمزميه": "water bottle", "كوب حراري": "thermos mug", "كوب": "cup",
+    "مجات": "mugs", "كاسات": "drinking glasses", "طقم شاي": "tea set", "طقم قهوه": "coffee set",
+    "طقم سفره": "dinnerware set", "طقم صحون": "dinnerware set", "طقم سكاكين": "knife set", "طقم قدور": "cookware set",
+    "مريله": "apron", "قفازات مطبخ": "oven mitts", "ادوات مطبخ": "kitchen tools", "ميزان مطبخ": "kitchen scale",
+    "منشفه": "towel", "مناشف": "towels", "فوطه": "towel", "بشكير": "bath towel",
+    "روب حمام": "bathrobe", "برنس": "bathrobe", "ستاره": "curtain", "ستائر": "curtains",
+    "برده": "curtain", "سجاد": "rug", "زوليه": "carpet", "موكيت": "carpet",
+    "مفرش سرير": "bed sheet", "شرشف": "bed sheet", "ملايه": "bed sheet", "غطاء سرير": "bedspread",
+    "بطانيه": "blanket", "وساده": "pillow", "مخدات": "pillow", "كوشن": "cushion",
+    "مرتبه": "mattress", "دوشك": "mattress", "سرير اطفال": "baby crib", "كنب": "sofa",
+    "كنبه": "sofa", "صوفا": "sofa", "كراسي": "chair", "طاوله قهوه": "coffee table",
+    "رفوف": "shelf", "رف كتب": "bookshelf", "مكتبه": "bookshelf", "خزانه": "wardrobe",
+    "دولاب": "wardrobe", "كبت": "wardrobe", "تسريحه": "vanity table", "مرايه": "mirror",
+    "مراه": "mirror", "مرايات": "mirror", "لوحات": "wall art", "اطار صور": "photo frame",
+    "برواز": "photo frame", "ورد صناعي": "artificial flowers", "زرع صناعي": "artificial plants", "مزهريه": "vase",
+    "فازه": "vase", "شموع": "candles", "شمعه": "candle", "مبخره": "incense burner",
+    "مباخر": "incense burner", "بخور": "bakhoor incense", "دهن عود": "oud oil", "منظم": "organizer",
+    "منظم ادراج": "drawer organizer", "سله غسيل": "laundry basket", "علاقه ملابس": "clothes hanger", "شماعه": "clothes hanger",
+    "شماعات": "hangers", "سله": "basket", "سله مهملات": "trash can", "زباله": "trash can",
+    "سطل": "bucket", "دلو": "bucket", "مظله": "umbrella", "شمسيه": "umbrella",
+    "منبه": "alarm clock", "ساعه منبه": "alarm clock", "دوش": "shower head", "حنفيه": "faucet",
+    "مغسله": "bathroom sink", "شطاف": "bidet sprayer", "كرسي حمام": "toilet seat", "سجاده حمام": "bath mat",
+    "فرشاه اسنان": "toothbrush", "فرشه اسنان": "toothbrush", "فرشاه اسنان كهربائيه": "electric toothbrush", "معجون اسنان": "toothpaste",
+    "خيط اسنان": "dental floss", "منظف": "cleaner", "منظفات": "cleaning supplies", "صابون": "soap",
+    "بلسم": "hair conditioner", "جل استحمام": "shower gel", "شاور جل": "shower gel", "لوفه": "bath sponge",
+    "ليفه": "bath sponge", "مناديل": "tissues", "ورق تواليت": "toilet paper", "كمامه": "face mask",
+    "كمامات": "face masks", "معقم": "hand sanitizer", "قفازات": "gloves", "فستان سهره": "evening dress",
+    "فستان زفاف": "wedding dress", "فستان عرس": "wedding dress", "فستان بنات": "girls dress", "تنوره": "skirt",
+    "كارديجان": "cardigan", "سويتر": "sweater", "كنزه": "sweater", "بلوفر": "sweater",
+    "جاكيت جلد": "leather jacket", "بالطو": "coat", "ترنج": "tracksuit", "بدله رياضيه": "tracksuit",
+    "بيجامه": "pajamas", "بجامه": "pajamas", "ملابس نوم": "pajamas", "ملابس داخليه": "underwear",
+    "جوارب": "socks", "شراب": "socks", "دلاغ": "socks", "كلسات": "socks",
+    "لقنز": "leggings", "ليقنز": "leggings", "شورت": "shorts", "برمودا": "shorts",
+    "بولو": "polo shirt", "بدلات": "suit", "بدله رسميه": "suit", "كرفته": "necktie",
+    "ربطه عنق": "necktie", "حزام": "belt", "قبعه": "hat", "طاقيه": "beanie hat",
+    "قفاز": "gloves", "وشاح": "scarf", "شال": "shawl", "نقاب": "niqab",
+    "عبايات": "abaya", "جلابيه": "jalabiya", "قفطان": "kaftan", "كفتان": "kaftan",
+    "ثوب": "thobe", "دشاديش": "thobe", "كندوره": "kandura thobe", "غتره": "ghutra shemagh",
+    "شماغ": "shemagh", "عقال": "agal", "وزار": "sarong", "سبحه": "prayer beads",
+    "مسبحه": "tasbih prayer beads", "ملابس صلاه": "prayer clothes", "اسدال": "prayer dress", "طرحه": "hijab",
+    "ملابس رجالي": "men's clothing", "ملابس نسائيه": "women's clothing", "ملابس اطفال": "kids clothes", "ملابس بنات": "girls clothes",
+    "ملابس اولاد": "boys clothes", "ملابس رياضيه": "sportswear", "ملابس بيبي": "baby clothes", "ملابس مواليد": "newborn baby clothes",
+    "ملابس": "clothes", "كوتشي": "sneakers", "جوتي": "shoes", "بوط": "boots",
+    "كعب عالي": "high heels", "شبشب": "slippers", "شباشب": "slippers", "زنوبه": "flip flops",
+    "صنادل": "sandals", "صندل": "sandals", "حقيبه سفر": "suitcase", "شنطه سفر": "suitcase",
+    "شنط سفر": "suitcase", "حقيبه مدرسيه": "school backpack", "شنطه مدرسيه": "school backpack", "شنطه رياضيه": "gym bag",
+    "شنطه كتف": "shoulder bag", "حقيبه خصر": "waist bag", "شنطه خصر": "waist bag", "شنطه مكياج": "makeup bag",
+    "محفظه بطاقات": "card holder", "دبله": "wedding ring", "محبس": "wedding ring", "عقد": "necklace",
+    "اساور": "bracelet", "خلخال": "anklet", "بروش": "brooch", "دبوس": "brooch pin",
+    "طقم ذهب": "gold jewelry set", "ذهب": "gold jewelry", "فضه": "silver jewelry", "الماس": "diamond jewelry",
+    "لؤلؤ": "pearl jewelry", "نظاره طبيه": "eyeglasses frames", "نظارات طبيه": "eyeglasses frames", "نظاره شمسيه": "sunglasses",
+    "ساعه رجالي": "men's watch", "ساعه نسائيه": "women's watch", "ساعه يد": "wrist watch", "ساعه رقميه": "digital watch",
+    "ساعه اطفال": "kids watch", "سلسله مفاتيح": "keychain", "علاقه مفاتيح": "keychain", "ميداليه": "keychain",
+    "احمر شفاه": "lipstick", "قلوس": "lip gloss", "ملمع شفاه": "lip gloss", "كحل": "eyeliner",
+    "ايلاينر": "eyeliner", "مسكره": "mascara", "ماسكرا": "mascara", "رموش": "false eyelashes",
+    "ظلال عيون": "eyeshadow palette", "باليت": "eyeshadow palette", "فاونديشن": "foundation makeup", "كريم اساس": "foundation makeup",
+    "كونسيلر": "concealer", "خافي عيوب": "concealer", "بودره": "face powder", "بلاشر": "blush makeup",
+    "هايلايتر": "highlighter", "فرش مكياج": "makeup brushes", "فرشاه مكياج": "makeup brush", "بيوتي بلندر": "makeup sponge",
+    "اسفنجه مكياج": "makeup sponge", "مزيل مكياج": "makeup remover", "مناكير": "nail polish", "طلاء اظافر": "nail polish",
+    "اظافر صناعيه": "press on nails", "جل اظافر": "gel nail polish", "جهاز اظافر": "nail drill", "كريم شعر": "hair cream",
+    "كريم مرطب": "moisturizer", "مرطب": "moisturizer", "واقي شمس": "sunscreen", "صن بلوك": "sunscreen",
+    "سيروم": "face serum", "تونر": "toner", "غسول": "face wash", "ماسك وجه": "face mask skincare",
+    "مقشر": "exfoliator", "زيت شعر": "hair oil", "صبغه شعر": "hair dye", "صبغه": "hair dye",
+    "حنا": "henna", "حناء": "henna", "مزيل عرق": "deodorant", "شفره": "razor",
+    "موس حلاقه": "razor", "تريمر": "trimmer", "ماكينه شعر": "hair clipper", "مكينه شعر": "hair clipper",
+    "مكينه حلاقه": "electric shaver", "استشوار": "hair dryer", "مجفف شعر": "hair dryer", "ملقط": "tweezers",
+    "مشط": "comb", "فرشاه شعر": "hair brush", "فرشه شعر": "hair brush", "ربطه شعر": "hair ties",
+    "بكله": "hair clip", "توكه": "hair clip", "اكسسوارات شعر": "hair accessories", "شعر مستعار": "wig",
+    "باروكه": "wig", "ميزان": "digital scale", "ميزان وزن": "bathroom scale", "جهاز ضغط": "blood pressure monitor",
+    "ميزان حراره": "thermometer", "مقياس حراره": "thermometer", "جهاز مساج": "massager", "مساج": "massager",
+    "مسدس مساج": "massage gun", "كرسي مساج": "massage chair", "دمبلز": "dumbbells", "اوزان": "dumbbells",
+    "سير مشي": "treadmill", "جهاز مشي": "treadmill", "دراجه ثابته": "exercise bike", "سجاده يوغا": "yoga mat",
+    "يوغا": "yoga mat", "حبل نط": "jump rope", "حبل قفز": "jump rope", "شريط مقاومه": "resistance bands",
+    "كيس ملاكمه": "punching bag", "قفازات ملاكمه": "boxing gloves", "كره قدم": "football", "كوره سله": "basketball",
+    "كره سله": "basketball", "كوره طائره": "volleyball", "كره طائره": "volleyball", "مضرب تنس": "tennis racket",
+    "بادل": "padel racket", "تنس طاوله": "table tennis", "بينج بونج": "table tennis", "جولف": "golf",
+    "نظاره سباحه": "swimming goggles", "مايوه": "swimsuit", "ملابس سباحه": "swimwear", "بوركيني": "burkini",
+    "كامبينج": "camping gear", "تخييم": "camping gear", "كيس نوم": "sleeping bag", "كرسي رحلات": "camping chair",
+    "صيد سمك": "fishing rod", "سناره": "fishing rod", "بوصله": "compass", "منظار": "binoculars",
+    "دربيل": "binoculars", "تلسكوب": "telescope", "سكيت": "skateboard", "سكيت بورد": "skateboard",
+    "باتيناج": "roller skates", "خوذه": "helmet", "اكسسوارات دراجه": "bike accessories", "باربي": "barbie doll",
+    "دبدوب": "teddy bear", "دبدوبه": "teddy bear", "ليغو": "lego", "بازل": "jigsaw puzzle",
+    "لغز": "puzzle", "سيارات اطفال": "toy cars", "سياره اطفال": "kids ride on car", "قطار العاب": "toy train",
+    "مسدس ماء": "water gun", "سلايم": "slime", "صلصال": "play dough", "العاب تعليميه": "educational toys",
+    "العاب ذكاء": "brain teaser puzzle", "ديناصور": "dinosaur toy", "سبنر": "fidget spinner", "بوب ات": "pop it fidget toy",
+    "عربه اطفال": "baby stroller", "عربيه اطفال": "baby stroller", "كرسي سياره اطفال": "baby car seat", "حفاضات": "diapers",
+    "حفاظات": "diapers", "بامبرز": "diapers", "رضاعه": "baby bottle", "رضاعات": "baby bottle",
+    "لهايه": "pacifier", "مصاصه": "pacifier", "مشايه": "baby walker", "حمام اطفال": "baby bathtub",
+    "شنطه حفاضات": "diaper bag", "حامله اطفال": "baby carrier", "جهاز مراقبه اطفال": "baby monitor", "اقلام": "pens",
+    "اقلام رصاص": "pencils", "قلم رصاص": "pencil", "الوان مائيه": "watercolor paint", "الوان خشبيه": "colored pencils",
+    "الوان شمعيه": "crayons", "الوان زيتيه": "oil paint", "ماركر": "markers", "دفاتر": "notebook",
+    "كشكول": "notebook", "مذكره": "planner", "مقلمه": "pencil case", "مبراه": "pencil sharpener",
+    "برايه": "pencil sharpener", "مسطره": "ruler", "ممحاه": "eraser", "مساحه": "eraser",
+    "دباسه": "stapler", "خرامه": "hole punch", "شريط لاصق": "tape", "غراء": "glue",
+    "صمغ": "glue", "مقص": "scissors", "حاسبه": "calculator", "اله حاسبه": "calculator",
+    "سبوره": "whiteboard", "ادوات مدرسيه": "school supplies", "قرطاسيه": "stationery", "ستيكرات": "stickers",
+    "ملصقات": "stickers", "كتب": "books", "ادوات رسم": "art supplies", "كانفس": "canvas painting",
+    "ماكينه خياطه": "sewing machine", "مكينه خياطه": "sewing machine", "خياطه": "sewing supplies", "خيوط تطريز": "embroidery thread",
+    "صوف": "yarn", "كروشيه": "crochet", "تطريز": "embroidery kit", "جيتار": "guitar",
+    "قيتار": "guitar", "بيانو": "piano keyboard", "اورج": "electronic keyboard piano", "كمنجه": "violin",
+    "طبل": "drum", "عده ادوات": "tool set", "شنطه عده": "tool kit", "ادوات": "tools",
+    "مفك": "screwdriver", "مفكات": "screwdriver set", "دريل": "drill", "شنيور": "drill",
+    "مثقاب": "drill", "مطرقه": "hammer", "شاكوش": "hammer", "منشار": "saw",
+    "شريط قياس": "tape measure", "ميزان ماء": "spirit level", "مسدس شمع": "hot glue gun", "مسدس غراء": "hot glue gun",
+    "كاويه": "soldering iron", "ملتي ميتر": "multimeter", "افوميتر": "multimeter", "سلالم": "ladder",
+    "خرطوم": "garden hose", "مضخه": "pump", "منفاخ": "air pump", "منفاخ سياره": "tire inflator",
+    "كمبروسر": "air compressor", "شاشه سياره": "car stereo screen", "مسجل سياره": "car stereo", "معطر سياره": "car air freshener",
+    "غطاء سياره": "car cover", "تلبيسه": "car seat covers", "مكنسه سياره": "car vacuum", "اكسسوارات سياره": "car accessories",
+    "اكل قطط": "cat food", "العاب قطط": "cat toys", "رمل قطط": "cat litter", "بيت قطط": "cat house",
+    "قطط": "cat supplies", "طوق كلب": "dog collar", "اكل كلاب": "dog food", "كلاب": "dog supplies",
+    "قفص": "pet cage", "حوض سمك": "aquarium", "مستلزمات حيوانات": "pet supplies", "هديه": "gift",
+    "هدايا": "gifts", "بالون": "balloons", "بالونات": "balloons", "زينه": "party decorations",
+    "زينه رمضان": "ramadan decorations", "فانوس": "ramadan lantern", "زينه العيد": "eid decorations", "زينه عيد ميلاد": "birthday decorations",
+    "شموع عيد ميلاد": "birthday candles", "تغليف": "gift wrap", "ورق هدايا": "gift wrapping paper", "كعوب": "high heels",
+    "عطر عود": "oud perfume", "بخور عود": "oud incense", "عطر مسك": "musk perfume", "مسك ابيض": "white musk perfume",
+    "بدله": "suit", "مفكره": "planner", "ورق جدران": "wallpaper", "ملصقات جدران": "wall stickers",
+    "طاقه شمسيه": "solar panel", "لوح شمسي": "solar panel", "شاحن شمسي": "solar charger",
+  });
   const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
+  // ترجمة البحث: نلقط كل كلمات المعجم الموجودة (الأطول أول)، بشرط تكون كلمة كاملة
+  // (مع «ال» و«و» و«ب» و«ل» قبلها، أو «ة/ات/ي» بعدها) عشان «فرنسي» ما تصير «فرن»
+  let AR_SORTED = null;
+  const AR_PRE = ['', 'ال', 'لل', 'ل', 'و', 'وال', 'ب', 'بال', 'ك', 'ف', 'فال'];
+  const AR_SUF = ['', 'ه', 'ات', 'ي', 'يه', 'ين', 'ها', 'هم'];
+  function arMatches(n, whole) {
+    if (!AR_SORTED) AR_SORTED = Object.entries(AR_EN).map(([a, e]) => [normalize(a), e]).sort((x, y) => y[0].length - x[0].length);
+    let rest = n;
+    const found = [];
+    for (const [a, en] of AR_SORTED) {
+      let from = 0, i;
+      while ((i = rest.indexOf(a, from)) >= 0) {
+        from = i + 1;
+        if (whole) {
+          const ws = rest.lastIndexOf(' ', i) + 1, we = (rest.indexOf(' ', i + a.length) + 1 || rest.length + 1) - 1;
+          if (!AR_PRE.includes(rest.slice(ws, i)) || !AR_SUF.includes(rest.slice(i + a.length, we))) continue;
+        }
+        found.push([i, en]);
+        rest = rest.slice(0, i) + '\u0000'.repeat(a.length) + rest.slice(i + a.length);
+        break;
+      }
+    }
+    return found;
+  }
   const toEnglish = q => {
     const n = normalize(q);
     if (!/[؀-ۿ]/.test(q)) return q;
     if (TR.has(n)) return TR.get(n);
-    for (const [ar, en] of Object.entries(AR_EN).sort((a, b) => b[0].length - a[0].length)) if (n.includes(normalize(ar))) return en;
-    return null;  // كلمة عربية ما نعرف ترجمتها
+    let found = arMatches(n, true);
+    if (!found.length) found = arMatches(n, false).slice(0, 1);
+    if (!found.length) return null;  // كلمة عربية ما نعرف ترجمتها
+    // العربي: الاسم أول ثم الوصف («شاحن ايفون») ← الإنجليزي بالعكس («iphone charger»)
+    const words = found.sort((x, y) => y[0] - x[0]).map(f => f[1]);
+    const latin = n.match(/[a-z0-9][a-z0-9.+-]*/g) || [];
+    return [...new Set([...words, ...latin])].join(' ');
   };
   // لكلمة عربية مو في القاموس: نترجمها بخدمة ترجمة مجانية (ولو ما اشتغلت نكمّل عادي)
   async function resolveEnglish(q) {
