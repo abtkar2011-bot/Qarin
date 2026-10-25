@@ -376,6 +376,17 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 .bk-note { font-size: 0.85rem; color: var(--muted); }
 .bk-mix { background: var(--surface); border: 2px dashed var(--accent); border-radius: 20px; padding: 14px 16px; }
 
+/* ---------- سلة المستخدم ---------- */
+.cart-btn { margin-top: 6px; width: 100%; border: 1px dashed var(--accent); background: var(--surface); color: var(--accent-strong); border-radius: 12px; padding: 8px 10px; font: inherit; font-weight: 800; cursor: pointer; }
+.cart-btn.on { background: var(--tint-1); color: var(--good); border-style: solid; border-color: var(--good); }
+.best-card .row .cart-btn { width: auto; margin: 6px 0 0; padding: 12px 18px; }
+.cart-row .tt { color: inherit; text-decoration: none; }
+.qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.qty button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: inherit; font-weight: 800; color: inherit; }
+.cart-acts { display: flex; gap: 8px; padding: 12px 14px; flex-wrap: wrap; }
+.cart-acts .btn-primary { flex: 1; padding: 10px 14px; }
+.copy-btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 14px; padding: 10px 14px; font: inherit; font-weight: 700; cursor: pointer; color: inherit; }
+
 /* ---------- متاجر الخليج (روابط بحث) ---------- */
 .gulf { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; }
 .gulf h3 { margin: 0 0 4px; font-size: 1.15rem; font-weight: 800; }
@@ -475,7 +486,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     <section class="side-sec">
       <h3>مصادر البيانات</h3>
       <div id="sources"></div>
-      <p class="hint">هذه المتاجر لا تتيح واجهة بحث عامة، لذلك تُعرض أسعار توضيحية، وأزرار التسوق تفتح صفحة البحث الحقيقية في كل متجر.</p>
+      <p class="hint">كل المتاجر هنا تعطينا بياناتها رسميًا عن طريق الـAPI أو ملفات المنتجات.</p>
     </section>
   </aside>
   <div class="scrim" id="scrim"></div>
@@ -502,15 +513,6 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       </div>
     </div>
 
-    <div class="basket-box">
-      <b>🧺 سلة التسوق الذكية: قارن أكثر من منتج مرة وحدة</b>
-      <small>اكتب المنتجات وافصل بينها بفاصلة، ونجيب لك أفضل منتج لكل وحدة من كل متجر، ومجموع السلة في كل متجر.</small>
-      <form class="basket-form" id="basketForm">
-        <input type="text" id="bq" autocomplete="off" aria-label="منتجات السلة" placeholder="مثال: ساعة، سماعة، حذاء">
-        <button type="submit" class="btn-primary">🧺 قارن السلة</button>
-      </form>
-    </div>
-
     <div class="suggest">
       <span>🔥 عمليات بحث شائعة:</span>
       <div class="chips-row" id="chips"></div>
@@ -521,14 +523,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     <div id="results" class="main" style="gap:16px"></div>
 
     <footer class="footer">
-      قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بشي إن أو تيمو أو علي إكسبريس أو نون.<br>
-      الأسعار والتقييمات المعروضة توضيحية للاسترشاد فقط، والسعر النهائي في المتجر قد يختلف (الشحن والضرائب).<br>
+      قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.<br>
+      الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.<br>
       <a href="stats.html">📊 إحصائيات قارِن المباشرة</a>
     </footer>
   </main>
 </div>
 
 <div class="dock">
+  <button type="button" class="fav-fab" id="cartFab">🛒 السلة <span id="cartCount" class="num">0</span></button>
   <button type="button" class="fav-fab" id="favFab">❤️ المفضلة <span id="favCount" class="num">0</span></button>
   <button type="button" class="rate-fab" id="rateFab">⭐ قيّم قارِن</button>
 </div>
@@ -561,6 +564,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   </div>
 </div>
 
+<div class="modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <div class="box wide">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="cartTitle">🛒 سلتك</h3>
+    <p class="muted">أضف المنتجات اللي تعجبك من أي متجر، ونقسّمها لك حسب المتجر مع مجموع كل واحد.</p>
+    <div id="cartBody"></div>
+  </div>
+</div>
+
 <div class="modal" id="cmpModal" role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
   <div class="box wide">
     <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
@@ -576,22 +588,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // ================= المنصات =================
   const qp = q => encodeURIComponent(q.trim()).replace(/%20/g, '+');
   const PLATFORMS = {
-    shein:      { name: 'شي إن',       color: '#111111', text: '#FFFFFF', bar: 'var(--shein-bar)', tagline: 'أزياء وموضة عصرية',
-                  url: q => 'https://www.shein.com/pdsearch/' + encodeURIComponent(q.trim()) + '/' },
-    temu:       { name: 'تيمو',        color: '#FB7701', text: '#FFFFFF', bar: '#FB7701', tagline: 'أسعار منخفضة جدًا',
-                  url: q => 'https://www.temu.com/search_result.html?search_key=' + qp(q) },
     aliexpress: { name: 'علي إكسبريس', color: '#E62E04', text: '#FFFFFF', bar: '#E62E04', tagline: 'تشكيلة ضخمة من كل شيء',
                   url: q => 'https://www.aliexpress.com/wholesale?SearchText=' + qp(q) },
-    noon:       { name: 'نون',         color: '#FEEE00', text: '#1F2937', bar: '#E5D400', tagline: 'توصيل سريع في الخليج',
-                  url: q => 'https://www.noon.com/uae-ar/search/?q=' + qp(q) },
-    amazon:     { name: 'أمازون',      color: '#232F3E', text: '#FFFFFF', bar: '#FF9900', tagline: 'تشكيلة واسعة وتوصيل سريع',
-                  url: q => 'https://www.amazon.ae/s?k=' + qp(q) },
-    namshi:     { name: 'نمشي',        color: '#0D9488', text: '#FFFFFF', bar: '#0D9488', tagline: 'ماركات أزياء وأحذية',
-                  url: q => 'https://www.namshi.com/uae-ar/search?q=' + qp(q) },
-    carrefour:  { name: 'كارفور',      color: '#1E3A8A', text: '#FFFFFF', bar: '#1E3A8A', tagline: 'بقالة وأجهزة منزلية',
-                  url: q => 'https://www.carrefouroman.com/mafomn/ar/search?keyword=' + qp(q) },
-    lulu:       { name: 'لولو',        color: '#15803D', text: '#FFFFFF', bar: '#15803D', tagline: 'هايبرماركت محلي في عمان',
-                  url: q => 'https://www.luluhypermarket.com/en-om/search?q=' + qp(q) },
     etsy:       { name: 'إتسي',        color: '#F1641E', text: '#FFFFFF', bar: '#F1641E', tagline: 'هدايا ومنتجات يدوية',
                   url: q => 'https://www.etsy.com/search?q=' + qp(q) },
     ebay:       { name: 'إيباي',       color: '#0064D2', text: '#FFFFFF', bar: '#0064D2', tagline: 'جديد ومستعمل من العالم',
@@ -821,9 +819,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   const EBAY_API = 'https://qarin-ebay.abtkar2011.workers.dev/';
   // منتجات علي إكسبرس الحقيقية: ملفات صغيرة يحدّثها GitHub يوميًا داخل مجلد data/ali
   const ALI_DATA = 'data/ali/';
-  const ALI_KEYWORDS = ['wireless earbuds', 'headphones', 'summer dress', 'dress', 'smart watch', 'watch', 'running shoes',
-    'shoes', 'backpack', 'bag', 'air fryer', 'smartphone', 'laptop', 'charger', 'phone case', 'sunglasses', 'perfume',
-    'camera', 'computer mouse', 'keyboard', 'tv', 'vacuum cleaner', 'blender'];
+  const ALI_KEYWORDS = ['wireless earbuds', 'headphones', 'smart watch', 'watch', 'smartphone', 'tablet', 'laptop', 'charger', 'phone case', 'camera', 'security camera', 'computer mouse', 'keyboard', 'monitor', 'tv', 'bluetooth speaker', 'microphone', 'usb flash drive', 'memory card', 'wifi router', 'drone', 'game controller', 'vr headset', 'printer', 'air fryer', 'vacuum cleaner', 'blender', 'coffee machine', 'electric kettle', 'frying pan', 'cooking pot', 'lamp', 'led light', 'led strip', 'fan', 'wall clock', 'pillow', 'blanket', 'chair', 'gaming chair', 'desk', 'prayer mat', 'dress', 'summer dress', 'abaya', 'hijab scarf', 't-shirt', 'shirt', 'pants', 'jeans', 'jacket', 'hoodie', 'shoes', 'running shoes', 'backpack', 'school backpack', 'bag', 'wallet', 'sunglasses', 'ring', 'necklace', 'bracelet', 'earrings', 'perfume', 'makeup', 'lipstick', 'face cream', 'hair dryer', 'hair straightener', 'electric shaver', 'toys', 'doll', 'lego', 'rc car', 'bicycle', 'electric scooter', 'camping tent', 'dumbbells', 'football', 'pen', 'notebook', 'colored pencils'];
   let aliLive = false;
   // كلمات عربية (جذور تشمل المفرد والجمع واللهجات) ← كلمة البحث الإنجليزية
   const AR_EN = {
@@ -854,7 +850,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     'قدر': 'cooking pot', 'مقلاه': 'frying pan', 'صحون': 'plates', 'اكواب': 'cups', 'ماكينه قهوه': 'coffee machine', 'غلايه': 'electric kettle', 'ميكرويف': 'microwave', 'ثلاجه': 'refrigerator', 'غساله': 'washing machine', 'مكواه': 'iron',
     'دراجه': 'bicycle', 'سكوتر': 'electric scooter', 'خيمه': 'camping tent', 'كوره': 'football', 'دمبل': 'dumbbells', 'سجاده صلاه': 'prayer mat', 'مصحف': 'quran',
     'قلم': 'pen', 'دفتر': 'notebook', 'شنطه مدرسه': 'school backpack', 'الوان': 'colored pencils', 'كتاب': 'book',
-    'كاميرا مراقبه': 'security camera', 'درون': 'drone', 'نظاره واقع افتراضي': 'vr headset', 'ساعه حائط': 'wall clock' };
+    'كاميرا مراقبه': 'security camera', 'سماعه بلوتوث كبيره': 'headphones', 'بنطال': 'pants', 'فانيله': 't-shirt', 'تيشرت': 't-shirt',
+    'بلوزه': 'shirt', 'جاكت': 'jacket', 'شنطه يد': 'bag', 'نظارات': 'sunglasses', 'اقراط': 'earrings', 'خواتم': 'ring', 'ساعه جداريه': 'wall clock',
+    'كفرات': 'phone case', 'سجاده': 'prayer mat', 'العاب اطفال': 'toys', 'مكعبات': 'lego', 'مايكروفون': 'microphone', 'سماعه كمبيوتر': 'headphones', 'درون': 'drone', 'نظاره واقع افتراضي': 'vr headset', 'ساعه حائط': 'wall clock' };
   const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
   const toEnglish = q => {
     const n = normalize(q);
@@ -967,6 +965,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   function aliSlug(query) {
     const en = (toEnglish(query) || '').toLowerCase();
     if (!en) return null;
+    if (ALI_KEYWORDS.includes(en)) return en.replace(/ /g, '-');
     const hit = [...ALI_KEYWORDS].sort((a, b) => b.length - a.length).find(k => en.includes(k));
     return hit ? hit.replace(/ /g, '-') : null;
   }
@@ -1030,7 +1029,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const demo = list.filter(p => !p.real);
     rate(realOnly); rate(demo);
     // الحقيقية دائمًا فوق التوضيحية، وعلي إكسبرس له أفضلية إضافية
-    realOnly.forEach(p => { p.score = Math.min(100, Math.round(10 * (50 + p.score * 40 + (p.platform === 'aliexpress' ? 10 : 0))) / 10); });
+    realOnly.forEach(p => { p.score = Math.round(1000 * p.score) / 10; });  // كل المتاجر بنفس المستوى
     demo.forEach(p => { p.score = Math.round(10 * p.score * 50) / 10; });
     if (!realOnly.length) return null;  // ما نرشّح منتجات توضيحية كأفضل خيار
     const pool = realOnly;
@@ -1157,6 +1156,10 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     return `<div class="card-acts"><button type="button" class="fav${isFav ? ' on' : ''}" data-fav="${k}" aria-label="أضف للمفضلة" aria-pressed="${isFav}">${isFav ? '❤' : '♡'}</button>
       <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">⚖️</button></div>`;
   }
+  function cartBtn(p) {
+    const inCart = !!cart[pkey(p)];
+    return `<button type="button" class="cart-btn${inCart ? ' on' : ''}" data-cart="${esc(pkey(p))}">${inCart ? '✓ في السلة' : '🛒 أضف للسلة'}</button>`;
+  }
   function productCard(p) {
     const d = discountPct(p);
     return `<article class="pcard${p.badges.includes('best') ? ' is-best' : ''}">
@@ -1169,7 +1172,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
         ${dropHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
-        ${shopBtn(p)}
+        ${cartBtn(p)}${shopBtn(p)}
       </div></article>`;
   }
 
@@ -1187,7 +1190,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
           <span class="meta">مؤشر القيمة <b class="num">${p.score.toFixed(0)}</b>/100</span></div>
         <div class="meta-line">${metaHtml(p)}</div>
-        ${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}
+        <div class="row">${cartBtn(p)}${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
       </div></section>`;
   }
 
@@ -1261,78 +1264,57 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   }
 
   // ================= العرض =================
-  // ================= السلة المتعددة =================
-  const BASKET_STORES = ['aliexpress', 'ebay', 'etsy'];
-  const fetchStore = (k, q, lim) => k === 'aliexpress' ? fetchAli(q, lim) : k === 'etsy' ? fetchEtsy(q, lim) : (EBAY_API ? fetchEbay(q, lim) : Promise.reject(new Error('off')));
-  function pickBest(items) {
-    if (!items.length) return null;
-    const copy = items.map(p => ({ ...p }));
-    scoreProducts(copy, PRIORITY[state.priority][1]);
-    return copy.reduce((a, b) => b.score > a.score ? b : a);
+  // ================= سلة المستخدم =================
+  let cart = store.get('qarin.cart', {});
+  function saveCart() { store.set('qarin.cart', cart); $('cartCount').textContent = Object.values(cart).reduce((a, c) => a + c.qty, 0); }
+  function toggleCart(k) {
+    if (cart[k]) { delete cart[k]; toast('انشال من السلة'); }
+    else {
+      const p = findProduct(k); if (!p) return;
+      cart[k] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image, price: p.price, qty: 1, at: Date.now() };
+      toast(`🛒 انضاف لسلة ${PLATFORMS[p.platform].name}`);
+    }
+    saveCart(); render();
   }
-  async function basketSearch(raw) {
-    const items = [...new Set(raw.split(/[،,;+\n]|\sو\s/).map(x => x.trim()).filter(Boolean))].slice(0, 6);
-    const status = $('status');
-    if (items.length < 2) { status.innerHTML = '<div class="status warn">اكتب منتجين على الأقل وافصل بينهم بفاصلة، مثل: ساعة، سماعة، حذاء</div>'; return; }
-    const id = ++searchId;
-    state.mode = 'basket'; state.query = ''; state.loading = true;
-    track('search', 'سلة: ' + items.join('، '));
-    status.innerHTML = `<div class="status" aria-live="polite"><b>🧺 جارِ تجهيز السلة: ${esc(items.join('، '))}...</b><span class="spinner"></span></div>`;
-    $('results').innerHTML = skeletonHtml(4);
-    await Promise.all(items.map(q => resolveEnglish(q)));
-    const picks = {};
-    await Promise.all(BASKET_STORES.map(async k => {
-      picks[k] = await Promise.all(items.map(async q => { try { return pickBest(await fetchStore(k, q, 12)); } catch (e) { return null; } }));
-    }));
-    if (id !== searchId) return;
-    state.basket = { items, picks };
-    state.loading = false;
-    status.innerHTML = `<div class="status done"><span class="ok">✓</span> جهّزنا سلة من ${items.length} منتجات في ${BASKET_STORES.length} متاجر</div>`;
-    render();
-  }
-  function basketHtml() {
-    const { items, picks } = state.basket;
-    const cards = BASKET_STORES.map(k => {
-      const ps = picks[k] || [];
-      const found = ps.filter(Boolean);
-      return { k, ps, found: found.length, total: found.reduce((a, p) => a + p.price, 0) };
-    });
-    const complete = cards.filter(c => c.found === items.length);
-    const win = complete.length ? complete.reduce((a, b) => b.total < a.total ? b : a) : null;
-    const card = c => {
-      const pl = PLATFORMS[c.k];
-      const rows = items.map((q, i) => {
-        const p = c.ps[i];
-        if (!p) return `<div class="bk-row miss"><span>🔍</span><div><div class="it">${esc(q)}</div><div class="tt">ما لقينا منتج مناسب في ${pl.name}</div></div></div>`;
-        return `<a class="bk-row" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">
-          <div style="min-width:0"><div class="it">${esc(q)}</div><div class="tt" title="${esc(p.title)}">${esc(p.title)}</div></div><span class="pr">${money(p.price)}</span></a>`;
-      }).join('');
-      const tag = c === win ? '<span class="winner-tag">🏆 الأرخص للسلة كاملة</span>' : `<small>${c.found} من ${items.length} منتجات</small>`;
-      return `<article class="bk-card${c === win ? ' win' : ''}"><div class="bk-head" style="background:${pl.color};color:${pl.text}"><span>${pl.name}</span>${tag}</div>
-        ${rows}<div class="bk-total"><span>${c.found === items.length ? 'مجموع السلة' : 'مجموع المتوفر'}</span><b>${money(c.total)}</b></div></article>`;
-    };
-    // أرخص تركيبة: لكل منتج نختار أرخص متجر
-    let mixTotal = 0, mixOk = true;
-    const mix = items.map((q, i) => {
-      const opts = BASKET_STORES.map(k => (picks[k] || [])[i]).filter(Boolean);
-      if (!opts.length) { mixOk = false; return `<li>${esc(q)}: ما لقينا</li>`; }
-      const b = opts.reduce((a, x) => x.price < a.price ? x : a);
-      mixTotal += b.price;
-      return `<li>${esc(q)}: ${PLATFORMS[b.platform].name} بـ ${money(b.price)}</li>`;
+  function renderCart() {
+    const keys = Object.keys(cart);
+    if (!keys.length) { $('cartBody').innerHTML = '<p class="muted">سلتك فاضية. اضغط «🛒 أضف للسلة» على أي منتج.</p>'; return; }
+    const groups = {};
+    keys.forEach(k => { (groups[cart[k].platform] = groups[cart[k].platform] || []).push(k); });
+    let grand = 0;
+    const cards = Object.keys(groups).map(pk => {
+      const pl = PLATFORMS[pk] || { name: pk, color: '#666', text: '#fff' };
+      const sub = groups[pk].reduce((a, k) => a + cart[k].price * cart[k].qty, 0); grand += sub;
+      const rows = groups[pk].map(k => { const c = cart[k]; return `<div class="bk-row cart-row">
+          ${c.image ? `<img referrerpolicy="no-referrer" src="${esc(c.image)}" alt="">` : '<span style="font-size:26px;text-align:center">🛍️</span>'}
+          <div style="min-width:0"><a class="tt" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer" title="${esc(c.title)}">${esc(c.title)}</a>
+            <div class="qty"><button type="button" data-qty="${esc(k)}" data-d="-1" aria-label="أنقص">−</button><b class="num">${c.qty}</b><button type="button" data-qty="${esc(k)}" data-d="1" aria-label="زِد">+</button>
+            <button type="button" data-cart-del="${esc(k)}" aria-label="احذف">🗑️</button></div></div>
+          <span class="pr">${money(c.price * c.qty)}</span></div>`; }).join('');
+      const links = groups[pk].map(k => esc(cart[k].url)).join('\n');
+      return `<article class="bk-card"><div class="bk-head" style="background:${pl.color};color:${pl.text}"><span>سلة ${pl.name}</span><small>${groups[pk].length} منتج</small></div>${rows}
+        <div class="bk-total"><span>المجموع في ${pl.name}</span><b>${money(sub)}</b></div>
+        <div class="cart-acts"><button type="button" class="btn-primary" data-open-store="${pk}">↗ كمّل الطلب في ${pl.name}</button>
+          <button type="button" class="copy-btn" data-copy-store="${pk}">📋 انسخ الروابط</button></div></article>`;
     }).join('');
-    const save = win && mixOk && win.total - mixTotal > 0.01 ? ` (توفّر ${money(win.total - mixTotal)}، بس بتطلب من أكثر من متجر)` : '';
-    return `<div class="section-title"><h2>🧺 سلتك: ${esc(items.join('، '))}</h2><span>أفضل منتج لكل وحدة من كل متجر</span></div>
-      ${win ? `<div class="reason">💡 أرخص متجر يوفّر لك كل المنتجات مرة وحدة: <b>${PLATFORMS[win.k].name}</b> بمجموع <b>${money(win.total)}</b>، والطلب من متجر واحد يعني شحنة وحدة وتتبّع أسهل.</div>`
-        : '<div class="no-real">ما فيه متجر عنده كل المنتجات. شوف المتوفر في كل متجر تحت.</div>'}
-      <div class="bk-grid">${cards.map(card).join('')}</div>
-      ${mixOk && (!win || win.total - mixTotal > 0.01) ? `<div class="bk-mix"><b>🧩 أرخص تركيبة لو تطلب من أكثر من متجر: ${money(mixTotal)}</b>${save}<ul class="bk-note">${mix}</ul></div>` : ''}
-      <p class="bk-note">المتاجر الثانية (شي إن، تيمو، نون...) ما تشارك أسعارها، فالسلة تقارن المتاجر اللي عندنا بياناتها الحقيقية بس. الأسعار بدون الشحن.</p>`;
+    $('cartBody').innerHTML = `<div class="bk-grid">${cards}</div>
+      <div class="bk-total" style="border-radius:16px;margin-top:12px"><span>مجموع كل السلال</span><b>${money(grand)}</b></div>
+      <p class="bk-note">💡 المتاجر ما تسمح لأي موقع يضيف مباشرة لسلتها. لما تضغط «كمّل الطلب»، تنفتح لك صفحات المنتجات واحد واحد، وتضغط فيها Add to cart. وإذا المتصفح منع فتح أكثر من صفحة، استخدم «انسخ الروابط».</p>`;
+  }
+  function openStore(pk) {
+    const ks = Object.keys(cart).filter(k => cart[k].platform === pk);
+    let blocked = false;
+    ks.forEach((k, i) => { const w = window.open(cart[k].url, '_blank', 'noopener'); if (!w && i > 0) blocked = true; });
+    if (blocked) toast('المتصفح فتح أول منتج بس، استخدم «انسخ الروابط» للباقي');
+  }
+  async function copyStore(pk) {
+    const txt = Object.keys(cart).filter(k => cart[k].platform === pk).map(k => cart[k].title.slice(0, 60) + '\n' + cart[k].url).join('\n\n');
+    try { await navigator.clipboard.writeText(txt); toast('📋 انسخت روابط المنتجات'); } catch (e) { toast('ما قدرنا ننسخ، افتح المنتجات من السلة'); }
   }
 
   function render() {
     if (state.loading) return;
     const box = $('results');
-    if (state.mode === 'basket' && state.basket) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
     const list = state.products.filter(p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
@@ -1344,7 +1326,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const ordered = [...list].sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''}${etsyLive ? ' وإتسي' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة. باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
+      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. الأسعار بدون الشحن، وتقييم إيباي هو تقييم البائع.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -1403,7 +1385,6 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     if (id !== searchId) return;
     const results = {};
     await Promise.all(KEYS.map(async k => {
-      if (!instant) await sleep(400 + Math.random() * 800);  // محاكاة زمن استجابة المتاجر
       if (k === 'aliexpress') {
         try { results[k] = await fetchAli(query, state.limit); }
         catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم علي إكسبرس
@@ -1413,7 +1394,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       } else if (k === 'ebay' && EBAY_API) {
         try { results[k] = await fetchEbay(query, state.limit); }
         catch (e) { console.warn(e); results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إيباي
-      } else results[k] = generate(k, query, state.limit);
+      } else results[k] = [];
       const row = $('st-' + k);
       if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span>${PLATFORMS[k].name}: ${results[k].length} منتج`;
     }));
@@ -1517,7 +1498,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     $('rateSend').disabled = false;
   }
   function initExtras() {
-    updateFavCount(); updateCmpBar();
+    updateFavCount(); updateCmpBar(); saveCart();
+    $('cartFab').addEventListener('click', () => { renderCart(); openModal('cartModal'); });
+    $('cartBody').addEventListener('click', e => {
+      const q = e.target.closest('[data-qty]');
+      if (q) { const c = cart[q.dataset.qty]; c.qty = Math.max(1, Math.min(20, c.qty + +q.dataset.d)); saveCart(); renderCart(); return; }
+      const d = e.target.closest('[data-cart-del]'); if (d) { delete cart[d.dataset.cartDel]; saveCart(); renderCart(); render(); return; }
+      const o = e.target.closest('[data-open-store]'); if (o) { openStore(o.dataset.openStore); return; }
+      const c2 = e.target.closest('[data-copy-store]'); if (c2) copyStore(c2.dataset.copyStore);
+    });
     if (store.get('qarin.rated', false)) $('rateFab').textContent = '✓ شكرًا لتقييمك';
     $('rateFab').addEventListener('click', () => { $('rateMsg').textContent = ''; openModal('rateModal'); });
     $('favFab').addEventListener('click', () => { renderFavs(); openModal('favModal'); });
@@ -1543,6 +1532,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       if (sq) { closeModals(); search(sq.dataset.favSearch, false); }
     });
     $('results').addEventListener('click', e => {
+      const ct = e.target.closest('[data-cart]'); if (ct) { toggleCart(ct.dataset.cart); return; }
       const f = e.target.closest('[data-fav]'); if (f) { toggleFav(f.dataset.fav); return; }
       const c = e.target.closest('[data-cmp]'); if (c) { toggleCmp(c.dataset.cmp); return; }
       if (e.target.closest('[data-open-rate]')) { $('rateMsg').textContent = ''; openModal('rateModal'); return; }
@@ -1562,7 +1552,6 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
-    $('basketForm').addEventListener('submit', e => { e.preventDefault(); basketSearch($('bq').value); });
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
     document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setCurrency(b.dataset.cur)));
     $('platformChecks').addEventListener('change', e => {

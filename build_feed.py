@@ -11,38 +11,108 @@ PER_KEYWORD = 40
 OUT_DIR = os.path.join("data", "ali")
 
 # الكلمات الإنجليزية التي يبحث عنها قارِن (نفس القائمة داخل index.html)
+# كل نوع منتج ← كلمات (بالمفرد) لازم تكون في عنوان المنتج. نفس الأسماء موجودة في index.html
 KEYWORDS = {
-    "wireless earbuds": ["wireless earbuds", "tws earbuds", "bluetooth earbuds", "true wireless"],
-    "headphones": ["headphones", "headphone", "headset", "earphones"],
-    "summer dress": ["summer dress", "beach dress", "sundress"],
-    "dress": ["dress"],
+    # إلكترونيات
+    "wireless earbuds": ["wireless earbud", "tws earbud", "bluetooth earbud", "true wireless", "earbud"],
+    "headphones": ["headphone", "headset", "earphone"],
     "smart watch": ["smart watch", "smartwatch", "fitness tracker"],
     "watch": ["wrist watch", "quartz watch", "men watch", "women watch", "watch"],
-    "running shoes": ["running shoes", "sneakers", "sport shoes"],
-    "shoes": ["shoes", "sandals", "boots", "loafers"],
-    "backpack": ["backpack"],
-    "bag": ["handbag", "shoulder bag", "tote bag", "crossbody bag", "bag"],
-    "air fryer": ["air fryer"],
     "smartphone": ["smartphone", "mobile phone", "cell phone"],
+    "tablet": ["tablet", "android tablet"],
     "laptop": ["laptop", "notebook computer"],
     "charger": ["charger", "power bank", "fast charging"],
     "phone case": ["phone case", "iphone case", "samsung case"],
-    "sunglasses": ["sunglasses"],
-    "perfume": ["perfume", "fragrance"],
-    "camera": ["camera", "webcam", "dash cam"],
+    "camera": ["action camera", "digital camera", "webcam", "dash cam", "camera"],
+    "security camera": ["security camera", "ip camera", "cctv"],
     "computer mouse": ["gaming mouse", "wireless mouse", "computer mouse", "mouse"],
-    "keyboard": ["keyboard"],
+    "keyboard": ["mechanical keyboard", "keyboard"],
+    "monitor": ["monitor"],
     "tv": ["tv box", "smart tv", "projector"],
+    "bluetooth speaker": ["bluetooth speaker", "wireless speaker", "portable speaker", "speaker"],
+    "microphone": ["microphone", "lavalier"],
+    "usb flash drive": ["usb flash drive", "flash drive", "pen drive", "usb stick"],
+    "memory card": ["memory card", "micro sd", "tf card", "sd card"],
+    "wifi router": ["wifi router", "router", "wifi extender"],
+    "drone": ["drone", "quadcopter"],
+    "game controller": ["game controller", "gamepad", "joystick"],
+    "vr headset": ["vr headset", "vr glasses"],
+    "printer": ["printer"],
+    # منزل ومطبخ
+    "air fryer": ["air fryer"],
     "vacuum cleaner": ["vacuum cleaner", "robot vacuum", "vacuum"],
     "blender": ["blender", "juicer"],
+    "coffee machine": ["coffee machine", "coffee maker", "espresso"],
+    "electric kettle": ["electric kettle", "kettle"],
+    "frying pan": ["frying pan", "non stick pan", "skillet"],
+    "cooking pot": ["cooking pot", "cookware set", "saucepan"],
+    "lamp": ["desk lamp", "table lamp", "night light", "lamp"],
+    "led light": ["led light", "led bulb"],
+    "led strip": ["led strip", "rgb strip"],
+    "fan": ["electric fan", "desk fan", "neck fan", "fan"],
+    "wall clock": ["wall clock"],
+    "pillow": ["pillow"],
+    "blanket": ["blanket", "throw"],
+    "chair": ["office chair", "chair"],
+    "gaming chair": ["gaming chair"],
+    "desk": ["computer desk", "desk"],
+    "prayer mat": ["prayer mat", "prayer rug"],
+    # أزياء
+    "dress": ["dress"],
+    "summer dress": ["summer dress", "beach dress", "sundress"],
+    "abaya": ["abaya", "kaftan"],
+    "hijab scarf": ["hijab", "scarf"],
+    "t-shirt": ["t-shirt", "tshirt", "tee"],
+    "shirt": ["shirt", "blouse"],
+    "pants": ["pants", "trousers"],
+    "jeans": ["jeans", "denim pants"],
+    "jacket": ["jacket", "coat"],
+    "hoodie": ["hoodie", "sweatshirt"],
+    "shoes": ["shoe", "sandal", "boot", "loafer", "slipper"],
+    "running shoes": ["running shoe", "sneaker", "sport shoe"],
+    "backpack": ["backpack"],
+    "school backpack": ["school bag", "school backpack"],
+    "bag": ["handbag", "shoulder bag", "tote bag", "crossbody bag", "bag"],
+    "wallet": ["wallet", "card holder"],
+    "sunglasses": ["sunglasses"],
+    "ring": ["ring"],
+    "necklace": ["necklace", "pendant"],
+    "bracelet": ["bracelet", "bangle"],
+    "earrings": ["earring", "stud earring"],
+    # جمال وعناية
+    "perfume": ["perfume", "fragrance"],
+    "makeup": ["makeup", "eyeshadow", "foundation", "mascara"],
+    "lipstick": ["lipstick", "lip gloss"],
+    "face cream": ["face cream", "moisturizer", "serum"],
+    "hair dryer": ["hair dryer"],
+    "hair straightener": ["hair straightener", "flat iron", "curling iron"],
+    "electric shaver": ["electric shaver", "hair clipper", "trimmer"],
+    # أطفال ورياضة وأخرى
+    "toys": ["toy"],
+    "doll": ["doll"],
+    "lego": ["building block", "lego"],
+    "rc car": ["rc car", "remote control car"],
+    "bicycle": ["bicycle", "bike"],
+    "electric scooter": ["electric scooter", "scooter"],
+    "camping tent": ["camping tent", "tent"],
+    "dumbbells": ["dumbbell", "kettlebell"],
+    "football": ["football", "soccer ball"],
+    "pen": ["pen", "gel pen"],
+    "notebook": ["notebook", "journal", "planner"],
+    "colored pencils": ["colored pencil", "colour pencil", "markers"],
 }
 
-PATTERNS = {
-    slug: re.compile(r"\b(" + "|".join(re.escape(t) for t in terms) + r")\b", re.I)
-    for slug, terms in KEYWORDS.items()
-}
-ACCESSORY = re.compile(r"\b(case|cover|holder|clip|cable|strap|band|replacement|sticker|skin|protector|film|stand|mount|pouch|tips|parts?)\b", re.I)
-ACCESSORY_OK = {"phone case", "charger"}
+# فهرس سريع: كلمة/عبارة ← أنواع المنتجات اللي تنتمي لها، ونطابقها بتعبير واحد (أسرع بكثير)
+TERM_SLUGS = {}
+for _slug, _terms in KEYWORDS.items():
+    for _t in _terms:
+        TERM_SLUGS.setdefault(_t.lower(), set()).add(_slug)
+COMBINED = re.compile(r"\b(" + "|".join(re.escape(t) for t in sorted(TERM_SLUGS, key=len, reverse=True)) + r")(?:e?s)?\b", re.I)
+ACCESSORY = re.compile(r"\b(case|cover|holder|clips?|cables?|cord|charger|charging|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade)\b", re.I)
+ACCESSORY_OK = {"phone case", "charger", "wallet"}
+# أحزمة وعلب ووسائد... نشيلها إلا إذا كانت هي نوع المنتج
+ACC2 = re.compile(r"\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b", re.I)
+REPAIR = re.compile(r"\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|pcb|motherboard|flex)\b", re.I)
 
 
 def slugify(kw):
@@ -137,10 +207,18 @@ def main():
             continue
         # السعر الأرخص أهم شي، بعده المبيعات والتقييم والخصم
         score = orders * 10 + rating * 100 + 300 / (1 + price) + disc * 0.2 + (5 if image else 0)
-        for slug, pat in PATTERNS.items():
-            if not pat.search(name):
+        slugs = set()
+        for m in COMBINED.finditer(name):
+            slugs |= TERM_SLUGS.get(m.group(1).lower(), set())
+        if not slugs:
+            continue
+        acc = bool(ACCESSORY.search(name)); acc2 = bool(ACC2.search(name)); rep = bool(REPAIR.search(name))
+        for slug in slugs:
+            if acc and slug not in ACCESSORY_OK:
                 continue
-            if slug not in ACCESSORY_OK and ACCESSORY.search(name):
+            if acc2 and not ACC2.search(slug) and slug != "tv":
+                continue
+            if rep:
                 continue
             item = {"title": name[:160], "price": round(price, 2), "url": link, "image": image,
                     "original": round(old, 2) if old > price else None,
