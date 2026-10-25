@@ -1808,7 +1808,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     aliMeta().then(m => {
       if (m) {
         aliLive = true; renderSources();
-        const k = m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('ar') + ' ألف' : m.n.toLocaleString('ar');
+        const k = m.n >= 1e6 ? (Math.floor(m.n / 1e5) / 10).toLocaleString('ar') + ' مليون' : m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('ar') + ' ألف' : m.n.toLocaleString('ar');
         $('heroChips').insertAdjacentHTML('beforeend', `<span class="chip">🔎 نبحث في ${k} منتج من علي إكسبرس</span>`);
         return;
       }
