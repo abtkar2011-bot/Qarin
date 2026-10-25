@@ -1,5 +1,5 @@
 // قارِن — يخلي الموقع يشتغل مثل التطبيق، ويفتح بسرعة حتى لو النت ضعيف
-const CACHE = 'qarin-v1';
+const CACHE = 'qarin-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
