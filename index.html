@@ -1204,7 +1204,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       const r = rows && rows[id % S];
       if (!r) continue;
       const img = r[4] ? (/^https?:/.test(r[4]) ? r[4] : meta.img + r[4]) : '';
-      items.push({ id: String(r[0]), title: r[1], price: r[2], original: r[3] || null, url: aliLink(meta, r[0], r[5]), image: img, hist: r[6] || 0 });
+      items.push({ id: String(r[0]), title: r[1], price: r[2], original: r[3] || null, url: aliLink(meta, r[0], r[5]), image: img, hist: r[6] || 0, category: meta.cats[aliCat(meta, id)][1] });
     }
     return items;
   }
@@ -1216,8 +1216,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
     let idx = [];
     if (meta) { try { idx = await aliIndexItems(meta, enQ, alts); } catch (e) { idx = []; } }
-    const live = await liveP;
-    if (!meta && !live.length) return fetchAliOld(query, limit);  // لو الفهرس الجديد مو موجود نرجع للطريقة القديمة
+    let live = await liveP;
+    if (!meta && !live.length) return fetchAliOld(query, limit);
+    // القسم لازم يكون فيه نوع المنتج (ساعة ← «Women's Watches»، مو «Hand Tools» أو «Holders & Stands»)
+    const heads0 = new Set(alts.map(a => aliTokens(a).pop()).filter(Boolean));
+    const catOk = it => it.category && aliTokens(it.category).some(t => heads0.has(t));
+    const liveCat = live.filter(catOk);
+    if (liveCat.length >= 5) live = liveCat;
+    const idxCat = idx.filter(catOk);
+    if (idxCat.length >= 5) idx = idxCat;  // لو الفهرس الجديد مو موجود نرجع للطريقة القديمة
     // ندمج: المباشر أول، وبعده الفهرس (بدون تكرار نفس المنتج)
     const seenIds = new Set(); let items = [];
     for (const it of [...live, ...idx]) { if (it.id && seenIds.has(it.id)) continue; seenIds.add(it.id); items.push(it); }
