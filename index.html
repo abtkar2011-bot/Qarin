@@ -592,6 +592,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
                   url: q => 'https://www.carrefouroman.com/mafomn/ar/search?keyword=' + qp(q) },
     lulu:       { name: 'لولو',        color: '#15803D', text: '#FFFFFF', bar: '#15803D', tagline: 'هايبرماركت محلي في عمان',
                   url: q => 'https://www.luluhypermarket.com/en-om/search?q=' + qp(q) },
+    etsy:       { name: 'إتسي',        color: '#F1641E', text: '#FFFFFF', bar: '#F1641E', tagline: 'هدايا ومنتجات يدوية',
+                  url: q => 'https://www.etsy.com/search?q=' + qp(q) },
     ebay:       { name: 'إيباي',       color: '#0064D2', text: '#FFFFFF', bar: '#0064D2', tagline: 'جديد ومستعمل من العالم',
                   url: q => 'https://www.ebay.com/sch/i.html?_nkw=' + qp(q) },
   };
@@ -889,6 +891,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     items = items.filter(it => relevant(it.title, enLow));
     if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enLow);
     // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
     if (items.length >= 4) {
       const sorted = items.map(it => it.price).sort((a, b) => a - b);
@@ -906,6 +909,29 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       score: 0, adj: 0, badges: [],
     })).slice(0, limit);
   }
+
+  async function fetchEtsy(query, limit) {
+    const en = toEnglish(query);
+    if (!en) throw new Error('no translation');
+    const res = await fetch(EBAY_API + 'etsy?q=' + encodeURIComponent(en));
+    const data = await res.json();
+    if (!data.items) throw new Error(data.error || 'Etsy error');
+    const enLow = en.toLowerCase();
+    const rng = makeRng('etsy', normalize(query));
+    let items = data.items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enLow));
+    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
+    if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enLow);
+    if (!items.length) throw new Error('etsy empty');
+    etsyLive = true;
+    return items.slice(0, limit).map(it => ({
+      platform: 'etsy', title: it.title, price: it.price, unrated: true, rating: PRIOR_RATING,
+      reviews: it.favorites || 0, url: safeUrl(it.url), image: safeUrl(it.image) || placeholder('🎁', rng),
+      original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true, favs: it.favorites || 0,
+      score: 0, adj: 0, badges: [],
+    }));
+  }
+  let etsyLive = false;
 
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
   const fixImg = u => typeof u === 'string' ? u.trim().replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://') : '';
@@ -934,6 +960,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
   const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit)\b/i;
+  // إكسسوارات إضافية (أحزمة، علب، وسائد...) نشيلها إلا إذا كانت هي المطلوبة
+  const ACC2 = /\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b/i;
+  const noAcc = (items, en) => (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(it.title));
   const PARTS = /\b(case|cover|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
   function aliSlug(query) {
     const en = (toEnglish(query) || '').toLowerCase();
@@ -954,6 +983,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     items = items.filter(it => relevant(it.title, enQ));
     if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enQ);
     if (items.length >= 4) {
       const ps = items.map(it => it.price).sort((a, b) => a - b);
       const med = ps[Math.floor(ps.length / 2)];
@@ -1080,7 +1110,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // ================= مكونات HTML =================
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
+  const reviewsText = p => p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
   const ratingNum = p => p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
@@ -1232,8 +1262,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
   // ================= العرض =================
   // ================= السلة المتعددة =================
-  const BASKET_STORES = ['aliexpress', 'ebay'];
-  const fetchStore = (k, q, lim) => k === 'aliexpress' ? fetchAli(q, lim) : (EBAY_API ? fetchEbay(q, lim) : Promise.reject(new Error('off')));
+  const BASKET_STORES = ['aliexpress', 'ebay', 'etsy'];
+  const fetchStore = (k, q, lim) => k === 'aliexpress' ? fetchAli(q, lim) : k === 'etsy' ? fetchEtsy(q, lim) : (EBAY_API ? fetchEbay(q, lim) : Promise.reject(new Error('off')));
   function pickBest(items) {
     if (!items.length) return null;
     const copy = items.map(p => ({ ...p }));
@@ -1314,7 +1344,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const ordered = [...list].sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة. باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
+      <div class="notice">ℹ️<div>${EBAY_API ? `<b>منتجات إيباي${aliLive ? ' وعلي إكسبريس' : ''}${etsyLive ? ' وإتسي' : ''} حقيقية</b>` + ' بأسعارها وروابطها المباشرة. باقي المتاجر نماذج توضيحية، وأزرار التسوق فيها' : '<b>وضع العرض التوضيحي:</b> المنتجات والأسعار المعروضة نماذج توضيحية لتجربة المقارنة، وأزرار التسوق'} تفتح صفحة البحث الحقيقية عن «${esc(state.query)}» في كل منصة.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -1377,6 +1407,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       if (k === 'aliexpress') {
         try { results[k] = await fetchAli(query, state.limit); }
         catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم علي إكسبرس
+      } else if (k === 'etsy') {
+        try { results[k] = await fetchEtsy(query, state.limit); }
+        catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إتسي
       } else if (k === 'ebay' && EBAY_API) {
         try { results[k] = await fetchEbay(query, state.limit); }
         catch (e) { console.warn(e); results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إيباي
@@ -1523,7 +1556,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
     $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
-    const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive);
+    const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
     const renderSources = () => { $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
     renderSources();
     fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
