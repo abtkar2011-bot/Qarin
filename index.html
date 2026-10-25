@@ -376,6 +376,25 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 .bk-note { font-size: 0.85rem; color: var(--muted); }
 .bk-mix { background: var(--surface); border: 2px dashed var(--accent); border-radius: 20px; padding: 14px 16px; }
 
+/* ---------- الأولوية والأقسام والروابط ---------- */
+.prio-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 10px; }
+.prio-bar span { font-weight: 800; font-size: 0.92rem; margin-inline-end: 4px; }
+.prio-bar button { border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: 0.86rem; cursor: pointer; }
+.prio-bar button[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: #FFFFFF; }
+.cats { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.cats b { font-size: 0.95rem; }
+.cat-tabs, .cat-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.cat-tabs button { flex: none; border: 0; background: var(--surface-2); border-radius: 12px; padding: 7px 12px; font: inherit; font-weight: 800; cursor: pointer; color: var(--fg); }
+.cat-tabs button.on { background: var(--accent); color: #FFFFFF; }
+.cat-chips button { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; color: var(--fg); }
+.cat-chips button:hover { border-color: var(--accent); color: var(--accent-strong); }
+.link-box { display: flex; gap: 12px; align-items: center; background: var(--tint-2); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; }
+.link-box img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex: none; }
+.link-box div { min-width: 0; font-size: 0.9rem; }
+.link-box small { display: block; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.with-ship { font-size: 0.82rem; color: var(--muted); }
+.with-ship b { color: var(--fg); }
+
 /* ---------- سلة المستخدم ---------- */
 .cart-btn { margin-top: 6px; width: 100%; border: 1px dashed var(--accent); background: var(--surface); color: var(--accent-strong); border-radius: 12px; padding: 8px 10px; font: inherit; font-weight: 800; cursor: pointer; }
 .cart-btn.on { background: var(--tint-1); color: var(--good); border-style: solid; border-color: var(--good); }
@@ -416,6 +435,10 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   .filters-toggle { display: inline-flex; }
 }
 @media (max-width: 760px) {
+  .dock { flex-direction: row; left: 50%; transform: translateX(-50%); gap: 6px; }
+  .dock button { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
+  body { padding-bottom: 64px; }
+  body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   .hero { padding: 22px 18px; border-radius: 20px; }
   .hero h1 { font-size: 1.75rem; }
   .best-card { grid-template-columns: minmax(0, 1fr); }
@@ -501,7 +524,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     <div class="search-row">
       <form class="search" id="searchForm" role="search">
         <input type="search" id="q" autocomplete="off" aria-label="ابحث عن منتج"
-               placeholder="ابحث عن أي منتج... مثال: سماعات لاسلكية، فستان صيفي، ساعة ذكية">
+               placeholder="ابحث عن منتج، أو الصق رابط منتج من أي متجر (أمازون، نون، شي إن...)">
         <button type="submit" class="btn-primary">🔍 بحث</button>
       </form>
       <div class="currency">
@@ -517,6 +540,17 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       <span>🔥 عمليات بحث شائعة:</span>
       <div class="chips-row" id="chips"></div>
       <button type="button" class="filters-toggle" id="openFilters">⚙️ الفلاتر</button>
+    </div>
+
+    <div class="cats" id="cats"></div>
+
+    <div class="prio-bar" role="radiogroup" aria-label="أولويتك">
+      <span>🎯 أولويتك:</span>
+      <button type="button" role="radio" data-prio="0">💰 الأرخص</button>
+      <button type="button" role="radio" data-prio="1">💵 أقرب للأرخص</button>
+      <button type="button" role="radio" data-prio="2">⚖️ متوازن</button>
+      <button type="button" role="radio" data-prio="3">⭐ أقرب للجودة</button>
+      <button type="button" role="radio" data-prio="4">🏅 الأجود</button>
     </div>
 
     <div id="status"></div>
@@ -603,7 +637,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   const RATES = { USD: 1, OMR: OMR_PER_USD };
   const CURRENCIES = { OMR: { symbol: 'ر.ع.', dec: 3 }, USD: { symbol: '$', dec: 2 } };
 
-  const PRIORITY = [['السعر أولًا', 0.80], ['يميل للسعر', 0.60], ['متوازن', 0.45], ['يميل للجودة', 0.30], ['الجودة أولًا', 0.15]];
+  const PRIORITY = [['السعر أولًا', 0.95], ['يميل للسعر', 0.75], ['متوازن', 0.5], ['يميل للجودة', 0.25], ['الجودة أولًا', 0.05]];
+  const tot = p => p.total || p.price;  // السعر مع الشحن إذا كان معروف
   const SORTS = { best: '⭐ الأفضل قيمة', price_asc: '💰 الأقل سعرًا', price_desc: '💎 الأعلى سعرًا', rating: '🏅 الأعلى تقييمًا', reviews: '💬 الأكثر مراجعات' };
   const SUGGESTIONS = ['سماعات لاسلكية', 'فستان صيفي', 'ساعة ذكية', 'حذاء رياضي', 'حقيبة ظهر', 'قلاية هوائية'];
   const BADGES = { best: '🏆 الخيار الأفضل', cheapest: '💰 الأرخص', top_rated: '⭐ الأعلى تقييمًا' };
@@ -903,7 +938,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       reviews: it.sellerScore || 0, url: safeUrl(it.url),
       image: safeUrl(it.image) || placeholder('🛍️', rng),
       original: it.original && it.original > it.price ? it.original : null,
-      orders: null, shipping: '', freeShip: !!it.freeShip, nativePrice: null, real: true,
+      orders: null, shipping: '', freeShip: it.shipCost === 0 || !!it.freeShip, nativePrice: null, real: true,
+      shipCost: typeof it.shipCost === 'number' ? it.shipCost : null,
+      total: it.price + (typeof it.shipCost === 'number' ? it.shipCost : 0),
       score: 0, adj: 0, badges: [],
     })).slice(0, limit);
   }
@@ -926,6 +963,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       platform: 'etsy', title: it.title, price: it.price, unrated: true, rating: PRIOR_RATING,
       reviews: it.favorites || 0, url: safeUrl(it.url), image: safeUrl(it.image) || placeholder('🎁', rng),
       original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true, favs: it.favorites || 0,
+      shipCost: null, total: it.price,
       score: 0, adj: 0, badges: [],
     }));
   }
@@ -953,8 +991,13 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   function relevant(title, en) {
     if (!en) return true;
     const t = ' ' + String(title).toLowerCase() + ' ';
-    const words = SYN[en] || [en.split(/\s+/).filter(w => w.length > 2).pop() || en];
-    return words.some(w => new RegExp('\\b' + w + '\\b', 'i').test(t));
+    if (SYN[en]) return SYN[en].some(w => new RegExp('\\b' + w + '\\b', 'i').test(t));
+    // بحث حر (مثلاً من رابط): كلمة أو كلمتين لازم الأخيرة تطابق، وأكثر من كذا يكفي تطابق كلمتين
+    const esc2 = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const ws = en.toLowerCase().split(/\s+/).filter(w => w.length > 1).map(w => w.replace(/(es|s)$/, '') || w);
+    const hit = w => new RegExp('\\b' + esc2(w) + '(e?s)?\\b', 'i').test(t);
+    if (ws.length <= 2) return hit(ws[ws.length - 1] || en);
+    return ws.filter(hit).length >= 2;
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
   const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit)\b/i;
@@ -989,7 +1032,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       items = items.filter(it => it.price >= med * 0.25);
     }
     // نعرض الأرخص أول
-    items = items.sort((a, b) => a.price - b.price).slice(0, limit);
+    items = items.slice(0, limit);
     if (!items.length) throw new Error('ali empty');
     aliLive = true;
     return items.map(it => ({
@@ -998,6 +1041,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       image: safeUrl(fixImg(it.image)) || placeholder('🛍️', rng),
       original: it.original && it.original > it.price ? it.original : null,
       orders: it.orders || null, shipping: '', freeShip: false, nativePrice: null, real: true,
+      shipCost: null, total: it.price,
       score: 0, adj: 0, badges: [],
     }));
   }
@@ -1015,7 +1059,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     if (!list.length) return null;
     // نقيّم كل مجموعة لحالها (الحقيقية ضد الحقيقية، والتوضيحية ضد التوضيحية)
     const rate = group => {
-      const logs = group.map(p => Math.log(Math.max(p.price, 0.01)));
+      const logs = group.map(p => Math.log(Math.max(tot(p), 0.01)));
       const lo = Math.min(...logs), hi = Math.max(...logs);
       group.forEach((p, i) => {
         // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
@@ -1034,7 +1078,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     if (!realOnly.length) return null;  // ما نرشّح منتجات توضيحية كأفضل خيار
     const pool = realOnly;
     const best = pool.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
-    const cheapest = pool.reduce((a, b) => b.price < a.price ? b : a);
+    const cheapest = pool.reduce((a, b) => tot(b) < tot(a) ? b : a);
     const rated = pool.filter(p => !p.sellerRated && !p.unrated);
     const top = (rated.length ? rated : pool).reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
     best.badges.push('best');
@@ -1054,6 +1098,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       if (best.reviews) text += ` من ${best.reviews.toLocaleString('en-US')} مراجعة`;
     }
     const diff = (avgPrice - best.price) / avgPrice * 100;
+    if (best.shipCost === 0) text += '، وشحن مجاني لعمان';
     if (diff >= 3) text += ` وسعر أقل من متوسط النتائج بنسبة ${diff.toFixed(0)}%`;
     else if (diff <= -3) text += ` وجودة أعلى من المتوسط (${avgRating.toFixed(1)}) مقابل فرق سعر بسيط`;
     else text += ' وسعر قريب من متوسط النتائج';
@@ -1099,6 +1144,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     sort: 'best', minRating: 0, freeOnly: false, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 },
   };
   const cache = new Map();
+  const FETCH_N = 30;  // نجيب أكثر من المعروض عشان الترتيب يتغيّر فوري لما تغيّر الأولوية
   try { const c = localStorage.getItem('qarin.currency'); if (c === 'USD' || c === 'OMR') state.currency = c; } catch (e) { /* التخزين غير متاح */ }
 
   function money(usd) {
@@ -1119,11 +1165,13 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   };
   function metaHtml(p) {
     const items = [];
-    if (p.shipping) items.push(`<span>🚚 توصيل خلال <bdi>${esc(p.shipping)}</bdi> أيام</span>`);
-    if (p.freeShip) items.push('<span class="free">✓ شحن مجاني</span>');
+    if (p.shipCost === 0) items.push('<span class="free">✓ شحن مجاني لعمان</span>');
+    else if (p.shipCost > 0) items.push(`<span>🚚 + ${money(p.shipCost)} شحن لعمان</span>`);
+    else if (p.real) items.push('<span>🚚 الشحن يظهر في صفحة المتجر</span>');
     if (p.orders) items.push(`<span>🔥 <bdi>${p.orders.toLocaleString('en-US')}</bdi> مبيع</span>`);
     return items.join('');
   }
+  const totalHtml = p => p.shipCost > 0 ? `<div class="with-ship">المجموع مع الشحن: <b>${money(p.total)}</b></div>` : '';
   const nativeHtml = p => p.nativePrice ? `<span class="native">(<bdi>${p.nativePrice.toLocaleString('en-US')}</bdi> د.إ في المتجر)</span>` : '';
 
   // متاجر ما تعطي أسعارها للمطورين: زر يفتح البحث عن المنتج داخل موقع المتجر
@@ -1169,7 +1217,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
-        ${dropHtml(p)}
+        ${totalHtml(p)}${dropHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
         ${cartBtn(p)}${shopBtn(p)}
@@ -1271,7 +1319,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     if (cart[k]) { delete cart[k]; toast('انشال من السلة'); }
     else {
       const p = findProduct(k); if (!p) return;
-      cart[k] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image, price: p.price, qty: 1, at: Date.now() };
+      cart[k] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image, price: p.price, ship: p.shipCost > 0 ? p.shipCost : 0, qty: 1, at: Date.now() };
       toast(`🛒 انضاف لسلة ${PLATFORMS[p.platform].name}`);
     }
     saveCart(); render();
@@ -1284,13 +1332,13 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     let grand = 0;
     const cards = Object.keys(groups).map(pk => {
       const pl = PLATFORMS[pk] || { name: pk, color: '#666', text: '#fff' };
-      const sub = groups[pk].reduce((a, k) => a + cart[k].price * cart[k].qty, 0); grand += sub;
+      const sub = groups[pk].reduce((a, k) => a + (cart[k].price + (cart[k].ship || 0)) * cart[k].qty, 0); grand += sub;
       const rows = groups[pk].map(k => { const c = cart[k]; return `<div class="bk-row cart-row">
           ${c.image ? `<img referrerpolicy="no-referrer" src="${esc(c.image)}" alt="">` : '<span style="font-size:26px;text-align:center">🛍️</span>'}
           <div style="min-width:0"><a class="tt" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer" title="${esc(c.title)}">${esc(c.title)}</a>
             <div class="qty"><button type="button" data-qty="${esc(k)}" data-d="-1" aria-label="أنقص">−</button><b class="num">${c.qty}</b><button type="button" data-qty="${esc(k)}" data-d="1" aria-label="زِد">+</button>
             <button type="button" data-cart-del="${esc(k)}" aria-label="احذف">🗑️</button></div></div>
-          <span class="pr">${money(c.price * c.qty)}</span></div>`; }).join('');
+          <span class="pr">${money((c.price + (c.ship || 0)) * c.qty)}${c.ship ? '<br><small>مع الشحن</small>' : ''}</span></div>`; }).join('');
       const links = groups[pk].map(k => esc(cart[k].url)).join('\n');
       return `<article class="bk-card"><div class="bk-head" style="background:${pl.color};color:${pl.text}"><span>سلة ${pl.name}</span><small>${groups[pk].length} منتج</small></div>${rows}
         <div class="bk-total"><span>المجموع في ${pl.name}</span><b>${money(sub)}</b></div>
@@ -1319,14 +1367,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const list = state.products.filter(p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
     const sorters = {
-      best: (a, b) => ((b.real ? 1 : 0) - (a.real ? 1 : 0)) || (b.score - a.score), price_asc: (a, b) => a.price - b.price, price_desc: (a, b) => b.price - a.price,
+      best: (a, b) => (b.score - a.score), price_asc: (a, b) => tot(a) - tot(b), price_desc: (a, b) => tot(b) - tot(a),
       rating: (a, b) => (b.rating - a.rating) || ((b.reviews || 0) - (a.reviews || 0)),
       reviews: (a, b) => (b.reviews || b.orders || 0) - (a.reviews || a.orders || 0),
     };
-    const ordered = [...list].sort(sorters[state.sort]);
+    // من كل متجر نعرض أفضل N حسب الأولوية الحالية (تتغيّر فوري)
+    const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
-    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${list.length} منتج من ${state.platforms.size} منصات</span></div>
-      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. الأسعار بدون الشحن، وتقييم إيباي هو تقييم البائع.</div></div>`;
+    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
+      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم. وتقييم إيباي هو تقييم البائع.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -1336,7 +1385,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       return;
     }
     const sum = summarize(list);
-    const tabs = [['cards', `🛍️ جميع المنتجات (${list.length})`], ['compare', '📊 مقارنة المنصات'], ['table', '📋 جدول تفصيلي']];
+    const tabs = [['cards', `🛍️ جميع المنتجات (${ordered.length})`], ['compare', '📊 مقارنة المنصات'], ['table', '📋 جدول تفصيلي']];
     const realList = list.filter(p => p.real);
     if (!realList.length) html += `<div class="no-real">🔎 ما لقينا منتجات حقيقية لهالبحث في إيباي وعلي إكسبريس. جرّب كلمة ثانية، أو اكتب اسم المنتج بالإنجليزي.</div>`;
     if (userSearches >= 2 && !store.get('qarin.rated', false) && !store.get('qarin.askDismissed', false))
@@ -1352,6 +1401,66 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     box.innerHTML = html;
   }
 
+  // ================= الأقسام =================
+  const CATS = [
+    ['📱 إلكترونيات', [['سماعات لاسلكية', 'wireless earbuds'], ['سماعات رأس', 'headphones'], ['ساعات ذكية', 'smart watch'], ['جوالات', 'smartphone'], ['تابلت', 'tablet'], ['لابتوب', 'laptop'], ['شواحن وباور بانك', 'charger'], ['كفرات جوال', 'phone case'], ['كاميرات', 'camera'], ['كاميرات مراقبة', 'security camera'], ['ماوس', 'computer mouse'], ['كيبورد', 'keyboard'], ['شاشات', 'monitor'], ['تلفزيون وبروجكتر', 'tv'], ['سبيكر بلوتوث', 'bluetooth speaker'], ['مايكروفون', 'microphone'], ['فلاش ميموري', 'usb flash drive'], ['كروت ذاكرة', 'memory card'], ['راوتر', 'wifi router'], ['درون', 'drone'], ['يد تحكم', 'game controller'], ['طابعات', 'printer']]],
+    ['🏠 المنزل والمطبخ', [['قلاية هوائية', 'air fryer'], ['مكنسة', 'vacuum cleaner'], ['خلاط وعصارة', 'blender'], ['مكينة قهوة', 'coffee machine'], ['غلاية', 'electric kettle'], ['مقالي', 'frying pan'], ['قدور', 'cooking pot'], ['إضاءة', 'lamp'], ['لمبات ليد', 'led light'], ['شريط ليد', 'led strip'], ['مراوح', 'fan'], ['ساعات حائط', 'wall clock'], ['مخدات', 'pillow'], ['بطانيات', 'blanket'], ['كراسي', 'chair'], ['كرسي ألعاب', 'gaming chair'], ['مكاتب', 'desk'], ['سجاد صلاة', 'prayer mat']]],
+    ['👗 أزياء', [['فساتين', 'dress'], ['عبايات', 'abaya'], ['حجاب وشيل', 'hijab scarf'], ['تيشيرتات', 't-shirt'], ['قمصان', 'shirt'], ['بناطيل', 'pants'], ['جينز', 'jeans'], ['جاكيتات', 'jacket'], ['هوديات', 'hoodie'], ['أحذية', 'shoes'], ['أحذية رياضية', 'running shoes'], ['شنط ظهر', 'backpack'], ['شنط', 'bag'], ['محافظ', 'wallet'], ['نظارات شمسية', 'sunglasses'], ['ساعات يد', 'watch']]],
+    ['💍 مجوهرات وجمال', [['خواتم', 'ring'], ['قلادات', 'necklace'], ['أساور', 'bracelet'], ['حلق', 'earrings'], ['عطور', 'perfume'], ['مكياج', 'makeup'], ['روج', 'lipstick'], ['كريمات', 'face cream'], ['سشوار', 'hair dryer'], ['مكواة شعر', 'hair straightener'], ['ماكينة حلاقة', 'electric shaver']]],
+    ['🧸 أطفال ورياضة', [['ألعاب', 'toys'], ['دمى', 'doll'], ['ليقو ومكعبات', 'lego'], ['سيارة تحكم', 'rc car'], ['دراجات', 'bicycle'], ['سكوتر', 'electric scooter'], ['خيام', 'camping tent'], ['دمبل', 'dumbbells'], ['كور قدم', 'football'], ['أقلام', 'pen'], ['دفاتر', 'notebook'], ['ألوان', 'colored pencils'], ['شنط مدرسة', 'school backpack']]],
+  ];
+  CATS.forEach(([, items]) => items.forEach(([ar, en]) => TR.set(normalize(ar), en)));
+  let catOpen = 0;
+  function renderCats() {
+    $('cats').innerHTML = `<b>🗂️ تصفّح الأقسام</b>
+      <div class="cat-tabs">${CATS.map(([n], i) => `<button type="button" data-cat="${i}" class="${i === catOpen ? 'on' : ''}">${n}</button>`).join('')}</div>
+      <div class="cat-chips">${CATS[catOpen][1].map(([ar]) => `<button type="button" data-catq="${esc(ar)}">${esc(ar)}</button>`).join('')}</div>`;
+  }
+
+  // ================= البحث بالرابط =================
+  const NOISE = new Set(['for', 'with', 'and', 'the', 'new', 'pcs', 'pc', 'set', 'of', 'in', 'on', 'free', 'shipping', 'sale', 'hot', 'best', 'original', 'genuine', 'official', 'item', 'product', 'p', 'dp', 'html', 'www', 'com', 'en', 'ar', 'uae', 'ksa', 'oman', 'om']);
+  const isLink = q => /^https?:\/\//i.test(q) || /^[\w-]+\.(com|ae|sa|om|net|co|io|app|uk)(\/|$)/i.test(q);
+  function cleanWords(text, max) {
+    return String(text).replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').split(/[\s\-_+|,./:]+/)
+      .map(w => w.trim()).filter(w => w.length > 1 && !/^\d+$/.test(w) && !NOISE.has(w.toLowerCase()) && !/\d{5,}/.test(w))
+      .slice(0, max).join(' ');
+  }
+  function slugFromUrl(u) {
+    try {
+      const segs = new URL(/^https?:/i.test(u) ? u : 'https://' + u).pathname.split('/').map(decodeURIComponent);
+      const best = segs.map(x => x.replace(/\.html?$/i, '').replace(/-(p|g|i)-\d+.*$/i, '')).filter(x => /[a-z\u0600-\u06FF]{3,}/i.test(x) && /[-_]/.test(x))
+        .sort((a, b) => b.split(/[-_]/).length - a.split(/[-_]/).length)[0];
+      return best ? cleanWords(best, 6) : '';
+    } catch (e) { return ''; }
+  }
+  async function readLink(u) {
+    const url = /^https?:/i.test(u) ? u : 'https://' + u;
+    let info = { url, title: '', image: '', site: '' };
+    try { info.site = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { /* رابط غير صالح */ }
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
+      const r = await fetch(EBAY_API + 'meta?url=' + encodeURIComponent(url), { signal: ctl.signal });
+      clearTimeout(t);
+      const d = await r.json();
+      if (d && d.title && !/access denied|robot|captcha|just a moment|attention required|not found|404/i.test(d.title)) { info.title = d.title; info.image = safeUrl(d.image) || ''; }
+    } catch (e) { /* ما قدرنا نقرأ الصفحة */ }
+    info.query = (info.title ? cleanWords(info.title.split(/ [|–—:-] /)[0], 6) : '') || slugFromUrl(url);
+    return info;
+  }
+  function linkHtml() {
+    const L = state.link;
+    if (!L || L.query !== state.query) return '';
+    return `<div class="link-box">${L.image ? `<img referrerpolicy="no-referrer" src="${esc(L.image)}" alt="">` : '<span style="font-size:30px">🔗</span>'}
+      <div><b>🔗 المنتج اللي لصقت رابطه${L.site ? ` من ${esc(L.site)}` : ''}</b><small title="${esc(L.title || L.url)}">${esc(L.title || L.url)}</small>
+      دوّرنا عليه باسم «${esc(L.query)}» في ${KEYS.length} متاجر. إذا النتائج مو دقيقة، عدّل كلمات البحث فوق.</div></div>`;
+  }
+  function setPrio(i) {
+    state.priority = i;
+    $('priority').value = i; $('priorityVal').textContent = PRIORITY[i][0];
+    document.querySelectorAll('[data-prio]').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.prio === i)));
+    render();
+  }
+
   // ================= البحث =================
   let searchId = 0;
   async function search(query, instant) {
@@ -1361,12 +1470,22 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       status.innerHTML = '<div class="status warn">اكتب اسم المنتج الذي تبحث عنه أولًا.</div>';
       return;
     }
+    if (isLink(query)) {
+      const lid = ++searchId;
+      status.innerHTML = '<div class="status" aria-live="polite"><b>🔗 جارِ قراءة الرابط ومعرفة المنتج...</b><span class="spinner"></span></div>';
+      const info = await readLink(query);
+      if (lid !== searchId) return;
+      if (!info.query) { status.innerHTML = '<div class="status warn">ما قدرنا نعرف اسم المنتج من الرابط. اكتب اسمه بالبحث بدال الرابط.</div>'; return; }
+      state.link = info;
+      track('search', 'رابط: ' + (info.site || ''));
+      return search(info.query, instant);
+    }
     const id = ++searchId;
     state.mode = 'search';
     state.query = query;
     $('q').value = query;
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
-    const key = normalize(query) + '|' + state.limit;
+    const key = normalize(query);
     const cached = cache.get(key);
     if (cached) {
       if (!instant) { userSearches++; track('search', query); }
@@ -1386,13 +1505,13 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const results = {};
     await Promise.all(KEYS.map(async k => {
       if (k === 'aliexpress') {
-        try { results[k] = await fetchAli(query, state.limit); }
+        try { results[k] = await fetchAli(query, FETCH_N); }
         catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم علي إكسبرس
       } else if (k === 'etsy') {
-        try { results[k] = await fetchEtsy(query, state.limit); }
+        try { results[k] = await fetchEtsy(query, FETCH_N); }
         catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إتسي
       } else if (k === 'ebay' && EBAY_API) {
-        try { results[k] = await fetchEbay(query, state.limit); }
+        try { results[k] = await fetchEbay(query, FETCH_N); }
         catch (e) { console.warn(e); results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إيباي
       } else results[k] = [];
       const row = $('st-' + k);
@@ -1563,8 +1682,14 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     $('minRating').addEventListener('input', e => { state.minRating = +e.target.value; $('minRatingVal').textContent = state.minRating.toFixed(1); render(); });
     $('freeOnly').addEventListener('change', e => { state.freeOnly = e.target.checked; render(); });
     $('limit').addEventListener('input', e => { $('limitVal').textContent = e.target.value; });
-    $('limit').addEventListener('change', e => { state.limit = +e.target.value; if (state.query) search(state.query, false); });
-    $('priority').addEventListener('input', e => { state.priority = +e.target.value; $('priorityVal').textContent = PRIORITY[state.priority][0]; render(); });
+    $('limit').addEventListener('input', e => { state.limit = +e.target.value; render(); });
+    $('priority').addEventListener('input', e => setPrio(+e.target.value));
+    document.querySelectorAll('[data-prio]').forEach(b => b.addEventListener('click', () => setPrio(+b.dataset.prio)));
+    renderCats();
+    $('cats').addEventListener('click', e => {
+      const t = e.target.closest('[data-cat]'); if (t) { catOpen = +t.dataset.cat; renderCats(); return; }
+      const c = e.target.closest('[data-catq]'); if (c) { search(c.dataset.catq, false); $('results').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
 
     $('results').addEventListener('click', e => {
       const tab = e.target.closest('[data-tab]');
@@ -1592,6 +1717,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
     initExtras();
     track('visit');
+    setPrio(state.priority);
     setCurrency(state.currency);
     search(SUGGESTIONS[0], true);  // يفتح الموقع على بحث جاهز كمثال
   }
