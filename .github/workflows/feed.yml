@@ -1,12 +1,24 @@
-name: Update AliExpress products
+name: Build and publish Qarin
 
+# يبني فهرس كل منتجات علي إكسبرس وينشر الموقع على GitHub Pages
+#  - كل يوم الساعة 6:17 صباحًا بتوقيت عمان: ينزّل المنتجات الجديدة
+#  - لما ترفع ملف (مثل index.html): ينشر الموقع على طول بآخر منتجات محفوظة
+#  - زر تشغيل يدوي (Run workflow)
 on:
   schedule:
     - cron: "17 2 * * *"
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -14,17 +26,61 @@ jobs:
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore saved products
+        id: saved
+        uses: actions/cache/restore@v4
+        with:
+          path: products
+          key: qarin-products-${{ hashFiles('build_feed.py') }}-${{ github.run_id }}
+          restore-keys: qarin-products-${{ hashFiles('build_feed.py') }}-
+
+      - name: Decide
+        id: need
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ steps.saved.outputs.cache-matched-key }}" ]; then
+            echo "build=no" >> "$GITHUB_OUTPUT"; echo "Using saved products"
+          else
+            echo "build=yes" >> "$GITHUB_OUTPUT"; echo "Downloading all products"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.need.outputs.build == 'yes'
         with:
           python-version: "3.12"
-      - name: Build product files
+
+      - name: Build product index (all AliExpress products)
+        if: steps.need.outputs.build == 'yes'
         env:
           ADMITAD_FEED_URL: ${{ secrets.ADMITAD_FEED_URL }}
+          OUT_DIR: products
         run: python build_feed.py
-      - name: Save changes
+
+      - name: Save products for next time
+        if: steps.need.outputs.build == 'yes'
+        uses: actions/cache/save@v4
+        with:
+          path: products
+          key: qarin-products-${{ hashFiles('build_feed.py') }}-${{ github.run_id }}
+
+      - name: Put the site together
         run: |
-          git config user.name "qarin-bot"
-          git config user.email "qarin-bot@users.noreply.github.com"
-          git add data/ali
-          git diff --cached --quiet || git commit -m "Update AliExpress products"
-          git push
+          mkdir -p _site/data
+          cp *.html _site/
+          if [ -d data ]; then cp -r data/. _site/data/; fi
+          cp -r products _site/data/s
+          echo "files: $(find _site -type f | wc -l)"; du -sh _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

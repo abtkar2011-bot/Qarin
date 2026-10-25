@@ -1012,7 +1012,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const hit = [...ALI_KEYWORDS].sort((a, b) => b.length - a.length).find(k => en.includes(k));
     return hit ? hit.replace(/ /g, '-') : null;
   }
-  async function fetchAli(query, limit) {
+  async function fetchAliOld(query, limit) {
     const slug = aliSlug(query);
     if (!slug) throw new Error('no ali file');
     const res = await fetch(ALI_DATA + slug + '.json');
@@ -1041,6 +1041,143 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       image: safeUrl(fixImg(it.image)) || placeholder('🛍️', rng),
       original: it.original && it.original > it.price ? it.original : null,
       orders: it.orders || null, shipping: '', freeShip: false, nativePrice: null, real: true,
+      shipCost: null, total: it.price,
+      score: 0, adj: 0, badges: [],
+    }));
+  }
+
+  // ================= بحث في كل منتجات علي إكسبرس =================
+  // GitHub يبني كل يوم فهرس لكل المنتجات (مئات الآلاف) داخل data/s:
+  //   t/<رقم>.json = كلمة ← أرقام المنتجات اللي فيها،  p/<رقم>.json = بيانات المنتجات
+  const ALI_IDX = 'data/s/';
+  const ALI_STOP = new Set('for with and the of in on to a an by from or at as is it be up out your you my new hot sale free shipping high quality best original fashion style pc pcs 1pc 1pcs 2pcs 2023 2024 2025 2026'.split(' '));
+  // نفس دالة build_feed.py بالضبط
+  const aliStem = t => {
+    if (t.length > 4 && t.endsWith('ies')) return t.slice(0, -3) + 'y';
+    if (t.length > 4 && /(sses|ches|shes|xes)$/.test(t)) return t.slice(0, -2);
+    if (t.length > 3 && t.endsWith('s') && !/(ss|us|is)$/.test(t)) return t.slice(0, -1);
+    return t;
+  };
+  const aliTokens = s => {
+    const out = [];
+    for (let w of String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ')) {
+      if (!w) continue;
+      w = aliStem(w);
+      if (w.length > 1 && !ALI_STOP.has(w) && !out.includes(w)) out.push(w);
+    }
+    return out;
+  };
+  const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+  // كلمات بديلة لنفس المنتج (نبحث فيها كلها وندمج النتائج)
+  const ALI_ALT = { 'wireless earbuds': ['tws earbud', 'bluetooth earbud', 'true wireless'], 'headphones': ['headset', 'earphone'], 'smart watch': ['smartwatch', 'fitness tracker'], 'watch': ['wrist watch', 'quartz watch', 'men watch'], 'smartphone': ['mobile phone', 'cell phone'], 'tablet': ['android tablet'], 'laptop': ['notebook computer'], 'charger': ['power bank', 'fast charging'], 'phone case': ['iphone case', 'samsung case'], 'camera': ['action camera', 'digital camera'], 'security camera': ['ip camera', 'cctv'], 'computer mouse': ['gaming mouse', 'wireless mouse', 'mouse'], 'keyboard': ['mechanical keyboard'], 'tv': ['tv box', 'smart tv', 'projector'], 'bluetooth speaker': ['wireless speaker', 'portable speaker', 'speaker'], 'usb flash drive': ['flash drive', 'pen drive', 'usb stick'], 'memory card': ['micro sd', 'tf card', 'sd card'], 'wifi router': ['router', 'wifi extender'], 'game controller': ['gamepad', 'joystick'], 'vr headset': ['vr glasses'], 'vacuum cleaner': ['robot vacuum', 'vacuum'], 'blender': ['juicer'], 'coffee machine': ['coffee maker', 'espresso'], 'electric kettle': ['kettle'], 'lamp': ['desk lamp', 'table lamp', 'night light'], 'fan': ['electric fan', 'desk fan', 'neck fan'], 'chair': ['office chair'], 'prayer mat': ['prayer rug'], 'summer dress': ['beach dress', 'sundress'], 'hijab scarf': ['hijab', 'scarf'], 'shoes': ['sandal', 'boot', 'loafer'], 'running shoes': ['sneaker', 'sport shoe'], 'school backpack': ['school bag'], 'bag': ['handbag', 'shoulder bag', 'tote bag'], 'perfume': ['fragrance'], 'hair straightener': ['flat iron', 'curling iron'], 'electric shaver': ['hair clipper', 'trimmer'], 'lego': ['building block'], 'electric scooter': ['scooter'], 'camping tent': ['tent'], 'football': ['soccer ball'] };
+  let aliMetaP = null;
+  const aliMeta = () => aliMetaP || (aliMetaP = fetch(ALI_IDX + 'meta.json').then(r => r.ok ? r.json() : null).then(m => (m && m.n && m.tpl) ? m : null).catch(() => null));
+  const aliFiles = new Map();
+  const aliJSON = u => {
+    if (!aliFiles.has(u)) aliFiles.set(u, fetch(u).then(r => { if (!r.ok) throw new Error('ali ' + r.status); return r.json(); }).catch(e => { aliFiles.delete(u); throw e; }));
+    return aliFiles.get(u);
+  };
+  async function aliPosting(meta, tok) {
+    const b = await aliJSON(ALI_IDX + 't/' + (fnv(tok) % meta.nb) + '.json');
+    const d = b[tok];
+    if (!d) return null;
+    const ids = new Array(d.length - 1); let acc = 0;
+    for (let i = 1; i < d.length; i++) { acc += d[i]; ids[i - 1] = acc; }
+    return { tok, n: d[0], ids };
+  }
+  const aliCat = (meta, id) => { let lo = 0, hi = meta.cats.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (meta.cats[m][0] <= id) lo = m; else hi = m - 1; } return lo; };
+  // يرجع أرقام أفضل المنتجات اللي تطابق كلمات البحث
+  async function aliCandidates(meta, en, want) {
+    const toks = aliTokens(en);
+    if (!toks.length) return [];
+    const lists = (await Promise.all(toks.map(t => aliPosting(meta, t).catch(() => null)))).filter(Boolean);
+    if (!lists.length) return [];
+    const hits = new Map();
+    for (const l of lists) for (const id of l.ids) hits.set(id, (hits.get(id) || 0) + 1);
+    let best = 0; hits.forEach(v => { if (v > best) best = v; });
+    // كلمتين أو أقل: لازم كلها تطابق. أكثر (مثلًا من رابط): الأقرب للتطابق الكامل
+    const need = lists.length <= 2 ? lists.length : Math.max(2, best - 1);
+    let pool = [...hits].filter(([, v]) => v >= need);
+    const head = lists.find(l => l.tok === toks[toks.length - 1]);  // آخر كلمة غالبًا نوع المنتج
+    if (pool.length < 8 && head) pool = head.ids.map(id => [id, hits.get(id)]);
+    // نوزّع على الأقسام: القسم اللي فيه تطابق أكثر ياخذ نصيب أكبر، وداخل القسم الأفضل أولًا
+    const byCat = new Map();
+    for (const [id, v] of pool) { const c = aliCat(meta, id); if (!byCat.has(c)) byCat.set(c, []); byCat.get(c).push([id, v]); }
+    const groups = [...byCat.values()].sort((a, b) => b.length - a.length);
+    const out = [];
+    for (const g of groups) {
+      if (out.length >= want) break;
+      g.sort((a, b) => b[1] - a[1] || a[0] - b[0]);
+      const quota = Math.max(10, Math.round(want * g.length / pool.length));
+      for (const [id] of g.slice(0, Math.min(quota, want - out.length))) out.push(id);
+    }
+    return out;
+  }
+  function aliLink(meta, iid, small) {
+    if (/^https?:/.test(small)) return small;
+    const [p, d1, d2, q] = meta.tpl;
+    let t = 'https://www.aliexpress.com/item/' + iid + '.html';
+    if (small !== '-') {
+      const npi = small[0] === '~' ? meta.npi[0] + small.slice(1) + meta.npi[1] : small.slice(1);
+      t += '?pdp_npi=' + npi.replace(/@/g, '%40').replace(/!/g, '%21');
+    }
+    return p + encodeURIComponent(d1 + encodeURIComponent(t) + d2) + q;
+  }
+  async function fetchAli(query, limit) {
+    const meta = await aliMeta();
+    if (!meta) return fetchAliOld(query, limit);  // لو الفهرس الجديد مو موجود نرجع للطريقة القديمة
+    const enQ = (toEnglish(query) || '').toLowerCase().trim();
+    if (!enQ) throw new Error('no translation');
+    const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
+    const sets = await Promise.all(alts.map((a, i) => aliCandidates(meta, a, i ? 40 : 120)));
+    const picked = [], seen = new Set();
+    for (let i = 0; picked.length < 160 && sets.some(s => i < s.length); i++) {
+      for (const s of sets) if (i < s.length && !seen.has(s[i])) { seen.add(s[i]); picked.push(s[i]); }
+    }
+    if (!picked.length) throw new Error('ali empty');
+    // نجيب ملفات المنتجات (الملفات اللي فيها نتائج أكثر أول، وبحد أقصى 12 ملف)
+    const S = meta.shard, per = new Map();
+    picked.forEach(id => { const s = Math.floor(id / S); per.set(s, (per.get(s) || 0) + 1); });
+    const shards = [...per].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([s]) => s);
+    const data = new Map(await Promise.all(shards.map(async s => [s, await aliJSON(ALI_IDX + 'p/' + s + '.json').catch(() => null)])));
+    const rng = makeRng('aliexpress', normalize(query));
+    let items = [];
+    for (const id of picked) {
+      const rows = data.get(Math.floor(id / S));
+      const r = rows && rows[id % S];
+      if (!r) continue;
+      const img = r[4] ? (/^https?:/.test(r[4]) ? r[4] : meta.img + r[4]) : '';
+      items.push({ title: r[1], price: r[2], original: r[3] || null, url: aliLink(meta, r[0], r[5]), image: img });
+    }
+    items = items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enQ));
+    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
+    if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enQ);
+    if (items.length >= 4) {
+      const ps = items.map(it => it.price).sort((a, b) => a - b);
+      const med = ps[Math.floor(ps.length / 2)];
+      items = items.filter(it => it.price >= med * 0.25);
+    }
+    // الأقرب للبحث أول: نوع المنتج يجي عادة في أول العنوان (فستان، مو «قطعة تزيين للفستان»)
+    const qt = aliTokens(enQ);
+    const heads = new Set(alts.map(a => aliTokens(a).pop()).filter(Boolean));
+    items.forEach(it => {
+      const tt = aliTokens(it.title);
+      it.pos = tt.findIndex(w => heads.has(w));
+      it.rel = (it.pos < 0 ? -40 : -Math.min(it.pos, 30)) + 4 * qt.filter(w => tt.includes(w)).length;
+    });
+    const early = items.filter(it => it.pos >= 0 && it.pos <= 8);
+    if (early.length >= 12) items = early;
+    items.sort((a, b) => b.rel - a.rel);
+    items = items.slice(0, Math.max(limit, 60));
+    if (!items.length) throw new Error('ali empty');
+    aliLive = true;
+    return items.map(it => ({
+      platform: 'aliexpress', title: it.title, price: it.price, unrated: true,
+      rating: PRIOR_RATING, reviews: 0, url: safeUrl(it.url),
+      image: safeUrl(fixImg(it.image)) || placeholder('🛍️', rng),
+      original: it.original && it.original > it.price ? it.original : null,
+      orders: null, shipping: '', freeShip: false, nativePrice: null, real: true,
       shipCost: null, total: it.price,
       score: 0, adj: 0, badges: [],
     }));
@@ -1668,7 +1805,15 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
     const renderSources = () => { $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
     renderSources();
-    fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
+    aliMeta().then(m => {
+      if (m) {
+        aliLive = true; renderSources();
+        const k = m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('ar') + ' ألف' : m.n.toLocaleString('ar');
+        $('heroChips').insertAdjacentHTML('beforeend', `<span class="chip">🔎 نبحث في ${k} منتج من علي إكسبرس</span>`);
+        return;
+      }
+      fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
+    });
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
