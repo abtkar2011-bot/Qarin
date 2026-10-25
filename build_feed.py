@@ -55,6 +55,10 @@ def fnv(s):
 # منتجات هي قطع أو إكسسوارات أو أدوات تصليح: تنزل لآخر الترتيب (ما تنحذف)
 ACCESSORY = re.compile(r"\b(case|cover|holder|clips?|cables?|cord|charger|charging|battery|batteries|replacement|spare|parts?|repair|tools?|straps?|watchband|film|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|bezel|buckle|winder|organi[sz]er|hook|hanger|insoles?|laces?|filter|nozzle|blade|kit|soldering|screwdriver|pcb)\b", re.I)
 
+# منتجات ما نحفظها أبدًا: منتجات للكبار، وتدخين وفيب (نفس القائمة في index.html)
+BLOCK = re.compile(r"\b(sex|sexy|erotic|dildos?|vibrators?|masturbat\w*|bdsm|bondage|fetish|condoms?|lingerie|porn\w*|nipples?|penis|anal|butt ?plugs?|strap-?on|adult toys?|cigarettes?|cigars?|e-?cig\w*|vapes?|vaping|vaporizers?|hookahs?|shisha|nargile|tobacco|smoking|bongs?|cannabis|marijuana|rolling papers?)\b", re.I)
+BLOCK_CAT = re.compile(r"adult|sex|erotic|lingerie|vape|e-?cig|electronic cigarette|tobacco|smok|hookah|shisha", re.I)
+
 # ===== روابط علي إكسبرس: نحفظ رقم المنتج + جزء صغير، والموقع يرجّع الرابط كامل =====
 RAW = re.compile(r"^(https://[^?]+\?ulp=)([^&]+)(&.*)?$")
 DL = re.compile(r"^(.*?dl_target_url=)([^&]+)(&.*)?$")
@@ -176,6 +180,7 @@ def main():
     total = 0
     sample = []
     full_links = 0
+    blocked = 0
     for row in reader:
         total += 1
         if total % 50000 == 0:
@@ -186,6 +191,10 @@ def main():
         link = pick(row, "url", "link", "product_url", "deeplink")
         price = num(pick(row, "price", "sale_price", "price_usd"))
         if not name or not link.startswith("http") or price < MIN_PRICE:
+            continue
+        cat = pick(row, "category", "category_name") or "Other"
+        if BLOCK.search(name) or BLOCK_CAT.search(cat):
+            blocked += 1
             continue
         cur = pick(row, "currencyid", "currency").upper()
         if cur and cur not in ("USD", "US$"):
@@ -211,7 +220,6 @@ def main():
         score = disc * 0.5 + 40 / (1 + price) ** 0.5 + (5 if image else 0)
         if ACCESSORY.search(name):
             score -= 1000
-        cat = pick(row, "category", "category_name") or "Other"
         toks = tuple(sys.intern(t) for t in tokens(name))
         prods.append((sys.intern(cat), -score, int(iid) if iid.isdigit() else iid, name[:TITLE_MAX],
                       round(price, 2), round(old, 2) if old > price else 0, image, small, toks))
@@ -262,11 +270,11 @@ def main():
         "img": IMG_PREFIX, "tpl": list(t), "npi": [NPI_A, NPI_B], "cats": cats,
     })
     with open(os.path.join(OUT_DIR, "info.json"), "w", encoding="utf-8") as f:
-        json.dump({"rows": total, "products": len(prods), "tokens": kept_tokens, "full_links": full_links,
+        json.dump({"rows": total, "products": len(prods), "tokens": kept_tokens, "full_links": full_links, "blocked": blocked,
                    "categories": len(cats), "seconds": round(time.time() - t0), "columns": header,
                    "sample": sample}, f, ensure_ascii=False, indent=1)
     print(f"done: {len(prods)} products, {kept_tokens} words, {len(cats)} categories, "
-          f"{full_links} full links, {time.time() - t0:.0f}s", flush=True)
+          f"{full_links} full links, {blocked} blocked, {time.time() - t0:.0f}s", flush=True)
 
 
 if __name__ == "__main__":

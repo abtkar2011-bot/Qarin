@@ -32,8 +32,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: products
-          key: qarin-products-${{ hashFiles('build_feed.py') }}-${{ github.run_id }}
-          restore-keys: qarin-products-${{ hashFiles('build_feed.py') }}-
+          key: qarin-products-${{ github.run_id }}
+          restore-keys: qarin-products-
 
       - name: Decide
         id: need
@@ -61,7 +61,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: products
-          key: qarin-products-${{ hashFiles('build_feed.py') }}-${{ github.run_id }}
+          key: qarin-products-${{ github.run_id }}
 
       - name: Put the site together
         run: |

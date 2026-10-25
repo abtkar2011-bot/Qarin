@@ -1003,7 +1003,16 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit)\b/i;
   // إكسسوارات إضافية (أحزمة، علب، وسائد...) نشيلها إلا إذا كانت هي المطلوبة
   const ACC2 = /\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b/i;
-  const noAcc = (items, en) => (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(it.title));
+  // منتجات ما نعرضها أبدًا: منتجات للكبار، وتدخين وفيب
+  const BLOCK = /\b(sex|sexy|erotic|dildos?|vibrators?|masturbat\w*|bdsm|bondage|fetish|condoms?|lingerie|porn\w*|nipples?|penis|anal|butt ?plugs?|strap-?on|adult toys?|cigarettes?|cigars?|e-?cig\w*|vapes?|vaping|vaporizers?|hookahs?|shisha|nargile|tobacco|smoking|bongs?|cannabis|marijuana|rolling papers?)\b/i;
+  const BLOCK_CAT = /adult|sex|erotic|lingerie|vape|e-?cig|electronic cigarette|tobacco|smok|hookah|shisha/i;
+  // أشياء «على شكل» المنتج مو المنتج نفسه (ولاعة على شكل ساعة، بروش، ستيكر، مجسم...) إلا إذا كانت هي المطلوبة
+  const NOVELTY = /\b(lighters?|keychains?|key ?chains?|key ?rings?|stickers?|decals?|posters?|puzzles?|brooch(es)?|badges?|lapel|molds?|moulds?|stencils?|toppers?|miniatures?|dollhouse|figurines?|ornaments?|costumes?|cosplay|patch(es)?|sculptures?|statues?|wall ?scrolls?|canvas ?prints?|tapestr(y|ies)|wall ?art|flags?|dolls?|bjd)\b/i;
+  const noAcc = (items, en) => {
+    items = items.filter(it => !BLOCK.test(it.title));
+    if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(it.title));
+    return (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(it.title));
+  };
   const PARTS = /\b(case|cover|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
   function aliSlug(query) {
     const en = (toEnglish(query) || '').toLowerCase();
@@ -1101,8 +1110,14 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const head = lists.find(l => l.tok === toks[toks.length - 1]);  // آخر كلمة غالبًا نوع المنتج
     if (pool.length < 8 && head) pool = head.ids.map(id => [id, hits.get(id)]);
     // نوزّع على الأقسام: القسم اللي فيه تطابق أكثر ياخذ نصيب أكبر، وداخل القسم الأفضل أولًا
+    if (!meta.badCats) meta.badCats = new Set(meta.cats.map((c, i) => BLOCK_CAT.test(c[1]) ? i : -1).filter(i => i >= 0));
     const byCat = new Map();
-    for (const [id, v] of pool) { const c = aliCat(meta, id); if (!byCat.has(c)) byCat.set(c, []); byCat.get(c).push([id, v]); }
+    for (const [id, v] of pool) {
+      const c = aliCat(meta, id);
+      if (meta.badCats.has(c)) continue;  // أقسام ممنوعة (للكبار، تدخين)
+      if (!byCat.has(c)) byCat.set(c, []);
+      byCat.get(c).push([id, v]);
+    }
     const groups = [...byCat.values()].sort((a, b) => b.length - a.length);
     const out = [];
     for (const g of groups) {
@@ -1512,7 +1527,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم. وتقييم إيباي هو تقييم البائع.</div></div>`;
+      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
