@@ -176,6 +176,7 @@ class _Prefixed(io.RawIOBase):
     """يعيد البايتات اللي قرأناها للفحص ثم يكمل من الاتصال."""
     def __init__(self, head, rest):
         self.head, self.rest = head, rest
+        self.count = len(head)
 
     def readable(self):
         return True
@@ -188,7 +189,11 @@ class _Prefixed(io.RawIOBase):
             return n
         data = self.rest.read(len(b))
         b[:len(data)] = data
+        self.count += len(data)
         return len(data)
+
+
+FEED = {"length": 0, "reader": None}
 
 
 def open_feed(url):
@@ -199,7 +204,11 @@ def open_feed(url):
     resp = urllib.request.urlopen(req, timeout=600)
     print("connected, status", resp.status, flush=True)
     head = resp.read(4)
-    raw = io.BufferedReader(_Prefixed(head, resp), buffer_size=1 << 20)
+    pref = _Prefixed(head, resp)
+    FEED["length"] = int(resp.headers.get("Content-Length") or 0)
+    FEED["reader"] = pref
+    print("feed size:", FEED["length"] or "unknown", flush=True)
+    raw = io.BufferedReader(pref, buffer_size=1 << 20)
     if head[:2] == b"\x1f\x8b":
         raw = gzip.GzipFile(fileobj=raw)
     elif head[:2] == b"PK":
@@ -293,6 +302,9 @@ def main():
                       round(price, 2), round(old, 2) if old > price else 0, image, small, toks))
 
     print(f"read {total} rows, kept {len(prods)} products in {time.time() - t0:.0f}s", flush=True)
+    got = FEED["reader"].count if FEED["reader"] else 0
+    if FEED["length"] and got < FEED["length"]:
+        sys.exit(f"download was cut off: got {got} of {FEED['length']} bytes, keeping the old site")
     if len(prods) < 1000:
         sys.exit("too few products, something is wrong with the feed")
 
@@ -300,9 +312,17 @@ def main():
     prods.sort(key=lambda p: (p[0], p[1]))
     day = today()
     hist = load_history()
-    shutil.rmtree(OUT_DIR, ignore_errors=True)
-    os.makedirs(os.path.join(OUT_DIR, "p"))
-    os.makedirs(os.path.join(OUT_DIR, "t"))
+    # نبني في مجلد جديد، وبعدين نقرر: نستبدل القديم ولا نخليه (لو التحميل ناقص)
+    old_meta = None
+    try:
+        with open(os.path.join(OUT_DIR, "meta.json"), encoding="utf-8") as f:
+            old_meta = json.load(f)
+    except Exception:
+        pass
+    WORK = OUT_DIR + ".new"
+    shutil.rmtree(WORK, ignore_errors=True)
+    os.makedirs(os.path.join(WORK, "p"))
+    os.makedirs(os.path.join(WORK, "t"))
 
     cats = []
     post = {}
@@ -330,7 +350,7 @@ def main():
             else:
                 lst.append(i)
     for k in range(0, len(prods), SHARD):
-        dump(os.path.join(OUT_DIR, "p", f"{k // SHARD}.json"),
+        dump(os.path.join(WORK, "p", f"{k // SHARD}.json"),
              [[p[2], p[3], p[4], p[5], p[6], p[7], hsum[k + j]] for j, p in enumerate(prods[k:k + SHARD])])
     hist_size = save_history(hist, day)
     del hist
@@ -355,21 +375,35 @@ def main():
                 if top:
                     b.setdefault("_c", {})[t] = [x for c, v in top for x in (c, round(100 * v / tot))]
     for b, d in enumerate(buckets):
-        dump(os.path.join(OUT_DIR, "t", f"{b}.json"), d)
+        dump(os.path.join(WORK, "t", f"{b}.json"), d)
 
     t = tpl[0] or ("", "", "", "")
-    dump(os.path.join(OUT_DIR, "meta.json"), {
+    dump(os.path.join(WORK, "meta.json"), {
         "v": 2, "n": len(prods), "day": day, "shard": SHARD, "nb": NB, "cap": CAP,
         "updated": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
         "img": IMG_PREFIX, "tpl": list(t), "npi": [NPI_A, NPI_B], "cats": cats,
     })
-    with open(os.path.join(OUT_DIR, "info.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(WORK, "info.json"), "w", encoding="utf-8") as f:
         json.dump({"rows": total, "products": len(prods), "tokens": kept_tokens, "full_links": full_links, "blocked": blocked,
                    "with_history": with_history, "history_size": hist_size,
                    "categories": len(cats), "seconds": round(time.time() - t0), "columns": header,
                    "sample": sample}, f, ensure_ascii=False, indent=1)
     print(f"done: {len(prods)} products, {kept_tokens} words, {len(cats)} categories, "
           f"{full_links} full links, {blocked} blocked, {time.time() - t0:.0f}s", flush=True)
+
+    # حماية: لو المنتجات نقصت كثير مرة وحدة (غالبًا التحميل انقطع)، نخلي منتجات أمس (لحد 3 أيام)
+    old_n = (old_meta or {}).get("n") or 0
+    kept = (old_meta or {}).get("kept", 0)
+    if old_n and len(prods) < 0.75 * old_n and kept < 3:
+        print(f"WARNING: only {len(prods)} products now vs {old_n} last time, keeping the previous products "
+              f"(day {kept + 1} of 3)", flush=True)
+        old_meta["kept"] = kept + 1
+        old_meta["skipped"] = {"day": day, "rows": total, "products": len(prods)}
+        dump(os.path.join(OUT_DIR, "meta.json"), old_meta)
+        shutil.rmtree(WORK, ignore_errors=True)
+        return
+    shutil.rmtree(OUT_DIR, ignore_errors=True)
+    os.rename(WORK, OUT_DIR)
 
 
 if __name__ == "__main__":
