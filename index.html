@@ -172,6 +172,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .btn-primary:hover { filter: brightness(1.08); }
 .currency { display: flex; flex-direction: column; gap: 6px; flex: 0 1 auto; }
 .currency .lbl { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+html[dir="ltr"] .app, html[dir="ltr"] .dock, html[dir="ltr"] .cmp-bar, html[dir="ltr"] .modal, html[dir="ltr"] .toast { direction: ltr; }
 .cur-sel { font: inherit; font-weight: 800; padding: 10px 14px; border-radius: 14px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); cursor: pointer; min-width: 190px; }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
 .seg button { border: 0; background: transparent; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; white-space: nowrap; color: var(--muted); }
@@ -542,8 +543,8 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       <h1>قارِن 🛍️</h1>
       <p>ابحث مرة واحدة، وقارن الأسعار والجودة في أشهر متاجر التسوق الإلكتروني، واحصل على الخيار الأفضل فورًا.</p>
       <div class="chips" id="heroChips"></div>
-      <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع <b>عروض قارِن</b> اليومية على واتساب</span></a>
-      <a class="wa-btn ig-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على <b>انستقرام</b></span></a>
+      <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع عروض قارِن اليومية على واتساب</span></a>
+      <a class="wa-btn ig-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على انستقرام</span></a>
     </header>
 
     <div class="search-row">
@@ -555,6 +556,10 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       <div class="currency">
         <span class="lbl" id="curLbl">💱 عملة العرض</span>
         <select id="curSel" class="cur-sel" aria-labelledby="curLbl"></select>
+      </div>
+      <div class="currency">
+        <span class="lbl" id="langLbl">🌐 اللغة</span>
+        <select id="langSel" class="cur-sel" aria-labelledby="langLbl" data-noi18n></select>
       </div>
     </div>
 
@@ -648,6 +653,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <script>
 (() => {
   'use strict';
@@ -800,6 +806,107 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // ================= أدوات =================
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const $ = id => document.getElementById(id);
+
+  // ================= اللغات: نترجم النصوص العربية في الصفحة حسب اللغة المختارة =================
+  const LANGS = window.QARIN_LANGS || [['ar', 'العربية']];
+  const I18N = window.QARIN_I18N || {};
+  const LIDX = { en: 0, fr: 1, es: 2, zh: 3, hi: 4, ur: 5, ru: 6, tr: 7, id: 8 };
+  const RTL_LANGS = new Set(['ar', 'ur']);
+  let LANG = 'ar';
+  try {
+    const s = localStorage.getItem('qarin.lang');
+    if (s && LANGS.some(l => l[0] === s)) LANG = s;
+    else { const n = (navigator.language || '').slice(0, 2).toLowerCase(); if (LANGS.some(l => l[0] === n)) LANG = n; }
+  } catch (e) { /* التخزين غير متاح */ }
+  const HAS_AR = /[\u0600-\u06FF]/;
+  function trText(raw) {
+    if (LANG === 'ar' || !raw || !HAS_AR.test(raw)) return null;
+    const lead = raw.match(/^\s*/)[0], trail = raw.match(/\s*$/)[0];
+    const qs = [], ds = [], ns = [];
+    let s = raw.trim().replace(/\s+/g, ' ')
+      .replace(/«([^»]*)»/g, (m, q) => { qs.push(q); return '«{q}»'; })
+      .replace(/\b(?=[a-z0-9.-]*[a-z])[a-z0-9-]+(?:\.[a-z0-9-]+)+\b/gi, m => { ds.push(m); return '{d}'; })
+      .replace(/[0-9٠-٩][0-9٠-٩.,٫٬]*/g, m => { ns.push(m); return '{n}'; });
+    const e = I18N[s];
+    let t = e && e[LIDX[LANG]];
+    if (!t) return null;
+    let qi = 0, di = 0, ni = 0;
+    t = t.replace(/\{q\}/g, () => { const q = qs[qi++] || ''; const tq = trText(q); return tq != null ? tq.trim() : q; })
+      .replace(/\{d\}/g, () => ds[di++] || '').replace(/\{n\}/g, () => ns[ni++] || '');
+    return lead + t + trail;
+  }
+  const I18N_ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+  const AR_TEXT = new WeakMap(), AR_ATTR = new WeakMap();
+  function trTextNode(n) {
+    const p = n.parentNode;
+    if (!p || p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE' || p.nodeName === 'TEXTAREA' || (p.closest && p.closest('[data-noi18n]'))) return;
+    const cur = n.nodeValue;
+    let rec = AR_TEXT.get(n);
+    if (!rec || (cur !== rec.out && cur !== rec.ar)) { if (!HAS_AR.test(cur)) return; rec = { ar: cur, out: cur }; AR_TEXT.set(n, rec); }
+    const t = trText(rec.ar), want = t == null ? rec.ar : t;
+    rec.out = want;
+    if (cur !== want) n.nodeValue = want;
+  }
+  function trAttr(el, a) {
+    const cur = el.getAttribute(a);
+    if (cur == null) return;
+    let m = AR_ATTR.get(el); if (!m) { m = {}; AR_ATTR.set(el, m); }
+    let rec = m[a];
+    if (!rec || (cur !== rec.out && cur !== rec.ar)) { if (!HAS_AR.test(cur)) return; rec = m[a] = { ar: cur, out: cur }; }
+    const t = trText(rec.ar), want = t == null ? rec.ar : t;
+    rec.out = want;
+    if (cur !== want) el.setAttribute(a, want);
+  }
+  function trTree(root) {
+    if (!root) return;
+    if (root.nodeType === 3) { trTextNode(root); return; }
+    if (root.nodeType !== 1 || root.nodeName === 'SCRIPT' || root.nodeName === 'STYLE' || (root.closest && root.closest('[data-noi18n]'))) return;
+    for (const a of I18N_ATTRS) if (root.hasAttribute(a)) trAttr(root, a);
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    let x;
+    while ((x = w.nextNode())) {
+      if (x.nodeType === 3) trTextNode(x);
+      else for (const a of I18N_ATTRS) if (x.hasAttribute(a)) trAttr(x, a);
+    }
+  }
+  let i18nObs = null;
+  function applyLang() {
+    const dir = RTL_LANGS.has(LANG) ? 'rtl' : 'ltr';
+    document.documentElement.lang = LANG;
+    document.documentElement.dir = dir;
+    const app = $('app'); if (app) { app.setAttribute('dir', dir); app.setAttribute('lang', LANG); }
+    document.title = LANG === 'ar' ? 'قارِن' : LANG === 'ur' ? 'قارن' : 'Qarin';
+    if (LANG !== 'ar' && !i18nObs) {
+      i18nObs = new MutationObserver(ms => {
+        if (LANG === 'ar') return;
+        for (const m of ms) {
+          if (m.type === 'childList') m.addedNodes.forEach(trTree);
+          else if (m.type === 'characterData') trTextNode(m.target);
+          else trAttr(m.target, m.attributeName);
+        }
+      });
+      i18nObs.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: I18N_ATTRS });
+    }
+    trTree(document.body);
+  }
+  function setLang(l) {
+    if (!LANGS.some(x => x[0] === l)) l = 'ar';
+    LANG = l;
+    try { localStorage.setItem('qarin.lang', l); } catch (e) { /* التخزين غير متاح */ }
+    $('langSel').value = l;
+    renderRates();
+    render();
+    applyLang();
+  }
+  // لغة كلمات البحث: نترجمها للإنجليزي قبل ما نرسلها للمتاجر
+  const LATIN_SRC = { fr: 'fr', es: 'es', tr: 'tr', id: 'id' };
+  function queryLang(q) {
+    if (/[\u3400-\u9fff]/.test(q)) return 'zh-CN';
+    if (/[\u0900-\u097F]/.test(q)) return 'hi';
+    if (/[\u0400-\u04FF]/.test(q)) return 'ru';
+    if (/[\u0600-\u06FF]/.test(q)) return LANG === 'ur' ? 'ur' : 'ar';
+    return LATIN_SRC[LANG] || 'en';
+  }
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const fmt = (n, d) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -1136,8 +1243,10 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   }
   const toEnglish = q => {
     const n = normalize(q);
-    if (!/[؀-ۿ]/.test(q)) return q;
     if (TR.has(n)) return TR.get(n);
+    const src = queryLang(q);
+    if (src === 'en') return q;
+    if (src !== 'ar' && src !== 'ur') return null;  // لغات ثانية نترجمها بخدمة الترجمة
     let found = arMatches(n, true);
     if (!found.length) found = arMatches(n, false).slice(0, 1);
     if (!found.length) return null;  // كلمة عربية ما نعرف ترجمتها
@@ -1149,15 +1258,18 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   // لكلمة عربية مو في القاموس: نترجمها بخدمة ترجمة مجانية (ولو ما اشتغلت نكمّل عادي)
   async function resolveEnglish(q) {
     const n = normalize(q);
-    if (!/[؀-ۿ]/.test(q) || toEnglish(q) || TR.has(n)) return;
+    const src = queryLang(q);
+    if (src === 'en' || toEnglish(q) || TR.has(n)) return;
     try {
       const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 3500);
-      const r = await fetch('https://api.mymemory.translated.net/get?langpair=ar|en&q=' + encodeURIComponent(q.trim().slice(0, 80)), { signal: ctl.signal });
+      const r = await fetch('https://api.mymemory.translated.net/get?langpair=' + src + '|en&q=' + encodeURIComponent(q.trim().slice(0, 80)), { signal: ctl.signal });
       clearTimeout(t);
       const d = await r.json();
       let en = (d && d.responseData && d.responseData.translatedText || '').toLowerCase().replace(/[^a-z0-9 \-]/g, ' ').replace(/\s+/g, ' ').trim();
       if (en && en.length >= 2 && en.length <= 60) TR.set(n, en);
     } catch (e) { /* الترجمة غير متاحة */ }
+    // لغة بحروف لاتينية (فرنسي، إسباني...) وما اشتغلت الترجمة: نبحث بالكلمة نفسها
+    if (!TR.has(n) && LATIN_SRC[LANG] && /[a-z]/i.test(q)) TR.set(n, q.trim().toLowerCase());
   }
   const safeUrl = u => (typeof u === 'string' && /^https:\/\//.test(u)) ? u.replace(/"/g, '%22') : '';
   async function fetchEbay(query, limit) {
@@ -1593,7 +1705,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   function money(usd) {
     const k = CURRENCIES[state.currency] ? state.currency : 'OMR', c = CURRENCIES[k];
     const v = usd * RATES[k];
-    return (k === 'USD' || k === 'EUR') ? `<bdi>${c.symbol}${fmt(v, c.dec)}</bdi>` : `<bdi>${fmt(v, c.dec)} ${c.symbol}</bdi>`;
+    return (k === 'USD' || k === 'EUR') ? `<bdi>${c.symbol}${fmt(v, c.dec)}</bdi>` : `<bdi>${fmt(v, c.dec)} ${LANG === 'ar' ? c.symbol : k}</bdi>`;
   }
   function renderRates() {
     const box = $('rateBox');
@@ -1952,7 +2064,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     const id = ++searchId;
     state.mode = 'search';
     state.query = query;
-    $('q').value = query;
+    { const tq = trText(query); $('q').value = tq != null ? tq.trim() : query; }
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
     const key = normalize(query);
     const cached = cache.get(key);
@@ -2158,7 +2270,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     aliMeta().then(m => {
       if (m) {
         aliLive = true; renderSources();
-        const k = m.n >= 1e6 ? (Math.round(m.n / 1e5) / 10).toLocaleString('ar') + ' مليون' : m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('ar') + ' ألف' : m.n.toLocaleString('ar');
+        const k = m.n >= 1e6 ? (Math.round(m.n / 1e5) / 10).toLocaleString('en-US') + ' مليون' : m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('en-US') + ' ألف' : m.n.toLocaleString('en-US');
         $('heroChips').insertAdjacentHTML('beforeend', `<span class="chip">🔎 نبحث في ${k} منتج من علي إكسبرس</span>`);
         return;
       }
@@ -2167,6 +2279,9 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
+    $('langSel').innerHTML = LANGS.map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
+    $('langSel').value = LANG;
+    $('langSel').addEventListener('change', e => setLang(e.target.value));
     $('curSel').innerHTML = Object.entries(CURRENCIES).map(([k, c]) => `<option value="${k}">${c.flag} ${c.name}</option>`).join('');
     $('curSel').addEventListener('change', e => setCurrency(e.target.value));
     $('platformChecks').addEventListener('change', e => {
@@ -2215,6 +2330,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     track('visit');
     setPrio(state.priority);
     setCurrency(state.currency);
+    applyLang();
     search(SUGGESTIONS[0], true);  // يفتح الموقع على بحث جاهز كمثال
   }
 
