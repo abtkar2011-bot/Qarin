@@ -106,3 +106,10 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      # نخبر محركات البحث (Bing وغيرها عبر IndexNow) إن الموقع تحدّث
+      - name: Ping search engines
+        continue-on-error: true
+        run: |
+          curl -s -o /dev/null -w "indexnow %{http_code}\n" -X POST https://api.indexnow.org/indexnow \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d '{"host":"abtkar2011-bot.github.io","key":"e08aed26014600e923489f7372bafc74","keyLocation":"https://abtkar2011-bot.github.io/Qarin/e08aed26014600e923489f7372bafc74.txt","urlList":["https://abtkar2011-bot.github.io/Qarin/","https://abtkar2011-bot.github.io/Qarin/searches.html","https://abtkar2011-bot.github.io/Qarin/about.html"]}' || true

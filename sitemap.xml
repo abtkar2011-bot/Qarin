@@ -4,4 +4,5 @@
   <url><loc>https://abtkar2011-bot.github.io/Qarin/about.html</loc><changefreq>monthly</changefreq></url>
   <url><loc>https://abtkar2011-bot.github.io/Qarin/privacy.html</loc><changefreq>monthly</changefreq></url>
   <url><loc>https://abtkar2011-bot.github.io/Qarin/stats.html</loc><changefreq>daily</changefreq></url>
+  <url><loc>https://abtkar2011-bot.github.io/Qarin/searches.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
