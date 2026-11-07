@@ -374,7 +374,38 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 .cmp-table td.win { background: var(--tint-1); font-weight: 800; }
 .cmp-table img { width: 100%; max-width: 140px; height: 100px; object-fit: cover; border-radius: 10px; margin: 0 auto; }
 .cmp-scroll { overflow-x: auto; }
-.cmp-scroll table { min-width: 520px; }
+.cmp-scroll table { min-width: 0; table-layout: fixed; }
+.cmp-table td { word-break: break-word; }
+/* الجدول التفصيلي: يطلع كامل بدون تمرير لليسار */
+table.dt { min-width: 0; }
+.dt th, .dt td { padding: 9px 8px; }
+.dt th { white-space: normal; line-height: 1.25; }
+.dt .prod { display: flex; align-items: center; gap: 10px; min-width: 190px; }
+.dt .prod img { width: 54px; height: 54px; flex: none; }
+.dt .prod .t { font-weight: 600; line-height: 1.35; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.dt td.n { white-space: nowrap; }
+.dt td .bar { width: 40px; }
+.dt .free { display: block; color: var(--good); font-weight: 700; }
+.dt .lbl { display: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 640px) {
+  .table-wrap { overflow: visible; }
+  .dt, .dt thead, .dt tbody { display: block; width: 100%; }
+  .dt thead tr { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-bottom: 1px solid var(--line); }
+  .dt thead th { position: static; padding: 0; border: 0; background: none; }
+  .dt thead th:not(.s) { display: none; }
+  .dt thead th.s button { padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); font-size: .8rem; }
+  .dt tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 12px; border-bottom: 1px solid var(--line); }
+  .dt tbody tr:last-child { border-bottom: 0; }
+  .dt tbody td { display: block; padding: 0; border: 0; white-space: normal; }
+  .dt tbody td.c-prod, .dt tbody td.c-go { grid-column: 1 / -1; }
+  .dt .prod { min-width: 0; }
+  .dt .lbl { display: block; font-size: .72rem; color: var(--muted); font-weight: 600; margin-bottom: 2px; }
+  .dt .c-go a { display: block; text-align: center; padding: 9px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); }
+  .cmp-table { font-size: .78rem; }
+  .cmp-table th { width: 64px; }
+  .cmp-table img { height: 70px; }
+}
 .toast { position: fixed; z-index: 90; top: calc(16px + env(safe-area-inset-top, 0px)); right: 50%; transform: translateX(50%); background: var(--fg); color: var(--bg);
   padding: 10px 18px; border-radius: 999px; font-weight: 800; box-shadow: var(--shadow-hover); display: none; direction: rtl; max-width: calc(100vw - 32px); text-align: center; }
 .toast.on { display: block; }
@@ -1897,20 +1928,24 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
     </div>`;
   }
 
+  const shipDays = p => /\D\s*$/.test(String(p.shipping)) ? String(p.shipping) : p.shipping + ' أيام';
   function tableHtml(list) {
     const { key, dir } = state.tableSort;
     const getters = { price: p => p.price, rating: p => p.rating, reviews: p => p.reviews || 0, score: p => p.score };
     const rows = [...list].sort((a, b) => (getters[key](a) - getters[key](b)) * dir);
-    const th = (k, label) => `<th scope="col"><button type="button" data-sort="${k}" data-dir="${key === k ? dir : 0}">${label}</button></th>`;
-    return `<div class="table-wrap"><table>
-      <thead><tr><th scope="col">الصورة</th><th scope="col">المنتج</th><th scope="col">المنصة</th>${th('price', 'السعر')}${th('rating', 'التقييم')}
-        ${th('reviews', 'المراجعات')}${th('score', 'مؤشر القيمة')}<th scope="col">التوصيل (أيام)</th><th scope="col">شحن مجاني</th><th scope="col">الرابط</th></tr></thead>
+    const th = (k, label) => `<th scope="col" class="s"><button type="button" data-sort="${k}" data-dir="${key === k ? dir : 0}">${label}</button></th>`;
+    const rate = p => p.unrated ? '—' : p.sellerRated ? `<span title="تقييم البائع">${ratingNum(p)} 🏪</span>` : `${p.rating.toFixed(1)} ⭐`;
+    const ship = p => (p.shipping ? `<bdi>${esc(shipDays(p))}</bdi>` : '—') + (p.freeShip ? '<small class="free">مجاني ✓</small>' : '');
+    return `<div class="table-wrap"><table class="dt">
+      <thead><tr><th scope="col" class="c-prod">المنتج</th>${th('price', 'السعر')}${th('rating', 'التقييم')}${th('reviews', 'المراجعات')}${th('score', 'مؤشر القيمة')}<th scope="col">الشحن</th><th scope="col" class="c-go"><span class="sr">الرابط</span></th></tr></thead>
       <tbody>${rows.map(p => `<tr>
-        <td><img referrerpolicy="no-referrer" src="${p.image}" alt=""></td><td class="title">${esc(p.title)}</td><td>${pill(p.platform, true)}</td>
-        <td class="n">${money(p.price)}</td><td class="n">${p.unrated ? '—' : p.sellerRated ? `<span title="تقييم البائع">${ratingNum(p)} 🏪</span>` : `${p.rating.toFixed(1)} ⭐`}</td><td class="n">${(p.reviews || 0).toLocaleString('en-US')}</td>
-        <td class="n">${p.score.toFixed(0)}<span class="bar"><span style="width:${p.score.toFixed(0)}%"></span></span></td>
-        <td class="n"><bdi>${esc(p.shipping || '')}</bdi></td><td>${p.freeShip ? '✓' : '—'}</td>
-        <td><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a></td></tr>`).join('')}</tbody>
+        <td class="c-prod"><div class="prod"><img referrerpolicy="no-referrer" src="${p.image}" alt=""><div><div class="t">${esc(p.title)}</div>${pill(p.platform, true)}</div></div></td>
+        <td class="n"><span class="lbl">السعر</span><b>${money(p.price)}</b></td>
+        <td class="n"><span class="lbl">التقييم</span>${rate(p)}</td>
+        <td class="n"><span class="lbl">المراجعات</span>${(p.reviews || 0).toLocaleString('en-US')}</td>
+        <td class="n"><span class="lbl">مؤشر القيمة</span>${p.score.toFixed(0)}<span class="bar"><span style="width:${p.score.toFixed(0)}%"></span></span></td>
+        <td class="n"><span class="lbl">الشحن</span>${ship(p)}</td>
+        <td class="c-go"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a></td></tr>`).join('')}</tbody>
     </table></div>`;
   }
 
@@ -2262,7 +2297,7 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
       ${row('السعر', p => cell(p.price === minP, `${money(p.price)}${p.price === minP ? '<br>💰 الأرخص' : ''}`))}
       ${row('الخصم', p => `<td>${discountPct(p) >= 5 ? '-' + discountPct(p) + '%' : '—'}</td>`)}
       ${row('التقييم', p => cell(maxR !== null && !p.unrated && !p.sellerRated && p.rating === maxR, `${ratingNum(p)}<br><small>${esc(reviewsText(p))}</small>`))}
-      ${row('التوصيل', p => `<td>${p.shipping ? esc(p.shipping) + ' أيام' : '—'}</td>`)}
+      ${row('التوصيل', p => `<td>${p.shipping ? esc(shipDays(p)) : '—'}</td>`)}
       ${row('شحن مجاني', p => `<td>${p.freeShip ? '✓' : '—'}</td>`)}
       ${row('مؤشر القيمة', p => cell((p.score || 0) === maxS, `${(p.score || 0).toFixed(0)}/100`))}
       ${row('', p => `<td>${shopBtn(p)}</td>`)}
