@@ -478,6 +478,39 @@ table.dt { min-width: 0; font-size: .76rem; }
 
 /* ---------- سلة المستخدم ---------- */
 .cart-btn { margin-top: 6px; width: 100%; border: 1px dashed var(--accent); background: var(--surface); color: var(--accent-strong); border-radius: 12px; padding: 8px 10px; font: inherit; font-weight: 800; cursor: pointer; }
+.img-btn { flex: none; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 0 14px; font-size: 20px; cursor: pointer; }
+.tools-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
+.tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }
+.tool-btn small { font-weight: 600; color: var(--muted); font-size: .78rem; }
+.tool-btn[aria-expanded="true"] { background: var(--tint-1); border-color: var(--accent); }
+.basket-box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; margin-bottom: 14px; }
+.bb-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.bb-head span { color: var(--muted); font-size: .85rem; }
+.bb-inputs { display: grid; gap: 8px; }
+.bb-row { display: flex; align-items: center; gap: 8px; }
+.bb-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint-1); color: var(--accent-strong); font-weight: 800; flex: none; }
+.bb-in { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font: inherit; }
+.bb-del { border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px; }
+.bb-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.bk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.bk-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.bk-card.win { border: 2px solid #F59E0B; box-shadow: 0 0 0 4px rgba(245,158,11,.15); }
+.bk-card header { padding: 12px 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.bk-card header b { flex: 1; font-size: 1.05rem; }
+.bk-tag { background: #FFFFFF; color: #1F1147; border-radius: 999px; padding: 3px 10px; font-size: .76rem; font-weight: 800; }
+.bk-items { list-style: none; margin: 0; padding: 10px 12px; display: grid; gap: 10px; flex: 1; }
+.bk-items li { display: flex; gap: 10px; align-items: center; }
+.bk-items img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); }
+.bk-q { display: inline-block; font-size: .72rem; font-weight: 800; color: var(--accent-strong); background: var(--tint-1); border-radius: 999px; padding: 1px 8px; margin-bottom: 2px; }
+.bk-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--text); text-decoration: none; font-size: .82rem; font-weight: 600; line-height: 1.3; }
+.bk-m { font-size: .8rem; color: var(--muted); }
+.bk-m b { color: var(--text); }
+.bk-items li.miss { opacity: .6; }
+.bk-total { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
+.bk-total b { font-size: 1.2rem; }
+.bk-acts { display: flex; gap: 8px; padding: 0 12px 12px; }
+.bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
+.share-btn { margin-top: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
 .cart-btn.on { background: var(--tint-1); color: var(--good); border-style: solid; border-color: var(--good); }
 .best-card .row .cart-btn { width: auto; margin: 6px 0 0; padding: 12px 18px; }
 .cart-row .tt { color: inherit; text-decoration: none; }
@@ -607,6 +640,8 @@ table.dt { min-width: 0; font-size: .76rem; }
       <form class="search" id="searchForm" role="search">
         <input type="search" id="q" autocomplete="off" aria-label="ابحث عن منتج"
                placeholder="ابحث عن منتج، أو الصق رابط منتج من أي متجر (أمازون، نون، شي إن...)">
+        <button type="button" class="img-btn" id="imgBtn" aria-label="ابحث بصورة" title="ابحث بصورة">📷</button>
+        <input type="file" id="imgIn" accept="image/*" hidden>
         <button type="submit" class="btn-primary">🔍 بحث</button>
       </form>
       <div class="currency">
@@ -618,6 +653,14 @@ table.dt { min-width: 0; font-size: .76rem; }
         <select id="langSel" class="cur-sel" aria-labelledby="langLbl" data-noi18n></select>
       </div>
     </div>
+    <div class="tools-row">
+      <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><span>🧺 أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
+    </div>
+    <section class="basket-box" id="basketBox" hidden>
+      <div class="bb-head"><b>🧺 أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
+      <div class="bb-inputs" id="basketInputs"></div>
+      <div class="bb-acts"><button type="button" class="tool-btn" id="basketAdd">➕ أضف منتج</button><button type="button" class="btn-primary" id="basketGo">🧺 دوّر أفضل سلة</button></div>
+    </section>
 
     <div class="suggest">
       <span>🔥 عمليات بحث شائعة:</span>
@@ -1304,12 +1347,37 @@ table.dt { min-width: 0; font-size: .76rem; }
     }
     return found;
   }
+  // المفرد والجمع: لو كلمة ما لها ترجمة، نجرب مفردها أو جمعها («شواحن» ← «شاحن»، «طاولات» ← «طاوله»، «سماعه» ← «سماعات»)
+  const AR_PLURAL = { 'قمصان': 'قميص', 'مصابيح': 'مصباح', 'شواحن': 'شاحن', 'وسائد': 'وساده', 'بناطيل': 'بنطلون', 'بنطلونات': 'بنطلون',
+    'جواكيت': 'جاكيت', 'اساور': 'سوار', 'قلائد': 'قلاده', 'صحون': 'صحن', 'اطباق': 'طبق', 'قدور': 'قدر', 'مفارش': 'مفرش', 'ستائر': 'ستاره',
+    'شراشف': 'شرشف', 'مناشف': 'منشفه', 'مكانس': 'مكنسه', 'مراوح': 'مروحه', 'اقراط': 'قرط', 'عبايات': 'عبايه', 'عباءات': 'عبايه',
+    'جلابيات': 'جلابيه', 'دشاديش': 'دشداشه', 'كنادير': 'كندوره', 'محافظ': 'محفظه', 'احزمه': 'حزام', 'دمى': 'دميه', 'افران': 'فرن',
+    'هواتف': 'هاتف', 'ثلاجات': 'ثلاجه', 'غسالات': 'غساله', 'خلاطات': 'خلاط', 'قلايات': 'قلايه', 'شاشات': 'شاشه', 'كاميرات': 'كاميرا',
+    'مكيفات': 'مكيف', 'دراجات': 'دراجه', 'سيارات': 'سياره', 'مطاحن': 'مطحنه', 'مكاين': 'مكينه', 'ماكينات': 'ماكينه', 'اكياس': 'كيس',
+    'صناديق': 'صندوق', 'رفوف': 'رف', 'خزائن': 'خزانه', 'دواليب': 'دولاب', 'اسرة': 'سرير', 'اسره': 'سرير', 'كنب': 'كنبه', 'مرايات': 'مرايه',
+    'مرايا': 'مرايه', 'اباريق': 'ابريق', 'فناجين': 'فنجان', 'كاسات': 'كاس', 'زجاجات': 'زجاجه', 'قوارير': 'قاروره', 'ملابس': 'ملابس' };
+  function arLemma(w) {
+    for (const pre of AR_PRE) {
+      if (pre && !w.startsWith(pre)) continue;
+      const core = w.slice(pre.length);
+      if (core.length < 2) continue;
+      const cands = [];
+      if (AR_PLURAL[core]) cands.push(AR_PLURAL[core]);
+      if (core.endsWith('ات') && core.length > 4) cands.push(core.slice(0, -2) + 'ه', core.slice(0, -2));
+      if (core.endsWith('ه') && core.length > 2) cands.push(core.slice(0, -1) + 'ات');
+      if (!/[هاتي]$/.test(core)) cands.push(core + 'ات');
+      for (const c of cands) if (arMatches(pre + c, true).length) return pre + c;
+    }
+    return null;
+  }
   const toEnglish = q => {
-    const n = normalize(q);
+    let n = normalize(q);
     if (TR.has(n)) return TR.get(n);
     const src = queryLang(q);
     if (src === 'en') return q;
     if (src !== 'ar' && src !== 'ur') return null;  // لغات ثانية نترجمها بخدمة الترجمة
+    // كل كلمة ما لها ترجمة نبدّلها بمفردها/جمعها لو له ترجمة
+    n = n.split(' ').map(w => (/[\u0600-\u06FF]/.test(w) && !arMatches(w, true).length && arLemma(w)) || w).join(' ');
     let found = arMatches(n, true);
     if (!found.length) found = arMatches(n, false).slice(0, 1);
     if (!found.length) return null;  // كلمة عربية ما نعرف ترجمتها
@@ -1848,7 +1916,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const k = esc(pkey(p));
     const isFav = !!favs[pkey(p)], isCmp = cmp.some(c => pkey(c) === pkey(p));
     return `<div class="card-acts"><button type="button" class="fav${isFav ? ' on' : ''}" data-fav="${k}" aria-label="أضف للمفضلة" aria-pressed="${isFav}">${isFav ? '❤' : '♡'}</button>
-      <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">⚖️</button></div>`;
+      <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">⚖️</button>
+      <button type="button" data-share="${k}" aria-label="شارك المنتج">📤</button></div>`;
   }
   function cartBtn(p) {
     const inCart = !!cart[pkey(p)];
@@ -1885,7 +1954,7 @@ table.dt { min-width: 0; font-size: .76rem; }
           <span class="meta">مؤشر القيمة <b class="num">${p.score.toFixed(0)}</b>/100</span></div>
         ${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
-        <div class="row">${cartBtn(p)}${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
+        <div class="row">${cartBtn(p)}<button type="button" class="share-btn" data-share="${esc(pkey(p))}">📤 شارك</button>${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
       </div></section>`;
   }
 
@@ -2016,6 +2085,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   function render() {
     if (state.loading) return;
     const box = $('results');
+    if (state.mode === 'basket' && state.basket && state.basket.data) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
     const list = state.products.filter(p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
@@ -2179,6 +2249,130 @@ table.dt { min-width: 0; font-size: .76rem; }
     render();
   }
 
+  // ================= أفضل سلة: عدة منتجات، وأفضل سلة من كل متجر لحاله =================
+  const BK_EX = ['مثلًا: سماعة', 'مثلًا: ساعة ذكية', 'مثلًا: مطحنة قهوة', 'مثلًا: حقيبة ظهر', 'مثلًا: كفر جوال', 'مثلًا: شاحن'];
+  const BK_MAX = 6;
+  function basketRows(vals) {
+    $('basketInputs').innerHTML = vals.map((v, i) => `<div class="bb-row"><span class="bb-n">${i + 1}</span><input type="text" class="bb-in" enterkeyhint="search" value="${esc(v)}" placeholder="${BK_EX[i]}" aria-label="المنتج ${i + 1}">${i >= 3 ? `<button type="button" class="bb-del" data-bb-del="${i}" aria-label="احذف">✕</button>` : ''}</div>`).join('');
+    $('basketAdd').hidden = vals.length >= BK_MAX;
+  }
+  const basketVals = () => [...document.querySelectorAll('.bb-in')].map(i => i.value);
+  async function fetchAllFor(query) {
+    const key = normalize(query);
+    if (cache.has(key)) return cache.get(key).map(p => ({ ...p }));
+    await resolveEnglish(query);
+    const results = {};
+    await Promise.all(KEYS.map(async k => {
+      try {
+        results[k] = k === 'aliexpress' ? await fetchAli(query, FETCH_N) : k === 'etsy' ? await fetchEtsy(query, FETCH_N)
+          : (k === 'ebay' && EBAY_API) ? await fetchEbay(query, FETCH_N) : [];
+      } catch (e) { results[k] = []; }
+    }));
+    const all = KEYS.flatMap(k => results[k]);
+    cache.set(key, all);
+    return all.map(p => ({ ...p }));
+  }
+  async function runBasket(queries) {
+    queries = queries.map(q => q.trim()).filter(Boolean).slice(0, BK_MAX);
+    const status = $('status');
+    if (queries.length < 2) { status.innerHTML = '<div class="status warn">اكتب منتجين على الأقل في خانات السلة.</div>'; return; }
+    const id = ++searchId;
+    state.mode = 'basket'; state.query = queries.join(' + '); state.basket = { queries, data: null }; state.loading = true;
+    track('basket', state.query);
+    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن ${queries.length} منتجات في ${KEYS.length} متاجر...</b>${queries.map((q, i) =>
+      `<div class="row" id="bk-${i}"><span class="spinner"></span><bdi>${esc(q)}</bdi></div>`).join('')}</div>`;
+    $('results').innerHTML = skeletonHtml(6);
+    const data = [];
+    await Promise.all(queries.map(async (q, i) => {
+      data[i] = await fetchAllFor(q);
+      const row = $('bk-' + i); if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span><bdi>${esc(q)}</bdi>`;
+    }));
+    if (id !== searchId) return;
+    state.basket.data = data; state.loading = false;
+    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتملت السلة: ${queries.length} منتجات من ${KEYS.length} متاجر</div>`;
+    render();
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function basketHtml() {
+    const { queries, data } = state.basket;
+    const w = PRIORITY[state.priority][1];
+    const bs = KEYS.filter(k => state.platforms.has(k)).map(k => {
+      const items = queries.map((q, i) => {
+        const list = (data[i] || []).filter(p => p.platform === k && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
+        return { q, p: scoreProducts(list, w) };
+      });
+      const got = items.filter(x => x.p);
+      return { k, items, got: got.length, total: got.reduce((s, x) => s + tot(x.p), 0), avg: got.length ? got.reduce((s, x) => s + x.p.score, 0) / got.length : 0 };
+    });
+    state.basket.bs = bs;
+    const maxGot = Math.max(0, ...bs.map(b => b.got));
+    const pool = bs.filter(b => b.got === maxGot && b.got > 0);
+    const cheap = pool.length ? pool.reduce((a, b) => (b.total < a.total ? b : a)) : null;
+    const value = pool.length ? pool.reduce((a, b) => (b.avg > a.avg ? b : a)) : null;
+    let html = `<div class="section-title"><h2>🧺 أفضل سلة</h2><span>${queries.map(q => '«' + esc(q) + '»').join(' + ')}</span></div>`;
+    if (!maxGot) return html + '<div class="empty">ما لقينا منتجات لهالسلة. جرّب كلمات أبسط.</div>';
+    html += '<div class="notice">💡<div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف.</div></div>';
+    return html + `<div class="bk-grid">${bs.map(b => {
+      const pl = PLATFORMS[b.k];
+      const tags = [b === cheap ? '💰 أرخص سلة' : '', b === value ? '⭐ أفضل قيمة' : ''].filter(Boolean);
+      return `<article class="bk-card${tags.length ? ' win' : ''}"><header style="background:${pl.color};color:${pl.text}"><b>${pl.name}</b>${tags.map(t => `<span class="bk-tag">${t}</span>`).join('')}</header>
+        <ol class="bk-items">${b.items.map(x => x.p
+          ? `<li><img referrerpolicy="no-referrer" src="${x.p.image}" alt="" loading="lazy"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><a class="bk-t" href="${esc(x.p.url)}" target="_blank" rel="noopener noreferrer">${esc(x.p.title)}</a><div class="bk-m"><b>${money(tot(x.p))}</b>${x.p.unrated ? '' : ` · ⭐ <bdi>${ratingNum(x.p)}</bdi>`}</div></div></li>`
+          : `<li class="miss"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><div class="bk-m">ما لقينا هذا المنتج هنا</div></div></li>`).join('')}</ol>
+        <div class="bk-total"><span>المجموع (${b.got} من ${queries.length})</span><b>${money(b.total)}</b></div>
+        <div class="bk-acts"><button type="button" data-bk-cart="${b.k}">🛒 أضف السلة كلها</button><button type="button" data-bk-share="${b.k}">📤 شارك</button></div></article>`;
+    }).join('')}</div>`;
+  }
+  function basketToCart(k) {
+    const b = state.basket && state.basket.bs && state.basket.bs.find(x => x.k === k); if (!b) return;
+    b.items.forEach(({ p }) => { if (p && !cart[pkey(p)]) cart[pkey(p)] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image, price: p.price, ship: p.shipCost > 0 ? p.shipCost : 0, qty: 1, at: Date.now() }; });
+    saveCart(); toast('🛒 انضافت السلة كاملة'); render();
+  }
+  async function shareBasket(k) {
+    const b = state.basket && state.basket.bs && state.basket.bs.find(x => x.k === k); if (!b) return;
+    const pl = PLATFORMS[k], plain = h => h.replace(/<[^>]+>/g, '');
+    const lines = b.items.filter(x => x.p).map(x => `• ${x.q}: ${x.p.title.slice(0, 60)} (${plain(money(tot(x.p)))})\n${x.p.url}`).join('\n');
+    const text = LANG === 'ar'
+      ? `🧺 أفضل سلة من ${pl.name} لقيتها في قارِن:\n${lines}\n💰 المجموع: ${plain(money(b.total))}\n\nقارن سلتك بنفسك 👇\n${SITE_URL}`
+      : `🧺 Best basket on ${(trText(pl.name) || pl.name).trim()}, found on Qarin:\n${lines}\n💰 Total: ${plain(money(b.total))}\n\nCompare your own basket 👇\n${SITE_URL}`;
+    track('share', state.query);
+    if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  }
+
+  // ================= البحث بالصورة =================
+  function shrinkImage(file, max) {
+    return new Promise((res, rej) => {
+      const img = new Image(), u = URL.createObjectURL(file);
+      img.onload = () => {
+        const s = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        res(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+      };
+      img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('bad image')); };
+      img.src = u;
+    });
+  }
+  async function imageSearch(file) {
+    if (!file) return;
+    const status = $('status');
+    status.innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
+    try {
+      const image = await shrinkImage(file, 512);
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+      const r = await fetch(EBAY_API + 'img', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ image }), signal: ctl.signal });
+      clearTimeout(t);
+      const d = await r.json();
+      if (!d || !d.query) throw new Error((d && d.error) || 'no query');
+      track('image', d.query);
+      toast('📷 ' + d.query);
+      search(d.query, false);
+    } catch (e) {
+      status.innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
+    }
+  }
+
   // ================= الإعدادات والأحداث =================
   function setCurrency(c) {
     if (!CURRENCIES[c]) c = 'OMR';
@@ -2194,7 +2388,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const t = $('toast'); t.textContent = msg; t.classList.add('on');
     clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove('on'), 2600);
   }
-  const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k);
+  const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k) || (state.basket && state.basket.data ? state.basket.data.flat().find(p => pkey(p) === k) : undefined);
   function openModal(id) { $(id).classList.add('on'); }
   // ================= تثبيت «قارِن» كتطبيق (PWA) =================
   let installEvt = null;
@@ -2254,6 +2448,21 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); }
   function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; }
+  // مشاركة منتج: قائمة المشاركة في الجوال، أو واتساب مباشرة
+  async function shareProduct(k) {
+    const p = findProduct(k); if (!p) return;
+    const pl = PLATFORMS[p.platform] || { name: '' };
+    const price = money(p.price).replace(/<[^>]+>/g, '');
+    const title = p.title.length > 90 ? p.title.slice(0, 87) + '…' : p.title;
+    const text = LANG === 'ar'
+      ? `🛍️ ${title}\n💰 ${price} من ${pl.name}\n${p.url}\n\nلقيته في قارِن، يقارن الأسعار بين أشهر المتاجر 👇\n${SITE_URL}`
+      : `🛍️ ${title}\n💰 ${price} on ${(trText(pl.name) || pl.name).trim()}\n${p.url}\n\nFound it on Qarin, the free price comparison site 👇\n${SITE_URL}`;
+    track('share', state.query);
+    if (navigator.share) {
+      try { await navigator.share({ text }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  }
   function toggleFav(k) {
     if (favs[k]) { delete favs[k]; toast('انشال من المفضلة'); }
     else {
@@ -2373,6 +2582,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     });
     $('results').addEventListener('click', e => {
       const ct = e.target.closest('[data-cart]'); if (ct) { toggleCart(ct.dataset.cart); return; }
+      const sh = e.target.closest('[data-share]'); if (sh) { shareProduct(sh.dataset.share); return; }
+      const bc = e.target.closest('[data-bk-cart]'); if (bc) { basketToCart(bc.dataset.bkCart); return; }
+      const bs = e.target.closest('[data-bk-share]'); if (bs) { shareBasket(bs.dataset.bkShare); return; }
       const f = e.target.closest('[data-fav]'); if (f) { toggleFav(f.dataset.fav); return; }
       const c = e.target.closest('[data-cmp]'); if (c) { toggleCmp(c.dataset.cmp); return; }
       if (e.target.closest('[data-open-rate]')) { $('rateMsg').textContent = ''; openModal('rateModal'); return; }
@@ -2400,6 +2612,17 @@ table.dt { min-width: 0; font-size: .76rem; }
     });
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
+    $('imgBtn').addEventListener('click', () => $('imgIn').click());
+    $('imgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; imageSearch(f); });
+    $('basketToggle').addEventListener('click', () => {
+      const box = $('basketBox'), open = box.hidden;
+      box.hidden = !open; $('basketToggle').setAttribute('aria-expanded', String(open));
+      if (open) { if (!$('basketInputs').children.length) basketRows(['', '', '']); const f = document.querySelector('.bb-in'); if (f) f.focus(); }
+    });
+    $('basketAdd').addEventListener('click', () => { const v = basketVals(); if (v.length < BK_MAX) { basketRows([...v, '']); const all = document.querySelectorAll('.bb-in'); all[all.length - 1].focus(); } });
+    $('basketInputs').addEventListener('click', e => { const d = e.target.closest('[data-bb-del]'); if (d) { const v = basketVals(); v.splice(+d.dataset.bbDel, 1); basketRows(v); } });
+    $('basketInputs').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList.contains('bb-in')) { e.preventDefault(); runBasket(basketVals()); } });
+    $('basketGo').addEventListener('click', () => runBasket(basketVals()));
     $('chips').addEventListener('click', e => { const b = e.target.closest('.chip-btn'); if (b) search(b.dataset.q, false); });
     $('langSel').innerHTML = LANGS.map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
     $('langSel').value = LANG;
