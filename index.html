@@ -1382,6 +1382,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
     items = noAcc(items, enLow);
+    if (!DIGITAL.test(enLow)) items = items.filter(it => !DIGITAL.test(it.title));
     if (!items.length) throw new Error('etsy empty');
     etsyLive = true;
     return items.slice(0, Math.max(limit, 50)).map(it => ({
@@ -1425,6 +1426,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     return ws.filter(hit).length >= 2;
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
+  // ملفات رقمية (صور وقوالب للطباعة والقص) مو منتجات حقيقية
+  const DIGITAL = /\b(svg|png|jpe?g|pdf|eps|dxf|clip ?art|cut ?files?|digital (?:download|file|art|print)|instant download|printable|vector|silhouette|cricut|sublimation|mockup|template|wall art print|svg bundle)\b/i;
   const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit|watch ?hands|needles?|nh3[456]|miyota|movement parts)\b/i;
   // إكسسوارات إضافية (أحزمة، علب، وسائد...) نشيلها إلا إذا كانت هي المطلوبة
   const ACC2 = /\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b/i;
