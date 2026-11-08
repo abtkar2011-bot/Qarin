@@ -1277,7 +1277,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     "مسدس مساج": "massage gun", "كرسي مساج": "massage chair", "دمبلز": "dumbbells", "اوزان": "dumbbells",
     "سير مشي": "treadmill", "جهاز مشي": "treadmill", "دراجه ثابته": "exercise bike", "سجاده يوغا": "yoga mat",
     "يوغا": "yoga mat", "حبل نط": "jump rope", "حبل قفز": "jump rope", "شريط مقاومه": "resistance bands",
-    "كيس ملاكمه": "punching bag", "قفازات ملاكمه": "boxing gloves", "كره قدم": "football", "كوره سله": "basketball",
+    "كيس ملاكمه": "punching bag", "قفازات ملاكمه": "boxing gloves", "كره قدم": "soccer ball", "كوره سله": "basketball",
     "كره سله": "basketball", "كوره طائره": "volleyball", "كره طائره": "volleyball", "مضرب تنس": "tennis racket",
     "بادل": "padel racket", "تنس طاوله": "table tennis", "بينج بونج": "table tennis", "جولف": "golf",
     "نظاره سباحه": "swimming goggles", "مايوه": "swimsuit", "ملابس سباحه": "swimwear", "بوركيني": "burkini",
@@ -1343,7 +1343,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     "محمصه خبز": "toaster", "صانعه سندويش": "sandwich maker", "صانعه ساندويش": "sandwich maker", "ساندويش ميكر": "sandwich maker",
     "وافل": "waffle maker", "صانعه وافل": "waffle maker", "طباخه رز": "rice cooker", "حله رز": "rice cooker", "قدر رز": "rice cooker",
     "منقل": "charcoal grill", "فحم": "bbq charcoal", "عده تخييم": "camping gear", "سناره صيد": "fishing rod", "صيد": "fishing",
-    "دراجه هوائيه": "bicycle", "دامبلز": "dumbbells", "دمبلز": "dumbbells", "اثقال": "dumbbells", "كوره قدم": "football",
+    "دراجه هوائيه": "bicycle", "دامبلز": "dumbbells", "دمبلز": "dumbbells", "اثقال": "dumbbells", "كوره قدم": "soccer ball",
     "مضرب بادل": "padel racket", "مضرب": "racket", "سياره ريموت": "rc car", "عربانه اطفال": "baby stroller", "عربانه": "baby stroller",
     "ببرونه": "baby bottle", "اقلام تلوين": "colored pencils", "احمر شفايف": "lipstick", "احمر شفاه": "lipstick", "رموش صناعيه": "false eyelashes",
     "اكستنشن شعر": "hair extensions", "وصلات شعر": "hair extensions", "فير": "hair removal cream", "ترمر": "hair trimmer",
@@ -1587,9 +1587,9 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
   // ملفات رقمية (صور وقوالب للطباعة والقص) مو منتجات حقيقية
-  const DIGITAL = /\b(svg|png|jpe?g|pdf|eps|dxf|clip ?art|cut ?files?|digital (?:download|file|art|print|planner)|instant download|printable|vector|silhouette|cricut|sublimation|mockup|template|wall art print|svg bundle|wallpapers?|watch ?faces?|backgrounds?|lock ?screen|home ?screen|screensavers?|wall ?papers?|widgets?|icon ?pack|presets?|procreate|brushes|fonts?|e-?books?(?! ?readers?)|editable|canva|notion|(?:sewing|crochet|knitting|cross stitch|pdf) patterns?|downloads?|shopify|wordpress|squarespace|website templates?)\b/i;
+  const DIGITAL = /\b(svg|png|jpe?g|pdf|eps|dxf|clip ?art|cut ?files?|digital (?:download|file|art|print|planner)|instant download|printable|vector|silhouette|cricut|sublimation|mockup|template|wall art print|svg bundle|wallpapers?|watch ?faces?|backgrounds?|lock ?screen|home ?screen|screensavers?|wall ?papers?|widgets?|icon ?pack|presets?|procreate|brushes|fonts?|e-?books?(?! ?readers?)|editable|canva|notion|(?:sewing|crochet|knitting|cross stitch|pdf) patterns?|downloads?|shopify|wordpress|squarespace|website templates?|stl|3d print(er)? files?|embroidery (designs?|files?)|machine embroidery)\b/i;
   // منتجات افتراضية (أغراض ألعاب، أكواد، بطاقات هدايا، حسابات) مو منتجات تنشحن
-  const VIRTUAL = /\b(pve|pvp|tamed|in-?game|game items?|game currency|cd ?keys?|steam keys?|game keys?|digital (?:code|key|item)s?|redeem(?:able)? codes?|gift ?cards?|e-?gift|accounts? (?:for|with)|boosting|leveling service|survival ascended)\b/i;
+  const VIRTUAL = /\b(dlc|code only|roblox|emotes?|virtual items?|pve|pvp|tamed|in-?game|game items?|game currency|cd ?keys?|steam keys?|game keys?|digital (?:code|key|item)s?|redeem(?:able)? codes?|gift ?cards?|e-?gift|accounts? (?:for|with)|boosting|leveling service|survival ascended)\b/i;
   // منتجات مزيّفة: سعة وهمية (فلاش 16 تيرا بـ 10 دولار)، نسخ مقلّدة، وأجهزة ماركات بسعر مستحيل
   const FAKE_STORE = /\b(flash ?drives?|pen ?drives?|pendrives?|usb (?:stick|drive|disk|memory)s?|u ?disks?|memory (?:sticks?|cards?)|micro ?sd|tf cards?|sd cards?|thumb ?drives?)\b/i;
   const ACCESSORY_WORDS = /\b(for|compatible|case|cover|protector|film|glass|strap|band|charger|charging|cable|adapter|holder|stand|mount|skin|sticker|sleeve|bag|pouch|replacement|parts?|box|dummy|model|toy|keychain)\b/i;
@@ -1601,6 +1601,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (tb && FAKE_STORE.test(t) && price < 80) return true;                        // فلاش/كرت ذاكرة بالتيرا بسعر رخيص = سعة وهمية
     if (tb && /\b(ssd|solid state)\b/i.test(t) && price < tb * 25) return true;     // SSD أرخص من 25 دولار للتيرا
     if (tb && /\b(hard ?(drive|disk)|hdd)\b/i.test(t) && !/\b(enclosure|case|caddy|dock)\b/i.test(t) && price < Math.max(30, tb * 15)) return true;
+    if (/\b[1-9]\d{3,}\s?mp\b/i.test(t)) return true;                                   // كاميرا «2400MP» = مواصفات وهمية
     if (/\b(1:1 (?:copy|replica|quality)|aaa\+? (?:quality|replica|copy)|super ?clone|high ?copy|mirror quality|counterfeit)\b/i.test(t)) return true;
     if (!ACCESSORY_WORDS.test(t.replace(/\b(with|original|in|gift|full|no|retail) box(es)?\b/gi, ''))) for (const [re, max] of BRAND_FAKE) if (re.test(t) && price < max) return true;
     return false;
@@ -1665,10 +1666,12 @@ table.dt { min-width: 0; font-size: .76rem; }
     items = items.filter(it => !looksFake(it));
     if (!INDUSTRIAL.test(en)) items = items.filter(it => !INDUSTRIAL.test(it.title));
     // تيشيرتات مطبوع عليها اسم المنتج (TV Show T-Shirt) إلا إذا كان البحث عن ملابس
-    if (!APPAREL_Q.test(en)) items = items.filter(it => !/\b(t-?shirts?|tshirts?|tees|shirts?|hoodies?|sweatshirts?|baseball caps?|trucker hats?|tank tops?)\b/i.test(it.title));
+    if (!APPAREL_Q.test(en)) items = items.filter(it => !/\b(t-?shirts?|tshirts?|tees|shirts?|hoodies?|sweatshirts?|sweaters?|baseball caps?|trucker hats?|tank tops?)\b/i.test(it.title));
     if (!ACC_QUERY.test(en)) items = items.filter(it => !accFor(it.title, en));
     // ألعاب أطفال على شكل المنتج (معجون أسنان لعبة، مكواة لعبة) إلا إذا كان البحث عن ألعاب أو أطفال
     if (!TOY_Q.test(en)) items = items.filter(it => !/\btoys?\b/i.test(it.title));
+    // ملابس وإكسسوارات الدمى (فستان لدمية بلايث، حذاء باربي) لما يكون البحث عن ملابس حقيقية
+    if (!/doll|barbie|toy/.test(en)) items = items.filter(it => !/\b(blythe|licca|azone|ob(11|22|24|27)|fits (vintage )?(ken|barbie)|for (barbie|ken|blythe)|barbie (shoes|clothes|dress)|dolls?'? (clothes|clothing|outfits?|shoes|dress(es)?|accessor\w+)|(clothes|outfits?|shoes|dress(es)?) for dolls?)\b/i.test(it.title));
     // («with Release Valve» / «with Heating Element» ميزة في الجهاز، مو قطعة)
     if (APPLIANCE_Q.test(en) && !APPL_PART.test(en)) items = items.filter(it => { const t = String(it.title).replace(/\bwith\b[^,|]{0,25}?\b(valves?|thermostats?|heating elements?)\b/gi, ''); return !APPL_PART.test(t) && (/heater|iron|kettle|oven|stove|fryer/.test(en) || !/\bthermostats?\b/i.test(t)); });
     // قطع الجوالات واللابتوبات (شاشة بديلة، غطاء خلفي، كيبورد للآيباد) لما يكون البحث عن الجهاز نفسه
@@ -1689,8 +1692,97 @@ table.dt { min-width: 0; font-size: .76rem; }
     const head = headOf(en).replace(/e?s$/, '');
     const ex = EXCL[head] || (/smart ?watch/.test(en) ? EXCL.smartwatch : null);
     if (ex && !ex.test(en)) items = items.filter(it => !ex.test(it.title));
+    const cr = CHIP[en];
+    if (cr) items = items.filter(it => (!cr[0] || cr[0].test(it.title)) && !(cr[1] && cr[1].test(it.title)));
     return preferStrict(items, en);
   }
+  // ---- قواعد دقيقة لمنتجات «تصفّح الأقسام»: [لازم يطابق، ممنوع يطابق] ----
+  const CHIP = {
+    'tablet pc': [/\b(tablets?|ipad|galaxy tab|tab ?[a-z]?\d|matepad|pad ?\d)\b/i, /\b(candy|steamers?|testers?|docking|bath|shower|aromatherapy|pills?|vitamins?|x431|diagnostic|keyboard and mouse|mouse set|locks?|sleeves?|stands?|holders?|mounts?|stylus|pens?|drawing|writing|cases?|covers?|protectors?|films?|chargers?|cables?|barcode|scanners?|for .{0,25}tablets?)\b/i],
+    'laptop computer': [/\b(laptops?|notebooks?|macbook|chromebook|thinkpad|elitebook|probook|latitude|ideapad|vivobook|zenbook|surface laptop)\b/i, /\b(testers?|diagnostic|piwis|pads?|shield\w*|heat ?pipes?|radiators?|heat ?sinks?|thermal paste|grease|power ?banks?|hinges?|batter(y|ies)|screens?|keyboards?|brackets?|stands?|bags?|backpacks?|sleeves?|cases?|cooling|coolers?|fans?|chargers?|adapters?|locks?|stickers?|skins?|leads?|cords?|cables?|motherboards?|desks?|tables?|mouse)\b/i],
+    'led light bulb': [/\b(bulbs?|lamps?)\b/i, /\b(cars?|w5w|t10|h[47]|strips?|curtains?|fairy|string|horns?|sirens?|motorcycles?|bikes?|toys?|signs?|neon|projectors?|grow)\b/i],
+    'makeup kit': [null, /\b(tattoo|numbing|permanent makeup|microblading|mirrors?|towels?|organi[sz]ers?|bags?|cases?|pouch(es)?|brush (cleaners?|holders?)|guides?|tables?|dressing|rhinestones?|stickers?|gems?|toys?|pretend|kids? (play|toy))\b/i],
+    'soccer ball': [/\b(soccer|football)s?\b.{0,40}\bballs?\b|\bballs?\b.{0,40}\b(soccer|football)\b|\b(soccer|football)\b.{0,30}\bsize [345]\b|\bsize [345]\b.{0,30}\b(soccer|football)\b/i, /\b(gloves?|goals?|nets?|plaques?|gender reveal|powder|keychains?|straws?|cards?|stickers?|pumps?|bags?|racks?|holders?|display|jerseys?|shirts?|toys?|stress|squishy|cakes?|toppers?)\b/i],
+    'coffee scale': [null, /\b(knife|knives|handle scales)\b/i],
+    'perfume': [null, /\b(wax|melters?|burners?|diffusers?|oil warmers?|air fresheners?)\b/i],
+    'hair dryer': [null, /\b(pets?|dogs?|cabinets?|novelty|bedazzled)\b/i],
+    'bracelet': [null, /\b(blanks?)\b/i],
+    'monitor': [null, /\b(earphones?|earplugs?|in-ear|iem|companions?|3d printed|figures?|baby|heart|blood)\b/i],
+    'drone': [null, /\b(detectors?|scanners?|jammers?|plush\w*|murder drones)\b/i],
+    'wireless earbuds': [null, /\b(earplugs?|dispensers?|gift box|thermos|wallet|ear ?tips?)\b/i],
+    'headphones': [null, /\b(bibs?|scarf|scabib|wall art|canvas|prints?|decor|nursery|stands?|hangers?|holders?|ear ?pads?|cushions?|earplugs?)\b/i],
+    'smart watch': [null, /\b(straps?|bands? for|chargers?|charging (cable|dock)|cases?|protectors?|films?)\b/i],
+    'smartphone': [/\b(smart ?phones?|mobile phones?|cell ?phones?|iphone|galaxy|redmi|xiaomi|pixel|oneplus|huawei|honor|oppo|vivo|realme|motorola|moto ?g|nokia|tecno|infinix|poco|xperia|zte|nubia|doogee|blackberry|unlocked)\b/i,
+      /\b(wallets?|clutch|purses?|wristlets?|slabs?|crystals?|e-?cards?|tripods?|brackets?|stands?|holders?|monitors?|compatible|connects? to|control unit|lens(es)?|coolers?|cases?|covers?|mounts?|gimbals?|stabili[sz]ers?|ring lights?|chargers?|cables?|toys?|dummy|models?|driving recorders?|dash ?cams?)\b/i],
+    'tablet': [/\b(tablets?|ipad|galaxy tab|tab ?[a-z]?\d|matepad|pad ?\d)\b/i, /\b(candy|steamers?|testers?|docking|bath|shower|aromatherapy|recipe|pills?|vitamins?|chewable|x431|diagnostic|keyboard and mouse|mouse set|locks?|sleeves?|stands?|holders?|mounts?|stylus|pens?|drawing|writing|lcd writing|for .{0,25}tablets?)\b/i],
+    'laptop': [null, /\b(testers?|diagnostic|piwis|pads?|shield\w*|heat ?pipes?|radiators?|heat ?sinks?|power ?banks?|hinges?|batter(y|ies)|screens?|keyboards?)\b/i],
+    'charger': [null, /\b(mats?|3d printed|scrubbers?|solar panels?|backpacks?|included|switch oled|female to|converters?|connectors?|jump starters?|floor)\b/i],
+    'camera': [null, /\b(bird ?houses?|coasters?|decor|ornaments?|necklaces?|charms?|earrings?|cakes?|cookies?|fish ?finders?|tripods?|stabili[sz]ers?|driving recorders?|dash ?cams?|endoscopes?|borescopes?|probes?|lens caps?|straps?|bags?|batter(y|ies)|chargers?|webcams?|toy cameras?|doorbells?)\b/i],
+    'security camera': [null, /\b(locks?|bird feeders?|reversing|backup|parking|lens(es)?|modules?|boards?|fisheye|brackets?|mounts?|dummy|fake|stickers?|signs?)\b/i],
+    'computer mouse': [/\b(mouse|mice)\b/i, /\b(kvm|switch(es)?|selectors?|brackets?|wrist|mouse ?pads?|mousepads?|pads?|receivers?|feet|skates?|grips?|bungee|traps?)\b/i],
+    'keyboard': [null, /\b(rugs?|desks?|drawers?|(new|for) (hp|lenovo|dell|asus|acer|msi|panasonic|toshiba|sony|samsung|apple|fujitsu)|laptops?|notebooks?|mobile phones?|smartphones?|foot switch|pedals?|membranes?|key panels?|brackets?|risers?|trays?|receivers?|keycaps?|key ?caps|air mouse|remotes?|replacement|for (msi|acer|lenovo|hp|dell|asus|apple|macbook|samsung|toshiba|logitech)|(an|gf|gl|ux|tuf)\d{2,}|piano|musical|organ|midi|covers?|skins?|protectors?|stickers?|yoga book)\b/i],
+    'tv': [null, /\b(range ?finders?|line projectors?|laser levels?|measurement|cards?|merch|mugs?|drama|tv show|dvds?|blu-?ray|tv box|tv stick|set[- ]top|android box|receivers?|tuners?|antennas?|remotes?|wall mounts?|brackets?|stands?|cabinets?)\b/i],
+    'bluetooth speaker': [/\b(speakers?|soundbars?|boombox(es)?)\b/i, /\b(radios?|strollers?|rockers?|saxophones?|instruments?|sooth\w*|white noise|earphones?|earbuds?|headphones?|glasses|projection|translators?|bulbs?|hats?|beanies?|helmets?|cameras?)\b/i],
+    'microphone': [null, /\b(fabric|polyester|prints?|decor|earphones?|earbuds?|earplugs?|headphones?|headsets?|briefs|boxers?|mic(rophone)? stands?|boom arms?|shock mounts?|pop filters?|windscreens?|foam covers?)\b/i],
+    'usb flash drive': [null, /\b(dash ?cams?|dvr|sentry|mixers?|amplifiers?|decod\w+|equali[sz]ers?|calibration|recorders?|mp3 players?|radios?|speakers?|for .{0,30}\b(car|mercedes|bmw|tesla|leapmotor|geely|byd|toyota))\b/i],
+    'memory card': [/\b((micro ?sd|sd|sdhc|sdxc|tf|cf|cfexpress|memory) ?cards?|micro ?sd(hc|xc)?)\b/i, /\b(memorial|funeral|celebration|service cards|share a memory|fans?|cooling|video cards?|graphics|paper|journal|scrapbook|readers?|cases?|holders?|ps2|playstation 2|gamecube|wii)\b/i],
+    'game controller': [null, /\b(pedals?|steering|wheel base|dance mats?|carpets?|stands?|holders?|charging (docks?|stations?)|skins?|thumb ?grips?|stickers?|shells?|replacement|repair|joystick modules?)\b/i],
+    'printer': [/\bprinters?\b/i, /\b(resin|stl|files?|heat ?sinks?|gears?|leads?|cables?|cords?|services?|paper|filament|nozzles?|hotends?|extruders?|toners?|cartridges?|parts?|stands?|covers?|printed)\b/i],
+    'air fryer': [null, /\b(paper|liners?|baking sheets?|silicone (pots?|baskets?|molds?)|accessor\w*|racks?|cheat sheets?|magnets?|cook ?books?|recipe)\b/i],
+    'vacuum cleaner': [null, /\b(bookends?|chalkware|figurines?|ornaments?|motors?|turbines?|tanks?|filters?|brush(es)?|rollers?|bags?|hoses?|nozzles?|batter(y|ies)|chargers?|replacement|parts?|for (tineco|dyson|shark|xiaomi|roborock|ecovacs|irobot|roomba|dreame))\b/i],
+    'blender': [/\b(blenders?|juicers?|food processors?|smoothie makers?|mixers?)\b/i, /\b(fabric|by the yard|cotton|makeup|sponges?|beauty|blending brush|jars? only|blades?|gaskets?|replacement|bottles?|shakers?)\b/i],
+    'coffee machine': [null, /\b(wooden blocks?|decor|signs?|cleaning|descal\w+|tabs|tablets|gaskets?|steam tips?)\b/i],
+    'electric kettle': [null, /\b(hot water bottles?|bed warmers?|heat(ing)? pads?|stew pots?)\b/i],
+    'frying pan': [null, /\b(air fryers?|lids? only|handles? only|splatter|toys?)\b/i],
+    'cooking pot': [null, /\b(deep fat fryers?|chip pans?|flower ?pots?|planters?|plant pots?|garden|ovens?)\b/i],
+    'lamp': [/\b(lamps?|lanterns?|lights?|sconces?|chandeliers?|lighting)\b/i, /\b(for (land cruiser|prado|toyota|car|truck)|endoscopes?|microscopes?|bulbs?|medical|mr16|ba15d|leg lamp|confetti|glitter|headlights?|tail ?lights?|motorcycles?)\b/i],
+    'led light': [/\b(bulbs?|lamps?|downlights?|spotlights?|panel lights?|tube lights?|chandeliers?|ceiling lights?)\b/i, /\b(cars?|w5w|t10|h[47]|strips?|curtains?|fairy|string|horns?|sirens?|chairs?|signs?|shoes|toys?|costumes?|keychains?|helmets?|neon|bikes?|bicycles?|motorcycles?)\b/i],
+    'fan': [/\bfans?\b/i, /\b(motors?|cpu|computer|pc|chassis|radiators?|shrouds?|refrigerat\w+|exhaust|dc ?\d+v|12v|24v|\d-?pin|jerseys?|shirts?|soccer|football|tickets?|programmes?|earrings?|studs|fit|blades?|replacement|hdd|case fans?|ventilation|duct|bearings?|5v|knobs?|blowers?|turbines?|pg|ecl|\d+ ?cm cooling|cooling fan \d+|paper|organza|lace|silk|folding fans?|hand fans?\b(?!.*\b(usb|rechargeable|electric|battery)\b))\b/i],
+    'pillow': [null, /\b(mattress(es)?|sleeping pads?|air mats?)\b/i],
+    'blanket': [null, /\b(horses?|equestrian|saddles?|kang|water circulation)\b/i],
+    'chair': [null, /\b(hats?|pok[eé]mon|points|tables? and \w+ chairs|desks? and chairs?|desk set|tables? and chairs?|headrests?|lumbar|arm ?pads?|armpads|end caps?|plugs|stoppers?|feet|casters?|sliders?|covers?|covering|cushions?|wheels? for)\b/i],
+    'gaming chair': [null, /\b(stoppers?|blocks?|sliders?|mats?|covers?|casters?|cushions?|pillows?)\b/i],
+    'desk': [/\b(desks?|tables?|workstations?)\b/i, /\b(planters?|decor|pla|figurines?|buddy|companions?|desk lamps?|lamps?|organi[sz]ers?|mats?|pads?|risers?|shelf|shelves|calendars?|clocks?|fans?|toys?|plants?)\b/i],
+    'specialty coffee beans': [null, /\b(roasters?|roasting machines?|grinders?|machines?)\b/i],
+    'espresso machine': [null, /\b(planters?|plant pots?|steam tips?|spouts?|wands? only|gaskets?|baskets?|shirts?|cleaning)\b/i],
+    'coffee capsules': [null, /\b(necklaces?|jewel\w*|espresso machines?|coffee makers?|holders?|dispensers?|drawers?|stands?)\b/i],
+    'pour over coffee dripper': [/\b(drippers?|pour[- ]?over|v60|chemex|kalita|origami|drip (cones?|coffee makers?))\b/i, /\b(dosing cups?|cold brew|teapots?|kettles?|filter papers?|paper filters?)\b/i],
+    'french press': [null, /\b(loose leaf|embroidery|designs?|canvas|art|prints?|grinders?)\b/i],
+    'moka pot': [null, /\b(garlands?|ornaments?|beads?)\b/i],
+    'gooseneck kettle': [null, /\b(mugs?|hats?|caps?|line art)\b/i],
+    'milk frother': [null, /\b(espresso machines?|coffee machines?|chocolate makers?)\b/i],
+    'coffee filter paper': [null, /\b(wreaths?|flowers?|lace|ephemera|junk journal|dyed|stained|crafts?|decor)\b/i],
+    'coffee roaster': [null, /\b(drippers?|jig|themes?)\b/i],
+    'dress': [null, /\b(blythe|licca|skipper|shoes?|loafers?|boots?|inflatable|porch goose|dress up|dolls?)\b/i],
+    't-shirt': [null, /\b(tank tops?|sleeveless|vests?|sweatshirts?|piece sets?|2pcs|suits?|shorts set)\b/i],
+    'shirt': [null, /\b((false|faux|fake) collars?|t-?shirts?|t shirts?|tees?|tank tops?|sleeveless|vests?|fake collars?|dickey|sweat\w+)\b/i],
+    'jeans': [null, /\b(shoes?|boots?|t-?shirts?|t shirt|jackets?|jean claude|billie jean|sequin|skirts?|outfits?|two piece|2 piece)\b/i],
+    'jacket': [null, /\b(skirt sets?|pants suits?|fishing vests?|dolls?|barbie|diaper bags?)\b/i],
+    'shoes': [null, /\b(dryers?|cabinets?|racks?|shine|polish|horns?|massagers?|walkers?|walker boots?|outfits?|dolls?|covers?|insoles?|laces?)\b/i],
+    'running shoes': [null, /\b(shine|polish|dryers?|skates?|roller|wheels?|heelys|skateboarding)\b/i],
+    'backpack': [null, /\b(vests?|pets?|cats?|dogs?|diaper bags?)\b/i],
+    'bag': [null, /\b(specimen|laparoscopic|medical|fishing|pva|pets?|dogs?|blind ?bags?|cards?|sensors?|switch(es)?|tea ?bags?|trash|garbage|bin bags?|zip ?lock|storage bags?|vacuum bags?|sleeping bags?|punching bags?|bean ?bags?|sand ?bags?|air ?bags?|gift bags?|paper bags?|poly(thene)? bags?|packaging)\b/i],
+    'wallet': [null, /\b(crossbody bags?|shoulder purses?|crypto|bitcoin|hardware wallets?|ledger|trezor)\b/i],
+    'sunglasses': [/\b(sunglass(es)?|sun glasses|polari[sz]ed|uv ?400|shades)\b/i, /\b(smart|ai|cameras?|bluetooth|translat\w+|headsets?|audio|video|music|calling|golf|blue light|anti[- ]blue|cleaning cloths?|lens cloths?|personali[sz]ed glasses|wine glasses|night vision|driver goggles|anti[- ]high beam)\b/i],
+    'watch': [/\b(watch(es)?|wristwatch(es)?|wrist watch(es)?)\b/i, /\b(golf|counters?|smart ?watch(es)?|oilers?|oil pens?|applicators?|ar glasses|smart glasses|umbrella rope|survival|decoration|pliers?|clamps?|bench|tools?|winders?|straps?|bands?|clocks?|movements?|parts?|crowns?)\b/i],
+    'ring': [/\b(jewel\w*|silver|gold|diamonds?|engagement|wedding|925|sterling|women|men|stones?|gem\w*|zircon|cz|moissanite|titanium|stainless|copper|adjustable|signet|promise|cocktail|opal|ruby|sapphire|emerald|pearl|turquoise|crystals?)\b/i, /\b(arbor|adapters?|ferrite|toroid|cores?|slip rings?|channels?|shafts?|chokes?|nba|champions|wheelchairs?|handrails?|seals?|o ?rings?|coolant|egr|dish(es)?|trays?|holders?|piston|key ?rings?|ring lights?|phone rings?|teethers?|napkin|binders?|boxing|gaskets?)\b/i],
+    'necklace': [null, /\b((false|faux|fake|detachable) collars?|whistles?|edc|lanyards?)\b/i],
+    'earrings': [null, /\b(blank tags?|jewelry making|findings|hooks?|backs|stoppers?|making supplies)\b/i],
+    'makeup': [null, /\b(guides?|fresheners?|artist palettes?|steel palettes?|tattoo|numbing|anesthetic|permanent makeup|microblading|mirrors?|towels?|organi[sz]ers?|bags?|cases?|brush cleaners?)\b/i],
+    'lipstick': [null, /\b(thread|embroidery|leggings|fabric|textile|spandex|signs?|decor|holders?|cases?|organi[sz]ers?|charms?|keychains?)\b/i],
+    'face cream': [null, /\b(lamps?|chandeliers?|cream style|jars?|packaging|bottles?|containers?|empty)\b/i],
+    'toys': [null, /\b(bags?|totes?|fabric|climbing (holds?|stones?|points?|frames?))\b/i],
+    'doll': [null, /\b(haunted|paranormal|caskets?|coffins?|dlc|code only|fits ken|fits barbie|doll clothes|outfits? for|for dolls?|gowns?|jeans|pants|jackets?|jewelry|earrings|necklaces?|car ornaments?|resin|keychains?|pendants?|ornaments?|models?)\b/i],
+    'rc car': [null, /\b(shells?|license plates?|shelves|display|esc|motors?|shafts?|standoffs?|led matrix|panels?|signs?|servos?|receivers?|batter(y|ies)|tires?|tyres?|chassis|body shells?|parts?|snake)\b/i],
+    'bicycle': [null, /\b(mugs?|catalog\w*|engines?|hub disc|modified|playing cards?|cards?|muffler|exhaust|headsets?|gloves?|calipers?|brake (levers?|pads?)|chains?|pedals?|saddles?|seat ?posts?|locks?|pumps?|helmets?|bells?|mirrors?|tyres?|inner tubes?|hammer)\b/i],
+    'electric scooter': [null, /\b(wheelchairs?|mobility|snow\w*|caricature|tricycles?|underwater|sea scooters?|diving|surfboards?|golf carts?|motors?|controllers?|batter(y|ies)|tyres?|tires?|chargers?|parts?)\b/i],
+    'camping tent': [null, /\b(awnings?|car side|lights?|lamps?|flashlights?|heaters?|stoves?|gas bottles?|fabric|piggy banks?|money banks?|signs?|embroidery|chain|stakes?|pegs?|poles?|tarps?)\b/i],
+    'dumbbells': [null, /\b(pendants?|necklaces?|manga|hats?|caps?|books?|volume|handles?|storage racks?|racks?|grips?|clamps?|collars?|locking nuts?|bar screws?)\b/i],
+    'football': [/\b(soccer|football)s?\b.{0,40}\bballs?\b|\bballs?\b.{0,40}\b(soccer|football)\b|\b(soccer|football)\b.{0,30}\bsize [345]\b|\bsize [345]\b.{0,30}\b(soccer|football)\b/i, /\b(gloves?|goals?|nets?|plaques?|gender reveal|powder|roblox|emotes?|panini|prizm|cards?|souvenir|helmets?|crochet|pens?|jerseys?|shirts?|boots?|cleats?|socks|nfl|american football|bowl)\b/i],
+    'pen': [null, /\b(injection|insulin|blending stumps?|refills?|cores?|tubes?|ink cartridges?|stylus)\b/i],
+    'notebook': [/\b(notebooks?|journals?|notepads?|note ?pads?|planners?|diar(y|ies)|exercise books?|composition|jotters?)\b/i, /\b(laptops?|computers?|usb|hubs?|ssd|hard drives?|cameras?|bags?|backpacks?|sleeves?|cases?|refrigerators?|stands?|coolers?|chargers?|adapters?|batter(y|ies)|keyboards?|screens?)\b/i],
+    'colored pencils': [null, /\b(refills?|ballpens?|sharpeners?|stationery sets?|prints?|wall decor|portraits?|pyrography|swatch|reference|books?|paperback|demonstrations)\b/i],
+  };
   // بحث من كلمتين أو أكثر («مطحنة قهوة»): نفضّل المنتجات اللي فيها كل الكلمات، لو كانت كافية
   const STRICT_SKIP = new Set(['for', 'with', 'and', 'the', 'men', 'mens', 'women', 'womens', 'kids', 'set', 'of', 'wrist', 'false', 'ladies', 'unisex', 'portable', 'mini', 'new', 'original']);
   function preferStrict(items, en) {
@@ -2356,12 +2448,12 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   // ================= الأقسام =================
   const CATS = [
-    ['📱 إلكترونيات', [['سماعات لاسلكية', 'wireless earbuds'], ['سماعات رأس', 'headphones'], ['ساعات ذكية', 'smart watch'], ['جوالات', 'smartphone'], ['تابلت', 'tablet'], ['لابتوب', 'laptop'], ['شواحن وباور بانك', 'charger'], ['كفرات جوال', 'phone case'], ['كاميرات', 'camera'], ['كاميرات مراقبة', 'security camera'], ['ماوس', 'computer mouse'], ['كيبورد', 'keyboard'], ['شاشات', 'monitor'], ['تلفزيون وبروجكتر', 'tv'], ['سبيكر بلوتوث', 'bluetooth speaker'], ['مايكروفون', 'microphone'], ['فلاش ميموري', 'usb flash drive'], ['كروت ذاكرة', 'memory card'], ['راوتر', 'wifi router'], ['درون', 'drone'], ['يد تحكم', 'game controller'], ['طابعات', 'printer']]],
-    ['🏠 المنزل والمطبخ', [['قلاية هوائية', 'air fryer'], ['مكنسة', 'vacuum cleaner'], ['خلاط وعصارة', 'blender'], ['مكينة قهوة', 'coffee machine'], ['غلاية', 'electric kettle'], ['مقالي', 'frying pan'], ['قدور', 'cooking pot'], ['إضاءة', 'lamp'], ['لمبات ليد', 'led light'], ['شريط ليد', 'led strip'], ['مراوح', 'fan'], ['ساعات حائط', 'wall clock'], ['مخدات', 'pillow'], ['بطانيات', 'blanket'], ['كراسي', 'chair'], ['كرسي ألعاب', 'gaming chair'], ['مكاتب', 'desk'], ['سجاد صلاة', 'prayer mat']]],
+    ['📱 إلكترونيات', [['سماعات لاسلكية', 'wireless earbuds'], ['سماعات رأس', 'headphones'], ['ساعات ذكية', 'smart watch'], ['جوالات', 'smartphone'], ['تابلت', 'tablet pc'], ['لابتوب', 'laptop computer'], ['شواحن وباور بانك', 'charger'], ['كفرات جوال', 'phone case'], ['كاميرات', 'camera'], ['كاميرات مراقبة', 'security camera'], ['ماوس', 'computer mouse'], ['كيبورد', 'keyboard'], ['شاشات', 'monitor'], ['تلفزيون وبروجكتر', 'tv'], ['سبيكر بلوتوث', 'bluetooth speaker'], ['مايكروفون', 'microphone'], ['فلاش ميموري', 'usb flash drive'], ['كروت ذاكرة', 'memory card'], ['راوتر', 'wifi router'], ['درون', 'drone'], ['يد تحكم', 'game controller'], ['طابعات', 'printer']]],
+    ['🏠 المنزل والمطبخ', [['قلاية هوائية', 'air fryer'], ['مكنسة', 'vacuum cleaner'], ['خلاط وعصارة', 'blender'], ['مكينة قهوة', 'coffee machine'], ['غلاية', 'electric kettle'], ['مقالي', 'frying pan'], ['قدور', 'cooking pot'], ['إضاءة', 'lamp'], ['لمبات ليد', 'led light bulb'], ['شريط ليد', 'led strip'], ['مراوح', 'fan'], ['ساعات حائط', 'wall clock'], ['مخدات', 'pillow'], ['بطانيات', 'blanket'], ['كراسي', 'chair'], ['كرسي ألعاب', 'gaming chair'], ['مكاتب', 'desk'], ['سجاد صلاة', 'prayer mat']]],
     ['☕ القهوة ومعداتها', [['قهوة مختصة', 'specialty coffee beans'], ['قهوة عربية', 'arabic coffee'], ['مكينة إسبريسو', 'espresso machine'], ['مكينة كبسولات', 'capsule coffee machine'], ['كبسولات قهوة', 'coffee capsules'], ['مطحنة قهوة', 'coffee grinder'], ['أدوات تقطير V60', 'pour over coffee dripper'], ['فرنش بريس', 'french press'], ['موكا بوت', 'moka pot'], ['ميزان قهوة', 'coffee scale'], ['غلاية تقطير', 'gooseneck kettle'], ['مخفقة حليب', 'milk frother'], ['تامبر', 'coffee tamper'], ['أدوات باريستا', 'barista tools'], ['فلاتر قهوة', 'coffee filter paper'], ['دلال', 'dallah arabic coffee pot'], ['فناجين', 'arabic coffee cups'], ['ترامس', 'vacuum flask thermos'], ['أكواب قهوة', 'coffee mug'], ['محمصة قهوة', 'coffee roaster'], ['ركوة تركية', 'turkish coffee pot']]],
     ['👗 أزياء', [['فساتين', 'dress'], ['عبايات', 'abaya'], ['حجاب وشيل', 'hijab scarf'], ['تيشيرتات', 't-shirt'], ['قمصان', 'shirt'], ['بناطيل', 'pants'], ['جينز', 'jeans'], ['جاكيتات', 'jacket'], ['هوديات', 'hoodie'], ['أحذية', 'shoes'], ['أحذية رياضية', 'running shoes'], ['شنط ظهر', 'backpack'], ['شنط', 'bag'], ['محافظ', 'wallet'], ['نظارات شمسية', 'sunglasses'], ['ساعات يد', 'watch']]],
-    ['💍 مجوهرات وجمال', [['خواتم', 'ring'], ['قلادات', 'necklace'], ['أساور', 'bracelet'], ['حلق', 'earrings'], ['عطور', 'perfume'], ['مكياج', 'makeup'], ['روج', 'lipstick'], ['كريمات', 'face cream'], ['سشوار', 'hair dryer'], ['مكواة شعر', 'hair straightener'], ['ماكينة حلاقة', 'electric shaver']]],
-    ['🧸 أطفال ورياضة', [['ألعاب', 'toys'], ['دمى', 'doll'], ['ليقو ومكعبات', 'lego'], ['سيارة تحكم', 'rc car'], ['دراجات', 'bicycle'], ['سكوتر', 'electric scooter'], ['خيام', 'camping tent'], ['دمبل', 'dumbbells'], ['كور قدم', 'football'], ['أقلام', 'pen'], ['دفاتر', 'notebook'], ['ألوان', 'colored pencils'], ['شنط مدرسة', 'school backpack']]],
+    ['💍 مجوهرات وجمال', [['خواتم', 'ring'], ['قلادات', 'necklace'], ['أساور', 'bracelet'], ['حلق', 'earrings'], ['عطور', 'perfume'], ['مكياج', 'makeup kit'], ['روج', 'lipstick'], ['كريمات', 'face cream'], ['سشوار', 'hair dryer'], ['مكواة شعر', 'hair straightener'], ['ماكينة حلاقة', 'electric shaver']]],
+    ['🧸 أطفال ورياضة', [['ألعاب', 'toys'], ['دمى', 'doll'], ['ليقو ومكعبات', 'lego'], ['سيارة تحكم', 'rc car'], ['دراجات', 'bicycle'], ['سكوتر', 'electric scooter'], ['خيام', 'camping tent'], ['دمبل', 'dumbbells'], ['كور قدم', 'soccer ball'], ['أقلام', 'pen'], ['دفاتر', 'notebook'], ['ألوان', 'colored pencils'], ['شنط مدرسة', 'school backpack']]],
   ];
   CATS.forEach(([, items]) => items.forEach(([ar, en]) => TR.set(normalize(ar), en)));
   let catOpen = 0;
