@@ -42,7 +42,7 @@ async function toResults(page, off = 0) {
   page.on('pageerror', e => note('pageerror', e.message));
 
   await step('home', async () => {
-    await page.goto(SITE + '?qa=1', { waitUntil: 'networkidle' });
+    await page.goto(SITE + '?qa=1', { waitUntil: 'load' }); await sleep(2500);
     await page.waitForFunction(() => !!window.__qa);
     await sleep(1200);
     await shot(page, '01_home.png');
@@ -76,9 +76,10 @@ async function toResults(page, off = 0) {
       await page.click(`[data-tab="${tab}"]`);
       await sleep(900);
       if (!file) return;
-      await toResults(page);
+      await page.evaluate(() => { const t = document.querySelector('.tabs'); window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 12); });
+      await sleep(600);
       await shot(page, file);
-      if (tab === 'table') { await toResults(page, 500); await shot(page, '05b_table2.png'); }
+      await page.locator('#panel-' + tab).screenshot({ path: path.join(OUT, file.replace('.png', '_panel.png')) }).catch(e => note('panel', e.message));
     });
   }
 
@@ -137,7 +138,7 @@ async function toResults(page, off = 0) {
   });
 
   await step('categories', async () => {
-    await page.goto(SITE + '?qa=1', { waitUntil: 'networkidle' });
+    await page.goto(SITE + '?qa=1', { waitUntil: 'load' }); await sleep(2500);
     await page.waitForFunction(() => !!window.__qa);
     await page.locator('#cats').scrollIntoViewIfNeeded();
     await sleep(500);
@@ -173,7 +174,7 @@ async function toResults(page, off = 0) {
   });
 
   await step('coupons', async () => {
-    await page.goto(SITE + 'coupons.html', { waitUntil: 'networkidle' });
+    await page.goto(SITE + 'coupons.html', { waitUntil: 'load' }); await sleep(2500);
     await sleep(1500);
     await shot(page, '13_coupons.png');
     await page.evaluate(() => window.scrollTo(0, 600)); await sleep(500);
@@ -184,7 +185,7 @@ async function toResults(page, off = 0) {
     const c2 = await browser.newContext(PHONE);
     await c2.addInitScript(() => { try { localStorage.setItem('qarin.lang', 'ar'); } catch (e) {} });
     const p2 = await c2.newPage();
-    await p2.goto(SITE, { waitUntil: 'networkidle' });
+    await p2.goto(SITE, { waitUntil: 'load' }); await sleep(2500);
     await sleep(3500);
     await shot(p2, '14_install.png');
     const hero = p2.locator('#installHero');
