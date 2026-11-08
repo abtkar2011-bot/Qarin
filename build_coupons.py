@@ -57,8 +57,8 @@ def clean(s, n):
 
 
 def rows_from_csv(text):
-    sample = text[:5000]
-    delim = ";" if sample.count(";") > sample.count(",") else ","
+    header = text.split("\n", 1)[0]  # الفاصل نعرفه من سطر العناوين بس (الوصف فيه فواصل كثيرة)
+    delim = ";" if header.count(";") > header.count(",") else ","
     rd = csv.DictReader(io.StringIO(text), delimiter=delim)
     print("csv columns:", rd.fieldnames)
     return list(rd)
