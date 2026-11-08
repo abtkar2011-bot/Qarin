@@ -95,7 +95,7 @@ jobs:
       - name: Put the site together
         run: |
           mkdir -p _site
-          for f in *; do case "$f" in build_feed.py|build_coupons.py|products|history|_site) ;; *) cp -r "$f" _site/ ;; esac; done
+          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|products|history|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
           cp -r products _site/data/s
           echo "files: $(find _site -type f | wc -l)"; du -sh _site

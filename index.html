@@ -1414,19 +1414,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const data = await res.json();
     if (!data.items) throw new Error(data.error || 'eBay error');
     const rng = makeRng('ebay', normalize(query));
-    const enLow = en.toLowerCase();
-    let items = data.items.filter(it => it.price > 0 && safeUrl(it.url));
-    // نخلي بس المنتجات اللي فعلاً نفس اللي يبحث عنه، ونشيل القطع وأدوات التصليح
-    items = items.filter(it => relevant(it.title, enLow));
-    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
-    if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
-    items = noAcc(items, enLow);
-    // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
-    if (items.length >= 4) {
-      const sorted = items.map(it => it.price).sort((a, b) => a - b);
-      const median = sorted[Math.floor(sorted.length / 2)];
-      items = items.filter(it => it.price >= median * 0.2);
-    }
+    qaKeep(query, 'ebay', data.items);
+    const items = cleanEbay(data.items, en.toLowerCase());
     return items.map(it => ({
       platform: 'ebay', title: it.title, price: it.price, sellerRated: true,
       sellerPct: it.sellerPct || null,
@@ -1447,13 +1436,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     const res = await fetch(EBAY_API + 'etsy?q=' + encodeURIComponent(en));
     const data = await res.json();
     if (!data.items) throw new Error(data.error || 'Etsy error');
-    const enLow = en.toLowerCase();
     const rng = makeRng('etsy', normalize(query));
-    let items = data.items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enLow));
-    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
-    if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
-    items = noAcc(items, enLow);
-    if (!DIGITAL.test(enLow)) items = items.filter(it => !DIGITAL.test(it.title));
+    qaKeep(query, 'etsy', data.items);
+    const items = cleanEtsy(data.items, en.toLowerCase());
     if (!items.length) throw new Error('etsy empty');
     etsyLive = true;
     return items.slice(0, Math.max(limit, 50)).map(it => ({
@@ -1680,16 +1665,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     }
     return items;
   }
-  async function fetchAli(query, limit) {
-    const enQ = (toEnglish(query) || '').toLowerCase().trim();
-    if (!enQ) throw new Error('no translation');
-    const liveP = fetchAliLive(enQ);
-    const meta = await aliMeta();
-    const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
-    let idx = [];
-    if (meta) { try { idx = await aliIndexItems(meta, enQ, alts); } catch (e) { idx = []; } }
-    let live = await liveP;
-    if (!meta && !live.length) return fetchAliOld(query, limit);
+  // ===== تنظيف النتائج (دوال بدون اتصال، نفسها تُستخدم في اختبارات الجودة) =====
+  function cleanAli(live, idx, enQ, alts) {
     // القسم لازم يكون فيه نوع المنتج (ساعة ← «Women's Watches»، مو «Hand Tools» أو «Holders & Stands»)
     const heads0 = new Set(alts.map(a => aliTokens(a).pop()).filter(Boolean));
     const catOk = it => it.category && aliTokens(it.category).some(t => heads0.has(t));
@@ -1720,7 +1697,49 @@ table.dt { min-width: 0; font-size: .76rem; }
     const early = items.filter(it => it.pos >= 0 && it.pos <= 8);
     if (early.length >= 12) items = early;
     items.sort((a, b) => b.rel - a.rel);
-    items = items.slice(0, Math.max(limit, 60));
+    return items;
+  }
+  function cleanEbay(raw, enLow) {
+    let items = raw.filter(it => it.price > 0 && safeUrl(it.url));
+    // نخلي بس المنتجات اللي فعلاً نفس اللي يبحث عنه، ونشيل القطع وأدوات التصليح
+    items = items.filter(it => relevant(it.title, enLow));
+    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
+    if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enLow);
+    // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
+    if (items.length >= 4) {
+      const sorted = items.map(it => it.price).sort((a, b) => a - b);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      items = items.filter(it => it.price >= median * 0.2);
+    }
+    return items;
+  }
+  function cleanEtsy(raw, enLow) {
+    let items = raw.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enLow));
+    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
+    if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
+    items = noAcc(items, enLow);
+    if (!DIGITAL.test(enLow)) items = items.filter(it => !DIGITAL.test(it.title));
+    return items;
+  }
+  // وضع اختبار الجودة (?qa=1): نحفظ النتائج الخام قبل التنظيف
+  const QA = /[?&]qa=1\b/.test(location.search), QA_RAW = {};
+  function qaKeep(query, src, items) {
+    if (!QA) return;
+    const k = normalize(query); (QA_RAW[k] = QA_RAW[k] || {})[src] = (items || []).map(it => [String(it.title || ''), it.price || 0, it.category || '', it.id || '', safeUrl(it.url) ? 1 : 0, it.live ? 1 : 0]);
+  }
+  async function fetchAli(query, limit) {
+    const enQ = (toEnglish(query) || '').toLowerCase().trim();
+    if (!enQ) throw new Error('no translation');
+    const liveP = fetchAliLive(enQ);
+    const meta = await aliMeta();
+    const alts = [enQ, ...(ALI_ALT[enQ] || [])].slice(0, 4);
+    let idx = [];
+    if (meta) { try { idx = await aliIndexItems(meta, enQ, alts); } catch (e) { idx = []; } }
+    const live = await liveP;
+    if (!meta && !live.length) return fetchAliOld(query, limit);
+    qaKeep(query, 'ali', live); qaKeep(query, 'idx', idx);
+    let items = cleanAli(live, idx, enQ, alts).slice(0, Math.max(limit, 60));
     if (!items.length) throw new Error('ali empty');
     aliLive = true;
     const rng = makeRng('aliexpress', normalize(query));
@@ -2598,6 +2617,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
 
   function init() {
+    if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache };
     $('heroChips').innerHTML = KEYS.map(k => `<span class="chip"><i style="background:${PLATFORMS[k].color}"></i>${PLATFORMS[k].name}</span>`).join('');
     $('chips').innerHTML = SUGGESTIONS.map(s => `<button type="button" class="chip-btn" data-q="${esc(s)}">${esc(s)}</button>`).join('');
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>

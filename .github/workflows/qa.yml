@@ -1,0 +1,64 @@
+name: Qarin quality test
+
+# يشغّل الموقع (نسخة فرع qa-run) على كل كلمات القاموس، ويحفظ التقرير في فرع qa-report.
+# أول تشغيل يسجّل ردود السيرفر، والباقي يعيدها من التسجيل (عشان ما نستهلك حصة إيباي).
+on:
+  push:
+    branches: [qa-run]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: qa
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install browser
+        run: |
+          npm i --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+
+      - name: Restore recorded responses
+        uses: actions/cache/restore@v4
+        with:
+          path: qa-rec
+          key: qa-rec-${{ github.run_id }}
+          restore-keys: qa-rec-
+
+      - name: Run quality test
+        env:
+          PAGES: "3"
+          REC_DIR: qa-rec
+          OUT: qa-out
+        run: node qa/run.js
+
+      - name: Save recorded responses
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: qa-rec
+          key: qa-rec-${{ github.run_id }}
+
+      - name: Publish report
+        if: always()
+        run: |
+          set -e
+          mkdir -p /tmp/rep && cp qa-out/* /tmp/rep/ 2>/dev/null || true
+          cd /tmp/rep
+          git init -q -b qa-report
+          git config user.name "qarin-qa"; git config user.email "qa@users.noreply.github.com"
+          echo "${GITHUB_SHA}" > source-commit.txt
+          git add -A && git commit -q -m "QA report for ${GITHUB_SHA}"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" qa-report
