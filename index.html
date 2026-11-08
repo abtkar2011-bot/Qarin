@@ -479,6 +479,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 
 /* ---------- سلة المستخدم ---------- */
 .cart-btn { margin-top: 6px; width: 100%; border: 1px dashed var(--accent); background: var(--surface); color: var(--accent-strong); border-radius: 12px; padding: 8px 10px; font: inherit; font-weight: 800; cursor: pointer; }
+.pre-search .prio-bar { display: none; }
 .img-btn { flex: none; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 0 14px; font-size: 20px; cursor: pointer; }
 .tools-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
 .tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }
@@ -572,7 +573,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 }
 </style>
 </head>
-<body>
+<body class="pre-search">
 
 <div class="app" id="app" dir="rtl" lang="ar">
   <aside class="sidebar" id="sidebar" aria-label="الفلاتر والإعدادات">
@@ -2190,6 +2191,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   let searchId = 0;
   async function search(query, instant) {
     query = query.trim();
+    if (query) document.body.classList.remove('pre-search');
     const status = $('status');
     if (!query) {
       status.innerHTML = '<div class="status warn">اكتب اسم المنتج الذي تبحث عنه أولًا.</div>';
@@ -2278,6 +2280,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     queries = queries.map(q => q.trim()).filter(Boolean).slice(0, BK_MAX);
     const status = $('status');
     if (queries.length < 2) { status.innerHTML = '<div class="status warn">اكتب منتجين على الأقل في خانات السلة.</div>'; return; }
+    document.body.classList.remove('pre-search');
     const id = ++searchId;
     state.mode = 'basket'; state.query = queries.join(' + '); state.basket = { queries, data: null }; state.loading = true;
     track('basket', state.query);
@@ -2560,9 +2563,6 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (fromApp && !isStandalone() && !IN_APP) {
       if (IS_IOS) setTimeout(openInstall, 900); else setTimeout(() => { $('instBar').hidden = false; }, 900);
     } else setTimeout(maybeShowInstBar, 4000);
-    // رابط مباشر لبحث: ?q=سماعات
-    const q0 = (new URLSearchParams(location.search).get('q') || '').trim().slice(0, 80);
-    if (q0) search(q0, false);
     $('favFab').addEventListener('click', () => { renderFavs(); openModal('favModal'); });
     $('cmpGo').addEventListener('click', () => { if (cmp.length >= 2) { renderCmp(); openModal('cmpModal'); } });
     $('cmpClear').addEventListener('click', () => { cmp = []; updateCmpBar(); render(); });
@@ -2681,7 +2681,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     setPrio(state.priority);
     setCurrency(state.currency);
     applyLang();
-    search(SUGGESTIONS[0], true);  // يفتح الموقع على بحث جاهز كمثال
+    // رابط مباشر لبحث: ?q=سماعات (غير كذا ما نبحث تلقائي، الزائر يبحث بنفسه)
+    const q0 = (new URLSearchParams(location.search).get('q') || '').trim().slice(0, 80);
+    if (q0) search(q0, false);
   }
 
   init();
