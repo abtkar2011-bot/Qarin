@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>كوبونات وعروض اليوم | قارِن</title>
+<meta name="description" content="كوبونات وأكواد خصم وعروض رسمية محدّثة يوميًا لعلي إكسبريس ومتاجر ثانية. انسخ الكود واحصل على الخصم. مجاني من قارِن.">
+<link rel="canonical" href="https://abtkar2011-bot.github.io/Qarin/coupons.html">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#7C3AED">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://abtkar2011-bot.github.io/Qarin/icons/apple-touch-icon.png?v=4">
+<meta property="og:title" content="كوبونات وعروض اليوم — قارِن">
+<meta property="og:image" content="https://abtkar2011-bot.github.io/Qarin/icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+:root {
+  --bg: #F6F5FB; --surface: #FFFFFF; --surface-2: #F1EEF9; --fg: #1F2937; --muted: #6B6880; --line: #E6E2F1;
+  --accent: #7C3AED; --accent-strong: #5B21B6; --good: #047857; --warn: #B45309;
+  --shadow: 0 4px 18px rgba(76, 29, 149, 0.07);
+  --font: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F0D17; --surface: #1A1726; --surface-2: #231F33; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+    --accent: #A78BFA; --accent-strong: #C4B5FD; --good: #34D399; --warn: #FBBF24; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F0D17; --surface: #1A1726; --surface-2: #231F33; --fg: #ECEAF5; --muted: #A7A2BC; --line: #2F2A45;
+  --accent: #A78BFA; --accent-strong: #C4B5FD; --good: #34D399; --warn: #FBBF24; --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.7; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 14px; }
+.hero { border-radius: 24px; padding: 22px 24px; color: #FFFFFF; background: linear-gradient(120deg, #6D28D9 0%, #A21CAF 45%, #DB2777 72%, #F59E0B 100%); }
+.hero h1 { margin: 0 0 4px; font-size: 1.8rem; font-weight: 800; line-height: 1.4; }
+.hero p { margin: 0; opacity: .95; }
+.back { display: inline-block; margin-top: 10px; color: #FFFFFF; font-weight: 800; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); padding: 4px 14px; border-radius: 999px; text-decoration: none; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar input { flex: 1 1 220px; min-width: 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 700; font-size: .88rem; cursor: pointer; }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #FFFFFF; }
+.count { color: var(--muted); font-size: .9rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.cp { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.cp-top { display: flex; align-items: center; gap: 10px; }
+.cp-top img { width: 44px; height: 44px; border-radius: 10px; object-fit: contain; background: #FFFFFF; flex: none; }
+.cp-store { font-weight: 800; font-size: .9rem; }
+.cp-exp { font-size: .78rem; color: var(--muted); }
+.cp-exp.soon { color: var(--warn); font-weight: 800; }
+.cp-disc { margin-inline-start: auto; background: #DC2626; color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 3px 10px; font-size: .9rem; white-space: nowrap; direction: ltr; }
+.cp-t { font-weight: 800; line-height: 1.45; direction: auto; unicode-bidi: plaintext; }
+.cp-d { color: var(--muted); font-size: .85rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; direction: auto; unicode-bidi: plaintext; }
+.cp-acts { display: flex; gap: 8px; margin-top: auto; }
+.code { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 6px; border: 2px dashed var(--accent); border-radius: 12px; padding: 6px 6px 6px 12px; background: var(--surface-2); font: inherit; color: var(--fg); cursor: pointer; }
+.code b { direction: ltr; letter-spacing: 1px; font-family: ui-monospace, Menlo, monospace; }
+.code span { background: var(--accent); color: #FFFFFF; border-radius: 8px; padding: 3px 10px; font-weight: 800; font-size: .82rem; white-space: nowrap; }
+.nocode { flex: 1; display: flex; align-items: center; color: var(--good); font-weight: 800; font-size: .88rem; }
+.go { display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px; border-radius: 12px; background: linear-gradient(90deg, #DB2777, #7C3AED); color: #FFFFFF; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.empty { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; text-align: center; color: var(--muted); }
+.note { color: var(--muted); font-size: .82rem; text-align: center; }
+.note a { color: var(--accent-strong); font-weight: 700; }
+.toast { position: fixed; z-index: 9; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 800; display: none; }
+.toast.on { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>🎟️ كوبونات وعروض اليوم</h1>
+    <p>أكواد خصم وعروض رسمية تتحدّث كل يوم. انسخ الكود، وافتح العرض، والصقه وقت الدفع.</p>
+    <a class="back" href="./">← ارجع للبحث في قارِن</a>
+  </header>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="🔎 دوّر في الكوبونات (مثلًا: 11.11 أو شحن)" aria-label="دوّر في الكوبونات">
+    <span class="count" id="count"></span>
+  </div>
+  <div class="chips" id="stores"></div>
+  <div class="grid" id="list"><div class="empty">جارِ تحميل الكوبونات...</div></div>
+  <p class="note">الكوبونات من برامج التسويق الرسمية للمتاجر، وقد يحصل قارِن على عمولة صغيرة لما تشتري منها بدون أي زيادة عليك. الشروط النهائية حسب صفحة المتجر. · <a href="./">الصفحة الرئيسية</a> · <a href="privacy.html">الخصوصية</a></p>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const safe = u => /^https:\/\//.test(u || '') ? u.replace(/"/g, '%22') : '';
+  let all = [], store = '';
+  function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2200); }
+  function daysLeft(e) { if (!e) return null; const d = Math.ceil((new Date(e + 'T23:59:59Z') - Date.now()) / 864e5); return d; }
+  function card(c, i) {
+    const d = daysLeft(c.e);
+    const exp = d == null ? 'بدون تاريخ انتهاء' : d <= 0 ? 'ينتهي اليوم' : d === 1 ? 'ينتهي بكرة' : `ينتهي بعد ${d} يوم`;
+    return `<article class="cp">
+      <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
+      <div class="cp-t">${esc(c.t)}</div>
+      ${c.d && c.d !== c.t ? `<div class="cp-d">${esc(c.d)}</div>` : ''}
+      <div class="cp-acts">${c.c ? `<button type="button" class="code" data-i="${i}"><b>${esc(c.c)}</b><span>📋 انسخ</span></button>` : '<div class="nocode">✅ ما يحتاج كود، الخصم يطبّق تلقائي</div>'}
+        <a class="go" href="${safe(c.u)}" target="_blank" rel="sponsored noopener noreferrer">اذهب للعرض ↗</a></div>
+    </article>`;
+  }
+  function render() {
+    const q = $('q').value.trim().toLowerCase();
+    const list = all.map((c, i) => [c, i]).filter(([c]) => (!store || c.s === store) && (!q || (c.t + ' ' + c.d + ' ' + c.s + ' ' + c.c).toLowerCase().includes(q)));
+    $('count').textContent = `${list.length} كوبون`;
+    $('list').innerHTML = list.length ? list.map(([c, i]) => card(c, i)).join('') : '<div class="empty">ما فيه كوبونات تطابق بحثك.</div>';
+  }
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch (e2) { /* تجاهل */ } ta.remove(); return ok;
+    }
+  }
+  $('list').addEventListener('click', async e => {
+    const b = e.target.closest('.code'); if (!b) return;
+    const c = all[+b.dataset.i]; if (!c) return;
+    if (await copy(c.c)) { toast('✅ انتسخ الكود: ' + c.c); b.querySelector('span').textContent = '✓ انتسخ'; }
+  });
+  $('stores').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; store = b.dataset.s; [...$('stores').children].forEach(x => x.classList.toggle('on', x === b)); render(); });
+  $('q').addEventListener('input', render);
+  fetch('coupons.json?v=' + new Date().toISOString().slice(0, 13), { cache: 'no-cache' }).then(r => r.json()).then(d => {
+    all = (d && d.coupons) || [];
+    if (!all.length) { $('list').innerHTML = '<div class="empty">🎟️ الكوبونات توصل قريب. ارجع لنا بكرة!</div>'; $('count').textContent = ''; return; }
+    const counts = {}; all.forEach(c => { if (c.s) counts[c.s] = (counts[c.s] || 0) + 1; });
+    const names = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    $('stores').innerHTML = `<button type="button" class="chip on" data-s="">الكل (${all.length})</button>` + names.map(n => `<button type="button" class="chip" data-s="${esc(n)}">${esc(n)} (${counts[n]})</button>`).join('');
+    render();
+  }).catch(() => { $('list').innerHTML = '<div class="empty">ما قدرنا نحمّل الكوبونات الحين. جرّب بعد شوي.</div>'; });
+})();
+</script>
+</body>
+</html>
