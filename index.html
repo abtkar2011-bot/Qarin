@@ -482,7 +482,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 .pre-search .prio-bar { display: none; }
 .img-btn { flex: none; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 0 14px; font-size: 20px; cursor: pointer; }
 .tools-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
-.tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }
+.tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 800; cursor: pointer; }
 .tool-btn small { font-weight: 600; color: var(--muted); font-size: .78rem; }
 .tool-btn[aria-expanded="true"] { background: var(--tint-1); border-color: var(--accent); }
 .basket-box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; margin-bottom: 14px; }
@@ -491,12 +491,10 @@ table.dt { min-width: 0; font-size: .76rem; }
 .bb-inputs { display: grid; gap: 8px; }
 .bb-row { display: flex; align-items: center; gap: 8px; }
 .bb-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint-1); color: var(--accent-strong); font-weight: 800; flex: none; }
-.bb-in { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font: inherit; }
+.bb-in { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; }
 .bb-del { border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px; }
 .bb-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.bk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.bk-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
-.bk-card.win { border: 2px solid #F59E0B; box-shadow: 0 0 0 4px rgba(245,158,11,.15); }
+.bsk .bk-card.win { border: 2px solid #F59E0B; box-shadow: 0 0 0 4px rgba(245,158,11,.15); }
 .bk-card header { padding: 12px 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .bk-card header b { flex: 1; font-size: 1.05rem; }
 .bk-tag { background: #FFFFFF; color: #1F1147; border-radius: 999px; padding: 3px 10px; font-size: .76rem; font-weight: 800; }
@@ -504,15 +502,14 @@ table.dt { min-width: 0; font-size: .76rem; }
 .bk-items li { display: flex; gap: 10px; align-items: center; }
 .bk-items img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); }
 .bk-q { display: inline-block; font-size: .72rem; font-weight: 800; color: var(--accent-strong); background: var(--tint-1); border-radius: 999px; padding: 1px 8px; margin-bottom: 2px; }
-.bk-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--text); text-decoration: none; font-size: .82rem; font-weight: 600; line-height: 1.3; }
+.bk-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--fg); text-decoration: none; font-size: .82rem; font-weight: 600; line-height: 1.3; }
 .bk-m { font-size: .8rem; color: var(--muted); }
-.bk-m b { color: var(--text); }
+.bk-m b { color: var(--fg); }
 .bk-items li.miss { opacity: .6; }
-.bk-total { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
-.bk-total b { font-size: 1.2rem; }
+.bsk .bk-total { border-top: 1px solid var(--line); }
 .bk-acts { display: flex; gap: 8px; padding: 0 12px 12px; }
-.bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); }
-.share-btn { margin-top: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
+.bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
+.share-btn { margin-top: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
 .cart-btn.on { background: var(--tint-1); color: var(--good); border-style: solid; border-color: var(--good); }
 .best-card .row .cart-btn { width: auto; margin: 6px 0 0; padding: 12px 18px; }
 .cart-row .tt { color: inherit; text-decoration: none; }
@@ -1020,7 +1017,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const fmt = (n, d) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
   function normalize(t) {
-    return t.trim().toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[إأآ]/g, 'ا')
+    return t.trim().toLowerCase().replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632)).replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/[ً-ْـ]/g, '').replace(/[إأآ]/g, 'ا')
       .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
   }
   function detectCategory(query) {
@@ -1324,6 +1321,73 @@ table.dt { min-width: 0; font-size: .76rem; }
     "عطر عود": "oud perfume", "بخور عود": "oud incense", "عطر مسك": "musk perfume", "مسك ابيض": "white musk perfume",
     "بدله": "suit", "مفكره": "planner", "ورق جدران": "wallpaper", "ملصقات جدران": "wall stickers",
     "طاقه شمسيه": "solar panel", "لوح شمسي": "solar panel", "شاحن شمسي": "solar charger",
+    // تصحيحات من اختبار الجودة (عبارات كانت تترجم غلط)
+    "لوحه مفاتيح": "keyboard", "لوحه ماوس": "mouse pad", "لوحه رسم": "drawing tablet", "لوحه رسم الكترونيه": "drawing tablet",
+    "ساعه ابل": "apple watch", "ساعه ذهب": "gold watch", "ساعه فضه": "silver watch", "خاتم فضه": "silver ring", "خاتم ذهب": "gold ring",
+    "سلسال ذهب": "gold necklace", "سلسال فضه": "silver necklace", "يد بلايستيشن": "ps5 controller", "ذراع بلايستيشن": "ps5 controller",
+    "يد سوني": "ps5 controller", "يد اكس بوكس": "xbox controller", "كفر ايفون": "iphone case", "كفر سامسونج": "samsung case",
+    "لزقه جوال": "screen protector", "لزقه شاشه": "screen protector", "ستاند جوال": "phone stand", "نعال": "slippers", "نعال رجالي": "men slippers",
+    "جزمه": "shoes", "جزمه رجالي": "men shoes", "طقم قدور": "cookware set", "عصاره": "juicer", "كاتل": "electric kettle",
+    "بروجكتر": "projector", "بروجيكتور": "projector", "باور بانك": "power bank", "سماعه سياره": "car speaker", "سماعات سياره": "car speakers",
+    "لابتوب العاب": "gaming laptop", "لابتوب قيمنق": "gaming laptop", "كرسي العاب": "gaming chair", "ماوس العاب": "gaming mouse",
+    "سماعه العاب": "gaming headset", "سماعات العاب": "gaming headset", "كيبورد العاب": "gaming keyboard", "شاشه العاب": "gaming monitor",
+    "كمبيوتر العاب": "gaming pc", "جهاز العاب": "game console", "جيمنج": "gaming", "قيمنج": "gaming", "جيمنق": "gaming",
+    // ---- إضافات من اختبار الكلمات المنتشرة ----
+    "اير فراير": "air fryer", "ايرفراير": "air fryer", "قلايه زيت": "deep fryer", "قلايه عميقه": "deep fryer",
+    "بطاقه رسومات": "graphics card", "بطاقه شاشه": "graphics card", "رام": "ram memory", "رامات": "ram memory", "هارد خارجي": "external hard drive",
+    "فلاش ميموري": "usb flash drive", "كرت ميموري": "memory card", "كرت ذاكره": "memory card", "بطاقه ذاكره": "memory card",
+    "جيمبل": "gimbal stabilizer", "مثبت جوال": "phone gimbal stabilizer", "مثبت كاميرا": "camera gimbal stabilizer",
+    "كمبروسر هواء": "air compressor", "بوستر بطاريه": "car jump starter", "اشتراك بطاريه": "car jump starter", "بوستر سياره": "car jump starter",
+    "جمب ستارتر": "car jump starter", "فرش سياره": "car seat covers", "دواسات سياره": "car floor mats", "تلميع سياره": "car polish",
+    "فلتر هواء": "air filter", "مدفاه": "heater", "مايكرويف": "microwave", "مايكروويف": "microwave",
+    "محمصه خبز": "toaster", "صانعه سندويش": "sandwich maker", "صانعه ساندويش": "sandwich maker", "ساندويش ميكر": "sandwich maker",
+    "وافل": "waffle maker", "صانعه وافل": "waffle maker", "طباخه رز": "rice cooker", "حله رز": "rice cooker", "قدر رز": "rice cooker",
+    "منقل": "charcoal grill", "فحم": "bbq charcoal", "عده تخييم": "camping gear", "سناره صيد": "fishing rod", "صيد": "fishing",
+    "دراجه هوائيه": "bicycle", "دامبلز": "dumbbells", "دمبلز": "dumbbells", "اثقال": "dumbbells", "كوره قدم": "football",
+    "مضرب بادل": "padel racket", "مضرب": "racket", "سياره ريموت": "rc car", "عربانه اطفال": "baby stroller", "عربانه": "baby stroller",
+    "ببرونه": "baby bottle", "اقلام تلوين": "colored pencils", "احمر شفايف": "lipstick", "احمر شفاه": "lipstick", "رموش صناعيه": "false eyelashes",
+    "اكستنشن شعر": "hair extensions", "وصلات شعر": "hair extensions", "فير": "hair removal cream", "ترمر": "hair trimmer",
+    "بيالات": "tea glasses", "استكانات": "tea glasses", "ابريق شاي": "teapot", "شاي": "tea", "تمر": "dates fruit", "تمور": "dates fruit",
+    "عسل": "honey", "زعفران": "saffron", "عود": "oud", "مسك": "musk perfume", "مصلى": "prayer mat", "قران": "quran", "مسباح": "prayer beads",
+    "عمامه": "turban", "بشت": "bisht", "بوكسر": "men boxer briefs", "شراريب": "socks", "كعب": "high heels", "بوت": "boots", "سوار": "bracelet",
+    "مجوهرات": "jewelry", "اكسسوارات": "fashion accessories", "اكسسوارات نسائيه": "women fashion accessories", "صندوق تخزين": "storage box",
+    "تعليقه": "clothes hanger", "نبته": "artificial plants", "نباتات صناعيه": "artificial plants", "تلفاز": "tv", "كمبيوتر": "desktop computer",
+    "سوني 5": "playstation 5", "سوني ٥": "playstation 5", "كاميرا تصوير": "digital camera", "قو برو": "gopro action camera", "شاحن سريع": "fast charger",
+    "سلك شاحن": "charging cable", "سلك": "cable", "ايرتاق": "apple airtag", "اير تاق": "apple airtag", "متتبع": "gps tracker", "جهاز تتبع": "gps tracker",
+    "تمارين": "fitness equipment", "بروتين": "protein powder", "مكملات": "supplements", "فيتامين": "vitamins", "فيتامينات": "vitamins", "كرياتين": "creatine",
+    "طقم رياضي": "tracksuit", "العاب بنات": "girls toys", "العاب اولاد": "boys toys", "قطار": "toy train", "مسبح": "inflatable swimming pool",
+    "مسبح اطفال": "kids pool", "ارجوحه": "swing", "زحليقه": "kids slide", "قطه": "cat supplies", "عصفور": "bird cage", "اواني": "cookware set",
+    "طقم اواني": "cookware set", "قدور": "cooking pot", "طاوه": "frying pan", "ميكسر": "hand mixer", "غلايه ماء": "electric kettle",
+    "مكيف سبليت": "split air conditioner", "بوتجاز": "gas stove", "طباخ": "gas stove", "فرن غاز": "gas oven", "منظم مطبخ": "kitchen organizer",
+    "ادوات حمام": "bathroom accessories", "فوط": "towels", "عده": "tool kit", "عده نجاره": "woodworking tools", "سلم": "ladder", "فيش": "plug adapter",
+    "توصيله كهرباء": "power strip", "مشترك كهرباء": "power strip", "كاميرا جرس": "video doorbell", "خزنه": "safe box", "رف": "shelf", "جزامه": "shoe rack",
+    "ستاند تلفزيون": "tv stand", "ستاند لابتوب": "laptop stand", "ورد": "artificial flowers", "رمضان": "ramadan", "عيد ميلاد": "birthday",
+    "بالونات عيد ميلاد": "birthday balloons", "قالب كيك": "cake mold", "ادوات خبز": "baking tools", "ادوات الخبز": "baking tools",
+    // ماركات
+    "كانون": "canon", "نيكون": "nikon", "سوني": "sony", "فوجي": "fujifilm", "هونر": "honor", "ريلمي": "realme", "ون بلس": "oneplus", "نوكيا": "nokia",
+    "لينوفو": "lenovo", "ديل": "dell", "اتش بي": "hp", "ايسر": "acer", "اسوس": "asus", "لوجيتك": "logitech", "ريزر": "razer", "انكر": "anker",
+    "بيسوس": "baseus", "جي بي ال": "jbl", "بوز": "bose", "بيتس": "beats", "فيليبس": "philips", "براون": "braun", "تيفال": "tefal", "مولينكس": "moulinex",
+    "كينوود": "kenwood", "ديلونجي": "delonghi", "هايسنس": "hisense", "ال جي": "lg", "باناسونيك": "panasonic", "نايكي": "nike", "نايك": "nike",
+    "اديداس": "adidas", "بوما": "puma", "سكيتشرز": "skechers", "كاسيو": "casio", "جارمن": "garmin", "امازفيت": "amazfit", "دايسون": "dyson",
+    // ☕ القهوة ومعداتها
+    "قهوه": "coffee", "قهوه مختصه": "specialty coffee beans", "قهوه عربيه": "arabic coffee", "قهوه تركيه": "turkish coffee", "بن": "coffee beans",
+    "حبوب قهوه": "coffee beans", "قهوه مطحونه": "ground coffee", "قهوه سريعه": "instant coffee", "نسكافيه": "instant coffee", "هيل": "cardamom",
+    "كبسولات نسبريسو": "nespresso capsules", "نسبريسو": "nespresso", "دولتشي قوستو": "dolce gusto capsules", "دولتشي غوستو": "dolce gusto capsules",
+    "مكينه كبسولات": "capsule coffee machine", "ماكينه كبسولات": "capsule coffee machine", "مكينه اسبريسو": "espresso machine", "ماكينه اسبريسو": "espresso machine",
+    "اسبريسو": "espresso machine", "مكينه قهوه تركيه": "turkish coffee machine", "مكينه قهوه عربيه": "arabic coffee maker", "مكينه تقطير": "drip coffee maker",
+    "مكينه قهوه امريكيه": "drip coffee maker", "مطحنه يدويه": "manual coffee grinder", "مطحنه قهوه يدويه": "manual coffee grinder",
+    "في ستي": "v60 coffee dripper", "في 60": "v60 coffee dripper", "تقطير": "pour over coffee dripper", "قمع تقطير": "pour over coffee dripper",
+    "دريبر": "pour over coffee dripper", "ادوات تقطير": "pour over coffee set", "قهوه مقطره": "pour over coffee set", "فرنش بريس": "french press",
+    "فرنش برس": "french press", "مكبس قهوه": "french press", "موكا بوت": "moka pot", "موكا": "moka pot", "ايروبرس": "aeropress", "ايرو برس": "aeropress",
+    "كيمكس": "chemex", "ميزان قهوه": "coffee scale", "غلايه تقطير": "gooseneck kettle", "ابريق تقطير": "gooseneck kettle", "غلايه رقبه": "gooseneck kettle",
+    "مخفقه حليب": "milk frother", "رغوه حليب": "milk frother", "مزبد حليب": "milk frother", "فرادر": "milk frother", "ابريق حليب": "milk frothing pitcher",
+    "بتشر": "milk frothing pitcher", "تامبر": "coffee tamper", "مدك قهوه": "coffee tamper", "كابس قهوه": "coffee tamper", "بورتافلتر": "portafilter",
+    "بورتافيلتر": "portafilter", "فلاتر قهوه": "coffee filter paper", "فلتر قهوه": "coffee filter paper", "ورق فلتر": "coffee filter paper",
+    "محمصه قهوه": "coffee roaster", "ركوه": "turkish coffee pot", "كنكه": "turkish coffee pot", "جزوه": "turkish coffee pot", "دله تركيه": "turkish coffee pot",
+    "كولد برو": "cold brew coffee maker", "ترامس": "vacuum flask thermos", "ترمس قهوه": "coffee thermos",
+    "دلال": "dallah arabic coffee pot", "دله قهوه": "dallah arabic coffee pot", "فناجين قهوه": "arabic coffee cups", "اكواب قهوه": "coffee mug",
+    "ادوات باريستا": "barista tools", "باريستا": "barista tools", "نوك بوكس": "coffee knock box", "سيفون قهوه": "coffee siphon",
+    "ستيك سيلفي": "selfie stick", "عصا سيلفي": "selfie stick", "حامل كاميرا": "tripod", "ترايبود": "tripod",
   });
   const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
   // ترجمة البحث: نلقط كل كلمات المعجم الموجودة (الأطول أول)، بشرط تكون كلمة كاملة
@@ -1348,6 +1412,7 @@ table.dt { min-width: 0; font-size: .76rem; }
         break;
       }
     }
+    found.rest = rest;
     return found;
   }
   // المفرد والجمع: لو كلمة ما لها ترجمة، نجرب مفردها أو جمعها («شواحن» ← «شاحن»، «طاولات» ← «طاوله»، «سماعه» ← «سماعات»)
@@ -1359,6 +1424,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     'مكيفات': 'مكيف', 'دراجات': 'دراجه', 'سيارات': 'سياره', 'مطاحن': 'مطحنه', 'مكاين': 'مكينه', 'ماكينات': 'ماكينه', 'اكياس': 'كيس',
     'صناديق': 'صندوق', 'رفوف': 'رف', 'خزائن': 'خزانه', 'دواليب': 'دولاب', 'اسرة': 'سرير', 'اسره': 'سرير', 'كنب': 'كنبه', 'مرايات': 'مرايه',
     'مرايا': 'مرايه', 'اباريق': 'ابريق', 'فناجين': 'فنجان', 'كاسات': 'كاس', 'زجاجات': 'زجاجه', 'قوارير': 'قاروره', 'ملابس': 'ملابس' };
+  // كلمات الموديل والمقاس تبقى بمكانها بعد اسم المنتج: «ايفون ١٥ برو ماكس» ← iphone 15 pro max
+  const AR_MOD = { 'برو': 'pro', 'ماكس': 'max', 'الترا': 'ultra', 'اير': 'air', 'ميني': 'mini', 'بلس': 'plus', 'لايت': 'lite',
+    'نوت': 'note', 'فولد': 'fold', 'فليب': 'flip', 'سيريس': 'series', 'انش': 'inch', 'انج': 'inch', 'بوصه': 'inch', 'جيجا': 'gb', 'قيقا': 'gb',
+    'جيجابايت': 'gb', 'تيرا': 'tb', 'تيرابايت': 'tb', 'واط': 'w', 'هيرتز': 'hz' };
   function arLemma(w) {
     for (const pre of AR_PRE) {
       if (pre && !w.startsWith(pre)) continue;
@@ -1375,19 +1444,31 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   const toEnglish = q => {
     let n = normalize(q);
+    toEnglish.dropped = [];
     if (TR.has(n)) return TR.get(n);
     const src = queryLang(q);
     if (src === 'en') return q;
     if (src !== 'ar' && src !== 'ur') return null;  // لغات ثانية نترجمها بخدمة الترجمة
     // كل كلمة ما لها ترجمة نبدّلها بمفردها/جمعها لو له ترجمة
-    n = n.split(' ').map(w => (/[\u0600-\u06FF]/.test(w) && !arMatches(w, true).length && arLemma(w)) || w).join(' ');
-    let found = arMatches(n, true);
-    if (!found.length) found = arMatches(n, false).slice(0, 1);
+    // (إلا إذا كانت الكلمة جزء من عبارة في القاموس، مثل «لوحه» في «لوحه مفاتيح»)
+    const cov = arMatches(n, true).rest; let at = 0;
+    n = n.split(' ').map(w => { const a = at; at += w.length + 1; return (/[\u0600-\u06FF]/.test(w) && !cov.slice(a, a + w.length).includes('\u0000') && !arMatches(w, true).length && arLemma(w)) || w; }).join(' ');
+    // «جالكسي اس ٢٤» ← galaxy s24، «جالكسي اي ٥٥» ← galaxy a55
+    n = n.replace(/(^| )اس ?(\d)/g, '$1s$2').replace(/(^| )(اي|ايه) ?(\d\d)/g, '$1a$3');
+    let found = arMatches(n, true), rest = found.rest;
+    if (!found.length) { found = arMatches(n, false).slice(0, 1); rest = n; }
     if (!found.length) return null;  // كلمة عربية ما نعرف ترجمتها
     // العربي: الاسم أول ثم الوصف («شاحن ايفون») ← الإنجليزي بالعكس («iphone charger»)
     const words = found.sort((x, y) => y[0] - x[0]).map(f => f[1]);
-    const latin = n.match(/[a-z0-9][a-z0-9.+-]*/g) || [];
-    return [...new Set([...words, ...latin])].join(' ');
+    // الباقي: الأرقام والإنجليزي وكلمات الموديل، بنفس ترتيبها
+    const tail = [], dropped = [];
+    rest.split(' ').forEach(w => {
+      if (!w || w.includes('\u0000')) return;
+      if (/[\u0600-\u06FF]/.test(w)) { const m = AR_MOD[w] || AR_MOD[w.replace(/^ال/, '')]; return m ? tail.push(m) : dropped.push(w); }
+      tail.push(...(w.match(/[a-z0-9][a-z0-9.+-]*/g) || []));
+    });
+    toEnglish.dropped = dropped;
+    return [...new Set([...words, ...tail])].join(' ');
   };
   // لكلمة عربية مو في القاموس: نترجمها بخدمة ترجمة مجانية (ولو ما اشتغلت نكمّل عادي)
   async function resolveEnglish(q) {
@@ -1457,7 +1538,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const SYN = {
     'wireless earbuds': ['earbuds?', 'earphones?', 'headphones?', 'headsets?', 'airpods', 'tws', 'in-ear'],
     'headphones': ['headphones?', 'headsets?', 'earphones?', 'earbuds?', 'airpods', 'over-ear', 'on-ear'],
-    'smart watch': ['smart ?watch(es)?', 'smartwatch(es)?', 'fitness tracker', 'watch'],
+    'smart watch': ['smart ?watch(es)?', 'smartwatch(es)?', 'smart\\b.{0,25}\\bwatch(es)?', 'fitness (tracker|watch)', 'smart ?band', 'sport ?watch(es)?'],
     'watch': ['watch(es)?', 'wristwatch(es)?'],
     'running shoes': ['shoes?', 'sneakers?', 'trainers?', 'runners?'],
     'shoes': ['shoes?', 'sneakers?', 'boots?', 'sandals?', 'loafers?', 'trainers?', 'heels', 'slippers?'],
@@ -1466,7 +1547,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'smartphone': ['phones?', 'smartphones?', 'iphone', 'galaxy', 'xiaomi', 'redmi', 'pixel'],
     'laptop': ['laptops?', 'notebooks?', 'macbook', 'chromebook'],
     'tv': ['tv', 'television', 'projector', 'tv box'],
-    'computer mouse': ['mouse', 'mice'], 'vacuum cleaner': ['vacuum'], 'blender': ['blenders?', 'juicers?'],
+    'computer mouse': ['mouse', 'mice'], 'vacuum cleaner': ['vacuum cleaners?', '(robot|robotic|cordless|handheld|stick|wireless|car|wet and dry|wet dry) vacuums?', 'vacuum (mop|robot)'], 'blender': ['blenders?', 'juicers?'],
     'air fryer': ['air ?fryers?'], 'charger': ['chargers?', 'power ?banks?', 'charging'],
     'phone case': ['cases?', 'covers?'], 'sunglasses': ['sunglasses', 'glasses'], 'perfume': ['perfume', 'fragrance', 'eau de', 'cologne'],
   };
@@ -1483,21 +1564,105 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   // كلمات تدل إن المنتج قطعة أو أداة تصليح، مو المنتج نفسه
   // ملفات رقمية (صور وقوالب للطباعة والقص) مو منتجات حقيقية
-  const DIGITAL = /\b(svg|png|jpe?g|pdf|eps|dxf|clip ?art|cut ?files?|digital (?:download|file|art|print)|instant download|printable|vector|silhouette|cricut|sublimation|mockup|template|wall art print|svg bundle)\b/i;
-  const REPAIR = /\b(repair|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit|watch ?hands|needles?|nh3[456]|miyota|movement parts)\b/i;
+  const DIGITAL = /\b(svg|png|jpe?g|pdf|eps|dxf|clip ?art|cut ?files?|digital (?:download|file|art|print|planner)|instant download|printable|vector|silhouette|cricut|sublimation|mockup|template|wall art print|svg bundle|wallpapers?|watch ?faces?|backgrounds?|lock ?screen|home ?screen|screensavers?|wall ?papers?|widgets?|icon ?pack|presets?|procreate|brushes|fonts?|e-?books?(?! ?readers?)|editable|canva|notion|(?:sewing|crochet|knitting|cross stitch|pdf) patterns?)\b/i;
+  // منتجات افتراضية (أغراض ألعاب، أكواد، بطاقات هدايا، حسابات) مو منتجات تنشحن
+  const VIRTUAL = /\b(pve|pvp|tamed|in-?game|game items?|game currency|cd ?keys?|steam keys?|game keys?|digital (?:code|key|item)s?|redeem(?:able)? codes?|gift ?cards?|e-?gift|accounts? (?:for|with)|boosting|leveling service|survival ascended)\b/i;
+  // منتجات مزيّفة: سعة وهمية (فلاش 16 تيرا بـ 10 دولار)، نسخ مقلّدة، وأجهزة ماركات بسعر مستحيل
+  const FAKE_STORE = /\b(flash ?drives?|pen ?drives?|pendrives?|usb (?:stick|drive|disk|memory)s?|u ?disks?|memory (?:sticks?|cards?)|micro ?sd|tf cards?|sd cards?|thumb ?drives?)\b/i;
+  const ACCESSORY_WORDS = /\b(for|compatible|case|cover|protector|film|glass|strap|band|charger|charging|cable|adapter|holder|stand|mount|skin|sticker|sleeve|bag|pouch|replacement|parts?|box|dummy|model|toy|keychain)\b/i;
+  const BRAND_FAKE = [[/\biphone ?1[3-7]\b/i, 250], [/\bgalaxy ?(s2[2-6]|z ?(fold|flip))\b/i, 200], [/\bairpods ?(pro|max|4)\b/i, 30], [/\bapple watch\b/i, 60], [/\b(ps5|playstation ?5)\b/i, 250], [/\bmacbook\b/i, 250], [/\bipad ?(pro|air|mini)?\b/i, 90], [/\b(rolex|omega|patek|hublot|cartier|audemars|breitling|tag heuer)\b/i, 250], [/\bdyson\b/i, 80]];
+  function looksFake(it) {
+    const t = String(it.title), price = +it.price || 0;
+    // أكبر سعة مذكورة بالتيرا (عناوين مثل «1TB-128TB» أو «2tb 4tb 16TB»)
+    const tb = Math.max(0, ...[...t.matchAll(/(\d{1,3})\s?tb\b/gi)].map(m => +m[1]));
+    if (tb && FAKE_STORE.test(t) && price < 80) return true;                        // فلاش/كرت ذاكرة بالتيرا بسعر رخيص = سعة وهمية
+    if (tb && /\b(ssd|solid state)\b/i.test(t) && price < tb * 25) return true;     // SSD أرخص من 25 دولار للتيرا
+    if (tb && /\b(hard ?(drive|disk)|hdd)\b/i.test(t) && !/\b(enclosure|case|caddy|dock)\b/i.test(t) && price < Math.max(30, tb * 15)) return true;
+    if (/\b(1:1 (?:copy|replica|quality)|aaa\+? (?:quality|replica|copy)|super ?clone|high ?copy|mirror quality|counterfeit)\b/i.test(t)) return true;
+    if (!ACCESSORY_WORDS.test(t)) for (const [re, max] of BRAND_FAKE) if (re.test(t) && price < max) return true;
+    return false;
+  }
+  // كلمات ما تنفع مع نوع منتج معيّن (ساعة يد ← مو ساعة حائط)
+  const EXCL = {
+    watch: /\bclocks?\b|\bpliers\b|\btweezers?\b|\bcleaners?\b|\bprinter\b|\bmovements?\b/i, smartwatch: /\bclocks?\b/i,
+    tv: /\b(cabinets?|stands?|mounts?|brackets?|racks?|antennas?|tables?|consoles? table|lifts?)\b/i,
+    monitor: /\b(tire|tyre|pressure|baby|heart|blood|glucose|backup|rear ?view|reversing|parking|camera)\b/i,
+    tablet: /\b(pills?|vitamins?|supplements?|coating|press|panel pc|industrial|snoring|effervescent|dishwasher|toilet|chlorine)\b/i,
+    laptop: /\b(brackets?|heat ?sinks?|headsets?|locks?|desks?|tables?|stands?|bags?|backpacks?|sleeves?|cases?|cooling pads?|coolers?|skins?|stickers?|diagnostic|motherboards?|fans?|chargers?|keyboard covers?)\b/i,
+    card: /\b(locks?|doors?|cameras?|phonics|flash ?cards?|learning|word cards?|plc|playing|greeting|business|gift)\b/i,
+    smartphone: /\b(coolers?|cooling|radiators?|gimbals?|stabilizers?|lens(es)?)\b/i,
+    speaker: /\b(chairs?|glasses|helmets?|headsets?)\b/i,
+    drone: /\b(ceiling|fan lights?|lamps?|bulbs?|antennas?)\b/i,
+    coffee: /\b(tables?|signs?|decor\w*|candles?|scrubs?|soaps?|lotions?|wax|scented|fresheners?|coasters?|socks|earrings?|necklaces?|charms?|bracelets?|rugs?|curtains?|pillows?|paintings?|prints?|wall)\b/i,
+  };
+  // معدات مصانع ومطاعم تجارية (قِدر صناعي بـ 8000 دولار) مو منتجات للبيت
+  const INDUSTRIAL = /\b(industrial|commercial|control cabinets?|production line|making machine|processing machine|filling machine|packing machine|cnc|plc|forklift|excavator|machining|jacketed|tilting|cup seal\w*|sealing machines?)\b/i;
+  // «قطعة لـ X»: لو كلمة for/fits/suitable for جات قبل نوع المنتج، فهو إكسسوار أو قطعة له (Remote for Soundbar، Hose for Vacuum)
+  const ACC_QUERY = /\b(case|cover|strap|band|charger|cable|adapter|holder|stand|mount|protector|battery|parts?|accessor\w*|remote|hose|filter|lens|bag|sleeve|skin|replacement|kit|tools?)\b/i;
+  function accFor(title, en) {
+    // إكسسوار = فيه «for/fits/suitable for» ونوع المنتج جا بعدها مباشرة (خلال 3 كلمات) وما جا قبلها
+    const toks = String(title).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    const head = (en.split(/\s+for\s+/)[0].split(/\s+/).pop() || '').replace(/(es|s)$/, '');  // «stylus pen for ipad» ← pen
+    if (!head || /^(men|women|girl|boy|kid|baby|children|mom|dad|ladie)$/.test(head)) return false;
+    const heads = [head, ...(SYN[en] || []).map(w => (w.match(/[a-z]{3,}/g) || []).pop()).filter(Boolean).map(w => w.replace(/(es|s)$/, ''))];
+    const isHead = w => heads.some(h => w.startsWith(h));
+    const FOR = new Set(['for', 'fits', 'compatible', 'applicable', 'suitable', 'replacement']);
+    const AUDIENCE = new Set(['men', 'mens', 'women', 'womens', 'unisex', 'kids', 'kid', 'girls', 'boys', 'adults', 'adult', 'baby', 'babies', 'children', 'teens', 'toddlers', 'her', 'him', 'home', 'kitchen', 'office', 'travel', 'outdoor', 'indoor', 'daily', 'gift', 'gifts', 'party', 'wedding', 'sale', 'muslim', 'muslims', 'beginners', 'professional']);
+    // «For Coffee Machine Water Pump…» في أول العنوان: قطعة لو فيه كلمة قطع
+    const PART_T = /\b(pumps?|motors?|assembl\w*|gaskets?|seals?|valves?|boards?|sensors?|thermostats?|heating elements?|hoses?|gears?|knobs?|lids?|nozzles?|spare|parts?|replacements?|brushes|blades?)\b/i;
+    let seenHead = false;
+    for (let i = 0; i < toks.length; i++) {
+      if (isHead(toks[i])) { seenHead = true; continue; }
+      if ((i > 0 || PART_T.test(title)) && !seenHead && FOR.has(toks[i]) && !AUDIENCE.has(toks[i + 1])) {
+        for (let j = i + 1; j <= i + 4 && j < toks.length; j++) if (isHead(toks[j])) return true;
+      }
+    }
+    return false;
+  }
+
+  const REPAIR = /\b(repair\w*|pliers|tweezers|fix|tool ?kit|kit|replacement|spare|parts?|soldering|screwdriver|disassembl\w*|teardown|pcb|motherboard|flex|speaker module|diaphragm|driver unit|watch ?hands|needles?|nh3[456]|miyota|movement parts)\b/i;
   // إكسسوارات إضافية (أحزمة، علب، وسائد...) نشيلها إلا إذا كانت هي المطلوبة
   const ACC2 = /\b(bands?|box(es)?|pillows?|rolls?|display|sleeves?|pouch(es)?|organi[sz]ers?|winders?|charms?|straps?)\b/i;
   // منتجات ما نعرضها أبدًا: منتجات للكبار، وتدخين وفيب
-  const BLOCK = /\b(sex|sexy|erotic|dildos?|vibrators?|masturbat\w*|bdsm|bondage|fetish|condoms?|lingerie|porn\w*|nipples?|penis|anal|butt ?plugs?|strap-?on|adult toys?|cigarettes?|cigars?|e-?cig\w*|vapes?|vaping|vaporizers?|hookahs?|shisha|nargile|tobacco|smoking|bongs?|cannabis|marijuana|rolling papers?)\b/i;
+  const BLOCK = /\b(vaginas?|crossdress\w*|breast forms?|sex|sexy|erotic|dildos?|vibrators?|masturbat\w*|bdsm|bondage|fetish|condoms?|lingerie|porn\w*|nipples?|penis|anal|butt ?plugs?|strap-?on|adult toys?|cigarettes?|cigars?|e-?cig\w*|vapes?|vaping|vaporizers?|hookahs?|shisha|nargile|tobacco|smoking|bongs?|cannabis|marijuana|rolling papers?)\b/i;
   const BLOCK_CAT = /adult|sex|erotic|lingerie|vape|e-?cig|electronic cigarette|tobacco|smok|hookah|shisha/i;
   // أشياء «على شكل» المنتج مو المنتج نفسه (ولاعة على شكل ساعة، بروش، ستيكر، مجسم...) إلا إذا كانت هي المطلوبة
   const NOVELTY = /\b(lighters?|keychains?|key ?chains?|key ?rings?|stickers?|decals?|posters?|puzzles?|brooch(es)?|badges?|lapel|molds?|moulds?|stencils?|toppers?|miniatures?|dollhouse|figurines?|ornaments?|costumes?|cosplay|patch(es)?|sculptures?|statues?|wall ?scrolls?|canvas ?prints?|tapestr(y|ies)|wall ?art|flags?|dolls?|bjd)\b/i;
+  // تنظيف مشترك لكل المتاجر: افتراضي، رقمي، مزيّف، وكلمات ما تناسب نوع المنتج
+  function extraClean(items, en) {
+    if (!VIRTUAL.test(en)) items = items.filter(it => !VIRTUAL.test(it.title));
+    if (!DIGITAL.test(en)) items = items.filter(it => !DIGITAL.test(it.title));
+    items = items.filter(it => !looksFake(it));
+    if (!INDUSTRIAL.test(en)) items = items.filter(it => !INDUSTRIAL.test(it.title));
+    // تيشيرتات مطبوع عليها اسم المنتج (TV Show T-Shirt) إلا إذا كان البحث عن ملابس
+    if (!/shirt|tee|hoodie|sweat|cloth|wear|dress|apparel|jersey|\btops?\b|uniform/.test(en)) items = items.filter(it => !/\b(t-?shirts?|tshirts?|tees|hoodies?|sweatshirts?)\b/i.test(it.title));
+    if (!ACC_QUERY.test(en)) items = items.filter(it => !accFor(it.title, en));
+    // أسعار شاذة جدًا: «مكينة/معدات» أغلى من 5 أضعاف الوسيط، أو أي شي فوق 1000 دولار وأغلى من 40 ضعف الوسيط
+    if (items.length >= 6) {
+      const ps = items.map(it => +it.price || 0).sort((a, b) => a - b), med = ps[Math.floor(ps.length / 2)];
+      const mach = /\b(machines?|equipment)\b/i.test(en) ? null : /\b(machines?|equipment)\b/i;
+      if (med > 0) items = items.filter(it => !(it.price > med * 40 && it.price > 1000) && !(mach && mach.test(it.title) && it.price > med * 5));
+    }
+    const head = (en.split(/\s+/).pop() || '').replace(/e?s$/, '');
+    const ex = EXCL[head] || (/smart ?watch/.test(en) ? EXCL.smartwatch : null);
+    if (ex && !ex.test(en)) items = items.filter(it => !ex.test(it.title));
+    return preferStrict(items, en);
+  }
+  // بحث من كلمتين أو أكثر («مطحنة قهوة»): نفضّل المنتجات اللي فيها كل الكلمات، لو كانت كافية
+  const STRICT_SKIP = new Set(['for', 'with', 'and', 'the', 'men', 'mens', 'women', 'womens', 'kids', 'set', 'of', 'wrist', 'false', 'ladies', 'unisex', 'portable', 'mini', 'new', 'original']);
+  function preferStrict(items, en) {
+    // جذر الكلمة (أول حروفها) عشان jewelry تطابق jewellery و camping تطابق camp
+    const ws = en.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2 && !STRICT_SKIP.has(w)).map(w => w.length > 5 ? w.slice(0, Math.max(4, w.length - 2)) : w.replace(/(es|s)$/, ''));
+    if (ws.length < 2 || SYN[en]) return items;
+    const strict = items.filter(it => { const t = String(it.title).toLowerCase(); return ws.every(w => new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i').test(t)); });
+    return strict.length >= 6 ? strict : items;
+  }
   const noAcc = (items, en) => {
     items = items.filter(it => !BLOCK.test(it.title));
     if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(it.title));
     return (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(it.title));
   };
-  const PARTS = /\b(case|cover|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
+  const PARTS = /\b(accessor(?:y|ies)|hoses?|selfie ?sticks?|fill ?lights?|ring ?lights?|antennas?|resetters?|cartridges?|toners?|print ?heads?|paper liners?|case|cover|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
   function aliSlug(query) {
     const en = (toEnglish(query) || '').toLowerCase();
     if (!en) return null;
@@ -1680,7 +1845,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     items = items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enQ));
     if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
-    items = noAcc(items, enQ);
+    items = extraClean(noAcc(items, enQ), enQ);
     if (items.length >= 4) {
       const ps = items.map(it => it.price).sort((a, b) => a - b);
       const med = ps[Math.floor(ps.length / 2)];
@@ -1705,7 +1870,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     items = items.filter(it => relevant(it.title, enLow));
     if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
-    items = noAcc(items, enLow);
+    items = extraClean(noAcc(items, enLow), enLow);
     // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
     if (items.length >= 4) {
       const sorted = items.map(it => it.price).sort((a, b) => a - b);
@@ -1718,9 +1883,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     let items = raw.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enLow));
     if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
-    items = noAcc(items, enLow);
-    if (!DIGITAL.test(enLow)) items = items.filter(it => !DIGITAL.test(it.title));
-    return items;
+    return extraClean(noAcc(items, enLow), enLow);
   }
   // وضع اختبار الجودة (?qa=1): نحفظ النتائج الخام قبل التنظيف
   const QA = /[?&]qa=1\b/.test(location.search), QA_RAW = {};
@@ -2150,6 +2313,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const CATS = [
     ['📱 إلكترونيات', [['سماعات لاسلكية', 'wireless earbuds'], ['سماعات رأس', 'headphones'], ['ساعات ذكية', 'smart watch'], ['جوالات', 'smartphone'], ['تابلت', 'tablet'], ['لابتوب', 'laptop'], ['شواحن وباور بانك', 'charger'], ['كفرات جوال', 'phone case'], ['كاميرات', 'camera'], ['كاميرات مراقبة', 'security camera'], ['ماوس', 'computer mouse'], ['كيبورد', 'keyboard'], ['شاشات', 'monitor'], ['تلفزيون وبروجكتر', 'tv'], ['سبيكر بلوتوث', 'bluetooth speaker'], ['مايكروفون', 'microphone'], ['فلاش ميموري', 'usb flash drive'], ['كروت ذاكرة', 'memory card'], ['راوتر', 'wifi router'], ['درون', 'drone'], ['يد تحكم', 'game controller'], ['طابعات', 'printer']]],
     ['🏠 المنزل والمطبخ', [['قلاية هوائية', 'air fryer'], ['مكنسة', 'vacuum cleaner'], ['خلاط وعصارة', 'blender'], ['مكينة قهوة', 'coffee machine'], ['غلاية', 'electric kettle'], ['مقالي', 'frying pan'], ['قدور', 'cooking pot'], ['إضاءة', 'lamp'], ['لمبات ليد', 'led light'], ['شريط ليد', 'led strip'], ['مراوح', 'fan'], ['ساعات حائط', 'wall clock'], ['مخدات', 'pillow'], ['بطانيات', 'blanket'], ['كراسي', 'chair'], ['كرسي ألعاب', 'gaming chair'], ['مكاتب', 'desk'], ['سجاد صلاة', 'prayer mat']]],
+    ['☕ القهوة ومعداتها', [['قهوة مختصة', 'specialty coffee beans'], ['قهوة عربية', 'arabic coffee'], ['مكينة إسبريسو', 'espresso machine'], ['مكينة كبسولات', 'capsule coffee machine'], ['كبسولات قهوة', 'coffee capsules'], ['مطحنة قهوة', 'coffee grinder'], ['أدوات تقطير V60', 'pour over coffee dripper'], ['فرنش بريس', 'french press'], ['موكا بوت', 'moka pot'], ['ميزان قهوة', 'coffee scale'], ['غلاية تقطير', 'gooseneck kettle'], ['مخفقة حليب', 'milk frother'], ['تامبر', 'coffee tamper'], ['أدوات باريستا', 'barista tools'], ['فلاتر قهوة', 'coffee filter paper'], ['دلال', 'dallah arabic coffee pot'], ['فناجين', 'arabic coffee cups'], ['ترامس', 'vacuum flask thermos'], ['أكواب قهوة', 'coffee mug'], ['محمصة قهوة', 'coffee roaster'], ['ركوة تركية', 'turkish coffee pot']]],
     ['👗 أزياء', [['فساتين', 'dress'], ['عبايات', 'abaya'], ['حجاب وشيل', 'hijab scarf'], ['تيشيرتات', 't-shirt'], ['قمصان', 'shirt'], ['بناطيل', 'pants'], ['جينز', 'jeans'], ['جاكيتات', 'jacket'], ['هوديات', 'hoodie'], ['أحذية', 'shoes'], ['أحذية رياضية', 'running shoes'], ['شنط ظهر', 'backpack'], ['شنط', 'bag'], ['محافظ', 'wallet'], ['نظارات شمسية', 'sunglasses'], ['ساعات يد', 'watch']]],
     ['💍 مجوهرات وجمال', [['خواتم', 'ring'], ['قلادات', 'necklace'], ['أساور', 'bracelet'], ['حلق', 'earrings'], ['عطور', 'perfume'], ['مكياج', 'makeup'], ['روج', 'lipstick'], ['كريمات', 'face cream'], ['سشوار', 'hair dryer'], ['مكواة شعر', 'hair straightener'], ['ماكينة حلاقة', 'electric shaver']]],
     ['🧸 أطفال ورياضة', [['ألعاب', 'toys'], ['دمى', 'doll'], ['ليقو ومكعبات', 'lego'], ['سيارة تحكم', 'rc car'], ['دراجات', 'bicycle'], ['سكوتر', 'electric scooter'], ['خيام', 'camping tent'], ['دمبل', 'dumbbells'], ['كور قدم', 'football'], ['أقلام', 'pen'], ['دفاتر', 'notebook'], ['ألوان', 'colored pencils'], ['شنط مدرسة', 'school backpack']]],
@@ -2336,7 +2500,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     let html = `<div class="section-title"><h2>🧺 أفضل سلة</h2><span>${queries.map(q => '«' + esc(q) + '»').join(' + ')}</span></div>`;
     if (!maxGot) return html + '<div class="empty">ما لقينا منتجات لهالسلة. جرّب كلمات أبسط.</div>';
     html += '<div class="notice">💡<div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف.</div></div>';
-    return html + `<div class="bk-grid">${bs.map(b => {
+    return html + `<div class="bk-grid bsk">${bs.map(b => {
       const pl = PLATFORMS[b.k];
       const tags = [b === cheap ? '💰 أرخص سلة' : '', b === value ? '⭐ أفضل قيمة' : ''].filter(Boolean);
       return `<article class="bk-card${tags.length ? ' win' : ''}"><header style="background:${pl.color};color:${pl.text}"><b>${pl.name}</b>${tags.map(t => `<span class="bk-tag">${t}</span>`).join('')}</header>
