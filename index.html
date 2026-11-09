@@ -1590,7 +1590,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const en = toEnglish(query);
     if (!en) throw new Error('no translation');
     // موديل جوال («iphone 15»، «samsung galaxy s24»): إيباي يرجّع قطع وكفرات، فنطلب الأجهزة المفتوحة (unlocked)
-    const eq = /^(apple )?(iphone \d{2}|samsung galaxy [saz]\d{1,2}|galaxy [sa]\d{2}|samsung [sa]\d{2}|google pixel \d{1,2}|pixel \d{1,2})( (pro|max|ultra|plus|mini|fe|lite|e))*$/i.test(en) ? en + ' unlocked' : en;
+    const eq = /^(apple )?(iphone \d{2}|samsung galaxy [saz]\d{1,2}|galaxy [sa]\d{2}|samsung [sa]\d{2}|google pixel \d{1,2}|pixel \d{1,2})( (pro|max|ultra|plus|mini|fe|lite|e))*$/i.test(en) ? en + ' unlocked'
+      : /^apple watch( (series \d+|ultra ?\d?|se))?$/i.test(en) ? en + ' gps' : en;
     const res = await fetch(EBAY_API + '?q=' + encodeURIComponent(eq) + '&limit=50');  // نطلب أكثر لأننا بنفلتر
     if (!res.ok) throw new Error('eBay ' + res.status);
     const data = await res.json();
@@ -1940,7 +1941,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'medjool dates': [/\b(dates?|medjool|ajwa|tamr)\b/i, /\b(pitters?|corers?|removers?|tools?|(date|palm) seeds?|seeds for|growing|trees?|plants?|saplings?|palm trees?|date ?stamps?|stamps?|labels?|calendars?|planners?|syrup|paste|powder|capsules?)\b/i],
     'gaming monitor': [/\bmonitors?\b/i, /\b(chassis|crt|bases?|extenders?|arcade|laptop screens?|triple screen|dual screen|portable laptop)\b/i],
     'omani khanjar dagger': [null, /\b(mats?|mouse ?pads?|mousepads?|coins?|pendants?|necklaces?|prints?|stickers?|keychains?|magnets?|cards?|stamps?)\b/i],
-    'apple watch': [null, /\b(loops?|bands?|straps?|bracelets?|cases?|covers?|protectors?|chargers?|stands?|docks?)\b/i],
+    'apple watch': [/\b(series ?\d+|ultra ?\d?|se|gps|cellular|\d{2} ?mm)\b/i, /\b(screen protectors?|protectors?|chargers?|charging (cables?|docks?|stands?)|stands?|docks?|bands? only|straps? only|replacement (bands?|straps?)|compatible|for apple watch|(bands?|straps?|bracelets?|loops?) for)\b/i],
     'area rug': [/\b(rugs?|carpets?|runners?)\b/i, /\b(rv|caravan|awning|camping|picnic|bath(room)? mats?|bath rugs?|hooking|fabric|commissions?|yards?|grippers?|rug pads?|underlay|tufting|tools?|kits?|cars?|car mats?|van|cab|boat|trailer|bunk|turf|grass|extractors?|cleaners?|sled|doll|miniature)\b/i],
     'bed sheet': [/\b(bed ?sheets?|sheet sets?|bedding|fitted sheets?|flat sheets?|duvet|bedspreads?|quilts?|coverlets?)\b/i, /\b(patient|transfer|repositioning|positioning|3d print\w*|pei|spring steel|massage|inflatable|incontinen\w*|medical|disposable|underpads?|bed pads?|signs?|wall decor|art|metal)\b/i],
     'sofa set': [null, /\b(inflatable|air sofa|bean ?bags?|lazy|playground|preschool\w*|kids?|children|doll ?house|miniatures?|covers?|slipcovers?|cushions?|legs?|feet|risers?|hinges?|chairs?|mechanism|waiting|salon)\b/i],
@@ -2000,10 +2001,13 @@ table.dt { min-width: 0; font-size: .76rem; }
     return items;
   }
   const BRAND_Q = /\b(rolex|omega|cartier|patek|hublot|tag heuer|tissot|seiko|citizen|louis vuitton|gucci|chanel|dior|tom ford|lattafa|ray-ban|prada|versace|armani|burberry|apple|iphone|ipad|macbook|airpods|samsung|galaxy|sony|playstation|ps[345]|xbox|nintendo|huawei|xiaomi|redmi|honor|oppo|realme|oneplus|pixel|lenovo|dell|hp|asus|acer|msi|canon|nikon|fujifilm|gopro|dji|dyson|philips|lg|jbl|bose|beats|garmin|fitbit|amazfit|casio|nike|adidas|puma|skechers|lego|barbie|nespresso|delonghi|kenwood|tefal|braun|anker|baseus|logitech|razer|kindle|stanley|ninja|v60|chemex|aeropress|dolce gusto)\b/;
+  // ساعة ذكية حقيقية: «Series 9 GPS 45mm Aluminum Case with Sport Band» (فيها case و band بس هي الجهاز)
+  const watchDevice = (t, en) => /\bwatch\b/.test(en) && /\b(gps|cellular|lte)\b/i.test(t) && /\b\d{2} ?mm\b/i.test(t) && !/\b(for|compatible|replacement|protector|charger)\b/i.test(t);
   const noAcc = (items, en) => {
     items = items.filter(it => !BLOCK.test(it.title));
     if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(String(it.title).replace(/\b(without|with|no) ads\b|\bads?[- ]free\b/gi, '')));
-    return (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(String(it.title).replace(/\b(open|in|with|original|sealed|retail|no|without|full|gift) box(es)?\b/gi, '')));
+    // ساعة ذكية حقيقية («Series 9 GPS 45mm … with Sport Band») مو حزام
+    return (ACC2.test(en) || en === 'tv') ? items : items.filter(it => watchDevice(it.title, en) || !ACC2.test(String(it.title).replace(/\b(open|in|with|original|sealed|retail|no|without|full|gift) box(es)?\b/gi, '')));
   };
   const PARTS = /\b(accessor(?:y|ies)|hoses?|selfie ?sticks?|fill ?lights?|ring ?lights?|antennas?|resetters?|cartridges?|toners?|print ?heads?|paper liners?|cases?|covers?|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
   function aliSlug(query) {
@@ -2024,7 +2028,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const enQ = (toEnglish(query) || '').toLowerCase();
     let items = (data.items || []).filter(it => it.price > 0 && safeUrl(it.url));
     items = items.filter(it => relevant(it.title, enQ));
-    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
+    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title) || watchDevice(it.title, enQ));
     if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
     items = extraClean(noAcc(items, enQ), enQ);
     if (items.length >= 4) {
@@ -2186,7 +2190,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const seenIds = new Set(); let items = [];
     for (const it of [...live, ...idx]) { if (it.id && seenIds.has(it.id)) continue; seenIds.add(it.id); items.push(it); }
     items = items.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enQ));
-    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title));
+    if (!PARTS.test(enQ)) items = items.filter(it => !PARTS.test(it.title) || watchDevice(it.title, enQ));
     if (!REPAIR.test(enQ)) items = items.filter(it => !REPAIR.test(it.title));
     items = extraClean(noAcc(items, enQ), enQ);
     if (items.length >= 4) {
@@ -2211,7 +2215,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     let items = raw.filter(it => it.price > 0 && safeUrl(it.url));
     // نخلي بس المنتجات اللي فعلاً نفس اللي يبحث عنه، ونشيل القطع وأدوات التصليح
     items = items.filter(it => relevant(it.title, enLow));
-    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
+    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title) || watchDevice(it.title, enLow));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
     items = extraClean(noAcc(items, enLow), enLow);
     // استبعاد الأسعار الشاذة جدًا (أقل من خُمس الوسيط) لأنها غالبًا منتجات رديئة أو قطع غيار
@@ -2224,7 +2228,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   function cleanEtsy(raw, enLow) {
     let items = raw.filter(it => it.price > 0 && safeUrl(it.url) && relevant(it.title, enLow));
-    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title));
+    if (!PARTS.test(enLow)) items = items.filter(it => !PARTS.test(it.title) || watchDevice(it.title, enLow));
     if (!REPAIR.test(enLow)) items = items.filter(it => !REPAIR.test(it.title));
     return extraClean(noAcc(items, enLow), enLow);
   }
