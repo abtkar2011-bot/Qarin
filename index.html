@@ -1435,6 +1435,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     razer: 'gaming mouse', anker: 'power bank', baseus: 'charger', jbl: 'speaker', bose: 'headphones', beats: 'headphones', braun: 'shaver',
     delonghi: 'coffee machine', hisense: 'tv', lg: 'tv', nike: 'shoes', adidas: 'shoes', puma: 'shoes', skechers: 'shoes', casio: 'watch',
     garmin: 'watch', amazfit: 'watch', nespresso: 'capsules' };
+  // كلمات ما تغيّر المنتج («رخيص»، «ابي»، «اصلي») — ما نحتاج لها ترجمة ذكية
+  const AR_IGNORE = new Set(('رخيص رخيصه ارخص اصلي اصليه جديد جديده افضل احسن حلو حلوه فخم فخمه ممتاز ممتازه قوي قويه عرض عروض سعر اسعار بسعر مناسب '
+    + 'ابي ابغى ابغي اريد ابا ودي بغيت حق مال في من على عن مع لي الي اللي كم وين شي شيء وايد واجد مره جدا كثير خصم تخفيض توصيل شحن مجاني').split(' '));
   function arLemma(w) {
     for (const pre of AR_PRE) {
       if (pre && !w.startsWith(pre)) continue;
@@ -1451,7 +1454,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   const toEnglish = q => {
     let n = normalize(q);
-    toEnglish.dropped = [];
+    toEnglish.dropped = []; toEnglish.partial = false;
     if (TR.has(n)) return TR.get(n);
     const src = queryLang(q);
     if (src === 'en') return q;
@@ -1463,7 +1466,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     // «جالكسي اس ٢٤» ← galaxy s24، «جالكسي اي ٥٥» ← galaxy a55
     n = n.replace(/(^| )اس ?(\d)/g, '$1s$2').replace(/(^| )(اي|ايه) ?(\d\d)/g, '$1a$3');
     let found = arMatches(n, true), rest = found.rest;
-    if (!found.length) { found = arMatches(n, false).slice(0, 1); rest = n; }
+    if (!found.length) { found = arMatches(n, false).slice(0, 1); rest = n; toEnglish.partial = true; }
     if (!found.length) return null;  // كلمة عربية ما نعرف ترجمتها
     // العربي: الاسم أول ثم الوصف («شاحن ايفون») ← الإنجليزي بالعكس («iphone charger»)
     const words = found.sort((x, y) => y[0] - x[0]).map(f => f[1]);
@@ -1471,7 +1474,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const tail = [], dropped = [];
     rest.split(' ').forEach(w => {
       if (!w || w.includes('\u0000')) return;
-      if (/[\u0600-\u06FF]/.test(w)) { const m = AR_MOD[w] || AR_MOD[w.replace(/^ال/, '')]; return m ? tail.push(m) : dropped.push(w); }
+      if (/[\u0600-\u06FF]/.test(w)) { const m = AR_MOD[w] || AR_MOD[w.replace(/^ال/, '')]; return m ? tail.push(m) : AR_IGNORE.has(w) ? 0 : dropped.push(w); }
       tail.push(...(w.match(/[a-z0-9][a-z0-9.+-]*/g) || []));
     });
     toEnglish.dropped = dropped;
@@ -1480,10 +1483,35 @@ table.dt { min-width: 0; font-size: .76rem; }
     return [...new Set([...words, ...tail].join(' ').split(' '))].join(' ');
   };
   // لكلمة عربية مو في القاموس: نترجمها بخدمة ترجمة مجانية (ولو ما اشتغلت نكمّل عادي)
+  const TR_KEY = 'qarin.tr1';
+  const trStore = (() => { try { return JSON.parse(localStorage.getItem(TR_KEY) || '{}'); } catch (e) { return {}; } })();
+  function trSave(n, en) {
+    trStore[n] = en;
+    try { const k = Object.keys(trStore); if (k.length > 300) k.slice(0, k.length - 300).forEach(x => delete trStore[x]); localStorage.setItem(TR_KEY, JSON.stringify(trStore)); } catch (e) { /* عادي */ }
+  }
+  let trOff = false;  // لو السيرفر ما فيه خدمة الترجمة، ما نعيد المحاولة في نفس الجلسة
+  async function aiTranslate(q) {
+    if (!EBAY_API || trOff) return '';
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 5000);
+    try {
+      const r = await fetch(EBAY_API + 'tr?q=' + encodeURIComponent(q.trim().slice(0, 80)), { signal: ctl.signal });
+      const d = await r.json();
+      if (d && (d.items || d.msg)) { trOff = true; return ''; }
+      const en = String(d && d.en || '').toLowerCase().replace(/[^a-z0-9 .+\-]/g, ' ').replace(/\s+/g, ' ').trim();
+      return en.length >= 2 && en.length <= 60 ? en : '';
+    } catch (e) { return ''; } finally { clearTimeout(t); }
+  }
   async function resolveEnglish(q) {
     const n = normalize(q);
     const src = queryLang(q);
-    if (src === 'en' || toEnglish(q) || TR.has(n)) return;
+    if (src === 'en' || TR.has(n)) return;
+    // القاموس يكفي لو ترجم كل كلمات البحث؛ غير كذا نخلي الذكاء الاصطناعي يفهم الجملة كاملة
+    const dict = toEnglish(q);
+    if (dict && !toEnglish.dropped.length && !toEnglish.partial) return;
+    if (trStore[n]) { TR.set(n, trStore[n]); return; }
+    const ai = await aiTranslate(q);
+    if (ai) { TR.set(n, ai); trSave(n, ai); return; }
+    if (dict) return;  // الذكاء الاصطناعي ما رد: نكمل بترجمة القاموس
     try {
       const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 3500);
       const r = await fetch('https://api.mymemory.translated.net/get?langpair=' + src + '|en&q=' + encodeURIComponent(q.trim().slice(0, 80)), { signal: ctl.signal });

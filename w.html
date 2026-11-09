@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>كود سيرفر قارِن</title>
+<style>body{font-family:system-ui,-apple-system,sans-serif;margin:0;padding:20px;background:#0f172a;color:#fff}h1{font-size:22px}p{color:#cbd5e1;line-height:1.7}
+button{font-size:22px;font-weight:700;padding:16px 28px;border:0;border-radius:16px;background:linear-gradient(90deg,#7c3aed,#db2777);color:#fff;width:100%;margin:10px 0}
+textarea{width:100%;height:50vh;direction:ltr;font:12px/1.4 ui-monospace,monospace;background:#020617;color:#a5b4fc;border-radius:12px;border:1px solid #334155;padding:10px;box-sizing:border-box}
+#ok{color:#34d399;font-weight:700;text-align:center;font-size:20px;min-height:28px}</style></head><body>
+<h1>📋 كود سيرفر قارِن (نسخة الترجمة الذكية)</h1>
+<p>اضغط الزر، وبعدها الصقه في كلاودفلير مكان الكود القديم كله.</p>
+<button id="b">📋 انسخ الكود كامل</button><div id="ok"></div>
+<textarea id="t" readonly>// قارِن — وسيط eBay (Cloudflare Worker)
+// يحفظ مفاتيح eBay سرّية في السيرفر، ويرجّع لـ«قارِن» منتجات حقيقية.
+// الأسرار المطلوبة في إعدادات الـWorker: EBAY_CLIENT_ID و EBAY_CLIENT_SECRET
+
+let cachedToken = null; // { value, expires }
+
+const CORS = { &#x27;Access-Control-Allow-Origin&#x27;: &#x27;*&#x27;, &#x27;Access-Control-Allow-Methods&#x27;: &#x27;GET, POST, OPTIONS&#x27;, &#x27;Access-Control-Allow-Headers&#x27;: &#x27;Content-Type&#x27; };
+
+// ===== الإحصائيات والتقييمات (قاعدة بيانات D1 باسم DB) =====
+let tablesReady = false;
+async function ensureTables(env) {
+  if (tablesReady) return;
+  await env.DB.batch([
+    env.DB.prepare(&#x27;CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER, day TEXT, vid TEXT, kind TEXT, q TEXT)&#x27;),
+    env.DB.prepare(&#x27;CREATE INDEX IF NOT EXISTS ev_kind_day ON events (kind, day)&#x27;),
+    env.DB.prepare(&#x27;CREATE TABLE IF NOT EXISTS ratings (vid TEXT PRIMARY KEY, ts INTEGER, day TEXT, stars INTEGER, found TEXT, comment TEXT)&#x27;),
+    env.DB.prepare(&#x27;CREATE TABLE IF NOT EXISTS tr_cache (q TEXT PRIMARY KEY, en TEXT, ts INTEGER)&#x27;),
+  ]);
+  tablesReady = true;
+}
+const omanDay = (offsetDays = 0) =&gt; new Date(Date.now() + 4 * 3600e3 - offsetDays * 86400e3).toISOString().slice(0, 10);
+const validVid = v =&gt; typeof v === &#x27;string&#x27; &amp;&amp; /^[a-z0-9]{8,40}$/.test(v);
+
+async function handleEvent(request, env) {
+  let b; try { b = JSON.parse(await request.text()); } catch (e) { return { error: &#x27;bad json&#x27; }; }
+  if (!validVid(b.vid) || ![&#x27;visit&#x27;, &#x27;search&#x27;].includes(b.kind)) return { error: &#x27;bad input&#x27; };
+  const q = b.kind === &#x27;search&#x27; ? String(b.q || &#x27;&#x27;).trim().toLowerCase().slice(0, 60) : &#x27;&#x27;;
+  await env.DB.prepare(&#x27;INSERT INTO events (ts, day, vid, kind, q) VALUES (?, ?, ?, ?, ?)&#x27;).bind(Date.now(), omanDay(), b.vid, b.kind, q).run();
+  return { ok: true };
+}
+
+async function handleRate(request, env) {
+  let b; try { b = JSON.parse(await request.text()); } catch (e) { return { error: &#x27;bad json&#x27; }; }
+  const stars = parseInt(b.stars, 10);
+  if (!validVid(b.vid) || !(stars &gt;= 1 &amp;&amp; stars &lt;= 5)) return { error: &#x27;bad input&#x27; };
+  const found = [&#x27;yes&#x27;, &#x27;some&#x27;, &#x27;no&#x27;].includes(b.found) ? b.found : &#x27;&#x27;;
+  const comment = String(b.comment || &#x27;&#x27;).trim().slice(0, 300);
+  await env.DB.prepare(&#x27;INSERT INTO ratings (vid, ts, day, stars, found, comment) VALUES (?, ?, ?, ?, ?, ?) &#x27; +
+    &#x27;ON CONFLICT(vid) DO UPDATE SET ts = excluded.ts, day = excluded.day, stars = excluded.stars, found = excluded.found, comment = excluded.comment&#x27;)
+    .bind(b.vid, Date.now(), omanDay(), stars, found, comment).run();
+  return { ok: true };
+}
+
+async function handleStats(env) {
+  const since = omanDay(13);
+  const [visits, searches, perDay, top, rate, dist, found, comments, today] = await env.DB.batch([
+    env.DB.prepare(&quot;SELECT COUNT(*) AS c, COUNT(DISTINCT vid) AS u FROM events WHERE kind = &#x27;visit&#x27;&quot;),
+    env.DB.prepare(&quot;SELECT COUNT(*) AS c FROM events WHERE kind = &#x27;search&#x27;&quot;),
+    env.DB.prepare(&quot;SELECT day, COUNT(*) AS c, COUNT(DISTINCT vid) AS u FROM events WHERE kind = &#x27;visit&#x27; AND day &gt;= ? GROUP BY day ORDER BY day&quot;).bind(since),
+    env.DB.prepare(&quot;SELECT q, COUNT(*) AS c FROM events WHERE kind = &#x27;search&#x27; AND q != &#x27;&#x27; GROUP BY q ORDER BY c DESC LIMIT 10&quot;),
+    env.DB.prepare(&#x27;SELECT COUNT(*) AS c, AVG(stars) AS a FROM ratings&#x27;),
+    env.DB.prepare(&#x27;SELECT stars, COUNT(*) AS c FROM ratings GROUP BY stars&#x27;),
+    env.DB.prepare(&quot;SELECT found, COUNT(*) AS c FROM ratings WHERE found != &#x27;&#x27; GROUP BY found&quot;),
+    env.DB.prepare(&quot;SELECT stars, comment, day FROM ratings WHERE comment != &#x27;&#x27; ORDER BY ts DESC LIMIT 12&quot;),
+    env.DB.prepare(&quot;SELECT COUNT(DISTINCT vid) AS u FROM events WHERE kind = &#x27;visit&#x27; AND day = ?&quot;).bind(omanDay()),
+  ]);
+  const one = r =&gt; (r.results &amp;&amp; r.results[0]) || {};
+  return {
+    updated: new Date().toISOString(),
+    visits: one(visits).c || 0, visitors: one(visits).u || 0, visitorsToday: one(today).u || 0,
+    searches: one(searches).c || 0,
+    perDay: perDay.results || [], topSearches: top.results || [],
+    ratings: one(rate).c || 0, avgStars: one(rate).a ? Math.round(one(rate).a * 10) / 10 : 0,
+    starsDist: dist.results || [], found: found.results || [], comments: comments.results || [],
+  };
+}
+
+
+// ===== Etsy (السرّين ETSY_KEY و ETSY_SECRET) =====
+async function handleEtsy(url, env) {
+  const q = (url.searchParams.get(&#x27;q&#x27;) || &#x27;&#x27;).trim().slice(0, 100);
+  if (!q) return { error: &#x27;missing q&#x27; };
+  if (!env.ETSY_KEY || !env.ETSY_SECRET) return { error: &#x27;missing etsy secrets&#x27; };
+  const headers = { &#x27;x-api-key&#x27;: env.ETSY_KEY + &#x27;:&#x27; + env.ETSY_SECRET };
+  const base = &#x27;https://openapi.etsy.com/v3/application/&#x27;;
+  const r = await fetch(base + &#x27;listings/active?limit=100&amp;sort_on=score&amp;keywords=&#x27; + encodeURIComponent(q), { headers });
+  if (!r.ok) return { error: &#x27;etsy &#x27; + r.status, detail: (await r.text()).slice(0, 300) };
+  const list = ((await r.json()).results || []).filter(l =&gt; l.price &amp;&amp; l.price.currency_code === &#x27;USD&#x27;).slice(0, 50);
+  const imgs = {};
+  if (list.length) {
+    const r2 = await fetch(base + &#x27;listings/batch?includes=Images&amp;listing_ids=&#x27; + list.map(l =&gt; l.listing_id).join(&#x27;,&#x27;), { headers });
+    if (r2.ok) for (const l of ((await r2.json()).results || [])) {
+      const im = (l.images || [])[0];
+      if (im) imgs[l.listing_id] = im.url_570xN || im.url_fullxfull || &#x27;&#x27;;
+    }
+  }
+  return { items: list.map(l =&gt; ({
+    title: l.title, price: Math.round(l.price.amount / l.price.divisor * 100) / 100,
+    url: &#x27;https://www.etsy.com/listing/&#x27; + l.listing_id, image: imgs[l.listing_id] || &#x27;&#x27;,
+    favorites: l.num_favorers || 0,
+  })) };
+}
+
+// ===== قراءة اسم المنتج من رابط يلصقه المستخدم =====
+const decodeHtml = t =&gt; t.replace(/&amp;amp;/g, &#x27;&amp;&#x27;).replace(/&amp;quot;/g, &#x27;&quot;&#x27;).replace(/&amp;#39;|&amp;#x27;/g, &quot;&#x27;&quot;).replace(/&amp;lt;/g, &#x27;&lt;&#x27;).replace(/&amp;gt;/g, &#x27;&gt;&#x27;).replace(/&amp;#(\d+);/g, (m, n) =&gt; String.fromCharCode(+n)).replace(/\s+/g, &#x27; &#x27;).trim();
+async function handleMeta(url) {
+  let u;
+  try { u = new URL(url.searchParams.get(&#x27;url&#x27;) || &#x27;&#x27;); } catch (e) { return { error: &#x27;bad url&#x27; }; }
+  if (!/^https?:$/.test(u.protocol)) return { error: &#x27;bad url&#x27; };
+  const r = await fetch(u.toString(), {
+    redirect: &#x27;follow&#x27;,
+    headers: { &#x27;User-Agent&#x27;: &#x27;Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1&#x27;, &#x27;Accept-Language&#x27;: &#x27;en,ar;q=0.8&#x27; },
+  });
+  if (!r.body) return { error: &#x27;empty&#x27; };
+  const reader = r.body.getReader(); const dec = new TextDecoder(); let html = &#x27;&#x27;;
+  while (html.length &lt; 600000) { const { done, value } = await reader.read(); if (done) break; html += dec.decode(value, { stream: true }); if (/&lt;\/head&gt;/i.test(html)) break; }
+  try { reader.cancel(); } catch (e) { /* تجاهل */ }
+  const meta = name =&gt; {
+    const a = html.match(new RegExp(&#x27;&lt;meta[^&gt;]+(?:property|name)=[&quot;\&#x27;]&#x27; + name + &#x27;[&quot;\&#x27;][^&gt;]*content=[&quot;\&#x27;]([^&quot;\&#x27;]+)&#x27;, &#x27;i&#x27;));
+    const b = html.match(new RegExp(&#x27;&lt;meta[^&gt;]+content=[&quot;\&#x27;]([^&quot;\&#x27;]+)[&quot;\&#x27;][^&gt;]*(?:property|name)=[&quot;\&#x27;]&#x27; + name + &#x27;[&quot;\&#x27;]&#x27;, &#x27;i&#x27;));
+    return decodeHtml((a &amp;&amp; a[1]) || (b &amp;&amp; b[1]) || &#x27;&#x27;);
+  };
+  const t = html.match(/&lt;title[^&gt;]*&gt;([^&lt;]+)/i);
+  return { title: (meta(&#x27;og:title&#x27;) || meta(&#x27;twitter:title&#x27;) || decodeHtml(t ? t[1] : &#x27;&#x27;)).slice(0, 200), image: meta(&#x27;og:image&#x27;), site: u.hostname };
+}
+
+// ===== علي إكسبرس: بحث مباشر (AliExpress Open Platform — Affiliate API) =====
+// يحتاج أسرار في Cloudflare: ALI_APP_KEY و ALI_APP_SECRET (و ALI_TRACKING_ID اختياري لروابط الأفلييت)
+async function aliSign(secret, params) {
+  const str = Object.keys(params).sort().map(k =&gt; k + params[k]).join(&#x27;&#x27;);
+  const key = await crypto.subtle.importKey(&#x27;raw&#x27;, new TextEncoder().encode(secret), { name: &#x27;HMAC&#x27;, hash: &#x27;SHA-256&#x27; }, false, [&#x27;sign&#x27;]);
+  const sig = await crypto.subtle.sign(&#x27;HMAC&#x27;, key, new TextEncoder().encode(str));
+  return [...new Uint8Array(sig)].map(b =&gt; b.toString(16).padStart(2, &#x27;0&#x27;)).join(&#x27;&#x27;).toUpperCase();
+}
+const num2 = v =&gt; { const n = parseFloat(String(v == null ? &#x27;&#x27; : v).replace(/[^\d.]/g, &#x27;&#x27;)); return isFinite(n) ? n : null; };
+async function handleAli(url, env) {
+  const q = (url.searchParams.get(&#x27;q&#x27;) || &#x27;&#x27;).trim().slice(0, 100);
+  if (!q) return { error: &#x27;missing q&#x27; };
+  if (!env.ALI_APP_KEY || !env.ALI_APP_SECRET) return { error: &#x27;missing aliexpress secrets&#x27; };
+  const params = {
+    app_key: env.ALI_APP_KEY, method: &#x27;aliexpress.affiliate.product.query&#x27;, sign_method: &#x27;sha256&#x27;,
+    timestamp: String(Date.now()), format: &#x27;json&#x27;,
+    keywords: q, page_no: &#x27;1&#x27;, page_size: &#x27;50&#x27;, target_currency: &#x27;USD&#x27;, target_language: &#x27;EN&#x27;, ship_to_country: &#x27;OM&#x27;,
+  };
+  const sort = url.searchParams.get(&#x27;sort&#x27;);
+  if ([&#x27;SALE_PRICE_ASC&#x27;, &#x27;SALE_PRICE_DESC&#x27;, &#x27;LAST_VOLUME_DESC&#x27;].includes(sort)) params.sort = sort;
+  if (env.ALI_TRACKING_ID) params.tracking_id = env.ALI_TRACKING_ID;
+  params.sign = await aliSign(env.ALI_APP_SECRET, params);
+  const r = await fetch(&#x27;https://api-sg.aliexpress.com/sync&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: { &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded;charset=utf-8&#x27; },
+    body: new URLSearchParams(params).toString(),
+  });
+  const text = await r.text();
+  let data; try { data = JSON.parse(text); } catch (e) { return { error: &#x27;aliexpress &#x27; + r.status, detail: text.slice(0, 300) }; }
+  const resp = data.aliexpress_affiliate_product_query_response;
+  if (!resp) return { error: &#x27;aliexpress&#x27;, detail: JSON.stringify(data).slice(0, 400) };
+  const rr = resp.resp_result || {};
+  const code = Number(rr.resp_code || 200);
+  if (code !== 200) return code === 405 ? { items: [] } : { error: &#x27;aliexpress &#x27; + code, detail: String(rr.resp_msg || &#x27;&#x27;).slice(0, 200) };
+  let list = ((rr.result || {}).products || {}).product || [];
+  if (!Array.isArray(list)) list = [list];
+  return { items: list.map(p =&gt; ({
+    id: String(p.product_id || &#x27;&#x27;),
+    title: p.product_title || &#x27;&#x27;,
+    price: num2(p.target_sale_price) ?? num2(p.sale_price) ?? num2(p.target_app_sale_price),
+    original: num2(p.target_original_price) ?? num2(p.original_price),
+    image: p.product_main_image_url || &#x27;&#x27;,
+    url: p.promotion_link || p.product_detail_url || &#x27;&#x27;,
+    ratingPct: num2(p.evaluate_rate),
+    orders: parseInt(p.lastest_volume || 0, 10) || 0,
+    category: p.second_level_category_name || p.first_level_category_name || &#x27;&#x27;,
+    shipDays: p.ship_to_days ? String(p.ship_to_days) : &#x27;&#x27;,
+  })).filter(it =&gt; it.title &amp;&amp; it.price &gt; 0 &amp;&amp; /^https:\/\//.test(it.url)) };
+}
+
+async function getToken(env) {
+  if (cachedToken &amp;&amp; cachedToken.expires &gt; Date.now() + 60000) return cachedToken.value;
+  const res = await fetch(&#x27;https://api.ebay.com/identity/v1/oauth2/token&#x27;, {
+    method: &#x27;POST&#x27;,
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;,
+      &#x27;Authorization&#x27;: &#x27;Basic &#x27; + btoa(env.EBAY_CLIENT_ID + &#x27;:&#x27; + env.EBAY_CLIENT_SECRET),
+    },
+    body: &#x27;grant_type=client_credentials&amp;scope=&#x27; + encodeURIComponent(&#x27;https://api.ebay.com/oauth/api_scope&#x27;),
+  });
+  if (!res.ok) throw new Error(&#x27;token &#x27; + res.status + &#x27;: &#x27; + (await res.text()).slice(0, 200));
+  const data = await res.json();
+  cachedToken = { value: data.access_token, expires: Date.now() + data.expires_in * 1000 };
+  return cachedToken.value;
+}
+
+// ===== البحث بالصورة: Workers AI يتعرف على المنتج ويرجّع كلمات بحث إنجليزية =====
+const IMG_PROMPT = &#x27;What single product is shown in this photo? Reply with ONLY a short English online-shopping search query of 2 to 5 words, for example: wireless earbuds, men leather wallet, coffee grinder. No sentences, no punctuation.&#x27;;
+function cleanQuery(t) {
+  t = String(t || &#x27;&#x27;).split(&#x27;\n&#x27;)[0].toLowerCase()
+    .replace(/\b(this is|it is|the image shows|image of|a photo of|photo of|picture of|search query|query|answer)\b/g, &#x27; &#x27;)
+    .replace(/[^a-z0-9 \-]/g, &#x27; &#x27;).replace(/\s+/g, &#x27; &#x27;).trim().replace(/^(the|a|an) /, &#x27;&#x27;);
+  return t.split(&#x27; &#x27;).filter(Boolean).slice(0, 6).join(&#x27; &#x27;);
+}
+async function handleImg(request, env) {
+  if (request.method !== &#x27;POST&#x27;) return { error: &#x27;use POST&#x27; };
+  if (!env.AI) return { error: &#x27;ai not connected&#x27; };
+  const body = await request.json().catch(() =&gt; null);
+  const b64 = body &amp;&amp; typeof body.image === &#x27;string&#x27; ? body.image.replace(/^data:image\/\w+;base64,/, &#x27;&#x27;) : &#x27;&#x27;;
+  if (!b64 || b64.length &gt; 1500000) return { error: &#x27;bad image&#x27; };
+  const bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i &lt; bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  for (const model of [&#x27;@cf/llava-hf/llava-1.5-7b-hf&#x27;, &#x27;@cf/unum/uform-gen2-qwen-500m&#x27;]) {
+    try {
+      const out = await env.AI.run(model, { image: [...bytes], prompt: IMG_PROMPT, max_tokens: 24 });
+      const q = cleanQuery(out &amp;&amp; (out.description || out.response));
+      if (q &amp;&amp; q.length &gt;= 3) return { query: q };
+    } catch (e) { /* نجرب الموديل الثاني */ }
+  }
+  return { error: &#x27;not recognized&#x27; };
+}
+
+// ===== ترجمة البحث بالذكاء الاصطناعي: «مساحات سيارة» ← car wiper blades =====
+const TR_SYS = `You convert an online-shopping search, typed by a shopper in any language (usually Gulf or Omani Arabic dialect, sometimes with typos), into the best short English search query for AliExpress and eBay.
+Rules:
+- Reply with ONLY the English search query: 1 to 6 words, lowercase. No quotes, no punctuation, no explanation, no Arabic.
+- Keep brand names, model names and numbers, sizes, colors, materials, gender or age, and the device the item is for.
+- Drop filler words such as cheap, original, best, new, I want, buy, price.
+- Use the normal product name that sellers use in their listings.
+Examples:
+مساحات سيارة =&gt; car wiper blades
+زينة سيارة =&gt; car interior decoration
+سماعات ابل =&gt; apple airpods
+كفر ايفون 15 شفاف =&gt; clear iphone 15 case
+لعبة سيارة =&gt; toy car
+حلوى عمانية =&gt; omani halwa
+مصر عماني =&gt; omani turban
+كيبورد ميكانيكي =&gt; mechanical keyboard
+شامبو للشعر الجاف =&gt; shampoo for dry hair
+ابي جوال رخيص =&gt; smartphone
+عطر عود فخم =&gt; oud perfume
+اغراض مطبخ =&gt; kitchen accessories`;
+const TR_MODELS = [&#x27;@cf/meta/llama-3.3-70b-instruct-fp8-fast&#x27;, &#x27;@cf/meta/llama-4-scout-17b-16e-instruct&#x27;, &#x27;@cf/meta/llama-3.1-8b-instruct-fast&#x27;, &#x27;@cf/meta/llama-3.1-8b-instruct&#x27;];
+function cleanTr(t) {
+  t = String(t || &#x27;&#x27;).trim().split(&#x27;\n&#x27;)[0];
+  if (t.includes(&#x27;=&gt;&#x27;)) t = t.split(&#x27;=&gt;&#x27;).pop();
+  if (/[\u0600-\u06FF]/.test(t)) return &#x27;&#x27;;
+  t = t.toLowerCase().replace(/^(english|query|search|answer)\s*:\s*/, &#x27;&#x27;).replace(/[^a-z0-9 .+\-]/g, &#x27; &#x27;).replace(/\.(?!\d)/g, &#x27; &#x27;).replace(/\s+/g, &#x27; &#x27;).trim();
+  const w = t.split(&#x27; &#x27;).filter(Boolean);
+  return w.length &amp;&amp; w.length &lt;= 7 ? w.join(&#x27; &#x27;) : &#x27;&#x27;;
+}
+async function handleTr(url, env) {
+  const q = (url.searchParams.get(&#x27;q&#x27;) || &#x27;&#x27;).trim().replace(/\s+/g, &#x27; &#x27;).slice(0, 80);
+  if (!q || !/\p{L}/u.test(q)) return { error: &#x27;empty&#x27; };
+  const key = q.toLowerCase();
+  if (env.DB) {
+    try {
+      await ensureTables(env);
+      const row = await env.DB.prepare(&#x27;SELECT en FROM tr_cache WHERE q = ?&#x27;).bind(key).first();
+      if (row &amp;&amp; row.en) return { en: row.en, cached: true };
+    } catch (e) { /* نكمل بدون كاش */ }
+  }
+  if (!env.AI) return { error: &#x27;ai not connected&#x27; };
+  for (const model of TR_MODELS) {
+    try {
+      const out = await env.AI.run(model, { messages: [{ role: &#x27;system&#x27;, content: TR_SYS }, { role: &#x27;user&#x27;, content: q }], max_tokens: 24, temperature: 0 });
+      const en = cleanTr(out &amp;&amp; (typeof out.response === &#x27;string&#x27; ? out.response : JSON.stringify(out.response || &#x27;&#x27;)));
+      if (en &amp;&amp; en.length &gt;= 2) {
+        if (env.DB) { try { await env.DB.prepare(&#x27;INSERT OR REPLACE INTO tr_cache (q, en, ts) VALUES (?, ?, ?)&#x27;).bind(key, en, Date.now()).run(); } catch (e) { /* عادي */ } }
+        return { en, model: model.split(&#x27;/&#x27;).pop() };
+      }
+    } catch (e) { /* نجرب الموديل اللي بعده */ }
+  }
+  return { error: &#x27;not translated&#x27; };
+}
+
+export default {
+  async fetch(request, env) {
+    if (request.method === &#x27;OPTIONS&#x27;) return new Response(null, { headers: CORS });
+    const json = (body, status = 200) =&gt; new Response(JSON.stringify(body), {
+      status, headers: { &#x27;Content-Type&#x27;: &#x27;application/json; charset=utf-8&#x27;, &#x27;Cache-Control&#x27;: &#x27;public, max-age=600&#x27;, ...CORS },
+    });
+
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, &#x27;&#x27;);
+    if (path === &#x27;/event&#x27; || path === &#x27;/rate&#x27; || path === &#x27;/stats&#x27;) {
+      if (!env.DB) return json({ error: &#x27;database not connected&#x27; }, 500);
+      try {
+        await ensureTables(env);
+        if (path === &#x27;/stats&#x27;) {
+          return new Response(JSON.stringify(await handleStats(env)), { headers: { &#x27;Content-Type&#x27;: &#x27;application/json; charset=utf-8&#x27;, &#x27;Cache-Control&#x27;: &#x27;public, max-age=20&#x27;, ...CORS } });
+        }
+        if (request.method !== &#x27;POST&#x27;) return json({ error: &#x27;use POST&#x27; }, 405);
+        const out = path === &#x27;/event&#x27; ? await handleEvent(request, env) : await handleRate(request, env);
+        return new Response(JSON.stringify(out), { status: out.error ? 400 : 200, headers: { &#x27;Content-Type&#x27;: &#x27;application/json; charset=utf-8&#x27;, &#x27;Cache-Control&#x27;: &#x27;no-store&#x27;, ...CORS } });
+      } catch (e) {
+        return json({ error: String(e.message || e) }, 500);
+      }
+    }
+    if (path === &#x27;/img&#x27;) {
+      try {
+        const out = await handleImg(request, env);
+        return new Response(JSON.stringify(out), { status: out.error ? 400 : 200, headers: { &#x27;Content-Type&#x27;: &#x27;application/json; charset=utf-8&#x27;, &#x27;Cache-Control&#x27;: &#x27;no-store&#x27;, ...CORS } });
+      } catch (e) { return json({ error: String(e.message || e) }, 500); }
+    }
+    if (path === &#x27;/tr&#x27;) {
+      try {
+        const out = await handleTr(url, env);
+        return new Response(JSON.stringify(out), { status: out.error ? 400 : 200, headers: { &#x27;Content-Type&#x27;: &#x27;application/json; charset=utf-8&#x27;, &#x27;Cache-Control&#x27;: out.error ? &#x27;no-store&#x27; : &#x27;public, max-age=86400&#x27;, ...CORS } });
+      } catch (e) { return json({ error: String(e.message || e) }, 500); }
+    }
+    if (path === &#x27;/meta&#x27;) {
+      try { const out = await handleMeta(url); return json(out, out.error ? 400 : 200); }
+      catch (e) { return json({ error: String(e.message || e) }, 502); }
+    }
+    if (path === &#x27;/ali&#x27;) {
+      try { const out = await handleAli(url, env); return json(out, out.error ? 502 : 200); }
+      catch (e) { return json({ error: String(e.message || e) }, 502); }
+    }
+    if (path === &#x27;/etsy&#x27;) {
+      try {
+        const out = await handleEtsy(url, env);
+        return json(out, out.error ? 502 : 200);
+      } catch (e) {
+        return json({ error: String(e.message || e) }, 502);
+      }
+    }
+    const q = (url.searchParams.get(&#x27;q&#x27;) || &#x27;&#x27;).trim().slice(0, 100);
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get(&#x27;limit&#x27;) || &#x27;8&#x27;, 10)));
+    if (!q) return json({ ok: true, msg: &#x27;Qarin eBay proxy is running. Add ?q=headphones&#x27; });
+    if (!env.EBAY_CLIENT_ID || !env.EBAY_CLIENT_SECRET) return json({ error: &#x27;missing secrets&#x27; }, 500);
+
+    try {
+      const token = await getToken(env);
+      // بس المنتجات اللي سعرها ثابت (مو مزاد) وتوصل لعمان
+      const api = &#x27;https://api.ebay.com/buy/browse/v1/item_summary/search?q=&#x27; + encodeURIComponent(q) + &#x27;&amp;limit=&#x27; + limit + &#x27;&amp;filter=&#x27; + encodeURIComponent(&#x27;buyingOptions:{FIXED_PRICE},deliveryCountry:OM&#x27;);
+      const res = await fetch(api, {
+        headers: {
+          &#x27;Authorization&#x27;: &#x27;Bearer &#x27; + token,
+          &#x27;X-EBAY-C-MARKETPLACE-ID&#x27;: &#x27;EBAY_US&#x27;,
+          &#x27;X-EBAY-C-ENDUSERCTX&#x27;: &#x27;contextualLocation=country%3DOM&#x27;,
+        },
+      });
+      if (!res.ok) return json({ error: &#x27;ebay &#x27; + res.status, detail: (await res.text()).slice(0, 300) }, 502);
+      const data = await res.json();
+      const items = (data.itemSummaries || []).filter(it =&gt; it.price &amp;&amp; it.price.currency === &#x27;USD&#x27;).map(it =&gt; {
+        const ship = (it.shippingOptions || [])[0];
+        const shipCost = ship &amp;&amp; ship.shippingCost &amp;&amp; ship.shippingCost.currency === &#x27;USD&#x27; ? parseFloat(ship.shippingCost.value) : null;
+        return {
+          title: it.title,
+          price: parseFloat(it.price.value),
+          original: it.marketingPrice &amp;&amp; it.marketingPrice.originalPrice ? parseFloat(it.marketingPrice.originalPrice.value) : null,
+          image: (it.image &amp;&amp; it.image.imageUrl) || (it.thumbnailImages &amp;&amp; it.thumbnailImages[0] &amp;&amp; it.thumbnailImages[0].imageUrl) || &#x27;&#x27;,
+          url: it.itemWebUrl,
+          sellerPct: it.seller &amp;&amp; it.seller.feedbackPercentage ? parseFloat(it.seller.feedbackPercentage) : null,
+          sellerScore: it.seller ? it.seller.feedbackScore || 0 : 0,
+          freeShip: shipCost === 0,
+          shipCost,
+          condition: it.condition || &#x27;&#x27;,
+        };
+      });
+      return json({ items });
+    } catch (e) {
+      return json({ error: String(e.message || e) }, 502);
+    }
+  },
+};
+</textarea>
+<script>
+document.getElementById('b').onclick = async () => {
+  const t = document.getElementById('t'), ok = document.getElementById('ok');
+  try { await navigator.clipboard.writeText(t.value); ok.textContent = '✅ تم النسخ (' + t.value.split('\n').length + ' سطر)'; }
+  catch (e) { t.focus(); t.select(); t.setSelectionRange(0, t.value.length); document.execCommand('copy'); ok.textContent = '✅ تم النسخ'; }
+};
+</script></body></html>

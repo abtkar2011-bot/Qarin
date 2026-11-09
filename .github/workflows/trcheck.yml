@@ -1,0 +1,18 @@
+name: Qarin translation check
+
+# يختبر ترجمة البحث الذكية في السيرفر (/tr) على ١٤١ بحث عربي.
+on:
+  push:
+    branches: [tr-check]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node qa/trcheck.js
