@@ -19,6 +19,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Top searches on Qarin
         run: curl -s https://qarin-ebay.abtkar2011.workers.dev/stats | head -c 3000; echo
+      - name: Serve this branch (local copy of the site)
+        run: (python3 -m http.server 8080 >/dev/null 2>&1 &) ; sleep 1
       - run: node qa/arlive.js
         env:
-          QS_FILE: qa/omani_queries.txt
+          QS_FILE: qa/probe.txt
+          SITE: http://127.0.0.1:8080/
+          TOP: "8"
