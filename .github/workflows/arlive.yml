@@ -1,0 +1,20 @@
+name: Qarin Arabic live check
+
+on:
+  push:
+    branches: [ar-live]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: |
+          npm i --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+      - run: node qa/arlive.js
