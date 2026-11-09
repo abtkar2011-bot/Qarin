@@ -1246,7 +1246,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     "مسبحه": "tasbih prayer beads", "ملابس صلاه": "prayer clothes", "اسدال": "prayer dress", "طرحه": "hijab",
     "ملابس رجالي": "men's clothing", "ملابس نسائيه": "women's clothing", "ملابس اطفال": "kids clothes", "ملابس بنات": "girls clothes",
     "ملابس اولاد": "boys clothes", "ملابس رياضيه": "sportswear", "ملابس بيبي": "baby clothes", "ملابس مواليد": "newborn baby clothes",
-    "ملابس": "clothes", "كوتشي": "sneakers", "جوتي": "shoes", "بوط": "boots",
+    "ملابس": "clothes", "كوتشي": "sneakers", "جوتي": "sneakers", "بدله رجالي": "men formal suit", "بدله رجاليه": "men formal suit", "بوط": "boots",
     "كعب عالي": "high heels", "شبشب": "slippers", "شباشب": "slippers", "زنوبه": "flip flops",
     "صنادل": "sandals", "صندل": "sandals", "حقيبه سفر": "suitcase", "شنطه سفر": "suitcase",
     "شنط سفر": "suitcase", "حقيبه مدرسيه": "school backpack", "شنطه مدرسيه": "school backpack", "شنطه رياضيه": "gym bag",
@@ -1504,7 +1504,8 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   // كلمة لحالها لها معنى أدق («ايباد» ← الجهاز نفسه، بس «كفر ايباد» ← ipad case)
   const AR_EXACT = { 'ايباد': 'apple ipad', 'ايربودز': 'apple airpods', 'ايربود': 'apple airpods', 'ايباد برو': 'apple ipad pro', 'ايباد اير': 'apple ipad air', 'ايباد ميني': 'apple ipad mini',
-    'ماك بوك': 'apple macbook', 'ماكبوك': 'apple macbook', 'اكس بوكس': 'xbox series x', 'اكسبوكس': 'xbox series x', 'مطبخ': 'kitchen accessories', 'دراجه': 'adult bicycle', 'سيكل': 'adult bicycle' };
+    'ماك بوك': 'apple macbook', 'ماكبوك': 'apple macbook', 'اكس بوكس': 'xbox series x', 'اكسبوكس': 'xbox series x', 'مطبخ': 'kitchen utensils set', 'دراجه': 'adult bicycle', 'سيكل': 'adult bicycle',
+    'ساعه': 'wrist watch', 'شنطه': 'handbag', 'شاحن': 'phone charger', 'قميص': 'men shirt' };
   const toEnglish = q => {
     let n = normalize(q);
     toEnglish.dropped = []; toEnglish.partial = false;
@@ -1711,7 +1712,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     coffee: /\b(tables?|signs?|sand|wrist rests?|decor\w*|candles?|scrubs?|soaps?|lotions?|wax|scented|fresheners?|coasters?|socks|earrings?|necklaces?|charms?|bracelets?|rugs?|curtains?|pillows?|paintings?|prints?|wall)\b/i,
   };
   // معدات مصانع ومطاعم تجارية (قِدر صناعي بـ 8000 دولار) مو منتجات للبيت
-  const INDUSTRIAL = /\b(industrial|commercial|control cabinets?|production line|making machine|processing machine|filling machine|packing machine|cnc|plc|forklift|excavator|machining|jacketed|tilting|cup seal\w*|sealing machines?|(colou?r|optical) sorters?|drying (equipment|machines?)|grain dryers?)\b/i;
+  const INDUSTRIAL = /\b(industrial|commercial|control cabinets?|production line|making machine|processing machine|filling machine|packing machine|cnc|plc|forklift|excavator|machining|jacketed|tilting|cup seal\w*|sealing machines?|(colou?r|optical) sorters?|drying (equipment|machines?)|grain dryers?|machine vision)\b/i;
   // «قطعة لـ X»: لو كلمة for/fits/suitable for جات قبل نوع المنتج، فهو إكسسوار أو قطعة له (Remote for Soundbar، Hose for Vacuum)
   const TOY_Q = /toy|kid|child|baby|infant|toddler|pacifier|teether|rattle|nursery|girl|boy|game|gaming|play|doll|lego|\brc\b|remote control|puzzle|fidget|plush|teddy|stuffed|slime|squish|montessori|educational|ride on|drone|train|bubble|balloon|blocks?|tiles|bath|pool|swing|slide|kite|scooter|bike|bicycle|ball|car$|cars|pets?|dogs?|cats?|birds?|parrot|hamster|fish|aquarium|chew|gift|party|figure|anime|robot|magic|science|stem|learning|sand|beach|water gun|camping|tent/i;
   // قطع غيار الأجهزة المنزلية (صمام ثلاجة، مضخة غسالة صحون، مشعل فرن) لما يكون البحث عن الجهاز نفسه
@@ -1806,6 +1807,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (!/dog|cat\b|cats|pet|pupp|kitten|bird|parrot|hamster|rabbit|aquarium|fish/.test(en)) items = items.filter(it => !PET_T.test(it.title));
     // ملابس وإكسسوارات الدمى (فستان لدمية بلايث، حذاء باربي) لما يكون البحث عن ملابس حقيقية
     if (!/doll|barbie|toy/.test(en)) items = items.filter(it => !/\b(blythe|licca|azone|ob(11|22|24|27)|fits (vintage )?(ken|barbie)|for (barbie|ken|blythe)|barbie (shoes|clothes|dress)|dolls?'? (clothes|clothing|outfits?|shoes|dress(es)?|accessor\w+)|(clothes|outfits?|shoes|dress(es)?) for dolls?)\b/i.test(it.title));
+    // عطر ماركة ← مو بخاخات فاضية ولا قلادة على شكل قارورة
+    if (/\b(perfume|fragrance|cologne|oud)\b/.test(en) && !/atomi|bottle|empty|refill|spray(er)?s?$|container/.test(en)) items = items.filter(it => !/\b(atomi[sz]ers?|refillable|empty|travel sprayers?|perfume bottle (necklace|pendant)|bottle necklace|containers?|dispensers?|vanity trays?|cages?|lockets?)\b/i.test(it.title));
     // («with Release Valve» / «with Heating Element» ميزة في الجهاز، مو قطعة)
     if (APPLIANCE_Q.test(en) && !APPL_PART.test(en)) items = items.filter(it => { const t = String(it.title).replace(/\bwith\b[^,|]{0,25}?\b(valves?|thermostats?|heating elements?)\b/gi, ''); return !APPL_PART.test(t) && (/heater|iron|kettle|oven|stove|fryer/.test(en) || !/\bthermostats?\b/i.test(t)); });
     // قطع الجوالات واللابتوبات (شاشة بديلة، غطاء خلفي، كيبورد للآيباد) لما يكون البحث عن الجهاز نفسه
@@ -1826,7 +1829,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     const head = headOf(en).replace(/e?s$/, '');
     const ex = EXCL[head] || (/smart ?watch/.test(en) ? EXCL.smartwatch : null);
     if (ex && !ex.test(en)) items = items.filter(it => !ex.test(it.title));
-    const cr = CHIP[en];
+    // «philips blender» / «dior perfume» ← نفس قواعد blender / perfume (لأنواع ما تتغيّر بالماركة)
+    const ew = en.split(' '), rest = ew.slice(1).join(' ');
+    const cr = CHIP[en] || (ew.length > 1 && BRAND_Q.test(ew[0]) && /^(perfume|blender|shoes|bag|handbag|laptop|sunglasses|sneakers|wallet|backpack|air fryer|vacuum cleaner|coffee machine|camera|headphones|bluetooth speaker|hair dryer|hair straightener)$/.test(rest) && CHIP[rest]) || null;
     if (cr) items = items.filter(it => (!cr[0] || cr[0].test(it.title)) && !(cr[1] && cr[1].test(it.title)));
     return preferStrict(items, en);
   }
@@ -1879,7 +1884,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'chair': [null, /\b(slipcovers?|hats?|pok[eé]mon|points|tables? and \w+ chairs|desks? and chairs?|desk set|tables? and chairs?|headrests?|lumbar|arm ?pads?|armpads|end caps?|plugs|stoppers?|feet|casters?|sliders?|covers?|covering|cushions?|wheels? for)\b/i],
     'gaming chair': [null, /\b(stoppers?|blocks?|sliders?|mats?|covers?|casters?|cushions?|pillows?)\b/i],
     'desk': [/\b(desks?|tables?|workstations?)\b/i, /\b(planters?|decor|pla|figurines?|buddy|companions?|desk lamps?|lamps?|organi[sz]ers?|mats?|pads?|risers?|shelf|shelves|calendars?|clocks?|fans?|toys?|plants?)\b/i],
-    'specialty coffee beans': [null, /\b(sieves?|grading|roasters?|roasting machines?|grinders?|machines?)\b/i],
+    'specialty coffee beans': [/\b(arabica|roasted|single origin|whole beans?|beans|specialty coffee|\d+ ?(g|kg|lb|oz))\b/i, /\b(sieves?|grading|roasters?|roasting machines?|grinders?|machines?|trays?|dosing|discs?|scales?|measuring|cups?|weighing|spoons?|canisters?|containers?|jars?|storage|tins?|scoops?)\b/i],
     'espresso machine': [null, /\b(planters?|plant pots?|steam tips?|spouts?|wands? only|gaskets?|baskets?|shirts?|cleaning)\b/i],
     'coffee capsules': [null, /\b(necklaces?|jewel\w*|espresso machines?|coffee makers?|holders?|dispensers?|drawers?|stands?)\b/i],
     'pour over coffee dripper': [/\b(drippers?|pour[- ]?over|v60|chemex|kalita|origami|drip (cones?|coffee makers?))\b/i, /\b(dosing cups?|cold brew|teapots?|kettles?|filter papers?|paper filters?)\b/i],
@@ -1889,18 +1894,18 @@ table.dt { min-width: 0; font-size: .76rem; }
     'milk frother': [null, /\b(espresso machines?|coffee machines?|chocolate makers?)\b/i],
     'coffee filter paper': [null, /\b(wreaths?|flowers?|lace|ephemera|junk journal|dyed|stained|crafts?|decor)\b/i],
     'coffee roaster': [null, /\b(signs?|signage|logo|drippers?|jig|themes?)\b/i],
-    'dress': [null, /\b(t-?shirts?|t shirts?|blythe|licca|skipper|shoes?|loafers?|boots?|inflatable|porch goose|dress up|dolls?)\b/i],
+    'dress': [null, /\b(t-?shirts?|t shirts?|blythe|licca|skipper|shoes?|loafers?|boots?|inflatable|porch goose|dress up|dolls?|build a bear|bear)\b/i],
     't-shirt': [null, /\b(tank tops?|sleeveless|vests?|sweatshirts?|piece sets?|2pcs|suits?|shorts set)\b/i],
     'shirt': [null, /\b(signed|framed|coa|(false|faux|fake) collars?|t-?shirts?|t shirts?|tees?|tank tops?|sleeveless|vests?|fake collars?|dickey|sweat\w+)\b/i],
     'jeans': [null, /\b(shoes?|boots?|t-?shirts?|t shirt|jackets?|jean claude|billie jean|sequin|skirts?|outfits?|two piece|2 piece)\b/i],
     'jacket': [null, /\b(shock absorbers?|dust jackets?|for (pajero|toyota|car)|skirt sets?|pants suits?|fishing vests?|dolls?|barbie|diaper bags?)\b/i],
-    'shoes': [null, /\b(stools?|sofas?|dryers?|cabinets?|racks?|shine|polish|horns?|massagers?|walkers?|walker boots?|outfits?|dolls?|covers?|insoles?|laces?)\b/i],
+    'shoes': [null, /\b(stools?|sofas?|dryers?|cabinets?|racks?|shine|polish|horns?|massagers?|walkers?|walker boots?|outfits?|dolls?|covers?|insoles?|laces?|barbie|mattel|dolls?|build a bear)\b/i],
     'running shoes': [null, /\b(flippers?|fins?|diving|snorkel\w*|shine|polish|dryers?|skates?|roller|wheels?|heelys|skateboarding)\b/i],
     'backpack': [null, /\b(vests?|pets?|cats?|dogs?|diaper bags?)\b/i],
     'bag': [null, /\b(tea|cinnamon|specimen|laparoscopic|medical|fishing|pva|pets?|dogs?|blind ?bags?|cards?|sensors?|switch(es)?|tea ?bags?|trash|garbage|bin bags?|zip ?lock|storage bags?|vacuum bags?|sleeping bags?|punching bags?|bean ?bags?|sand ?bags?|air ?bags?|gift bags?|paper bags?|poly(thene)? bags?|packaging)\b/i],
     'wallet': [null, /\b(crossbody bags?|shoulder purses?|crypto|bitcoin|hardware wallets?|ledger|trezor)\b/i],
-    'sunglasses': [/\b(sunglass(es)?|sun glasses|polari[sz]ed|uv ?400|shades)\b/i, /\b(smart|ai|cameras?|bluetooth|translat\w+|headsets?|audio|video|music|calling|golf|blue light|anti[- ]blue|cleaning cloths?|lens cloths?|personali[sz]ed glasses|wine glasses|night vision|driver goggles|anti[- ]high beam)\b/i],
-    'watch': [/\b(watch(es)?|wristwatch(es)?|wrist watch(es)?)\b/i, /\b(golf|counters?|smart ?watch(es)?|oilers?|oil pens?|applicators?|ar glasses|smart glasses|umbrella rope|survival|decoration|pliers?|clamps?|bench|tools?|winders?|straps?|bands?|clocks?|movements?|parts?|crowns?)\b/i],
+    'sunglasses': [/\b(sunglass(es)?|sun glasses|polari[sz]ed|uv ?400|shades)\b/i, /\b(smart|ai|cameras?|bluetooth|translat\w+|headsets?|audio|video|music|calling|golf|blue light|anti[- ]blue|cleaning cloths?|lens cloths?|personali[sz]ed glasses|wine glasses|night vision|driver goggles|anti[- ]high beam|neon|signs?|personali[sz]ed|wedding|party favors?|bulk|groomsm[ae]n)\b/i],
+    'watch': [/\b(watch(es)?|wristwatch(es)?|wrist watch(es)?)\b/i, /\b(golf|counters?|smart ?watch(es)?|oilers?|oil pens?|applicators?|ar glasses|smart glasses|umbrella rope|survival|decoration|pliers?|clamps?|bench|tools?|winders?|straps?|bands?|clocks?|movements?|parts?|crowns?|dies|presses?|tartan|kilts?|pushers?|bezel inserts?|luminous beads|outer rings?|crowns? for|suitable for)\b/i],
     'ring': [/\b(jewel\w*|silver|gold|diamonds?|engagement|wedding|925|sterling|women|men|stones?|gem\w*|zircon|cz|moissanite|titanium|stainless|copper|adjustable|signet|promise|cocktail|opal|ruby|sapphire|emerald|pearl|turquoise|crystals?)\b/i, /\b(solder|welding|brazing|air conditioners?|refrigerat\w+|arbor|adapters?|ferrite|toroid|cores?|slip rings?|channels?|shafts?|chokes?|nba|champions|wheelchairs?|handrails?|seals?|o ?rings?|coolant|egr|dish(es)?|trays?|holders?|piston|key ?rings?|ring lights?|phone rings?|teethers?|napkin|binders?|boxing|gaskets?)\b/i],
     'necklace': [null, /\b((false|faux|fake|detachable) collars?|whistles?|edc|lanyards?)\b/i],
     'earrings': [null, /\b(blank tags?|jewelry making|findings|hooks?|backs|stoppers?|making supplies)\b/i],
@@ -1962,6 +1967,12 @@ table.dt { min-width: 0; font-size: .76rem; }
     'ps5 game disc': [null, /\b(columns?|stands?|cleaning|cloths?|gameshark|ps1|ps2|holders?|racks?|storage|organi[sz]ers?|cases? only|empty cases?|replica)\b/i],
     'men arabic sandals': [null, /\b(bracelets?|tasbih|misbaha|sandal ?wood|pendants?|necklaces?|beads?)\b/i],
     'xbox series x': [/\b(consoles?|1 ?tb|2 ?tb|512 ?gb)\b/i, /\b(fans?|cooling|stands?|skins?|stickers?|wraps?|decals?|dust covers?|memberships?|vertical|mounts?|expansion cards?|storage expansion|refrigeration|cases? only|bags?)\b/i],
+    'phone charger': [/\b(chargers?|charging|adapters?|plugs?|power delivery)\b/i, /\b(batter(y|ies) chargers?|motorcycles?|lawn ?mowers?|float|trickle|lifepo4|lead acid|dc-dc|ev|electric vehicles?|golf|forklifts?|drills?|tools?|dewalt|makita|cases?|stands?|car batter\w*)\b/i],
+    'men formal suit': [/\b(suits?|blazers?|tuxedos?)\b/i, /\b(fishing|jogging|sweatshirts?|tracksuits?|sportswear|christmas|printed design|swim\w*|t-?shirts?|pajamas?|sauna|rain|diving|wet ?suits?|costumes?|ski)\b/i],
+    'wedding dress': [/\b(dress(es)?|gowns?)\b/i, /\b(horsehair|braid|trim|sewing|craft|materials?|boning|kids|boys|mirrors?|dressing tables?|hangers?|bags?|garment bags?|cake toppers?|ornaments?|shoes|heels|dolls?|barbie)\b/i],
+    'calculator': [null, /\b(codes?|password|reflash|software|autoepc|autocd|specdiag|unlocked|activation|licen[cs]e|keygen|v\d\.\d|online|digital download)\b/i],
+    'kitchen utensils set': [null, /\b(aprons?|towels?|signs?|decals?|stickers?|wall art|prints?|toys?|play|kids?|pretend|miniatures?|doll)\b/i],
+    'candle': [null, /\b(lamps?|solar|lanterns?|warmers?|molds?|moulds?|candle wicks?|wicks? (for|only)|wick sustainers?|making kits?|holders?|snuffers?|melts? warmers?)\b/i],
     'bed pillow': [null, /\b(dakimakura|anime|waifu|hentai|pillow ?cases?|pillowcases?|covers?|shams?|travel|neck|u-?shaped|lumbar|body pillow)\b/i],
     'omani kumma cap': [null, /\b(prints?|photo\w*|fuel|oil|filler|tank|radiator|valves?|engine)\b/i],
     'bakhoor incense': [null, /\b(burners?|censers?|mabkhara|holders?|inserts?|mats?|pads?|tongs)\b/i],
@@ -1969,7 +1980,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'notebook': [/\b(notebooks?|journals?|notepads?|note ?pads?|planners?|diar(y|ies)|exercise books?|composition|jotters?)\b/i, /\b(laptops?|computers?|usb|hubs?|ssd|hard drives?|cameras?|bags?|backpacks?|sleeves?|cases?|refrigerators?|stands?|coolers?|chargers?|adapters?|batter(y|ies)|keyboards?|screens?)\b/i],
     'colored pencils': [null, /\b(refills?|ballpens?|sharpeners?|stationery sets?|prints?|wall decor|portraits?|pyrography|swatch|reference|books?|paperback|demonstrations)\b/i],
   };
-  Object.assign(CHIP, { 'folding treadmill': CHIP.treadmill, 'adult bicycle': CHIP.bicycle, 'kids bicycle': CHIP.bicycle, 'apple ipad pro': CHIP['apple ipad'], 'apple ipad air': CHIP['apple ipad'], 'apple ipad mini': CHIP['apple ipad'], 'canon camera': CHIP.camera, 'leather wallet': CHIP.wallet, 'gold ring': CHIP.ring, 'silver ring': CHIP.ring, 'macbook': CHIP['apple macbook'], 'clothes iron': CHIP['steam iron'], 'diapers': CHIP['baby diapers'], 'carpet': CHIP['area rug'], 'rug': CHIP['area rug'], 'kitchen blender': CHIP.blender, 'electric fan': CHIP.fan, 'soccer ball size 5': CHIP['soccer ball'], 'bakhoor burner': CHIP['incense burner'] });
+  Object.assign(CHIP, { 'wrist watch': CHIP.watch, 'handbag': CHIP.bag, 'evening dress': CHIP.dress, 'sneakers': CHIP.shoes, 'folding treadmill': CHIP.treadmill, 'adult bicycle': CHIP.bicycle, 'kids bicycle': CHIP.bicycle, 'apple ipad pro': CHIP['apple ipad'], 'apple ipad air': CHIP['apple ipad'], 'apple ipad mini': CHIP['apple ipad'], 'canon camera': CHIP.camera, 'leather wallet': CHIP.wallet, 'gold ring': CHIP.ring, 'silver ring': CHIP.ring, 'macbook': CHIP['apple macbook'], 'clothes iron': CHIP['steam iron'], 'diapers': CHIP['baby diapers'], 'carpet': CHIP['area rug'], 'rug': CHIP['area rug'], 'kitchen blender': CHIP.blender, 'electric fan': CHIP.fan, 'soccer ball size 5': CHIP['soccer ball'], 'bakhoor burner': CHIP['incense burner'] });
   // بحث من كلمتين أو أكثر («مطحنة قهوة»): نفضّل المنتجات اللي فيها كل الكلمات، لو كانت كافية
   const STRICT_SKIP = new Set(['for', 'with', 'and', 'the', 'men', 'mens', 'women', 'womens', 'kids', 'set', 'of', 'wrist', 'false', 'ladies', 'unisex', 'portable', 'mini', 'new', 'original']);
   function preferStrict(items, en) {
@@ -1980,7 +1991,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (strict.length >= 6 || (strict.length && BRAND_Q.test(en) && !ACC_QUERY.test(en))) return strict;  // «nintendo switch» ← مو «Time Switch Relay»
     return items;
   }
-  const BRAND_Q = /\b(apple|iphone|ipad|macbook|airpods|samsung|galaxy|sony|playstation|ps[345]|xbox|nintendo|huawei|xiaomi|redmi|honor|oppo|realme|oneplus|pixel|lenovo|dell|hp|asus|acer|msi|canon|nikon|fujifilm|gopro|dji|dyson|philips|lg|jbl|bose|beats|garmin|fitbit|amazfit|casio|nike|adidas|puma|skechers|lego|barbie|nespresso|delonghi|kenwood|tefal|braun|anker|baseus|logitech|razer|kindle|stanley|ninja|v60|chemex|aeropress|dolce gusto)\b/;
+  const BRAND_Q = /\b(rolex|omega|cartier|patek|hublot|tag heuer|tissot|seiko|citizen|louis vuitton|gucci|chanel|dior|tom ford|lattafa|ray-ban|prada|versace|armani|burberry|apple|iphone|ipad|macbook|airpods|samsung|galaxy|sony|playstation|ps[345]|xbox|nintendo|huawei|xiaomi|redmi|honor|oppo|realme|oneplus|pixel|lenovo|dell|hp|asus|acer|msi|canon|nikon|fujifilm|gopro|dji|dyson|philips|lg|jbl|bose|beats|garmin|fitbit|amazfit|casio|nike|adidas|puma|skechers|lego|barbie|nespresso|delonghi|kenwood|tefal|braun|anker|baseus|logitech|razer|kindle|stanley|ninja|v60|chemex|aeropress|dolce gusto)\b/;
   const noAcc = (items, en) => {
     items = items.filter(it => !BLOCK.test(it.title));
     if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(it.title));
