@@ -1298,7 +1298,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     "كشكول": "notebook", "مذكره": "planner", "مقلمه": "pencil case", "مبراه": "pencil sharpener",
     "برايه": "pencil sharpener", "مسطره": "ruler", "ممحاه": "eraser", "مساحه": "eraser",
     "دباسه": "stapler", "خرامه": "hole punch", "شريط لاصق": "tape", "غراء": "glue",
-    "صمغ": "glue", "مقص": "scissors", "حاسبه": "calculator", "اله حاسبه": "calculator",
+    "صمغ": "glue", "مقص": "scissors", "حاسبه": "calculator", "اله حاسبه": "scientific calculator",
     "سبوره": "whiteboard", "ادوات مدرسيه": "school supplies", "قرطاسيه": "stationery", "ستيكرات": "stickers",
     "ملصقات": "stickers", "كتب": "books", "ادوات رسم": "art supplies", "كانفس": "canvas painting",
     "ماكينه خياطه": "sewing machine", "مكينه خياطه": "sewing machine", "خياطه": "sewing supplies", "خيوط تطريز": "embroidery thread",
@@ -1790,7 +1790,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const BLOCK = /\b(vaginas?|crossdress\w*|breast forms?|sex|sexy|erotic|dildos?|vibrators?|masturbat\w*|bdsm|bondage|fetish|condoms?|lingerie|porn\w*|nipples?|penis|anal|butt ?plugs?|strap-?on|adult toys?|cigarettes?|cigars?|e-?cig\w*|vapes?|vaping|vaporizers?|hookahs?|shisha|nargile|tobacco|smoking|bongs?|cannabis|marijuana|rolling papers?)\b/i;
   const BLOCK_CAT = /adult|sex|erotic|lingerie|vape|e-?cig|electronic cigarette|tobacco|smok|hookah|shisha/i;
   // أشياء «على شكل» المنتج مو المنتج نفسه (ولاعة على شكل ساعة، بروش، ستيكر، مجسم...) إلا إذا كانت هي المطلوبة
-  const NOVELTY = /\b(dtf transfers?|iron[- ]on transfers?|heat press designs?|lighters?|keychains?|key ?chains?|key ?rings?|stickers?|decals?|posters?|puzzles?|brooch(es)?|badges?|lapel|molds?|moulds?|stencils?|toppers?|miniatures?|dollhouse|figurines?|ornaments?|costumes?|cosplay|patch(es)?|sculptures?|statues?|wall ?scrolls?|canvas ?prints?|tapestr(y|ies)|wall ?art|art prints?|illustrations?|patent (art|prints?|posters?|drawings?)|print ads?|magazine (ads?|prints?)|vintage ads?|flags?|dolls?|bjd|(fridge|refrigerator|dishwasher|souvenir|sheet|guide|chart|quote|calendar|kitchen|decorative|finjan|cup) magnets?|magnets? (set|souvenir|calendar))\b/i;
+  const NOVELTY = /\b(advertis\w*|magazine pages?|ads?(?=\s*[-–—|,(]|\s+(magazine|print|page|poster)\b)|dtf transfers?|iron[- ]on transfers?|heat press designs?|lighters?|keychains?|key ?chains?|key ?rings?|stickers?|decals?|posters?|puzzles?|brooch(es)?|badges?|lapel|molds?|moulds?|stencils?|toppers?|miniatures?|dollhouse|figurines?|ornaments?|costumes?|cosplay|patch(es)?|sculptures?|statues?|wall ?scrolls?|canvas ?prints?|tapestr(y|ies)|wall ?art|art prints?|illustrations?|patent (art|prints?|posters?|drawings?)|print ads?|magazine (ads?|prints?)|vintage ads?|flags?|dolls?|bjd|(fridge|refrigerator|dishwasher|souvenir|sheet|guide|chart|quote|calendar|kitchen|decorative|finjan|cup) magnets?|magnets? (set|souvenir|calendar))\b/i;
   // تنظيف مشترك لكل المتاجر: افتراضي، رقمي، مزيّف، وكلمات ما تناسب نوع المنتج
   function extraClean(items, en) {
     if (!VIRTUAL.test(en)) items = items.filter(it => !VIRTUAL.test(it.title));
@@ -1839,7 +1839,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (cr) items = items.filter(it => (!cr[0] || cr[0].test(it.title)) && !(cr[1] && cr[1].test(it.title)));
     // ماركة فخمة أو أزياء («gucci bag»، «nike shoes») ← لازم اسم الماركة في العنوان (مو «Designer Bag» عادية)
     const lb = en.match(/\b(rolex|omega|cartier|patek|hublot|tag heuer|tissot|seiko|citizen|casio|louis vuitton|gucci|chanel|dior|tom ford|lattafa|ray-ban|prada|versace|armani|burberry|nike|adidas|puma|skechers|new balance|asics|reebok|fila|vans|converse|zara|michael kors|coach)\b/);
-    if (lb && !ACC_QUERY.test(en)) { const bre = new RegExp('\\b' + lb[1].replace(/[- ]/g, '[- ]?'), 'i'); items = items.filter(it => bre.test(it.title)); }
+    if (lb && !/\b(for|case|cover|strap|band|charger|cable|adapter|protector|replacement|parts?|compatible)\b/.test(en)) { const bre = new RegExp('\\b' + lb[1].replace(/[- ]/g, '[- ]?'), 'i'); items = items.filter(it => bre.test(it.title)); }
     return preferStrict(items, en);
   }
   // ---- قواعد دقيقة لمنتجات «تصفّح الأقسام»: [لازم يطابق، ممنوع يطابق] ----
@@ -1903,7 +1903,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'coffee roaster': [null, /\b(signs?|signage|logo|drippers?|jig|themes?)\b/i],
     'dress': [null, /\b(t-?shirts?|t shirts?|blythe|licca|skipper|shoes?|loafers?|boots?|inflatable|porch goose|dress up|dolls?|build a bear|bear)\b/i],
     't-shirt': [null, /\b(tank tops?|sleeveless|vests?|sweatshirts?|piece sets?|2pcs|suits?|shorts set)\b/i],
-    'shirt': [null, /\b(signed|framed|coa|(false|faux|fake) collars?|t-?shirts?|t shirts?|tees?|tank tops?|sleeveless|vests?|fake collars?|dickey|sweat\w+)\b/i],
+    'shirt': [null, /\b(signed|framed|coa|(false|faux|fake) collars?|t-?shirts?|t shirts?|tees?|tank tops?|sleeveless|vests?|fake collars?|dickey|sweat\w+|birthday|kids|toddlers?|pajamas?|homewear|hoodies?|baby|onesies?|bodysuits?)\b/i],
     'jeans': [null, /\b(shoes?|boots?|t-?shirts?|t shirt|jackets?|jean claude|billie jean|sequin|skirts?|outfits?|two piece|2 piece)\b/i],
     'jacket': [null, /\b(shock absorbers?|dust jackets?|for (pajero|toyota|car)|skirt sets?|pants suits?|fishing vests?|dolls?|barbie|diaper bags?)\b/i],
     'shoes': [null, /\b(stools?|sofas?|dryers?|cabinets?|racks?|shine|polish|horns?|massagers?|walkers?|walker boots?|outfits?|dolls?|covers?|insoles?|laces?|barbie|mattel|dolls?|build a bear)\b/i],
@@ -1975,12 +1975,12 @@ table.dt { min-width: 0; font-size: .76rem; }
     'men arabic sandals': [null, /\b(bracelets?|tasbih|misbaha|sandal ?wood|pendants?|necklaces?|beads?)\b/i],
     'xbox series x': [/\b(consoles?|1 ?tb|2 ?tb|512 ?gb)\b/i, /\b(fans?|cooling|stands?|skins?|stickers?|wraps?|decals?|dust covers?|memberships?|vertical|mounts?|expansion cards?|storage expansion|refrigeration|cases? only|bags?)\b/i],
     'phone charger': [/\b(chargers?|charging|adapters?|plugs?|power delivery)\b/i, /\b(batter(y|ies) chargers?|motorcycles?|lawn ?mowers?|float|trickle|lifepo4|lead acid|dc-dc|ev|electric vehicles?|golf|forklifts?|drills?|tools?|dewalt|makita|cases?|stands?|car batter\w*)\b/i],
-    'men formal suit': [/\b(suits?|blazers?|tuxedos?)\b/i, /\b(fishing|jogging|sweatshirts?|tracksuits?|sportswear|christmas|printed design|swim\w*|t-?shirts?|pajamas?|sauna|rain|diving|wet ?suits?|costumes?|ski|suit pants|suit shorts|boys|kids|children|toddlers?)\b/i],
-    'wedding dress': [/\b(dress(es)?|gowns?)\b/i, /\b(horsehair|braid|trim|sewing|craft|materials?|boning|kids|boys|mirrors?|dressing tables?|hangers?|bags?|garment bags?|cake toppers?|ornaments?|shoes|heels|dolls?|barbie|crowns?|tiaras?|headpieces?|veils?|boy|suit|2 piece sets?|bodycon)\b/i],
+    'men formal suit': [/\b(suits?|blazers?|tuxedos?)\b/i, /\b(fishing|jogging|sweatshirts?|tracksuits?|sportswear|christmas|printed design|swim\w*|t-?shirts?|pajamas?|sauna|rain|diving|wet ?suits?|costumes?|ski|suit pants|suit shorts|boys|kids|children|toddlers?|trousers?|pants?|pant|cufflinks?|cuff links?|ties?|belts?|shirts?)\b/i],
+    'wedding dress': [/\b(dress(es)?|gowns?)\b/i, /\b(horsehair|braid|trim|sewing|craft|materials?|boning|kids|boys|mirrors?|dressing tables?|hangers?|bags?|garment bags?|cake toppers?|ornaments?|shoes|heels|dolls?|barbie|crowns?|tiaras?|headpieces?|veils?|boy|suit|2 piece sets?|bodycon|bears?|teddy|plush|petticoats?|crinoline|slips?|couples?|guayabera)\b/i],
     'calculator': [null, /\b(codes?|password|reflash|software|autoepc|autocd|specdiag|unlocked|activation|licen[cs]e|keygen|v\d\.\d|online|digital download)\b/i],
     'kitchen utensils set': [null, /\b(aprons?|towels?|signs?|decals?|stickers?|wall art|prints?|toys?|play|kids?|pretend|miniatures?|doll)\b/i],
     'candle': [null, /\b(lamps?|solar|lanterns?|warmers?|molds?|moulds?|candle wicks?|wicks? (for|only)|wick sustainers?|making kits?|holders?|snuffers?|melts? warmers?)\b/i],
-    'sneakers': [null, /\b(roller|skates?|wheeled|wheels?|heelys|stools?|racks?|cabinets?|dolls?|barbie|insoles?|laces?|cleaners?|shine|polish|keychains?|charms?|stickers?)\b/i],
+    'sneakers': [null, /\b(roller|skates?|wheeled|wheels?|heelys|stools?|racks?|cabinets?|dolls?|barbie|insoles?|laces?|cleaners?|shine|polish|keychains?|charms?|stickers?|lasts?|make your own|molds?|silicone)\b/i],
     'bed pillow': [null, /\b(dakimakura|anime|waifu|hentai|pillow ?cases?|pillowcases?|covers?|shams?|travel|neck|u-?shaped|lumbar|body pillow)\b/i],
     'omani kumma cap': [null, /\b(prints?|photo\w*|fuel|oil|filler|tank|radiator|valves?|engine)\b/i],
     'bakhoor incense': [null, /\b(burners?|censers?|mabkhara|holders?|inserts?|mats?|pads?|tongs)\b/i],
@@ -1988,7 +1988,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     'notebook': [/\b(notebooks?|journals?|notepads?|note ?pads?|planners?|diar(y|ies)|exercise books?|composition|jotters?)\b/i, /\b(laptops?|computers?|usb|hubs?|ssd|hard drives?|cameras?|bags?|backpacks?|sleeves?|cases?|refrigerators?|stands?|coolers?|chargers?|adapters?|batter(y|ies)|keyboards?|screens?)\b/i],
     'colored pencils': [null, /\b(refills?|ballpens?|sharpeners?|stationery sets?|prints?|wall decor|portraits?|pyrography|swatch|reference|books?|paperback|demonstrations)\b/i],
   };
-  Object.assign(CHIP, { 'wrist watch': CHIP.watch, 'handbag': CHIP.bag, 'evening dress': CHIP.dress, 'folding treadmill': CHIP.treadmill, 'adult bicycle': CHIP.bicycle, 'kids bicycle': CHIP.bicycle, 'apple ipad pro': CHIP['apple ipad'], 'apple ipad air': CHIP['apple ipad'], 'apple ipad mini': CHIP['apple ipad'], 'canon camera': CHIP.camera, 'leather wallet': CHIP.wallet, 'gold ring': CHIP.ring, 'silver ring': CHIP.ring, 'macbook': CHIP['apple macbook'], 'clothes iron': CHIP['steam iron'], 'diapers': CHIP['baby diapers'], 'carpet': CHIP['area rug'], 'rug': CHIP['area rug'], 'kitchen blender': CHIP.blender, 'electric fan': CHIP.fan, 'soccer ball size 5': CHIP['soccer ball'], 'bakhoor burner': CHIP['incense burner'] });
+  Object.assign(CHIP, { 'scientific calculator': CHIP.calculator, 'wrist watch': CHIP.watch, 'handbag': CHIP.bag, 'evening dress': CHIP.dress, 'folding treadmill': CHIP.treadmill, 'adult bicycle': CHIP.bicycle, 'kids bicycle': CHIP.bicycle, 'apple ipad pro': CHIP['apple ipad'], 'apple ipad air': CHIP['apple ipad'], 'apple ipad mini': CHIP['apple ipad'], 'canon camera': CHIP.camera, 'leather wallet': CHIP.wallet, 'gold ring': CHIP.ring, 'silver ring': CHIP.ring, 'macbook': CHIP['apple macbook'], 'clothes iron': CHIP['steam iron'], 'diapers': CHIP['baby diapers'], 'carpet': CHIP['area rug'], 'rug': CHIP['area rug'], 'kitchen blender': CHIP.blender, 'electric fan': CHIP.fan, 'soccer ball size 5': CHIP['soccer ball'], 'bakhoor burner': CHIP['incense burner'] });
   // بحث من كلمتين أو أكثر («مطحنة قهوة»): نفضّل المنتجات اللي فيها كل الكلمات، لو كانت كافية
   const STRICT_SKIP = new Set(['for', 'with', 'and', 'the', 'men', 'mens', 'women', 'womens', 'kids', 'set', 'of', 'wrist', 'false', 'ladies', 'unisex', 'portable', 'mini', 'new', 'original']);
   function preferStrict(items, en) {
@@ -2002,7 +2002,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const BRAND_Q = /\b(rolex|omega|cartier|patek|hublot|tag heuer|tissot|seiko|citizen|louis vuitton|gucci|chanel|dior|tom ford|lattafa|ray-ban|prada|versace|armani|burberry|apple|iphone|ipad|macbook|airpods|samsung|galaxy|sony|playstation|ps[345]|xbox|nintendo|huawei|xiaomi|redmi|honor|oppo|realme|oneplus|pixel|lenovo|dell|hp|asus|acer|msi|canon|nikon|fujifilm|gopro|dji|dyson|philips|lg|jbl|bose|beats|garmin|fitbit|amazfit|casio|nike|adidas|puma|skechers|lego|barbie|nespresso|delonghi|kenwood|tefal|braun|anker|baseus|logitech|razer|kindle|stanley|ninja|v60|chemex|aeropress|dolce gusto)\b/;
   const noAcc = (items, en) => {
     items = items.filter(it => !BLOCK.test(it.title));
-    if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(it.title));
+    if (!NOVELTY.test(en)) items = items.filter(it => !NOVELTY.test(String(it.title).replace(/\b(without|with|no) ads\b|\bads?[- ]free\b/gi, '')));
     return (ACC2.test(en) || en === 'tv') ? items : items.filter(it => !ACC2.test(String(it.title).replace(/\b(open|in|with|original|sealed|retail|no|without|full|gift) box(es)?\b/gi, '')));
   };
   const PARTS = /\b(accessor(?:y|ies)|hoses?|selfie ?sticks?|fill ?lights?|ring ?lights?|antennas?|resetters?|cartridges?|toners?|print ?heads?|paper liners?|cases?|covers?|holder|clips?|cables?|cord|charger|charging|chargers|battery|batteries|replacement|spare|parts?|repair|tools?|strap|straps|watchband|film|glass|protector|tempered|sticker|skin|stand|mount|dock|pouch|ear ?tips|ear ?pads|cushions?|adapter|connector|module|board|lens cap|bezel|buckle|spring bars?|winder|organi[sz]er|hook|hanger|insoles?|laces?|shoelaces?|filter|brush|nozzle|blade|spare)\b/i;
