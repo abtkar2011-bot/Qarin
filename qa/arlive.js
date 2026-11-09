@@ -1,7 +1,7 @@
 // بحث عربي حقيقي على الموقع المنشور: يطبع الترجمة وأول النتائج
 const { chromium, devices } = require('playwright');
 const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
-const QS = (process.env.QS || 'مساحات سيارة|زينة سيارة|سماعات ابل|كفر ايفون 15 شفاف|كيبورد ميكانيكي|حلوى عمانية|زيت محرك|لعبة سيارة|ساعة ذكية|شاحن ايفون').split('|');
+const QS = process.env.QS_FILE ? require('fs').readFileSync(process.env.QS_FILE, 'utf8').trim().split('\n') : (process.env.QS || 'مساحات سيارة|زينة سيارة|سماعات ابل|كفر ايفون 15 شفاف|كيبورد ميكانيكي|حلوى عمانية|زيت محرك|لعبة سيارة|ساعة ذكية|شاحن ايفون').split('|');
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ ...devices['iPhone 14 Pro Max'], locale: 'ar-OM', timezoneId: 'Asia/Muscat' });
