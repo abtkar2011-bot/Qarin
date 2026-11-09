@@ -8,7 +8,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,6 +23,6 @@ jobs:
         run: (python3 -m http.server 8080 >/dev/null 2>&1 &) ; sleep 1
       - run: node qa/arlive.js
         env:
-          QS_FILE: qa/probe.txt
-          SITE: http://127.0.0.1:8080/
+          QS_FILE: qa/final.txt
+          SITE: https://abtkar2011-bot.github.io/Qarin/
           TOP: "8"
