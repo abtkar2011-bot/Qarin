@@ -1,0 +1,15 @@
+{
+ "queries": 997,
+ "seconds": 321,
+ "newResponses": 591,
+ "totals": {
+  "ali": 48407,
+  "idx": 23159,
+  "ebay": 49351,
+  "etsy": 46705,
+  "final": 65066,
+  "empty": 1
+ },
+ "pageErrors": [],
+ "at": "2026-11-09T21:34:19.133Z"
+}
