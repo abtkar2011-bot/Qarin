@@ -16,3 +16,5 @@ jobs:
         with:
           node-version: "20"
       - run: node qa/trcheck.js
+        env:
+          QS_FILE: qa/night_ai.txt

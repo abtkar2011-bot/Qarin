@@ -1,7 +1,7 @@
 // يجرّب ترجمة البحث الذكية في السيرفر الحقيقي (/tr) على بحوث عربية منتشرة
 const fs = require('fs');
 const API = 'https://qarin-ebay.abtkar2011.workers.dev/tr?q=';
-const qs = fs.readFileSync(__dirname + '/natural_ar.txt', 'utf8').trim().split('\n');
+const qs = fs.readFileSync(process.env.QS_FILE || (__dirname + '/natural_ar.txt'), 'utf8').trim().split('\n');
 (async () => {
   const out = [];
   for (let i = 0; i < qs.length; i += 6) {
