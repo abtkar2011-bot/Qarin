@@ -12,7 +12,7 @@ const QS = process.env.QS_FILE ? require('fs').readFileSync(process.env.QS_FILE,
   for (const q of QS) {
     const t0 = Date.now(), c0 = calls.length;
     await p.evaluate(async q => { await window.__qa.search(q, true); for (let k = 0; k < 600 && window.__qa.state.loading; k++) await new Promise(r => setTimeout(r, 50)); }, q);
-    const r = await p.evaluate(() => ({ n: window.__qa.state.products.length, top: window.__qa.state.products.slice(0, +(process.env.TOP || 5)).map(x => x.platform.slice(0, 4) + ' ' + x.title.slice(0, 70)) }));
+    const r = await p.evaluate(k => ({ n: window.__qa.state.products.length, top: window.__qa.state.products.slice(0, k).map(x => x.platform.slice(0, 4) + ' ' + x.title.slice(0, 70)) }), +(process.env.TOP || 5));
     const ebay = calls.slice(c0).find(u => /\?q=/.test(u) && !/\/tr\?/.test(u)) || '';
     console.log('==', q, '→', (ebay.split('?q=')[1] || '').split('&')[0], '|', r.n, 'results |', Date.now() - t0, 'ms', calls.slice(c0).some(u => /\/tr\?/.test(u)) ? '(AI)' : '(dictionary)');
     r.top.forEach(t => console.log('    ', t));
