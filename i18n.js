@@ -1,6 +1,16 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"وفوق": ["and up", "et plus", "o más", "及以上", "और ऊपर", "اور زیادہ", "и выше", "ve üzeri", "ke atas"],
+"لين": ["up to", "jusqu’à", "hasta", "最高", "तक", "تک", "до", "en fazla", "hingga"],
+"💰 السعر": ["💰 Price", "💰 Prix", "💰 Precio", "💰 价格", "💰 कीमत", "💰 قیمت", "💰 Цена", "💰 Fiyat", "💰 Harga"],
+"من": ["Min", "Min", "Mín", "最低", "न्यूनतम", "کم از کم", "От", "En az", "Min"],
+"إلى": ["Max", "Max", "Máx", "最高", "अधिकतम", "زیادہ سے زیادہ", "До", "En çok", "Maks"],
+"أعلى سعر": ["Maximum price", "Prix maximum", "Precio máximo", "最高价格", "अधिकतम कीमत", "زیادہ سے زیادہ قیمت", "Максимальная цена", "En yüksek fiyat", "Harga maksimum"],
+"✕ مسح السعر": ["✕ Clear price", "✕ Effacer le prix", "✕ Borrar precio", "✕ 清除价格", "✕ कीमत हटाएँ", "✕ قیمت صاف کریں", "✕ Сбросить цену", "✕ Fiyatı temizle", "✕ Hapus harga"],
+"فلتر السعر:": ["Price filter:", "Filtre de prix :", "Filtro de precio:", "价格筛选：", "कीमत फ़िल्टर:", "قیمت فلٹر:", "Фильтр цены:", "Fiyat filtresi:", "Filter harga:"],
+"✕ مسح": ["✕ Clear", "✕ Effacer", "✕ Borrar", "✕ 清除", "✕ हटाएँ", "✕ صاف کریں", "✕ Сбросить", "✕ Temizle", "✕ Hapus"],
+"ما في منتجات بهالسعر. وسّع نطاق السعر أو امسحه.": ["No products in this price range. Widen it or clear it.", "Aucun produit dans cette fourchette de prix. Élargissez-la ou effacez-la.", "No hay productos en este rango de precio. Amplíalo o bórralo.", "此价格范围内没有商品。请放宽或清除价格范围。", "इस कीमत में कोई प्रोडक्ट नहीं। रेंज बढ़ाएँ या हटाएँ।", "اس قیمت میں کوئی پروڈکٹ نہیں۔ حد بڑھائیں یا صاف کریں۔", "Нет товаров в этом диапазоне цен. Расширьте или сбросьте его.", "Bu fiyat aralığında ürün yok. Aralığı genişletin veya temizleyin.", "Tidak ada produk di rentang harga ini. Perlebar atau hapus."],
 "({n} تقييم)": ["({n} reviews)", "({n} avis)", "({n} reseñas)", "（{n} 条评价）", "({n} समीक्षाएँ)", "({n} جائزے)", "({n} отзывов)", "({n} değerlendirme)", "({n} ulasan)"],
 "({n} مبيع)": ["({n} sold)", "({n} vendus)", "({n} vendidos)", "（已售 {n}）", "({n} बिके)", "({n} فروخت)", "({n} продано)", "({n} satıldı)", "({n} terjual)"],
 "(د.إ في المتجر)": ["(AED in store)", "(AED en boutique)", "(AED en la tienda)", "（店内 AED）", "(स्टोर में AED)", "(اسٹور میں AED)", "(AED в магазине)", "(mağazada AED)", "(AED di toko)"],

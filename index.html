@@ -132,6 +132,13 @@ select {
 .field > span { display: flex; justify-content: space-between; color: var(--muted); }
 .field > span b { color: var(--fg); }
 input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
+.pr-row { display: flex; align-items: center; gap: 8px; }
+.pr-in { flex: 1; min-width: 0; width: 100%; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; font-weight: 700; text-align: center; }
+.pr-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pr-dash { color: var(--muted); flex: none; }
+.pr-clear { align-self: flex-start; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 2px 0; }
+.pr-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
+.pr-note button { border: 0; background: var(--accent); color: #fff; border-radius: 99px; padding: 4px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .range-ends { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
 .range-ends b { color: var(--accent-strong); font-size: 0.88rem; }
 .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; }
@@ -591,6 +598,15 @@ table.dt { min-width: 0; font-size: .76rem; }
 
     <section class="side-sec">
       <h3>الفلاتر</h3>
+      <div class="field">
+        <span>💰 السعر <b id="priceCur" class="num" data-noi18n></b></span>
+        <div class="pr-row">
+          <input type="text" id="priceMin" class="pr-in num" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="من" aria-label="أقل سعر">
+          <span class="pr-dash">–</span>
+          <input type="text" id="priceMax" class="pr-in num" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="إلى" aria-label="أعلى سعر">
+        </div>
+        <button type="button" class="pr-clear" id="priceClear" hidden>✕ مسح السعر</button>
+      </div>
       <label class="field" for="minRating">
         <span>الحد الأدنى للتقييم <b id="minRatingVal" class="num">0.0</b></span>
         <input type="range" id="minRating" min="0" max="5" step="0.5" value="0">
@@ -1001,6 +1017,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     try { localStorage.setItem('qarin.lang', l); } catch (e) { /* التخزين غير متاح */ }
     $('langSel').value = l;
     renderRates();
+    priceBox();
     render();
     applyLang();
   }
@@ -2369,7 +2386,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   const state = {
     query: '', products: [], loading: false, limit: 8, currency: 'OMR', platforms: new Set(KEYS),
-    sort: 'best', minRating: 0, freeOnly: false, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 },
+    sort: 'best', minRating: 0, freeOnly: false, priceMin: null, priceMax: null, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 },
   };
   const cache = new Map();
   const FETCH_N = 30;  // نجيب أكثر من المعروض عشان الترتيب يتغيّر فوري لما تغيّر الأولوية
@@ -2379,6 +2396,35 @@ table.dt { min-width: 0; font-size: .76rem; }
     const k = CURRENCIES[state.currency] ? state.currency : 'OMR', c = CURRENCIES[k];
     const v = usd * RATES[k];
     return (k === 'USD' || k === 'EUR') ? `<bdi>${c.symbol}${fmt(v, c.dec)}</bdi>` : `<bdi>${fmt(v, c.dec)} ${LANG === 'ar' ? c.symbol : k}</bdi>`;
+  }
+  // فلتر السعر: نحفظ الحدود بالدولار (عشان تبقى صحيحة لو تغيّرت العملة)، والمستخدم يكتب بعملة العرض
+  function inPrice(p) {
+    let lo = state.priceMin, hi = state.priceMax;
+    if (lo != null && hi != null && lo > hi) [lo, hi] = [hi, lo];
+    const v = tot(p);
+    return (lo == null || v >= lo - 1e-9) && (hi == null || v <= hi + 1e-9);
+  }
+  const passFilters = p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly) && inPrice(p);
+  function parsePrice(s) {
+    const t = String(s || '').trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٫,]/g, '.').replace(/[^0-9.]/g, '');
+    const v = parseFloat(t);
+    return v > 0 ? v / RATES[CURRENCIES[state.currency] ? state.currency : 'OMR'] : null;
+  }
+  function priceBox() {
+    const k = CURRENCIES[state.currency] ? state.currency : 'OMR', c = CURRENCIES[k], r = RATES[k];
+    const cur = $('priceCur'); if (cur) cur.textContent = '(' + (LANG === 'ar' ? c.symbol : k) + ')';
+    for (const [id, v] of [['priceMin', state.priceMin], ['priceMax', state.priceMax]]) {
+      const el = $(id); if (el) el.value = v == null ? '' : String(+(v * r).toFixed(c.dec));
+    }
+    const clr = $('priceClear'); if (clr) clr.hidden = state.priceMin == null && state.priceMax == null;
+  }
+  function clearPrice() { state.priceMin = state.priceMax = null; $('priceMin').value = ''; $('priceMax').value = ''; priceBox(); render(); }
+  function priceNoteHtml() {
+    if (state.priceMin == null && state.priceMax == null) return '';
+    let lo = state.priceMin, hi = state.priceMax;
+    if (lo != null && hi != null && lo > hi) [lo, hi] = [hi, lo];
+    const txt = lo != null && hi != null ? `من ${money(lo)} إلى ${money(hi)}` : lo != null ? `من ${money(lo)} وفوق` : `لين ${money(hi)}`;
+    return `<div class="pr-note">💰 <span>فلتر السعر:</span> <b>${txt}</b> <button type="button" data-price-clear>✕ مسح</button></div>`;
   }
   function renderRates() {
     const box = $('rateBox');
@@ -2626,7 +2672,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const box = $('results');
     if (state.mode === 'basket' && state.basket && state.basket.data) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
-    const list = state.products.filter(p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
+    const list = state.products.filter(passFilters);
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
     const sorters = {
       best: (a, b) => (b.score - a.score), price_asc: (a, b) => tot(a) - tot(b), price_desc: (a, b) => tot(b) - tot(a),
@@ -2637,13 +2683,15 @@ table.dt { min-width: 0; font-size: .76rem; }
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>`;
+      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
     }
     if (!list.length) {
-      box.innerHTML = html + '<div class="empty">لا توجد منتجات تطابق الفلاتر الحالية. جرّب تقليل الحد الأدنى للتقييم أو إلغاء فلتر الشحن المجاني.</div>';
+      box.innerHTML = html + (state.priceMin != null || state.priceMax != null
+        ? '<div class="empty">ما في منتجات بهالسعر. وسّع نطاق السعر أو امسحه.</div>'
+        : '<div class="empty">لا توجد منتجات تطابق الفلاتر الحالية. جرّب تقليل الحد الأدنى للتقييم أو إلغاء فلتر الشحن المجاني.</div>');
       return;
     }
     const sum = summarize(list);
@@ -2840,7 +2888,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const w = PRIORITY[state.priority][1];
     const bs = KEYS.filter(k => state.platforms.has(k)).map(k => {
       const items = queries.map((q, i) => {
-        const list = (data[i] || []).filter(p => p.platform === k && p.rating >= state.minRating && (p.freeShip || !state.freeOnly));
+        const list = (data[i] || []).filter(p => p.platform === k && passFilters(p));
         return { q, p: scoreProducts(list, w) };
       });
       const got = items.filter(x => x.p);
@@ -2922,6 +2970,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     $('curSel').value = c;
     try { localStorage.setItem('qarin.currency', c); } catch (e) { /* التخزين غير متاح */ }
     renderRates();
+    priceBox();
     render();
   }
 
@@ -3129,6 +3178,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       const bs = e.target.closest('[data-bk-share]'); if (bs) { shareBasket(bs.dataset.bkShare); return; }
       const f = e.target.closest('[data-fav]'); if (f) { toggleFav(f.dataset.fav); return; }
       const c = e.target.closest('[data-cmp]'); if (c) { toggleCmp(c.dataset.cmp); return; }
+      if (e.target.closest('[data-price-clear]')) { clearPrice(); return; }
       if (e.target.closest('[data-open-rate]')) { $('rateMsg').textContent = ''; openModal('rateModal'); return; }
       if (e.target.closest('[data-dismiss-ask]')) { store.set('qarin.askDismissed', true); render(); }
     });
@@ -3180,6 +3230,17 @@ table.dt { min-width: 0; font-size: .76rem; }
     $('sortSel').addEventListener('change', e => { state.sort = e.target.value; render(); });
     $('minRating').addEventListener('input', e => { state.minRating = +e.target.value; $('minRatingVal').textContent = state.minRating.toFixed(1); render(); });
     $('freeOnly').addEventListener('change', e => { state.freeOnly = e.target.checked; render(); });
+    let prT = 0;
+    for (const id of ['priceMin', 'priceMax']) {
+      $(id).addEventListener('input', e => {
+        state[id] = parsePrice(e.target.value);
+        $('priceClear').hidden = state.priceMin == null && state.priceMax == null;
+        clearTimeout(prT); prT = setTimeout(render, 350);
+      });
+      $(id).addEventListener('change', () => { clearTimeout(prT); render(); });
+      $(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+    }
+    $('priceClear').addEventListener('click', clearPrice);
     $('limit').addEventListener('input', e => { $('limitVal').textContent = e.target.value; });
     $('limit').addEventListener('input', e => { state.limit = +e.target.value; render(); });
     $('priority').addEventListener('input', e => setPrio(+e.target.value));
