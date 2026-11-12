@@ -10,7 +10,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const ctx = await b.newContext({ ...devices['iPhone 14 Pro'], locale: 'ar-OM', colorScheme: theme });
     await ctx.addInitScript(() => { localStorage.setItem('qarin.lang', 'ar'); localStorage.setItem('qarin.instHide', String(Date.now())); });
     const p = await ctx.newPage();
-    await p.goto(SITE + '?v=' + Date.now(), { waitUntil: 'networkidle' }); await sleep(2500);
+    await p.goto(SITE + '?v=' + Date.now(), { waitUntil: 'load', timeout: 60000 }); await sleep(4000);
     const fam = await p.evaluate(() => ({ almarai: document.fonts.check('16px Almarai'), body: getComputedStyle(document.body).fontFamily }));
     fs.writeFileSync(path.join(OUT, 'font_' + theme + '.json'), JSON.stringify(fam));
     await p.screenshot({ path: path.join(OUT, theme + '_home.png') });
