@@ -4,7 +4,7 @@ const fs = require('fs'), path = require('path');
 const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(path.join(OUT, 'fonts'), { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const DEV = { ...devices['iPhone 14 Pro'], deviceScaleFactor: 2, locale: 'ar-OM' };
+const DEV = { ...devices['iPhone 14 Pro'], viewport: { width: 393, height: 852 }, deviceScaleFactor: 2, locale: 'ar-OM' };
 const FAKE_SR = mode => {
   class FakeSR {
     start() {
@@ -36,6 +36,8 @@ const FAKE_SR = mode => {
     const ctx = await ctxFor(theme); const p = await ctx.newPage();
     await p.goto(SITE + '?v=' + Date.now(), { waitUntil: 'load', timeout: 60000 }); await sleep(4000);
     await p.screenshot({ path: path.join(OUT, `home_${theme}.png`) });
+    const pos = await p.evaluate(() => Object.fromEntries(['themeBtn', 'micBtn', 'q'].map(id => { const r = document.getElementById(id).getBoundingClientRect(); return [id, { x: r.x + r.width / 2, y: r.y + r.height / 2 }]; })));
+    fs.writeFileSync(path.join(OUT, `pos_${theme}.json`), JSON.stringify(pos));
     if (theme === 'light') {
       await p.click('#micBtn'); await sleep(1600);
       await p.screenshot({ path: path.join(OUT, 'voice_listening.png') });
