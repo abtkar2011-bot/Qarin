@@ -10,11 +10,14 @@
 <meta name="theme-color" content="#F5F5F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <script>try{var qt=localStorage.getItem('qarin.theme');if(qt==='light'||qt==='dark'){document.documentElement.setAttribute('data-theme',qt);document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=qt==='dark'?'#000000':'#F5F5F7';});}}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap">
 <style>
 :root { color-scheme: light; --bg: #F5F5F7; --surface: #FFFFFF; --fg: #1D1D1F; --muted: #6E6E73; --line: #E3E3E8; --accent: #0071E3; --link: #0066CC; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #000000; --surface: #1C1C1E; --fg: #F5F5F7; --muted: #A1A1A6; --line: #38383A; --accent: #2997FF; --link: #2997FF; color-scheme: dark; } }
 :root[data-theme="dark"] { --bg: #000000; --surface: #1C1C1E; --fg: #F5F5F7; --muted: #A1A1A6; --line: #38383A; --accent: #2997FF; --link: #2997FF; color-scheme: dark; }
-body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Arabic', 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; }
+body { margin: 0; font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; }
 main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
 header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 header img { width: 52px; height: 52px; border-radius: 12px; }
