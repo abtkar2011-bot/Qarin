@@ -1,6 +1,8 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"قارن الأسعار والجودة في أشهر المتاجر بضغطة": ["Compare prices and quality across top stores in one tap", "Comparez prix et qualité des meilleures boutiques en un clic", "Compara precios y calidad de las mejores tiendas con un toque", "一键比较热门商店的价格和质量", "एक टैप में बड़े स्टोर्स की कीमत और क्वालिटी की तुलना करें", "ایک ٹیپ میں بڑے اسٹورز کی قیمت اور معیار کا موازنہ کریں", "Сравнивайте цены и качество в популярных магазинах в одно касание", "Popüler mağazalarda fiyat ve kaliteyi tek dokunuşla karşılaştırın", "Bandingkan harga dan kualitas di toko populer dengan sekali ketuk"],
+"تابع قارِن": ["Follow Qarin", "Suivez Qarin", "Sigue a Qarin", "关注 Qarin", "Qarin को फ़ॉलो करें", "قارِن کو فالو کریں", "Подпишитесь на Qarin", "Qarin'i takip edin", "Ikuti Qarin"],
 "الوضع الداكن": ["Dark mode", "Mode sombre", "Modo oscuro", "深色模式", "डार्क मोड", "ڈارک موڈ", "Тёмная тема", "Koyu mod", "Mode gelap"],
 "الوضع الفاتح": ["Light mode", "Mode clair", "Modo claro", "浅色模式", "लाइट मोड", "لائٹ موڈ", "Светлая тема", "Açık mod", "Mode terang"],
 "تسوّق ↗": ["Shop ↗", "Acheter ↗", "Comprar ↗", "去购买 ↗", "खरीदें ↗", "خریدیں ↗", "Купить ↗", "Satın al ↗", "Beli ↗"],

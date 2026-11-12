@@ -166,31 +166,47 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .scrim { display: none; }
 
 /* ---------- الواجهة الرئيسية ---------- */
-.hero { position: relative; padding: 30px 16px 6px; color: var(--fg); text-align: center; }
+.hero { position: relative; padding: 14px 16px 2px; color: var(--fg); text-align: center; }
 .hero h1 { margin: 0 0 6px; font-size: 3rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
-.hero p { margin: 0 auto 16px; font-size: 1.18rem; color: var(--muted); max-width: 46ch; line-height: 1.65; text-wrap: pretty; }
+.hero p { margin: 0 auto 6px; font-size: 1.15rem; color: var(--muted); max-width: 46ch; line-height: 1.65; text-wrap: pretty; }
 .hero .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .hero .chip { background: var(--surface); border: 1px solid var(--line); color: var(--fg); padding: 4px 13px; border-radius: 999px; font-size: 0.86rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
 .hero .chip i { width: 7px; height: 7px; border-radius: 50%; }
-.theme-btn { position: absolute; top: 12px; inset-inline-end: 0; z-index: 2; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); display: grid; place-items: center; cursor: pointer; padding: 0; transition: transform .2s ease; }
+.top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.top-sel { display: flex; gap: 8px; min-width: 0; }
+.mini-sel { display: block; min-width: 0; }
+.mini-sel select { -webkit-appearance: none; appearance: none; display: block; width: auto; min-width: 0; max-width: 44vw; font: inherit; font-size: 0.86rem; font-weight: 600; color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px 7px 28px; cursor: pointer; text-overflow: ellipsis;
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%238E8E93' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat left 11px center / 11px 8px; }
+.mini-sel select { field-sizing: content; }
+@supports not (field-sizing: content) { #langSel { width: 7.6em; } #curSel { width: 10.2em; } }
+html[dir="ltr"] .mini-sel select { padding: 7px 28px 7px 12px; background-position: right 11px center; }
+.src-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 14px; font-size: 0.84rem; color: var(--muted); margin-top: -4px; }
+.src-line > span { display: inline-flex; align-items: center; gap: 6px; }
+.src-line .src-n { flex-basis: 100%; justify-content: center; }
+.follow .hero-links { margin-top: 6px; }
+.pre-search .filters-toggle { display: none !important; }
+.theme-btn { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); display: grid; place-items: center; cursor: pointer; padding: 0; transition: transform .2s ease; }
 .theme-btn:active { transform: scale(.92); }
-.theme-btn svg { width: 21px; height: 21px; }
+.theme-btn svg { width: 19px; height: 19px; }
 .hero-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 14px; }
 
 .search-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
 .search {
-  flex: 1 1 420px; min-width: 0; display: flex; gap: 8px; padding: 8px; border-radius: 18px;
-  background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  flex: 1 1 420px; min-width: 0; display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05); transition: border-color .15s, box-shadow .15s;
 }
+.search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.16); }
+.search input:focus, .search input:focus-visible { outline: none; }
 .search input {
-  flex: 1; min-width: 0; padding: 11px 14px; border-radius: 12px; border: 1px solid transparent;
-  background: var(--surface-2); font-size: 1.05rem;
+  flex: 1; min-width: 0; padding: 10px 14px; border-radius: 999px; border: 0;
+  background: transparent; font-size: 1.05rem;
 }
 .btn-primary {
   border: 0; border-radius: 999px; padding: 0 22px; font-weight: 600; font-size: 1rem; color: #FFFFFF; cursor: pointer;
   background: var(--accent); white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn-primary:hover { filter: brightness(1.08); }
+.search .btn-primary { height: 44px; min-width: 44px; }
 .btn-primary svg, .filters-toggle svg, .dock svg { width: 17px; height: 17px; flex: none; }
 .currency { display: flex; flex-direction: column; gap: 6px; flex: 0 1 auto; }
 .currency .lbl { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
@@ -260,7 +276,7 @@ html[dir="ltr"] .app, html[dir="ltr"] .dock, html[dir="ltr"] .cmp-bar, html[dir=
 .pcard .img { position: relative; aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; background: var(--surface-2); }
 .pcard .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .plat { position: absolute; top: 10px; right: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 0.76rem; font-weight: 600; background: var(--glass); color: var(--fg); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10); }
-.plat i, .pstore i, .dot-i { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+.plat i, .pstore i, .src-line i, .dot-i { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
 .plat.inline { position: static; background: var(--surface-2); box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .pstore { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; font-weight: 600; color: var(--muted); }
 .disc { position: absolute; top: 10px; left: 10px; background: var(--glass); color: var(--hot); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10); direction: ltr; padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
@@ -491,7 +507,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 /* ---------- سلة المستخدم ---------- */
 .cart-btn { margin-top: 6px; width: 100%; border: 0; background: var(--surface-2); color: var(--fg); border-radius: 999px; padding: 8px 10px; font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; }
 .pre-search .prio-bar { display: none; }
-.img-btn { flex: none; border: 0; background: var(--surface-2); color: var(--fg); border-radius: 12px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.img-btn { flex: none; border: 0; background: transparent; color: var(--muted); border-radius: 50%; width: 44px; height: 44px; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .img-btn svg { width: 21px; height: 21px; }
 .tools-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
 .tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 600; cursor: pointer; }
@@ -564,10 +580,8 @@ table.dt { min-width: 0; font-size: .76rem; }
   .dock button { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
   body { padding-bottom: 64px; }
   body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
-  .hero { padding: 18px 4px 2px; }
-  .theme-btn { top: 4px; width: 38px; height: 38px; }
-  .theme-btn svg { width: 19px; height: 19px; }
-  .hero h1 { font-size: 2.3rem; }
+  .hero { padding: 8px 4px 0; }
+  .hero h1 { font-size: 2.4rem; }
   .hero p { font-size: 1rem; margin-bottom: 14px; }
   .hero .chip { font-size: 0.8rem; padding: 3px 11px; }
   .hero-links { gap: 6px; margin-top: 12px; }
@@ -575,8 +589,23 @@ table.dt { min-width: 0; font-size: .76rem; }
   .wa-btn svg { width: 16px; height: 16px; }
   .dock { background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 4px; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10); }
   .dock button { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .search { padding: 6px; gap: 6px; border-radius: 16px; }
-  .search input { font-size: 1rem; padding: 10px 12px; }
+  .search { padding: 4px; gap: 2px; }
+  .search input { font-size: 1rem; padding: 9px 12px; }
+  .search .btn-primary, .img-btn { height: 42px; min-width: 42px; width: 42px; padding: 0; }
+  .hero p { font-size: 0.98rem; }
+  .tools-row { justify-content: center; margin: 0 0 4px; }
+  .tool-btn { padding: 7px 14px; font-size: 0.9rem; }
+  .tool-btn small { display: none; }
+  .suggest > span { font-size: 0.85rem; }
+  .chips-row { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chip-btn { flex: none; }
+  .dock .rate-fab { display: none; }
+  .dock.only-rate { display: none; }
+  body:not(.pre-search) .hero p, body:not(.pre-search) .src-line, body:not(.pre-search) .tools-row, body:not(.pre-search) .cats,
+  body:not(.pre-search) .suggest > span, body:not(.pre-search) #chips { display: none; }
+  body:not(.pre-search) .hero { padding-top: 2px; }
+  body:not(.pre-search) .hero h1 { font-size: 1.7rem; }
   .btn-primary { padding: 0 16px; }
   .currency { flex: 1 1 0; min-width: 0; }
   .cur-sel { min-width: 0; width: 100%; padding: 9px 10px; }
@@ -671,16 +700,16 @@ table.dt { min-width: 0; font-size: .76rem; }
   <div class="scrim" id="scrim"></div>
 
   <main class="main">
-    <header class="hero">
-      <button type="button" class="theme-btn" id="themeBtn" aria-label="الوضع الداكن" title="الوضع الداكن"></button>
-      <h1>قارِن <img class="h1-mark" src="icons/logo-mark.png" alt=""></h1>
-      <p>ابحث مرة واحدة، وقارن الأسعار والجودة في أشهر متاجر التسوق الإلكتروني، واحصل على الخيار الأفضل فورًا.</p>
-      <div class="chips" id="heroChips"></div>
-      <div class="hero-links">
-        <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع عروض قارِن اليومية على واتساب</span></a>
-        <a class="wa-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على انستقرام</span></a>
-        <a class="wa-btn" href="#" id="installHero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg><span>أضف قارِن لشاشتك</span></a>
+    <div class="top-bar">
+      <div class="top-sel">
+        <label class="mini-sel"><span class="sr" id="curLbl">عملة العرض</span><select id="curSel" class="cur-sel" aria-labelledby="curLbl"></select></label>
+        <label class="mini-sel"><span class="sr" id="langLbl">اللغة</span><select id="langSel" class="cur-sel" aria-labelledby="langLbl" data-noi18n></select></label>
       </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="الوضع الداكن" title="الوضع الداكن"></button>
+    </div>
+    <header class="hero">
+      <h1>قارِن <img class="h1-mark" src="icons/logo-mark.png" alt=""></h1>
+      <p>قارن الأسعار والجودة في أشهر المتاجر بضغطة</p>
     </header>
 
     <div class="search-row">
@@ -691,15 +720,8 @@ table.dt { min-width: 0; font-size: .76rem; }
         <input type="file" id="imgIn" accept="image/*" hidden>
         <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
       </form>
-      <div class="currency">
-        <span class="lbl" id="curLbl">عملة العرض</span>
-        <select id="curSel" class="cur-sel" aria-labelledby="curLbl"></select>
-      </div>
-      <div class="currency">
-        <span class="lbl" id="langLbl">اللغة</span>
-        <select id="langSel" class="cur-sel" aria-labelledby="langLbl" data-noi18n></select>
-      </div>
     </div>
+    <div class="src-line" id="heroChips"></div>
     <div class="tools-row">
       <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><span>أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
       <a class="tool-btn" href="coupons.html" style="text-decoration:none"><span>كوبونات اليوم</span><small>أكواد خصم رسمية</small></a>
@@ -730,11 +752,19 @@ table.dt { min-width: 0; font-size: .76rem; }
     <div id="status"></div>
     <div id="results" class="main" style="gap:16px"></div>
 
+    <section class="follow" aria-label="تابع قارِن">
+      <div class="hero-links">
+        <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع عروض قارِن اليومية على واتساب</span></a>
+        <a class="wa-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على انستقرام</span></a>
+        <a class="wa-btn" href="#" id="installHero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg><span>أضف قارِن لشاشتك</span></a>
+      </div>
+    </section>
+
     <footer class="footer">
       قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.<br>
       الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.<br>
       بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <b>بدون ما يزيد السعر عليك</b>.<br>
-      <a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a><br>
+      <a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a> · <a href="#" id="rateLink">قيّم قارِن</a><br>
       <span dir="ltr" lang="en" class="etsy-note">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</span>
     </footer>
   </main>
@@ -2684,7 +2714,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   // ================= العرض =================
   // ================= سلة المستخدم =================
   let cart = store.get('qarin.cart', {});
-  function saveCart() { store.set('qarin.cart', cart); $('cartCount').textContent = Object.values(cart).reduce((a, c) => a + c.qty, 0); }
+  function saveCart() { store.set('qarin.cart', cart); $('cartCount').textContent = Object.values(cart).reduce((a, c) => a + c.qty, 0); syncDock(); }
   function toggleCart(k) {
     if (cart[k]) { delete cart[k]; toast('انشال من السلة'); }
     else {
@@ -3101,7 +3131,13 @@ table.dt { min-width: 0; font-size: .76rem; }
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }
   function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); }
-  function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; }
+  function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; syncDock(); }
+  // الشريط السفلي: نخفي السلة والمفضلة لين يكون فيها شي
+  function syncDock() {
+    const fc = +$('favCount').textContent || 0, cc = +$('cartCount').textContent || 0;
+    $('favFab').hidden = !fc; $('cartFab').hidden = !cc;
+    const d = document.querySelector('.dock'); if (d) d.classList.toggle('only-rate', !fc && !cc);
+  }
   // مشاركة منتج: قائمة المشاركة في الجوال، أو واتساب مباشرة
   async function shareProduct(k) {
     const p = findProduct(k); if (!p) return;
@@ -3203,6 +3239,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (store.get('qarin.rated', false)) $('rateFab').textContent = '✓ شكرًا لتقييمك';
     $('rateFab').addEventListener('click', () => { $('rateMsg').textContent = ''; openModal('rateModal'); });
     $('installLink').addEventListener('click', e => { e.preventDefault(); openInstall(); });
+    $('rateLink').addEventListener('click', e => { e.preventDefault(); $('rateMsg').textContent = ''; openModal('rateModal'); });
     $('installHero').addEventListener('click', e => { e.preventDefault(); openInstall(); });
     if (isStandalone()) $('installHero').hidden = true;
     $('instBarGo').addEventListener('click', openInstall);
@@ -3276,7 +3313,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   function init() {
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache };
-    $('heroChips').innerHTML = KEYS.map(k => `<span class="chip"><i style="background:${PLATFORMS[k].color}"></i>${PLATFORMS[k].name}</span>`).join('');
+    $('heroChips').innerHTML = KEYS.map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('');
     $('chips').innerHTML = SUGGESTIONS.map(s => `<button type="button" class="chip-btn" data-q="${esc(s)}">${esc(s)}</button>`).join('');
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
@@ -3288,7 +3325,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       if (m) {
         aliLive = true; renderSources();
         const k = m.n >= 1e6 ? (Math.round(m.n / 1e5) / 10).toLocaleString('en-US') + ' مليون' : m.n >= 1000 ? Math.floor(m.n / 1000).toLocaleString('en-US') + ' ألف' : m.n.toLocaleString('en-US');
-        $('heroChips').insertAdjacentHTML('beforeend', `<span class="chip">🔎 نبحث في ${k} منتج من علي إكسبرس</span>`);
+        $('heroChips').insertAdjacentHTML('beforeend', `<span class="src-n">نبحث في ${k} منتج من علي إكسبرس</span>`);
         return;
       }
       fetch(ALI_DATA + 'index.json').then(r => r.ok ? r.json() : null).then(d => { if (d && d.rows) { aliLive = true; renderSources(); } }).catch(() => {});
