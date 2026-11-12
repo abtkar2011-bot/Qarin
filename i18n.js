@@ -1,6 +1,8 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"🛍️ تبي تشوف خيارات أكثر في الأزياء؟": ["🛍️ Want more fashion options?", "🛍️ Envie de plus d’options mode ?", "🛍️ ¿Quieres más opciones de moda?", "🛍️ 想看更多时尚选择？", "🛍️ फ़ैशन के और विकल्प चाहिए?", "🛍️ فیشن کے مزید آپشن چاہییں؟", "🛍️ Хотите больше вариантов одежды?", "🛍️ Daha fazla moda seçeneği mi istiyorsunuz?", "🛍️ Mau lebih banyak pilihan fesyen?"],
+"نفس البحث في SHEIN ↗": ["Same search on SHEIN ↗", "Même recherche sur SHEIN ↗", "Misma búsqueda en SHEIN ↗", "在 SHEIN 上搜索同样内容 ↗", "SHEIN पर यही खोज ↗", "SHEIN پر یہی تلاش ↗", "Тот же поиск в SHEIN ↗", "SHEIN'de aynı arama ↗", "Pencarian sama di SHEIN ↗"],
 "وفوق": ["and up", "et plus", "o más", "及以上", "और ऊपर", "اور زیادہ", "и выше", "ve üzeri", "ke atas"],
 "لين": ["up to", "jusqu’à", "hasta", "最高", "तक", "تک", "до", "en fazla", "hingga"],
 "💰 السعر": ["💰 Price", "💰 Prix", "💰 Precio", "💰 价格", "💰 कीमत", "💰 قیمت", "💰 Цена", "💰 Fiyat", "💰 Harga"],
