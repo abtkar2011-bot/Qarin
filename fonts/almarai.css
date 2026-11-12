@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/almarai/v19/tsstApxBaigK_hnnc1o.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://fonts.gstatic.com/s/almarai/v19/tssoApxBaigK_hnnS-aghng.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 800;
+  src: url(https://fonts.gstatic.com/s/almarai/v19/tssoApxBaigK_hnnS_qjhng.ttf) format('truetype');
+}
