@@ -15,73 +15,78 @@
 <meta property="og:url" content="https://abtkar2011-bot.github.io/Qarin/">
 <meta property="og:locale" content="ar_AR">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#7C3AED">
+<meta name="theme-color" content="#F5F5F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" sizes="180x180" href="https://abtkar2011-bot.github.io/Qarin/icons/apple-touch-icon.png?v=4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="قارِن">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 /* التخطيط: شريط فلاتر ثابت على اليمين + منطقة نتائج؛ على الجوال تصبح الفلاتر درجًا منزلقًا */
 :root {
-  --bg: #F6F5FB;
+  --bg: #F5F5F7;
   --surface: #FFFFFF;
-  --surface-2: #F1EFF8;
-  --fg: #1F2937;
-  --muted: #6B6880;
-  --line: #E6E2F1;
-  --accent: #7C3AED;
-  --accent-strong: #5B21B6;
-  --pink: #DB2777;
-  --gold: #F59E0B;
-  --good: #059669;
-  --bad: #DC2626;
-  --notice-bg: #FFFBEB;
-  --notice-fg: #78350F;
-  --notice-line: #FDE68A;
-  --best-1: #FFFBEB;
-  --best-2: #F5F3FF;
-  --best-line: #FCD34D;
-  --reason-bg: #FEF3C7;
-  --reason-fg: #92400E;
-  --skel-1: #ECEAF5;
-  --skel-2: #F8F7FC;
-  --star-off: #E2E0EA;
-  --tint-1: #D1FAE5;
-  --tint-2: #EDE9FE;
-  --tint-3: #FEF3C7;
-  --tint-4: #FCE7F3;
-  --shein-bar: #111111;
-  --scrim: rgba(17, 12, 34, 0.45);
-  --shadow: 0 4px 18px rgba(76, 29, 149, 0.07);
-  --shadow-hover: 0 14px 34px rgba(76, 29, 149, 0.16);
-  --font: 'Tajawal', 'Segoe UI', Tahoma, 'Noto Sans Arabic', sans-serif;
+  --surface-2: #F5F5F7;
+  --fg: #1D1D1F;
+  --muted: #6E6E73;
+  --line: #E3E3E8;
+  --accent: #0071E3;
+  --accent-strong: #0066CC;
+  --hot: #BF4800;
+  --pink: #6E6E73;
+  --gold: #1D1D1F;
+  --good: #248A3D;
+  --bad: #D70015;
+  --notice-bg: #FFFFFF;
+  --notice-fg: #424245;
+  --notice-line: #E3E3E8;
+  --best-1: #FFFFFF;
+  --best-2: #FFFFFF;
+  --best-line: #0071E3;
+  --reason-bg: #F5F5F7;
+  --reason-fg: #424245;
+  --skel-1: #EDEDF0;
+  --skel-2: #F7F7F9;
+  --star-off: #D2D2D7;
+  --star-on: #1D1D1F;
+  --tint-1: #F2F2F5;
+  --tint-2: #F2F2F5;
+  --tint-3: #F2F2F5;
+  --tint-4: #F2F2F5;
+  --shein-bar: #1D1D1F;
+  --scrim: rgba(0, 0, 0, 0.32);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.10);
+  --glass: rgba(255, 255, 255, 0.82);
+  --mark-filter: brightness(0);
+  --logo-bg: #1D1D1F;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Arabic', 'Segoe UI', 'Noto Sans Arabic', Tahoma, sans-serif;
   --radius: 18px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0F0D17; --surface: #1A1726; --surface-2: #252036; --fg: #ECEAF5; --muted: #A7A2BC;
-    --line: #2F2A45; --accent: #A78BFA; --accent-strong: #C4B5FD; --pink: #F472B6; --gold: #FBBF24;
-    --good: #34D399; --bad: #F87171; --notice-bg: #2A2210; --notice-fg: #FCD34D; --notice-line: #5B4A1A;
-    --best-1: #2A2110; --best-2: #211B37; --best-line: #A16207; --reason-bg: #3A2C0E; --reason-fg: #FCD34D;
-    --skel-1: #221E31; --skel-2: #2C2740; --star-off: #3B3652; --tint-1: #0F3B2E; --tint-2: #2E2357;
-    --tint-3: #3A2C0E; --tint-4: #45162F; --shein-bar: #E5E7EB; --scrim: rgba(0, 0, 0, 0.6);
-    --shadow: 0 4px 18px rgba(0, 0, 0, 0.35); --shadow-hover: 0 14px 34px rgba(0, 0, 0, 0.5);
+    --bg: #000000; --surface: #1C1C1E; --surface-2: #2C2C2E; --fg: #F5F5F7; --muted: #A1A1A6;
+    --line: #38383A; --accent: #2997FF; --accent-strong: #2997FF; --hot: #FF9F0A; --pink: #A1A1A6; --gold: #F5F5F7;
+    --good: #30D158; --bad: #FF453A; --notice-bg: #1C1C1E; --notice-fg: #D1D1D6; --notice-line: #38383A;
+    --best-1: #1C1C1E; --best-2: #1C1C1E; --best-line: #2997FF; --reason-bg: #2C2C2E; --reason-fg: #D1D1D6;
+    --skel-1: #1C1C1E; --skel-2: #2C2C2E; --star-off: #48484A; --star-on: #F5F5F7; --tint-1: #2C2C2E; --tint-2: #2C2C2E;
+    --tint-3: #2C2C2E; --tint-4: #2C2C2E; --shein-bar: #F5F5F7; --scrim: rgba(0, 0, 0, 0.6);
+    --shadow: none; --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.5); --glass: rgba(44, 44, 46, 0.82);
+    --mark-filter: none; --logo-bg: #2C2C2E;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0F0D17; --surface: #1A1726; --surface-2: #252036; --fg: #ECEAF5; --muted: #A7A2BC;
-  --line: #2F2A45; --accent: #A78BFA; --accent-strong: #C4B5FD; --pink: #F472B6; --gold: #FBBF24;
-  --good: #34D399; --bad: #F87171; --notice-bg: #2A2210; --notice-fg: #FCD34D; --notice-line: #5B4A1A;
-  --best-1: #2A2110; --best-2: #211B37; --best-line: #A16207; --reason-bg: #3A2C0E; --reason-fg: #FCD34D;
-  --skel-1: #221E31; --skel-2: #2C2740; --star-off: #3B3652; --tint-1: #0F3B2E; --tint-2: #2E2357;
-  --tint-3: #3A2C0E; --tint-4: #45162F; --shein-bar: #E5E7EB; --scrim: rgba(0, 0, 0, 0.6);
-  --shadow: 0 4px 18px rgba(0, 0, 0, 0.35); --shadow-hover: 0 14px 34px rgba(0, 0, 0, 0.5);
+  --bg: #000000; --surface: #1C1C1E; --surface-2: #2C2C2E; --fg: #F5F5F7; --muted: #A1A1A6;
+  --line: #38383A; --accent: #2997FF; --accent-strong: #2997FF; --hot: #FF9F0A; --pink: #A1A1A6; --gold: #F5F5F7;
+  --good: #30D158; --bad: #FF453A; --notice-bg: #1C1C1E; --notice-fg: #D1D1D6; --notice-line: #38383A;
+  --best-1: #1C1C1E; --best-2: #1C1C1E; --best-line: #2997FF; --reason-bg: #2C2C2E; --reason-fg: #D1D1D6;
+  --skel-1: #1C1C1E; --skel-2: #2C2C2E; --star-off: #48484A; --star-on: #F5F5F7; --tint-1: #2C2C2E; --tint-2: #2C2C2E;
+  --tint-3: #2C2C2E; --tint-4: #2C2C2E; --shein-bar: #F5F5F7; --scrim: rgba(0, 0, 0, 0.6);
+  --shadow: none; --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.5); --glass: rgba(44, 44, 46, 0.82);
+  --mark-filter: none; --logo-bg: #2C2C2E;
   color-scheme: dark;
 }
 
@@ -110,14 +115,14 @@ a { color: inherit; }
 }
 .side-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px dashed var(--line); }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand .logo { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; background: radial-gradient(circle at 50% 40%, #4c3bb8, #141c62 75%); box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
-.brand .logo img { width: 30px; height: auto; display: block; }
-.h1-mark { height: .8em; width: auto; vertical-align: -0.06em; margin-inline-start: .12em; filter: drop-shadow(0 0 14px rgba(255,255,255,.35)); }
-.brand b { display: block; font-size: 1.15rem; font-weight: 800; }
+.brand .logo { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 22px; background: var(--logo-bg); }
+.brand .logo img { width: 27px; height: auto; display: block; }
+.h1-mark { height: .8em; width: auto; vertical-align: -0.06em; margin-inline-start: .12em; filter: var(--mark-filter); }
+.brand b { display: block; font-size: 1.15rem; font-weight: 700; }
 .brand small { display: block; font-size: 0.8rem; color: var(--muted); }
 .icon-btn { display: none; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; }
 .side-sec { display: flex; flex-direction: column; gap: 8px; }
-.side-sec h3 { margin: 0; font-size: 0.95rem; font-weight: 800; }
+.side-sec h3 { margin: 0; font-size: 0.95rem; font-weight: 700; }
 .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .check {
   display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line);
@@ -137,9 +142,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .pr-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .pr-dash { color: var(--muted); flex: none; }
 .pr-clear { align-self: flex-start; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 2px 0; }
-.pr-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
-.shein-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
-.shein-bar a { display: inline-flex; align-items: center; gap: 6px; background: #111; color: #fff; text-decoration: none; border-radius: 99px; padding: 6px 14px; font-weight: 800; font-size: 0.85rem; white-space: nowrap; }
+.pr-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
+.shein-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; font-size: 0.9rem; }
+.shein-bar a { display: inline-flex; align-items: center; gap: 6px; background: var(--fg); color: var(--surface); text-decoration: none; border-radius: 99px; padding: 6px 14px; font-weight: 700; font-size: 0.85rem; white-space: nowrap; }
 .shein-bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pr-note button { border: 0; background: var(--accent); color: #fff; border-radius: 99px; padding: 4px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .range-ends { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
@@ -151,7 +156,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .switch input:checked + .track { background: var(--accent); border-color: var(--accent); }
 .switch input:checked + .track::after { transform: translateX(-18px); background: #fff; }
 .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rate-box { background: linear-gradient(135deg, var(--best-2), var(--tint-4)); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; font-size: 0.86rem; line-height: 1.9; }
+.rate-box { background: var(--surface-2); border: 0; border-radius: 14px; padding: 10px 12px; font-size: 0.86rem; line-height: 1.9; }
 .rate-box small { color: var(--muted); display: block; line-height: 1.5; }
 .src-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
 .src-row:last-child { border-bottom: 0; }
@@ -160,60 +165,55 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .scrim { display: none; }
 
 /* ---------- الواجهة الرئيسية ---------- */
-.hero {
-  position: relative; overflow: hidden; border-radius: 26px; padding: 28px 32px 26px; color: #FFFFFF;
-  background: linear-gradient(120deg, #6D28D9 0%, #A21CAF 45%, #DB2777 72%, #F59E0B 100%);
-  box-shadow: 0 18px 40px rgba(109, 40, 217, 0.22);
-}
-.hero::before, .hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.12); pointer-events: none; }
-.hero::before { width: 260px; height: 260px; left: -60px; top: -90px; }
-.hero::after { width: 180px; height: 180px; left: 24%; bottom: -110px; }
-.hero h1 { margin: 0 0 4px; font-size: 2.3rem; font-weight: 800; line-height: 1.3; text-wrap: balance; }
-.hero p { margin: 0 0 14px; font-size: 1.06rem; opacity: 0.95; max-width: 62ch; }
-.hero .chips { display: flex; flex-wrap: wrap; gap: 8px; position: relative; z-index: 1; }
-.hero .chip { background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.35); padding: 4px 14px; border-radius: 999px; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
-.hero .chip i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid #fff; }
+.hero { position: relative; padding: 30px 16px 6px; color: var(--fg); text-align: center; }
+.hero h1 { margin: 0 0 6px; font-size: 3rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+.hero p { margin: 0 auto 16px; font-size: 1.18rem; color: var(--muted); max-width: 46ch; line-height: 1.65; text-wrap: pretty; }
+.hero .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.hero .chip { background: var(--surface); border: 1px solid var(--line); color: var(--fg); padding: 4px 13px; border-radius: 999px; font-size: 0.86rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.hero .chip i { width: 7px; height: 7px; border-radius: 50%; }
+.hero-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 14px; }
 
 .search-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
 .search {
-  flex: 1 1 420px; min-width: 0; display: flex; gap: 10px; padding: 12px; border-radius: 20px;
-  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+  flex: 1 1 420px; min-width: 0; display: flex; gap: 8px; padding: 8px; border-radius: 18px;
+  background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 .search input {
-  flex: 1; min-width: 0; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line);
+  flex: 1; min-width: 0; padding: 11px 14px; border-radius: 12px; border: 1px solid transparent;
   background: var(--surface-2); font-size: 1.05rem;
 }
 .btn-primary {
-  border: 0; border-radius: 14px; padding: 0 22px; font-weight: 800; font-size: 1.02rem; color: #FFFFFF; cursor: pointer;
-  background: linear-gradient(135deg, #7C3AED, #DB2777); white-space: nowrap;
+  border: 0; border-radius: 999px; padding: 0 22px; font-weight: 600; font-size: 1rem; color: #FFFFFF; cursor: pointer;
+  background: var(--accent); white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn-primary:hover { filter: brightness(1.08); }
+.btn-primary svg, .filters-toggle svg, .dock svg { width: 17px; height: 17px; flex: none; }
 .currency { display: flex; flex-direction: column; gap: 6px; flex: 0 1 auto; }
 .currency .lbl { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
 html[dir="ltr"] .app, html[dir="ltr"] .dock, html[dir="ltr"] .cmp-bar, html[dir="ltr"] .modal, html[dir="ltr"] .toast { direction: ltr; }
-.cur-sel { font: inherit; font-weight: 800; padding: 10px 14px; border-radius: 14px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); cursor: pointer; min-width: 190px; }
+.cur-sel { font: inherit; font-weight: 700; padding: 10px 14px; border-radius: 14px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); cursor: pointer; min-width: 190px; }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
 .seg button { border: 0; background: transparent; padding: 9px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; white-space: nowrap; color: var(--muted); }
-.seg button[aria-checked="true"] { background: var(--accent); color: #FFFFFF; }
+.seg button[aria-checked="true"] { background: var(--fg); color: var(--surface); }
 .suggest { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .suggest > span { color: var(--muted); font-size: 0.9rem; font-weight: 700; }
 .chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip-btn { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 600; font-size: 0.9rem; }
 .chip-btn:hover, .chip-btn.on { border-color: var(--accent); color: var(--accent-strong); }
-.filters-toggle { display: none; margin-inline-start: auto; padding: 7px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; cursor: pointer; }
+.filters-toggle { display: none; align-items: center; gap: 6px; margin-inline-start: auto; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; cursor: pointer; }
 
 /* ---------- حالة البحث ---------- */
 .status { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
 .status.done { flex-direction: row; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
 .status .row { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
-.status .ok { color: var(--good); font-weight: 800; }
+.status .ok { color: var(--good); font-weight: 700; }
 .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); animation: spin 0.8s linear infinite; flex: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .status.warn { background: var(--notice-bg); border-color: var(--notice-line); color: var(--notice-fg); }
 
 /* ---------- العناوين والتنبيهات ---------- */
 .section-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.section-title h2 { margin: 0; font-size: 1.45rem; font-weight: 800; text-wrap: balance; }
+.section-title h2 { margin: 0; font-size: 1.45rem; font-weight: 700; text-wrap: balance; }
 .section-title span { color: var(--muted); font-size: 0.95rem; }
 .notice { display: flex; gap: 10px; align-items: flex-start; background: var(--notice-bg); border: 1px solid var(--notice-line); color: var(--notice-fg); border-radius: 14px; padding: 10px 14px; font-size: 0.9rem; line-height: 1.7; }
 .empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 22px; text-align: center; color: var(--muted); }
@@ -221,69 +221,68 @@ html[dir="ltr"] .app, html[dir="ltr"] .dock, html[dir="ltr"] .cmp-bar, html[dir=
 /* ---------- الخيار الأفضل ---------- */
 .best-card {
   display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px;
-  background: linear-gradient(135deg, var(--best-1) 0%, var(--surface) 55%, var(--best-2) 100%);
-  border: 2px solid var(--best-line); border-radius: 24px; padding: 18px; box-shadow: 0 16px 36px rgba(245, 158, 11, 0.16);
+  background: var(--surface); border: 0; border-radius: 24px; padding: 18px; box-shadow: var(--shadow);
 }
-.best-card .img { position: relative; border-radius: 18px; overflow: hidden; min-height: 210px; max-width: 100%; }
+.best-card .img { position: relative; border-radius: 16px; background: var(--surface-2); overflow: hidden; min-height: 210px; max-width: 100%; }
 .best-card .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .best-card .body { min-width: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.ribbon { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; background: linear-gradient(135deg, #F59E0B, #F97316); color: #FFFFFF; font-weight: 800; font-size: 0.95rem; box-shadow: 0 6px 14px rgba(249, 115, 22, 0.3); }
-.best-card h3 { margin: 4px 0 0; font-size: 1.35rem; font-weight: 800; line-height: 1.5; text-wrap: balance; }
+.ribbon { display: inline-block; color: var(--hot); font-weight: 600; font-size: 0.92rem; }
+.best-card h3 { margin: 4px 0 0; font-size: 1.35rem; font-weight: 700; line-height: 1.5; text-wrap: balance; }
 .reason { color: var(--reason-fg); background: var(--reason-bg); border-radius: 12px; padding: 8px 12px; font-size: 0.92rem; }
 .best-card .row { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
-.big-price { font-size: 2rem; font-weight: 800; color: var(--accent-strong); }
+.big-price { font-size: 2rem; font-weight: 700; color: var(--fg); }
 .best-card .meta { color: var(--muted); font-size: 0.9rem; }
 
 /* ---------- الإحصاءات ---------- */
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: flex; gap: 12px; align-items: center; min-width: 0; }
-.kpi .ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; flex: none; }
+.kpi .ico { display: none; }
 .kpi small { display: block; color: var(--muted); font-size: 0.82rem; font-weight: 600; }
-.kpi b { display: block; font-size: 1.22rem; font-weight: 800; }
+.kpi b { display: block; font-size: 1.22rem; font-weight: 700; }
 .kpi em { font-style: normal; color: var(--muted); font-size: 0.78rem; }
 
 /* ---------- التبويبات ---------- */
 .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; }
-.tab { border: 0; background: transparent; padding: 10px 14px; font-weight: 700; font-size: 1rem; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
-.tab[aria-selected="true"] { color: var(--accent-strong); border-bottom-color: var(--accent); }
+.tab { border: 0; background: transparent; padding: 10px 14px; font-weight: 600; font-size: 1rem; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
 .panel { display: none; }
 .panel.on { display: block; }
 
 /* ---------- بطاقات المنتجات ---------- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 16px; margin-top: 14px; }
-.pcard { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; min-width: 0; }
-.pcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-.pcard.is-best { border: 2px solid var(--best-line); }
-.pcard .img { position: relative; aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; }
+.pcard { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid transparent; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; min-width: 0; }
+@media (hover: hover) { .pcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); } }
+.pcard.is-best { border-color: var(--best-line); }
+.pcard .img { position: relative; aspect-ratio: 4 / 3; max-width: 100%; overflow: hidden; background: var(--surface-2); }
 .pcard .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.plat { position: absolute; top: 10px; right: 10px; padding: 3px 11px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15); }
-.plat.inline { position: static; display: inline-block; box-shadow: none; }
-.disc { position: absolute; top: 10px; left: 10px; background: #DC2626; color: #FFFFFF; direction: ltr; padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; }
-.disc.static { position: static; }
+.plat { position: absolute; top: 10px; right: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 0.76rem; font-weight: 600; background: var(--glass); color: var(--fg); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10); }
+.plat i, .pstore i, .dot-i { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+.plat.inline { position: static; background: var(--surface-2); box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.pstore { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; font-weight: 600; color: var(--muted); }
+.disc { position: absolute; top: 10px; left: 10px; background: var(--glass); color: var(--hot); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10); direction: ltr; padding: 3px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+.disc.static { position: static; background: transparent; box-shadow: none; padding: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
 .badges { position: absolute; bottom: 8px; right: 8px; left: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
-.badge { padding: 4px 10px; border-radius: 999px; font-size: 0.76rem; font-weight: 800; color: #FFFFFF; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18); }
-.badge.best { background: linear-gradient(135deg, #F59E0B, #F97316); }
-.badge.cheapest { background: linear-gradient(135deg, #10B981, #059669); }
-.badge.top_rated { background: linear-gradient(135deg, #3B82F6, #6366F1); }
+.badge { padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; color: var(--fg); background: var(--glass); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10); }
+.badge.best { color: var(--hot); }
 .pbody { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
-.ptitle { font-weight: 700; font-size: 0.95rem; line-height: 1.55; min-height: 2.9em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ptitle { font-weight: 600; font-size: 0.95rem; line-height: 1.55; min-height: 2.9em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .rating { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); flex-wrap: wrap; }
 .rating b { color: var(--fg); }
 .stars { --r: 0%; position: relative; display: inline-block; font-size: 15px; line-height: 1; letter-spacing: 1px; }
 .stars::before { content: "★★★★★"; color: var(--star-off); }
-.stars::after { content: "★★★★★"; position: absolute; top: 0; right: 0; width: var(--r); overflow: hidden; color: #F59E0B; white-space: nowrap; }
+.stars::after { content: "★★★★★"; position: absolute; top: 0; right: 0; width: var(--r); overflow: hidden; color: var(--star-on); white-space: nowrap; }
 .prices { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.price { font-size: 1.3rem; font-weight: 800; color: var(--accent-strong); }
+.price { font-size: 1.25rem; font-weight: 700; color: var(--fg); }
 .old { color: var(--muted); text-decoration: line-through; font-size: 0.85rem; }
 .native { color: var(--muted); font-size: 0.78rem; }
 .meta-line { display: flex; gap: 4px 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
 .meta-line > span { white-space: nowrap; }
 .meta-line .free { color: var(--good); font-weight: 700; }
 .score { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); }
-.bar { flex: 1; height: 7px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
-.bar span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #DB2777, #7C3AED); }
+.bar { flex: 1; height: 5px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.bar span { display: block; height: 100%; border-radius: 99px; background: var(--fg); opacity: .75; }
 .score b { color: var(--fg); font-size: 0.85rem; }
-a.shop-btn { margin-top: auto; display: block; text-align: center; text-decoration: none; font-weight: 800; padding: 10px 12px; border-radius: 12px; font-size: 0.92rem; transition: filter 0.15s ease; }
+a.shop-btn { margin-top: auto; display: block; text-align: center; text-decoration: none; font-weight: 600; padding: 9px 12px; border-radius: 999px; font-size: 0.9rem; background: var(--accent); color: #FFFFFF; transition: filter 0.15s ease; }
 a.shop-btn:hover { filter: brightness(1.1); }
 .best-card a.shop-btn { display: inline-block; padding: 12px 26px; font-size: 1rem; margin-top: 6px; }
 .skeleton .img, .skeleton .line { background: linear-gradient(90deg, var(--skel-1) 25%, var(--skel-2) 50%, var(--skel-1) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
@@ -294,10 +293,10 @@ a.shop-btn:hover { filter: brightness(1.1); }
 .plat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
 .plat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; min-width: 0; }
 .plat-card.winner { border: 2px solid var(--best-line); }
-.plat-card .head { padding: 12px 16px; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-height: 58px; }
-.plat-card .head > span:first-child { white-space: nowrap; }
+.plat-card .head { border-bottom: 1px solid var(--line); padding: 12px 16px; font-weight: 700; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-height: 58px; }
+.plat-card .head > span:first-child { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
 .plat-card .head small { font-weight: 600; font-size: 0.76rem; opacity: 0.85; }
-.winner-tag { background: #FFFFFF; color: #92400E; font-size: 0.74rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+.winner-tag { background: var(--surface-2); color: var(--hot); font-size: 0.74rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
 .plat-card .stats { padding: 6px 16px 14px; }
 .stat { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 0.9rem; color: var(--muted); }
 .stat b { color: var(--fg); }
@@ -305,7 +304,7 @@ a.shop-btn:hover { filter: brightness(1.1); }
 .top-item b { color: var(--fg); display: block; }
 .bars-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
 .bars { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; min-width: 0; }
-.bars h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 800; }
+.bars h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 700; }
 .bar-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 90px; gap: 10px; align-items: center; margin: 10px 0; font-size: 0.88rem; }
 .bar-row .track { height: 14px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
 .bar-row .fill { height: 100%; border-radius: 99px; }
@@ -315,8 +314,8 @@ a.shop-btn:hover { filter: brightness(1.1); }
 .table-wrap { overflow-x: auto; margin-top: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
 table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 860px; }
 th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); vertical-align: middle; }
-th { background: var(--surface-2); font-weight: 800; white-space: nowrap; position: sticky; top: 0; }
-th button { border: 0; background: transparent; font-weight: 800; cursor: pointer; padding: 0; }
+th { background: var(--surface-2); font-weight: 700; white-space: nowrap; position: sticky; top: 0; }
+th button { border: 0; background: transparent; font-weight: 700; cursor: pointer; padding: 0; }
 th button::after { content: " ↕"; color: var(--muted); font-weight: 400; }
 th button[data-dir="1"]::after { content: " ↑"; color: var(--accent); }
 th button[data-dir="-1"]::after { content: " ↓"; color: var(--accent); }
@@ -330,45 +329,45 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 
 /* ---------- أزرار البطاقة: المفضلة والمقارنة ---------- */
 .card-acts { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; z-index: 2; }
-.card-acts button { width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; font-size: 16px; display: grid; place-items: center;
-  background: rgba(255,255,255,0.92); color: #1F2937; box-shadow: 0 3px 10px rgba(0,0,0,0.18); }
-.card-acts button.on { background: var(--accent); color: #FFFFFF; }
-.card-acts button.fav.on { background: #E11D48; }
-.pcard .img .disc { left: auto; right: 10px; top: 44px; }
+.card-acts button { width: 32px; height: 32px; border-radius: 50%; border: 0; cursor: pointer; font-size: 16px; display: grid; place-items: center;
+  background: var(--glass); color: var(--fg); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.card-acts button svg { width: 17px; height: 17px; }
+.card-acts button.on { background: var(--fg); color: var(--surface); }
+.card-acts button.fav.on { background: var(--glass); color: var(--bad); }
+.pcard .img .disc { left: auto; right: 10px; top: 10px; }
 .hist { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; font-size: 0.8rem; font-weight: 700; }
 .hist .h-good { color: var(--good); }
 .hist .h-bad { color: var(--bad); }
 .hist .spark-wrap { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 500; }
 .hist .spark { width: 96px; height: 24px; color: var(--accent); flex: none; }
-.drop-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--tint-1); color: var(--good); font-weight: 800; font-size: 0.8rem; }
+.drop-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--tint-1); color: var(--good); font-weight: 700; font-size: 0.8rem; }
 .no-real { background: var(--notice-bg); border: 1px solid var(--notice-line); color: var(--notice-fg); border-radius: 14px; padding: 10px 14px; font-size: 0.92rem; }
 
 /* ---------- الشريط السفلي والنوافذ ---------- */
 .dock { position: fixed; z-index: 60; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column; gap: 8px; align-items: flex-start; direction: rtl; }
-.dock button { border: 0; cursor: pointer; font: inherit; font-weight: 800; padding: 10px 16px; border-radius: 999px; box-shadow: var(--shadow-hover); }
-.dock .rate-fab { background: linear-gradient(135deg, #F59E0B, #F97316); color: #FFFFFF; }
-.dock .fav-fab { background: var(--surface); color: var(--fg); border: 1px solid var(--line); }
+.dock button { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-weight: 600; padding: 9px 15px; border-radius: 999px; background: var(--glass); color: var(--fg); border: 1px solid var(--line); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08); }
+.dock button .num { min-width: 20px; padding: 0 6px; border-radius: 99px; background: var(--surface-2); font-size: .8rem; line-height: 20px; text-align: center; }
 .cmp-bar { position: fixed; z-index: 61; right: 50%; transform: translateX(50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: none; gap: 10px; align-items: center; background: var(--fg); color: var(--bg); padding: 8px 10px 8px 16px; border-radius: 999px;
   box-shadow: var(--shadow-hover); direction: rtl; max-width: calc(100vw - 32px); }
 .cmp-bar.on { display: flex; white-space: nowrap; }
 body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
-.cmp-bar button { border: 0; cursor: pointer; font: inherit; font-weight: 800; border-radius: 999px; padding: 8px 14px; }
+.cmp-bar button { border: 0; cursor: pointer; font: inherit; font-weight: 700; border-radius: 999px; padding: 8px 14px; }
 .cmp-bar .go { background: var(--accent); color: #FFFFFF; }
 .cmp-bar .clear { background: transparent; color: inherit; opacity: 0.8; }
 .modal { position: fixed; inset: 0; z-index: 80; background: var(--scrim); display: none; align-items: center; justify-content: center; padding: 16px; direction: rtl; }
 .modal.on { display: flex; }
 .modal .box { background: var(--surface); color: var(--fg); border-radius: 22px; width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 20px; box-shadow: var(--shadow-hover); }
 .modal .box.wide { width: min(920px, 100%); }
-.modal h3 { margin: 0 0 10px; font-size: 1.3rem; font-weight: 800; }
+.modal h3 { margin: 0 0 10px; font-size: 1.3rem; font-weight: 700; }
 .modal .x { float: left; border: 0; background: var(--surface-2); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 16px; }
 .stars-pick { display: flex; gap: 6px; direction: ltr; justify-content: center; margin: 10px 0 14px; }
 .stars-pick button { border: 0; background: none; font-size: 40px; cursor: pointer; color: var(--star-off); padding: 0; line-height: 1; }
 .stars-pick button.on { color: var(--gold); }
 .opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; }
 .opts button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 8px 16px; cursor: pointer; font: inherit; font-weight: 700; }
-.opts button.on { background: var(--accent); color: #FFFFFF; border-color: var(--accent); }
+.opts button.on { background: var(--fg); color: var(--surface); border-color: var(--fg); }
 .modal textarea { width: 100%; min-height: 80px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); padding: 10px 12px; font: inherit; color: inherit; resize: vertical; }
 .modal .send { width: 100%; margin-top: 12px; padding: 12px; font-size: 1.05rem; }
 .modal .muted { color: var(--muted); font-size: 0.88rem; }
@@ -378,11 +377,11 @@ body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
 .fav-row .sub { font-size: 0.82rem; color: var(--muted); }
 .fav-row .acts { display: flex; gap: 6px; }
 .fav-row .acts a, .fav-row .acts button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 6px 10px; font: inherit; font-size: 0.82rem; font-weight: 700; color: inherit; text-decoration: none; cursor: pointer; }
-.up { color: var(--bad); font-weight: 800; } .down { color: var(--good); font-weight: 800; }
+.up { color: var(--bad); font-weight: 700; } .down { color: var(--good); font-weight: 700; }
 .cmp-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: 0.9rem; }
 .cmp-table th { position: static; width: 110px; }
 .cmp-table td { text-align: center; }
-.cmp-table td.win { background: var(--tint-1); font-weight: 800; }
+.cmp-table td.win { background: var(--tint-1); font-weight: 700; }
 .cmp-table img { width: 100%; max-width: 140px; height: 100px; object-fit: cover; border-radius: 10px; margin: 0 auto; }
 .cmp-scroll { overflow-x: auto; }
 .cmp-scroll table { min-width: 0; table-layout: fixed; }
@@ -422,62 +421,60 @@ table.dt { min-width: 0; font-size: .76rem; }
   .cmp-table img { height: 70px; }
 }
 .toast { position: fixed; z-index: 90; top: calc(16px + env(safe-area-inset-top, 0px)); right: 50%; transform: translateX(50%); background: var(--fg); color: var(--bg);
-  padding: 10px 18px; border-radius: 999px; font-weight: 800; box-shadow: var(--shadow-hover); display: none; direction: rtl; max-width: calc(100vw - 32px); text-align: center; }
+  padding: 10px 18px; border-radius: 999px; font-weight: 700; box-shadow: var(--shadow-hover); display: none; direction: rtl; max-width: calc(100vw - 32px); text-align: center; }
 .toast.on { display: block; }
-.ask-rate { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: linear-gradient(135deg, var(--best-1), var(--best-2));
-  border: 1px solid var(--best-line); border-radius: 16px; padding: 12px 16px; font-weight: 700; }
-.ask-rate button { border: 0; cursor: pointer; font: inherit; font-weight: 800; border-radius: 999px; padding: 8px 16px; background: var(--accent); color: #FFFFFF; }
-.footer a { color: var(--accent-strong); font-weight: 700; }
-.wa-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 16px; border-radius: 999px; background: #25D366; color: #08331A; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
-.wa-btn:hover { background: #1FBE5A; }
-.ig-btn { margin-inline-start: 8px; background: linear-gradient(45deg, #F58529, #DD2A7B 50%, #8134AF); color: #fff; }
-.ig-btn:hover { background: linear-gradient(45deg, #E0761F, #C4206B 50%, #6F2A99); }
-.inst-btn { margin-inline-start: 8px; background: #fff; color: #4C1D95; }
-.inst-btn:hover { background: #F3EEFF; }
-.inst-bar { position: fixed; z-index: 65; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(560px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 12px 10px 12px 14px; border-radius: 18px; background: #141C62; color: #fff; box-shadow: 0 12px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.1); animation: ibIn .4s ease-out; direction: rtl; }
+.ask-rate { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; font-weight: 600; }
+.ask-rate button { border: 0; cursor: pointer; font: inherit; font-weight: 700; border-radius: 999px; padding: 8px 16px; background: var(--accent); color: #FFFFFF; }
+.footer a { color: var(--muted); font-weight: 600; text-decoration: none; }
+.footer a:hover { color: var(--fg); text-decoration: underline; }
+.wa-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 999px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+.wa-btn svg { width: 18px; height: 18px; color: var(--muted); }
+.wa-btn:hover { border-color: var(--muted); }
+.inst-bar { position: fixed; z-index: 65; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(560px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 12px 10px 12px 14px; border-radius: 20px; background: var(--glass); color: var(--fg); border: 1px solid var(--line); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 12px 40px rgba(0,0,0,.14); animation: ibIn .4s ease-out; direction: rtl; }
 .inst-bar img { width: 46px; height: 46px; border-radius: 11px; flex: none; }
 .inst-bar .ib-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .inst-bar b { font-size: 15px; }
-.inst-bar small { font-size: 12.5px; opacity: .8; }
-.inst-bar .ib-go { flex: none; border: 0; border-radius: 12px; padding: 10px 14px; font: inherit; font-weight: 800; color: #2A1600; background: linear-gradient(90deg, #FF9F43, #FFC46B); cursor: pointer; }
-.inst-bar .ib-x { flex: none; border: 0; background: transparent; color: rgba(255,255,255,.7); font-size: 18px; cursor: pointer; padding: 6px; }
-.btn-copy { display: inline-block; text-decoration: none; margin: 10px 0 0 6px; border: 0; border-radius: 12px; padding: 10px 16px; font: inherit; font-weight: 700; color: #fff; background: linear-gradient(90deg, #7C3AED, #DB2777); cursor: pointer; }
+.inst-bar small { font-size: 12.5px; color: var(--muted); }
+.inst-bar .ib-go { flex: none; border: 0; border-radius: 999px; padding: 9px 16px; font: inherit; font-weight: 600; color: #FFFFFF; background: var(--accent); cursor: pointer; }
+.inst-bar .ib-x { flex: none; border: 0; background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; padding: 6px; }
+.btn-copy { display: inline-block; text-decoration: none; margin: 10px 0 0 6px; border: 0; border-radius: 999px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); cursor: pointer; }
 @keyframes ibIn { from { opacity: 0; transform: translate(-50%, 24px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .footer .etsy-note { display: inline-block; margin-top: 6px; font-size: 0.72rem; opacity: 0.8; }
 #installSteps ol { margin: 8px 0 0; padding-inline-start: 22px; line-height: 2; }
 
 /* ---------- السلة المتعددة ---------- */
-.basket-box { display: flex; flex-direction: column; gap: 8px; background: linear-gradient(135deg, var(--best-2), var(--tint-4)); border: 1px solid var(--line); border-radius: 20px; padding: 12px 14px; }
+.basket-box { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 12px 14px; }
 .basket-box b { font-size: 1rem; }
 .basket-box small { color: var(--muted); }
 .basket-form { display: flex; gap: 8px; }
 .basket-form input { flex: 1; min-width: 0; padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 1rem; }
 .bk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .bk-card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
-.bk-card.win { border: 2px solid var(--best-line); box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15); }
-.bk-head { padding: 12px 16px; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bk-card.win { border: 2px solid var(--best-line); }
+.bk-head { border-bottom: 1px solid var(--line); padding: 12px 16px; font-weight: 700; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .bk-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 1px dashed var(--line); text-decoration: none; color: inherit; }
 .bk-row img { width: 54px; height: 54px; object-fit: cover; border-radius: 10px; background: var(--surface-2); }
-.bk-row .it { font-size: 0.78rem; color: var(--accent-strong); font-weight: 800; }
+.bk-row .it { font-size: 0.78rem; color: var(--accent-strong); font-weight: 700; }
 .bk-row .tt { font-size: 0.85rem; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.bk-row .pr { font-weight: 800; white-space: nowrap; }
+.bk-row .pr { font-weight: 700; white-space: nowrap; }
 .bk-row.miss { color: var(--muted); grid-template-columns: 54px minmax(0, 1fr); }
 .bk-row.miss span:first-child { width: 54px; height: 54px; border-radius: 10px; background: var(--surface-2); display: grid; place-items: center; font-size: 22px; }
 .bk-total { padding: 12px 16px; display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; background: var(--surface-2); }
-.bk-total b { font-size: 1.35rem; color: var(--accent-strong); }
+.bk-total b { font-size: 1.35rem; color: var(--fg); }
 .bk-note { font-size: 0.85rem; color: var(--muted); }
-.bk-mix { background: var(--surface); border: 2px dashed var(--accent); border-radius: 20px; padding: 14px 16px; }
+.bk-mix { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 14px 16px; }
 
 /* ---------- الأولوية والأقسام والروابط ---------- */
 .prio-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 8px 10px; }
-.prio-bar span { font-weight: 800; font-size: 0.92rem; margin-inline-end: 4px; }
+.prio-bar span { font-weight: 700; font-size: 0.92rem; margin-inline-end: 4px; }
 .prio-bar button { border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: 0.86rem; cursor: pointer; }
-.prio-bar button[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: #FFFFFF; }
+.prio-bar button[aria-checked="true"] { background: var(--fg); border-color: var(--fg); color: var(--surface); }
 .cats { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .cats b { font-size: 0.95rem; }
 .cat-tabs, .cat-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
-.cat-tabs button { flex: none; border: 0; background: var(--surface-2); border-radius: 12px; padding: 7px 12px; font: inherit; font-weight: 800; cursor: pointer; color: var(--fg); }
-.cat-tabs button.on { background: var(--accent); color: #FFFFFF; }
+.cat-tabs button { flex: none; border: 0; background: var(--surface-2); border-radius: 12px; padding: 7px 12px; font: inherit; font-weight: 700; cursor: pointer; color: var(--fg); }
+.cat-tabs button.on { background: var(--fg); color: var(--surface); }
 .cat-chips button { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; color: var(--fg); }
 .cat-chips button:hover { border-color: var(--accent); color: var(--accent-strong); }
 .link-box { display: flex; gap: 12px; align-items: center; background: var(--tint-2); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; }
@@ -488,50 +485,51 @@ table.dt { min-width: 0; font-size: .76rem; }
 .with-ship b { color: var(--fg); }
 
 /* ---------- سلة المستخدم ---------- */
-.cart-btn { margin-top: 6px; width: 100%; border: 1px dashed var(--accent); background: var(--surface); color: var(--accent-strong); border-radius: 12px; padding: 8px 10px; font: inherit; font-weight: 800; cursor: pointer; }
+.cart-btn { margin-top: 6px; width: 100%; border: 0; background: var(--surface-2); color: var(--fg); border-radius: 999px; padding: 8px 10px; font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; }
 .pre-search .prio-bar { display: none; }
-.img-btn { flex: none; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; padding: 0 14px; font-size: 20px; cursor: pointer; }
+.img-btn { flex: none; border: 0; background: var(--surface-2); color: var(--fg); border-radius: 12px; padding: 0 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.img-btn svg { width: 21px; height: 21px; }
 .tools-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 12px; }
-.tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 800; cursor: pointer; }
+.tool-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 600; cursor: pointer; }
 .tool-btn small { font-weight: 600; color: var(--muted); font-size: .78rem; }
-.tool-btn[aria-expanded="true"] { background: var(--tint-1); border-color: var(--accent); }
+.tool-btn[aria-expanded="true"] { background: var(--surface-2); border-color: var(--fg); }
 .basket-box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; margin-bottom: 14px; }
 .bb-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
 .bb-head span { color: var(--muted); font-size: .85rem; }
 .bb-inputs { display: grid; gap: 8px; }
 .bb-row { display: flex; align-items: center; gap: 8px; }
-.bb-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint-1); color: var(--accent-strong); font-weight: 800; flex: none; }
+.bb-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint-1); color: var(--accent-strong); font-weight: 700; flex: none; }
 .bb-in { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; }
 .bb-del { border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px; }
 .bb-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.bsk .bk-card.win { border: 2px solid #F59E0B; box-shadow: 0 0 0 4px rgba(245,158,11,.15); }
-.bk-card header { padding: 12px 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-.bk-card header b { flex: 1; font-size: 1.05rem; }
-.bk-tag { background: #FFFFFF; color: #1F1147; border-radius: 999px; padding: 3px 10px; font-size: .76rem; font-weight: 800; }
+.bsk .bk-card.win { border: 2px solid var(--best-line); }
+.bk-card header { border-bottom: 1px solid var(--line); padding: 12px 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.bk-card header b { flex: 1; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 8px; }
+.bk-tag { background: var(--surface-2); color: var(--hot); border-radius: 999px; padding: 3px 10px; font-size: .76rem; font-weight: 700; }
 .bk-items { list-style: none; margin: 0; padding: 10px 12px; display: grid; gap: 10px; flex: 1; }
 .bk-items li { display: flex; gap: 10px; align-items: center; }
 .bk-items img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); }
-.bk-q { display: inline-block; font-size: .72rem; font-weight: 800; color: var(--accent-strong); background: var(--tint-1); border-radius: 999px; padding: 1px 8px; margin-bottom: 2px; }
+.bk-q { display: inline-block; font-size: .72rem; font-weight: 700; color: var(--accent-strong); background: var(--tint-1); border-radius: 999px; padding: 1px 8px; margin-bottom: 2px; }
 .bk-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--fg); text-decoration: none; font-size: .82rem; font-weight: 600; line-height: 1.3; }
 .bk-m { font-size: .8rem; color: var(--muted); }
 .bk-m b { color: var(--fg); }
 .bk-items li.miss { opacity: .6; }
 .bsk .bk-total { border-top: 1px solid var(--line); }
 .bk-acts { display: flex; gap: 8px; padding: 0 12px 12px; }
-.bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 800; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
-.share-btn { margin-top: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
-.cart-btn.on { background: var(--tint-1); color: var(--good); border-style: solid; border-color: var(--good); }
+.bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
+.share-btn { margin-top: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.cart-btn.on { background: var(--surface-2); color: var(--good); }
 .best-card .row .cart-btn { width: auto; margin: 6px 0 0; padding: 12px 18px; }
 .cart-row .tt { color: inherit; text-decoration: none; }
 .qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-.qty button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: inherit; font-weight: 800; color: inherit; }
+.qty button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; font: inherit; font-weight: 700; color: inherit; }
 .cart-acts { display: flex; gap: 8px; padding: 12px 14px; flex-wrap: wrap; }
 .cart-acts .btn-primary { flex: 1; padding: 10px 14px; }
 .copy-btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 14px; padding: 10px 14px; font: inherit; font-weight: 700; cursor: pointer; color: inherit; }
 
 /* ---------- متاجر الخليج (روابط بحث) ---------- */
 .gulf { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 16px 18px; }
-.gulf h3 { margin: 0 0 4px; font-size: 1.15rem; font-weight: 800; }
+.gulf h3 { margin: 0 0 4px; font-size: 1.15rem; font-weight: 700; }
 .gulf p { margin: 0 0 12px; color: var(--muted); font-size: 0.88rem; }
 .gulf-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .gulf-grid a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
@@ -562,17 +560,39 @@ table.dt { min-width: 0; font-size: .76rem; }
   .dock button { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
   body { padding-bottom: 64px; }
   body.cmp-on .dock { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
-  .hero { padding: 22px 18px; border-radius: 20px; }
-  .hero h1 { font-size: 1.75rem; }
+  .hero { padding: 18px 4px 2px; }
+  .hero h1 { font-size: 2.3rem; }
+  .hero p { font-size: 1rem; margin-bottom: 14px; }
+  .hero .chip { font-size: 0.8rem; padding: 3px 11px; }
+  .hero-links { gap: 6px; margin-top: 12px; }
+  .wa-btn { font-size: 0.82rem; padding: 7px 12px; }
+  .wa-btn svg { width: 16px; height: 16px; }
+  .dock { background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 4px; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10); }
+  .dock button { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .search { padding: 6px; gap: 6px; border-radius: 16px; }
+  .search input { font-size: 1rem; padding: 10px 12px; }
+  .btn-primary { padding: 0 16px; }
+  .currency { flex: 1 1 0; min-width: 0; }
+  .cur-sel { min-width: 0; width: 100%; padding: 9px 10px; }
+  .card-acts { top: 8px; left: 8px; gap: 4px; }
+  .card-acts button { width: 30px; height: 30px; }
+  .card-acts button svg { width: 15px; height: 15px; }
+  .pbody { padding: 10px 11px 12px; gap: 6px; }
+  .kpi { padding: 12px 14px; }
+  .search .btn-primary { padding: 0 15px; }
+  .search .btn-primary span { display: none; }
+  .meta-line > span { white-space: normal; }
+  a.shop-btn { font-size: 0.86rem; padding: 8px 10px; }
+  .kpi b { font-size: 1.08rem; }
   .best-card { grid-template-columns: minmax(0, 1fr); }
   .bars-wrap { grid-template-columns: minmax(0, 1fr); }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
   .price { font-size: 1.1rem; }
   .search { flex-basis: 100%; }
-  .currency { flex-basis: 100%; }
 }
 @media (max-width: 520px) {
-  .plat-grid, .kpis { grid-template-columns: minmax(0, 1fr); }
+  .plat-grid { grid-template-columns: minmax(0, 1fr); }
+  .kpis { gap: 10px; }
   .big-price { font-size: 1.6rem; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -602,7 +622,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     <section class="side-sec">
       <h3>الفلاتر</h3>
       <div class="field">
-        <span>💰 السعر <b id="priceCur" class="num" data-noi18n></b></span>
+        <span>السعر <b id="priceCur" class="num" data-noi18n></b></span>
         <div class="pr-row">
           <input type="text" id="priceMin" class="pr-in num" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="من" aria-label="أقل سعر">
           <span class="pr-dash">–</span>
@@ -649,53 +669,55 @@ table.dt { min-width: 0; font-size: .76rem; }
       <h1>قارِن <img class="h1-mark" src="icons/logo-mark.png" alt=""></h1>
       <p>ابحث مرة واحدة، وقارن الأسعار والجودة في أشهر متاجر التسوق الإلكتروني، واحصل على الخيار الأفضل فورًا.</p>
       <div class="chips" id="heroChips"></div>
-      <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع عروض قارِن اليومية على واتساب</span></a>
-      <a class="wa-btn ig-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على انستقرام</span></a>
-      <a class="wa-btn inst-btn" href="#" id="installHero"><span aria-hidden="true">📲</span><span>أضف قارِن لشاشتك</span></a>
+      <div class="hero-links">
+        <a class="wa-btn" href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9c0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 3.9 3.5 1.5.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1l-.6-.2Z"/></svg><span>تابع عروض قارِن اليومية على واتساب</span></a>
+        <a class="wa-btn" href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 3.9 2.4 7.2 2.3c1.3-.1 1.6-.1 4.8-.1ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></svg><span>تابعنا على انستقرام</span></a>
+        <a class="wa-btn" href="#" id="installHero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg><span>أضف قارِن لشاشتك</span></a>
+      </div>
     </header>
 
     <div class="search-row">
       <form class="search" id="searchForm" role="search">
         <input type="search" id="q" autocomplete="off" aria-label="ابحث عن منتج"
-               placeholder="ابحث عن منتج، أو الصق رابط منتج من أي متجر (أمازون، نون، شي إن...)">
-        <button type="button" class="img-btn" id="imgBtn" aria-label="ابحث بصورة" title="ابحث بصورة">📷</button>
+               placeholder="ابحث عن منتج أو الصق رابطه">
+        <button type="button" class="img-btn" id="imgBtn" aria-label="ابحث بصورة" title="ابحث بصورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></button>
         <input type="file" id="imgIn" accept="image/*" hidden>
-        <button type="submit" class="btn-primary">🔍 بحث</button>
+        <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
       </form>
       <div class="currency">
-        <span class="lbl" id="curLbl">💱 عملة العرض</span>
+        <span class="lbl" id="curLbl">عملة العرض</span>
         <select id="curSel" class="cur-sel" aria-labelledby="curLbl"></select>
       </div>
       <div class="currency">
-        <span class="lbl" id="langLbl">🌐 اللغة</span>
+        <span class="lbl" id="langLbl">اللغة</span>
         <select id="langSel" class="cur-sel" aria-labelledby="langLbl" data-noi18n></select>
       </div>
     </div>
     <div class="tools-row">
-      <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><span>🧺 أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
-      <a class="tool-btn" href="coupons.html" style="text-decoration:none"><span>🎟️ كوبونات اليوم</span><small>أكواد خصم رسمية</small></a>
+      <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><span>أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
+      <a class="tool-btn" href="coupons.html" style="text-decoration:none"><span>كوبونات اليوم</span><small>أكواد خصم رسمية</small></a>
     </div>
     <section class="basket-box" id="basketBox" hidden>
-      <div class="bb-head"><b>🧺 أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
+      <div class="bb-head"><b>أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
       <div class="bb-inputs" id="basketInputs"></div>
-      <div class="bb-acts"><button type="button" class="tool-btn" id="basketAdd">➕ أضف منتج</button><button type="button" class="btn-primary" id="basketGo">🧺 دوّر أفضل سلة</button></div>
+      <div class="bb-acts"><button type="button" class="tool-btn" id="basketAdd">أضف منتج</button><button type="button" class="btn-primary" id="basketGo">دوّر أفضل سلة</button></div>
     </section>
 
     <div class="suggest">
-      <span>🔥 عمليات بحث شائعة:</span>
+      <span>عمليات بحث شائعة:</span>
       <div class="chips-row" id="chips"></div>
-      <button type="button" class="filters-toggle" id="openFilters">⚙️ الفلاتر</button>
+      <button type="button" class="filters-toggle" id="openFilters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>الفلاتر</span></button>
     </div>
 
     <div class="cats" id="cats"></div>
 
     <div class="prio-bar" role="radiogroup" aria-label="أولويتك">
-      <span>🎯 أولويتك:</span>
-      <button type="button" role="radio" data-prio="0">💰 الأرخص</button>
-      <button type="button" role="radio" data-prio="1">💵 أقرب للأرخص</button>
-      <button type="button" role="radio" data-prio="2">⚖️ متوازن</button>
-      <button type="button" role="radio" data-prio="3">⭐ أقرب للجودة</button>
-      <button type="button" role="radio" data-prio="4">🏅 الأجود</button>
+      <span>أولويتك:</span>
+      <button type="button" role="radio" data-prio="0">الأرخص</button>
+      <button type="button" role="radio" data-prio="1">أقرب للأرخص</button>
+      <button type="button" role="radio" data-prio="2">متوازن</button>
+      <button type="button" role="radio" data-prio="3">أقرب للجودة</button>
+      <button type="button" role="radio" data-prio="4">الأجود</button>
     </div>
 
     <div id="status"></div>
@@ -705,16 +727,16 @@ table.dt { min-width: 0; font-size: .76rem; }
       قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.<br>
       الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.<br>
       بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <b>بدون ما يزيد السعر عليك</b>.<br>
-      <a href="coupons.html">🎟️ الكوبونات</a> · <a href="searches.html">🔎 أشهر المنتجات</a> · <a href="about.html">ℹ️ من نحن</a> · <a href="privacy.html">🔒 الخصوصية</a> · <a href="stats.html">📊 الإحصائيات</a> · <a href="#" id="installLink">📲 ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">📢 قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">📸 انستقرام</a><br>
+      <a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a><br>
       <span dir="ltr" lang="en" class="etsy-note">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</span>
     </footer>
   </main>
 </div>
 
 <div class="dock">
-  <button type="button" class="fav-fab" id="cartFab">🛒 السلة <span id="cartCount" class="num">0</span></button>
-  <button type="button" class="fav-fab" id="favFab">❤️ المفضلة <span id="favCount" class="num">0</span></button>
-  <button type="button" class="rate-fab" id="rateFab">⭐ قيّم قارِن</button>
+  <button type="button" class="fav-fab" id="cartFab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span>السلة</span> <span id="cartCount" class="num">0</span></button>
+  <button type="button" class="fav-fab" id="favFab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg><span>المفضلة</span> <span id="favCount" class="num">0</span></button>
+  <button type="button" class="rate-fab" id="rateFab">قيّم قارِن</button>
 </div>
 <div class="cmp-bar" id="cmpBar"><span id="cmpTxt"></span><button type="button" class="go" id="cmpGo">⚖️ قارن الآن</button><button type="button" class="clear" id="cmpClear">مسح</button></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -739,7 +761,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 <div class="modal" id="favModal" role="dialog" aria-modal="true" aria-labelledby="favTitle">
   <div class="box">
     <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
-    <h3 id="favTitle">❤️ المفضلة وتنبيه الأسعار</h3>
+    <h3 id="favTitle">المفضلة وتنبيه الأسعار</h3>
     <p class="muted">نحفظ سعر المنتج وقت ما تضيفه، ولما تبحث عنه مرة ثانية نقول لك إذا نزل أو ارتفع.</p>
     <div id="favList"></div>
   </div>
@@ -748,7 +770,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 <div class="modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
   <div class="box wide">
     <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
-    <h3 id="cartTitle">🛒 سلتك</h3>
+    <h3 id="cartTitle">سلتك</h3>
     <p class="muted">أضف المنتجات اللي تعجبك من أي متجر، ونقسّمها لك حسب المتجر مع مجموع كل واحد.</p>
     <div id="cartBody"></div>
   </div>
@@ -764,7 +786,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 <div class="modal" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
   <div class="box">
     <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
-    <h3 id="installTitle">📲 ثبّت «قارِن» على جوالك</h3>
+    <h3 id="installTitle">ثبّت «قارِن» على جوالك</h3>
     <p class="muted">بيطلع لك «قارِن» كأيقونة على الشاشة الرئيسية ويفتح مثل التطبيق. مجاني وما يحتاج متجر تطبيقات.</p>
     <div id="installSteps"></div>
   </div>
@@ -816,7 +838,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const tot = p => p.total || p.price;  // السعر مع الشحن إذا كان معروف
   const SORTS = { best: '⭐ الأفضل قيمة', price_asc: '💰 الأقل سعرًا', price_desc: '💎 الأعلى سعرًا', rating: '🏅 الأعلى تقييمًا', reviews: '💬 الأكثر مراجعات' };
   const SUGGESTIONS = ['سماعات لاسلكية', 'فستان صيفي', 'ساعة ذكية', 'حذاء رياضي', 'حقيبة ظهر', 'قلاية هوائية'];
-  const BADGES = { best: '🏆 الخيار الأفضل', cheapest: '💰 الأرخص', top_rated: '⭐ الأعلى تقييمًا' };
+  const BADGES = { best: 'الخيار الأفضل', cheapest: 'الأرخص', top_rated: 'الأعلى تقييمًا' };
   const COLORS = ['أسود', 'أبيض', 'رمادي', 'أزرق', 'وردي', 'أخضر', 'بيج', 'كحلي', 'أحمر'];
 
   // ================= فئات المنتجات (لتوليد البيانات التوضيحية) =================
@@ -944,6 +966,15 @@ table.dt { min-width: 0; font-size: .76rem; }
     else { const n = (navigator.language || '').slice(0, 2).toLowerCase(); if (LANGS.some(l => l[0] === n)) LANG = n; }
   } catch (e) { /* التخزين غير متاح */ }
   const HAS_AR = /[\u0600-\u06FF]/;
+  // الواجهة صارت بدون إيموجي: نطابق الترجمات القديمة اللي مفاتيحها تبدأ بإيموجي
+  const EMO_LEAD = /^(?:[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\uFE0F\u200D\u20E3]|\s)+/u;
+  let I18N_BARE = null;
+  function i18nBare() {
+    if (I18N_BARE) return I18N_BARE;
+    I18N_BARE = {};
+    for (const k in I18N) { const b = k.replace(EMO_LEAD, ''); if (b !== k && b && !(b in I18N) && !(b in I18N_BARE)) I18N_BARE[b] = I18N[k]; }
+    return I18N_BARE;
+  }
   function trText(raw) {
     if (LANG === 'ar' || !raw || !HAS_AR.test(raw)) return null;
     const lead = raw.match(/^\s*/)[0], trail = raw.match(/\s*$/)[0];
@@ -952,9 +983,11 @@ table.dt { min-width: 0; font-size: .76rem; }
       .replace(/«([^»]*)»/g, (m, q) => { qs.push(q); return '«{q}»'; })
       .replace(/\b(?=[a-z0-9.-]*[a-z])[a-z0-9-]+(?:\.[a-z0-9-]+)+\b/gi, m => { ds.push(m); return '{d}'; })
       .replace(/[0-9٠-٩][0-9٠-٩.,٫٬]*/g, m => { ns.push(m); return '{n}'; });
-    const e = I18N[s];
+    let e = I18N[s], bare = false;
+    if (!e) { e = i18nBare()[s]; bare = !!e; }
     let t = e && e[LIDX[LANG]];
     if (!t) return null;
+    if (bare) t = t.replace(EMO_LEAD, '');
     let qi = 0, di = 0, ni = 0;
     t = t.replace(/\{q\}/g, () => { const q = qs[qi++] || ''; const tq = trText(q); return tq != null ? tq.trim() : q; })
       .replace(/\{d\}/g, () => ds[di++] || '').replace(/\{n\}/g, () => ns[ni++] || '');
@@ -2431,7 +2464,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   function sheinBarHtml() {
     if (state.mode !== 'search' || !state.query) return '';
     const u = sheinUrl(state.query);
-    return u ? `<div class="shein-bar"><span>🛍️ تبي تشوف خيارات أكثر في الأزياء؟</span><a href="${esc(u)}" target="_blank" rel="noopener nofollow">نفس البحث في SHEIN ↗</a></div>` : '';
+    return u ? `<div class="shein-bar"><span>تبي تشوف خيارات أكثر في الأزياء؟</span><a href="${esc(u)}" target="_blank" rel="noopener nofollow">نفس البحث في SHEIN ↗</a></div>` : '';
   }
   function priceNoteHtml() {
     if (state.priceMin == null && state.priceMax == null) return '';
@@ -2458,7 +2491,8 @@ table.dt { min-width: 0; font-size: .76rem; }
   }).catch(() => {});
 
   // ================= مكونات HTML =================
-  const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}" style="background:${PLATFORMS[k].color};color:${PLATFORMS[k].text}">${PLATFORMS[k].name}</span>`;
+  const dotI = k => `<i style="background:${PLATFORMS[k] ? PLATFORMS[k].color : '#8E8E93'}" aria-hidden="true"></i>`;
+  const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}">${dotI(k)}${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
   const reviewsText = p => (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
@@ -2466,15 +2500,15 @@ table.dt { min-width: 0; font-size: .76rem; }
   const ratingNum = p => p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
-    return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" style="background:${pl.color};color:${pl.text}">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
+    return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
   };
   function metaHtml(p) {
     const items = [];
     if (p.shipCost === 0) items.push('<span class="free">✓ شحن مجاني لعمان</span>');
-    else if (p.shipCost > 0) items.push(`<span>🚚 + ${money(p.shipCost)} شحن لعمان</span>`);
-    else if (p.real) items.push('<span>🚚 الشحن يظهر في صفحة المتجر</span>');
-    if (p.orders) items.push(`<span>🔥 <bdi>${p.orders.toLocaleString('en-US')}</bdi> مبيع</span>`);
-    if (p.platform === 'aliexpress' && p.shipping) items.push(`<span>⏱️ يوصل خلال <bdi>${esc(p.shipping)}</bdi></span>`);
+    else if (p.shipCost > 0) items.push(`<span>+ ${money(p.shipCost)} شحن لعمان</span>`);
+    else if (p.real) items.push('<span>الشحن يظهر في صفحة المتجر</span>');
+    if (p.orders) items.push(`<span><bdi>${p.orders.toLocaleString('en-US')}</bdi> مبيع</span>`);
+    if (p.platform === 'aliexpress' && p.shipping) items.push(`<span>يوصل خلال <bdi>${esc(p.shipping)}</bdi></span>`);
     return items.join('');
   }
   // سجل السعر (من تحميل علي إكسبرس اليومي): نزول حقيقي، أو خصم وهمي، ورسم صغير للسعر
@@ -2511,30 +2545,38 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (diff >= 1) return `<span class="drop-badge" style="background:var(--tint-4);color:var(--bad)">📈 ارتفع ${diff.toFixed(0)}%</span>`;
     return '';
   }
+  const SVA = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+  const ICONS = {
+    heart: `<svg ${SVA}><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>`,
+    heartOn: `<svg ${SVA}><path fill="currentColor" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>`,
+    compare: `<svg ${SVA}><path d="M12 4v16M7 20h10M5 7h14"/><path d="m5 7-2.5 6a2.5 2.5 0 0 0 5 0L5 7ZM19 7l-2.5 6a2.5 2.5 0 0 0 5 0L19 7Z"/></svg>`,
+    share: `<svg ${SVA}><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v9h14v-9h-1"/></svg>`,
+  };
   function actsHtml(p) {
     const k = esc(pkey(p));
     const isFav = !!favs[pkey(p)], isCmp = cmp.some(c => pkey(c) === pkey(p));
-    return `<div class="card-acts"><button type="button" class="fav${isFav ? ' on' : ''}" data-fav="${k}" aria-label="أضف للمفضلة" aria-pressed="${isFav}">${isFav ? '❤' : '♡'}</button>
-      <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">⚖️</button>
-      <button type="button" data-share="${k}" aria-label="شارك المنتج">📤</button></div>`;
+    return `<div class="card-acts"><button type="button" class="fav${isFav ? ' on' : ''}" data-fav="${k}" aria-label="أضف للمفضلة" aria-pressed="${isFav}">${isFav ? ICONS.heartOn : ICONS.heart}</button>
+      <button type="button" class="${isCmp ? 'on' : ''}" data-cmp="${k}" aria-label="أضف للمقارنة" aria-pressed="${isCmp}">${ICONS.compare}</button>
+      <button type="button" data-share="${k}" aria-label="شارك المنتج">${ICONS.share}</button></div>`;
   }
   function cartBtn(p) {
     const inCart = !!cart[pkey(p)];
-    return `<button type="button" class="cart-btn${inCart ? ' on' : ''}" data-cart="${esc(pkey(p))}">${inCart ? '✓ في السلة' : '🛒 أضف للسلة'}</button>`;
+    return `<button type="button" class="cart-btn${inCart ? ' on' : ''}" data-cart="${esc(pkey(p))}">${inCart ? '✓ في السلة' : 'أضف للسلة'}</button>`;
   }
   function productCard(p) {
     const d = discountPct(p);
     return `<article class="pcard${p.badges.includes('best') ? ' is-best' : ''}">
-      <div class="img"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">${pill(p.platform)}${actsHtml(p)}${d >= 5 ? `<span class="disc">-${d}%</span>` : ''}
+      <div class="img"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">${actsHtml(p)}${d >= 5 ? `<span class="disc">-${d}%</span>` : ''}
         <div class="badges">${p.badges.map(b => `<span class="badge ${b}">${BADGES[b]}</span>`).join('')}</div></div>
       <div class="pbody">
+        <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
-        ${cartBtn(p)}${shopBtn(p)}
+        ${cartBtn(p)}${shopBtn(p, 'تسوّق ↗')}
       </div></article>`;
   }
 
@@ -2544,16 +2586,16 @@ table.dt { min-width: 0; font-size: .76rem; }
     return `<section class="best-card" aria-label="الخيار الأفضل">
       <div class="img"><img referrerpolicy="no-referrer" src="${p.image}" alt="">${pill(p.platform)}</div>
       <div class="body">
-        <span class="ribbon">🏆 الخيار الأفضل لهذا البحث</span>
+        <span class="ribbon">الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
-        <div class="reason">💡 ${esc(bestReason(p, list))}</div>
+        <div class="reason">${esc(bestReason(p, list))}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
           <span class="meta">مؤشر القيمة <b class="num">${p.score.toFixed(0)}</b>/100</span></div>
         ${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
-        <div class="row">${cartBtn(p)}<button type="button" class="share-btn" data-share="${esc(pkey(p))}">📤 شارك</button>${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
+        <div class="row">${cartBtn(p)}<button type="button" class="share-btn" data-share="${esc(pkey(p))}">شارك</button>${shopBtn(p, `اذهب إلى العرض في ${pl.name} ↗`)}</div>
       </div></section>`;
   }
 
@@ -2580,8 +2622,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const winner = liveKeys.length ? liveKeys.reduce((a, b) => sum[b].avgScore > sum[a].avgScore ? b : a) : null;
     const cards = KEYS.filter(k => state.platforms.has(k)).map(k => {
       const pl = PLATFORMS[k], s = sum[k];
-      const tag = k === winner ? '<span class="winner-tag">🥇 الأفضل لهذا البحث</span>' : `<small>${pl.tagline}</small>`;
-      const head = `<div class="head" style="background:${pl.color};color:${pl.text}"><span>${pl.name}</span>${tag}</div>`;
+      const tag = k === winner ? '<span class="winner-tag">الأفضل لهذا البحث</span>' : `<small>${pl.tagline}</small>`;
+      const head = `<div class="head"><span>${dotI(k)}${pl.name}</span>${tag}</div>`;
       if (!s) return `<div class="plat-card">${head}<div class="stats"><p class="hint">لا توجد نتائج مطابقة للفلاتر الحالية.</p></div></div>`;
       const rows = [['عدد النتائج', `${s.count}`], ['أقل سعر', money(s.min)], ['متوسط السعر', money(s.avgPrice)],
                     ['متوسط التقييم', `<bdi>${s.avgRating.toFixed(2)}</bdi> ★`], ['متوسط مؤشر القيمة', `<bdi>${s.avgScore.toFixed(0)}/100</bdi>`]]
@@ -2596,7 +2638,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const keys = KEYS.filter(k => sum[k]);
     if (!keys.length) return '';
     const maxPrice = Math.max(...keys.map(k => sum[k].avgPrice));
-    const row = (k, w, v) => `<div class="bar-row"><span>${PLATFORMS[k].name}</span><div class="track"><div class="fill" style="width:${Math.max(w, 3).toFixed(0)}%;background:${PLATFORMS[k].bar}"></div></div><b class="num">${v}</b></div>`;
+    const row = (k, w, v) => `<div class="bar-row"><span>${PLATFORMS[k].name}</span><div class="track"><div class="fill" style="width:${Math.max(w, 3).toFixed(0)}%;background:var(--fg);opacity:.72"></div></div><b class="num">${v}</b></div>`;
     return `<div class="bars-wrap">
       <div class="bars"><h4>💰 متوسط السعر لكل منصة</h4>${keys.map(k => row(k, sum[k].avgPrice / maxPrice * 100, money(sum[k].avgPrice))).join('')}</div>
       <div class="bars"><h4>⚖️ متوسط مؤشر القيمة (السعر + الجودة)</h4>${keys.map(k => row(k, sum[k].avgScore, `<bdi>${sum[k].avgScore.toFixed(0)}/100</bdi>`)).join('')}</div>
@@ -2647,7 +2689,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   function renderCart() {
     const keys = Object.keys(cart);
-    if (!keys.length) { $('cartBody').innerHTML = '<p class="muted">سلتك فاضية. اضغط «🛒 أضف للسلة» على أي منتج.</p>'; return; }
+    if (!keys.length) { $('cartBody').innerHTML = '<p class="muted">سلتك فاضية. اضغط «أضف للسلة» على أي منتج.</p>'; return; }
     const groups = {};
     keys.forEach(k => { (groups[cart[k].platform] = groups[cart[k].platform] || []).push(k); });
     let grand = 0;
@@ -2661,14 +2703,14 @@ table.dt { min-width: 0; font-size: .76rem; }
             <button type="button" data-cart-del="${esc(k)}" aria-label="احذف">🗑️</button></div></div>
           <span class="pr">${money((c.price + (c.ship || 0)) * c.qty)}${c.ship ? '<br><small>مع الشحن</small>' : ''}</span></div>`; }).join('');
       const links = groups[pk].map(k => esc(cart[k].url)).join('\n');
-      return `<article class="bk-card"><div class="bk-head" style="background:${pl.color};color:${pl.text}"><span>سلة ${pl.name}</span><small>${groups[pk].length} منتج</small></div>${rows}
+      return `<article class="bk-card"><div class="bk-head"><span>سلة ${pl.name}</span><small>${groups[pk].length} منتج</small></div>${rows}
         <div class="bk-total"><span>المجموع في ${pl.name}</span><b>${money(sub)}</b></div>
         <div class="cart-acts"><button type="button" class="btn-primary" data-open-store="${pk}">↗ كمّل الطلب في ${pl.name}</button>
           <button type="button" class="copy-btn" data-copy-store="${pk}">📋 انسخ الروابط</button></div></article>`;
     }).join('');
     $('cartBody').innerHTML = `<div class="bk-grid">${cards}</div>
       <div class="bk-total" style="border-radius:16px;margin-top:12px"><span>مجموع كل السلال</span><b>${money(grand)}</b></div>
-      <p class="bk-note">💡 المتاجر ما تسمح لأي موقع يضيف مباشرة لسلتها. لما تضغط «كمّل الطلب»، تنفتح لك صفحات المنتجات واحد واحد، وتضغط فيها Add to cart. وإذا المتصفح منع فتح أكثر من صفحة، استخدم «انسخ الروابط».</p>`;
+      <p class="bk-note">المتاجر ما تسمح لأي موقع يضيف مباشرة لسلتها. لما تضغط «كمّل الطلب»، تنفتح لك صفحات المنتجات واحد واحد، وتضغط فيها Add to cart. وإذا المتصفح منع فتح أكثر من صفحة، استخدم «انسخ الروابط».</p>`;
   }
   function openStore(pk) {
     const ks = Object.keys(cart).filter(k => cart[k].platform === pk);
@@ -2697,7 +2739,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice">✅<div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${sheinBarHtml()}`;
+      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${sheinBarHtml()}`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -2709,11 +2751,11 @@ table.dt { min-width: 0; font-size: .76rem; }
       return;
     }
     const sum = summarize(list);
-    const tabs = [['cards', `🛍️ جميع المنتجات (${ordered.length})`], ['compare', '📊 مقارنة المنصات'], ['table', '📋 جدول تفصيلي']];
+    const tabs = [['cards', `جميع المنتجات (${ordered.length})`], ['compare', 'مقارنة المنصات'], ['table', 'جدول تفصيلي']];
     const realList = list.filter(p => p.real);
-    if (!realList.length) html += `<div class="no-real">🔎 ما لقينا منتجات حقيقية لهالبحث في إيباي وعلي إكسبريس. جرّب كلمة ثانية، أو اكتب اسم المنتج بالإنجليزي.</div>`;
+    if (!realList.length) html += `<div class="no-real">ما لقينا منتجات حقيقية لهالبحث في إيباي وعلي إكسبريس. جرّب كلمة ثانية، أو اكتب اسم المنتج بالإنجليزي.</div>`;
     if (userSearches >= 2 && !store.get('qarin.rated', false) && !store.get('qarin.askDismissed', false))
-      html += `<div class="ask-rate">⭐ عجبك قارِن؟ قيّمه بـ10 ثواني وساعدنا نطوّره <span><button type="button" data-open-rate>قيّم الحين</button> <button type="button" data-dismiss-ask style="background:transparent;color:inherit">لاحقًا</button></span></div>`;
+      html += `<div class="ask-rate">عجبك قارِن؟ قيّمه بـ10 ثواني وساعدنا نطوّره <span><button type="button" data-open-rate>قيّم الحين</button> <button type="button" data-dismiss-ask style="background:transparent;color:inherit">لاحقًا</button></span></div>`;
     let favChanged = false;
     list.forEach(p => { const f = favs[pkey(p)]; if (f && f.last !== p.price) { f.last = p.price; favChanged = true; } });
     if (favChanged) store.set('qarin.favs', favs);
@@ -2737,8 +2779,8 @@ table.dt { min-width: 0; font-size: .76rem; }
   CATS.forEach(([, items]) => items.forEach(([ar, en]) => TR.set(normalize(ar), en)));
   let catOpen = 0;
   function renderCats() {
-    $('cats').innerHTML = `<b>🗂️ تصفّح الأقسام</b>
-      <div class="cat-tabs">${CATS.map(([n], i) => `<button type="button" data-cat="${i}" class="${i === catOpen ? 'on' : ''}">${n}</button>`).join('')}</div>
+    $('cats').innerHTML = `<b>تصفّح الأقسام</b>
+      <div class="cat-tabs">${CATS.map(([n], i) => `<button type="button" data-cat="${i}" class="${i === catOpen ? 'on' : ''}">${n.replace(EMO_LEAD, '')}</button>`).join('')}</div>
       <div class="cat-chips">${CATS[catOpen][1].map(([ar]) => `<button type="button" data-catq="${esc(ar)}">${esc(ar)}</button>`).join('')}</div>`;
   }
 
@@ -2913,18 +2955,18 @@ table.dt { min-width: 0; font-size: .76rem; }
     const pool = bs.filter(b => b.got === maxGot && b.got > 0);
     const cheap = pool.length ? pool.reduce((a, b) => (b.total < a.total ? b : a)) : null;
     const value = pool.length ? pool.reduce((a, b) => (b.avg > a.avg ? b : a)) : null;
-    let html = `<div class="section-title"><h2>🧺 أفضل سلة</h2><span>${queries.map(q => '«' + esc(q) + '»').join(' + ')}</span></div>`;
+    let html = `<div class="section-title"><h2>أفضل سلة</h2><span>${queries.map(q => '«' + esc(q) + '»').join(' + ')}</span></div>`;
     if (!maxGot) return html + '<div class="empty">ما لقينا منتجات لهالسلة. جرّب كلمات أبسط.</div>';
-    html += '<div class="notice">💡<div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف.</div></div>';
+    html += '<div class="notice"><div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف.</div></div>';
     return html + `<div class="bk-grid bsk">${bs.map(b => {
       const pl = PLATFORMS[b.k];
-      const tags = [b === cheap ? '💰 أرخص سلة' : '', b === value ? '⭐ أفضل قيمة' : ''].filter(Boolean);
-      return `<article class="bk-card${tags.length ? ' win' : ''}"><header style="background:${pl.color};color:${pl.text}"><b>${pl.name}</b>${tags.map(t => `<span class="bk-tag">${t}</span>`).join('')}</header>
+      const tags = [b === cheap ? 'أرخص سلة' : '', b === value ? 'أفضل قيمة' : ''].filter(Boolean);
+      return `<article class="bk-card${tags.length ? ' win' : ''}"><header><b>${dotI(b.k)}${pl.name}</b>${tags.map(t => `<span class="bk-tag">${t}</span>`).join('')}</header>
         <ol class="bk-items">${b.items.map(x => x.p
           ? `<li><img referrerpolicy="no-referrer" src="${x.p.image}" alt="" loading="lazy"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><a class="bk-t" href="${esc(x.p.url)}" target="_blank" rel="noopener noreferrer">${esc(x.p.title)}</a><div class="bk-m"><b>${money(tot(x.p))}</b>${x.p.unrated ? '' : ` · ⭐ <bdi>${ratingNum(x.p)}</bdi>`}</div></div></li>`
           : `<li class="miss"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><div class="bk-m">ما لقينا هذا المنتج هنا</div></div></li>`).join('')}</ol>
         <div class="bk-total"><span>المجموع (${b.got} من ${queries.length})</span><b>${money(b.total)}</b></div>
-        <div class="bk-acts"><button type="button" data-bk-cart="${b.k}">🛒 أضف السلة كلها</button><button type="button" data-bk-share="${b.k}">📤 شارك</button></div></article>`;
+        <div class="bk-acts"><button type="button" data-bk-cart="${b.k}">أضف السلة كلها</button><button type="button" data-bk-share="${b.k}">شارك</button></div></article>`;
     }).join('')}</div>`;
   }
   function basketToCart(k) {
@@ -3204,7 +3246,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     $('chips').innerHTML = SUGGESTIONS.map(s => `<button type="button" class="chip-btn" data-q="${esc(s)}">${esc(s)}</button>`).join('');
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
-    $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+    $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l.replace(EMO_LEAD, '')}</option>`).join('');
     const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
     const renderSources = () => { $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
     renderSources();

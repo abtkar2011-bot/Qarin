@@ -1,6 +1,8 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"تسوّق ↗": ["Shop ↗", "Acheter ↗", "Comprar ↗", "去购买 ↗", "खरीदें ↗", "خریدیں ↗", "Купить ↗", "Satın al ↗", "Beli ↗"],
+"ابحث عن منتج أو الصق رابطه": ["Search a product or paste its link", "Cherchez un produit ou collez son lien", "Busca un producto o pega su enlace", "搜索商品或粘贴链接", "उत्पाद खोजें या उसका लिंक पेस्ट करें", "پروڈکٹ تلاش کریں یا اس کا لنک پیسٹ کریں", "Найдите товар или вставьте ссылку", "Ürün arayın veya bağlantısını yapıştırın", "Cari produk atau tempel tautannya"],
 "🛍️ تبي تشوف خيارات أكثر في الأزياء؟": ["🛍️ Want more fashion options?", "🛍️ Envie de plus d’options mode ?", "🛍️ ¿Quieres más opciones de moda?", "🛍️ 想看更多时尚选择？", "🛍️ फ़ैशन के और विकल्प चाहिए?", "🛍️ فیشن کے مزید آپشن چاہییں؟", "🛍️ Хотите больше вариантов одежды?", "🛍️ Daha fazla moda seçeneği mi istiyorsunuz?", "🛍️ Mau lebih banyak pilihan fesyen?"],
 "نفس البحث في SHEIN ↗": ["Same search on SHEIN ↗", "Même recherche sur SHEIN ↗", "Misma búsqueda en SHEIN ↗", "在 SHEIN 上搜索同样内容 ↗", "SHEIN पर यही खोज ↗", "SHEIN پر یہی تلاش ↗", "Тот же поиск в SHEIN ↗", "SHEIN'de aynı arama ↗", "Pencarian sama di SHEIN ↗"],
 "وفوق": ["and up", "et plus", "o más", "及以上", "और ऊपर", "اور زیادہ", "и выше", "ve üzeri", "ke atas"],
