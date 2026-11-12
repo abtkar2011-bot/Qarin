@@ -1,6 +1,8 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"الوضع الداكن": ["Dark mode", "Mode sombre", "Modo oscuro", "深色模式", "डार्क मोड", "ڈارک موڈ", "Тёмная тема", "Koyu mod", "Mode gelap"],
+"الوضع الفاتح": ["Light mode", "Mode clair", "Modo claro", "浅色模式", "लाइट मोड", "لائٹ موڈ", "Светлая тема", "Açık mod", "Mode terang"],
 "تسوّق ↗": ["Shop ↗", "Acheter ↗", "Comprar ↗", "去购买 ↗", "खरीदें ↗", "خریدیں ↗", "Купить ↗", "Satın al ↗", "Beli ↗"],
 "ابحث عن منتج أو الصق رابطه": ["Search a product or paste its link", "Cherchez un produit ou collez son lien", "Busca un producto o pega su enlace", "搜索商品或粘贴链接", "उत्पाद खोजें या उसका लिंक पेस्ट करें", "پروڈکٹ تلاش کریں یا اس کا لنک پیسٹ کریں", "Найдите товар или вставьте ссылку", "Ürün arayın veya bağlantısını yapıştırın", "Cari produk atau tempel tautannya"],
 "🛍️ تبي تشوف خيارات أكثر في الأزياء؟": ["🛍️ Want more fashion options?", "🛍️ Envie de plus d’options mode ?", "🛍️ ¿Quieres más opciones de moda?", "🛍️ 想看更多时尚选择？", "🛍️ फ़ैशन के और विकल्प चाहिए?", "🛍️ فیشن کے مزید آپشن چاہییں؟", "🛍️ Хотите больше вариантов одежды?", "🛍️ Daha fazla moda seçeneği mi istiyorsunuz?", "🛍️ Mau lebih banyak pilihan fesyen?"],
