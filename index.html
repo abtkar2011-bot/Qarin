@@ -515,6 +515,8 @@ table.dt { min-width: 0; font-size: .76rem; }
 .pre-search .prio-bar { display: none; }
 .img-btn { flex: none; border: 0; background: transparent; color: var(--muted); border-radius: 50%; width: 44px; height: 44px; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .img-btn svg { width: 21px; height: 21px; }
+.mic-btn.on { background: var(--bad); color: #FFFFFF; animation: micPulse 1.2s ease-in-out infinite; }
+@keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(215, 0, 21, 0.35); } 50% { box-shadow: 0 0 0 7px rgba(215, 0, 21, 0); } }
 .tools-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .tools-row .tool-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; border-radius: 18px; text-align: start; min-width: 0; }
 .tools-row .tool-btn svg { width: 24px; height: 24px; margin-bottom: 4px; }
@@ -601,7 +603,9 @@ table.dt { min-width: 0; font-size: .76rem; }
   .dock button { background: transparent; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
   .search { padding: 4px; gap: 2px; }
   .search input { font-size: 1rem; padding: 9px 12px; }
-  .search .btn-primary, .img-btn { height: 42px; min-width: 42px; width: 42px; padding: 0; }
+  .search .btn-primary { height: 42px; min-width: 42px; width: 42px; padding: 0; }
+  .img-btn { height: 40px; min-width: 36px; width: 36px; padding: 0; }
+  .search input { padding-inline: 10px; }
   .hero p { font-size: 0.98rem; }
   .dock .rate-fab { display: none; }
   .dock.only-rate { display: none; }
@@ -720,6 +724,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       <form class="search" id="searchForm" role="search">
         <input type="search" id="q" autocomplete="off" aria-label="ابحث عن منتج"
                placeholder="ابحث عن منتج أو الصق رابطه">
+        <button type="button" class="img-btn mic-btn" id="micBtn" aria-label="ابحث بالصوت" title="ابحث بالصوت" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></svg></button>
         <button type="button" class="img-btn" id="imgBtn" aria-label="ابحث بصورة" title="ابحث بصورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></button>
         <input type="file" id="imgIn" accept="image/*" hidden>
         <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
@@ -3297,7 +3302,46 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'); (mq.addEventListener ? mq.addEventListener('change', paintThemeBtn) : mq.addListener(paintThemeBtn)); }
   }
 
+  // ================= البحث بالصوت =================
+  const SPEECH_LANG = { ar: 'ar-SA', en: 'en-US', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN', hi: 'hi-IN', ur: 'ur-PK', ru: 'ru-RU', tr: 'tr-TR', id: 'id-ID' };
+  let rec = null, recOn = false;
+  function initVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = $('micBtn');
+    if (!SR || !btn) return;
+    btn.hidden = false;
+    const q = $('q');
+    let heard = '', ph = '';
+    const stopUi = () => { recOn = false; btn.classList.remove('on'); btn.setAttribute('aria-pressed', 'false'); if (ph) q.setAttribute('placeholder', ph); };
+    btn.addEventListener('click', () => {
+      if (recOn && rec) { try { rec.stop(); } catch (e) { /* موقّف */ } return; }
+      rec = new SR();
+      rec.lang = SPEECH_LANG[LANG] || 'ar-SA';
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      heard = '';
+      rec.onresult = e => {
+        let txt = '';
+        for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+        heard = txt.trim();
+        q.value = heard;
+      };
+      rec.onerror = e => {
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('اسمح لقارِن يستخدم المايك من إعدادات المتصفح');
+        else if (e.error === 'no-speech') toast('ما سمعت شي، جرّب مرة ثانية');
+        else if (e.error !== 'aborted') toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية');
+      };
+      rec.onend = () => { stopUi(); if (heard) search(heard, false); };
+      try {
+        rec.start();
+        recOn = true; btn.classList.add('on'); btn.setAttribute('aria-pressed', 'true');
+        ph = q.getAttribute('placeholder'); q.value = ''; q.setAttribute('placeholder', 'تكلّم الحين...');
+      } catch (e) { stopUi(); toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية'); }
+    });
+  }
+
   function init() {
+    initVoice();
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache };
     $('heroChips').innerHTML = KEYS.map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('');
