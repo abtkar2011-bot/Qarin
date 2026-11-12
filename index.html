@@ -354,7 +354,10 @@ td.title { min-width: 220px; font-weight: 600; }
 td .bar { width: 80px; display: inline-block; vertical-align: middle; margin-inline-start: 6px; }
 td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; white-space: nowrap; }
 
-.footer { text-align: center; color: var(--muted); font-size: 0.8rem; line-height: 1.8; margin-top: 18px; }
+.footer { text-align: center; color: var(--muted); margin: 10px auto 0; max-width: 640px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
+.foot-links { font-size: 0.78rem; line-height: 1.9; }
+.foot-links a { white-space: nowrap; }
+.foot-note { margin: 0; font-size: 0.68rem; line-height: 1.7; opacity: 0.7; }
 
 /* ---------- أزرار البطاقة: المفضلة والمقارنة ---------- */
 .card-acts { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; z-index: 2; }
@@ -469,7 +472,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 .inst-bar .ib-x { flex: none; border: 0; background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; padding: 6px; }
 .btn-copy { display: inline-block; text-decoration: none; margin: 10px 0 0 6px; border: 0; border-radius: 999px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); cursor: pointer; }
 @keyframes ibIn { from { opacity: 0; transform: translate(-50%, 24px); } to { opacity: 1; transform: translate(-50%, 0); } }
-.footer .etsy-note { display: inline-block; margin-top: 6px; font-size: 0.72rem; opacity: 0.8; }
+.footer .etsy-note { font-size: 0.62rem; opacity: 0.55; }
 #installSteps ol { margin: 8px 0 0; padding-inline-start: 22px; line-height: 2; }
 
 /* ---------- السلة المتعددة ---------- */
@@ -546,6 +549,30 @@ table.dt { min-width: 0; font-size: .76rem; }
 .bk-m { font-size: .8rem; color: var(--muted); }
 .bk-m b { color: var(--fg); }
 .bk-items li.miss { opacity: .6; }
+.bk-items li > div { flex: 1; min-width: 0; }
+.bk-ops { display: flex; gap: 6px; flex: none; align-self: center; }
+.bk-ops button { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 999px; font: inherit; font-size: 0.76rem; font-weight: 700; cursor: pointer; padding: 5px 10px; line-height: 1.2; }
+.bk-ops .bk-x { width: 28px; height: 28px; padding: 0; display: grid; place-items: center; color: var(--muted); font-size: 0.8rem; }
+.bk-mine { display: inline-block; margin-inline-start: 6px; font-size: .68rem; font-weight: 700; color: var(--hot); }
+.bk-items li.removed { opacity: 1; }
+.bk-items li.removed .bk-m { color: var(--muted); }
+.bk-undo { border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; padding: 0 4px; }
+.bk-reset { border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; padding: 0 12px 10px; align-self: flex-start; }
+.modal.sheet .box { width: min(560px, 100%); }
+.sw-store { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 600; color: var(--muted); margin-inline-start: 6px; }
+.sw-store i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.sw-sort { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: var(--surface-2); margin: 4px 0 10px; }
+.sw-sort button { border: 0; background: transparent; color: var(--fg); border-radius: 9px; padding: 7px 4px; font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer; }
+.sw-sort button.on { background: var(--surface); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
+.sw-list { display: flex; flex-direction: column; gap: 8px; max-height: min(60vh, 520px); overflow-y: auto; }
+.sw-item { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: start; width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 14px; padding: 8px 10px; font: inherit; cursor: pointer; }
+.sw-item.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.sw-item img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--surface-2); }
+.sw-item .t { font-size: .84rem; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sw-item .m { font-size: .76rem; color: var(--muted); margin-top: 2px; }
+.sw-item .pr { font-weight: 700; white-space: nowrap; font-size: .92rem; }
+.sw-item .cur { display: block; font-size: .68rem; color: var(--accent-strong); font-weight: 700; text-align: end; }
+@media (max-width: 760px) { .modal.sheet { align-items: flex-end; padding: 0; } .modal.sheet .box { border-radius: 22px 22px 0 0; max-height: 86vh; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); } }
 .bsk .bk-total { border-top: 1px solid var(--line); }
 .bk-acts { display: flex; gap: 8px; padding: 0 12px 12px; }
 .bk-acts button { flex: 1; border-radius: 12px; padding: 8px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
@@ -764,11 +791,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     </section>
 
     <footer class="footer">
-      قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.<br>
-      الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.<br>
-      بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <b>بدون ما يزيد السعر عليك</b>.<br>
-      <a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a> · <a href="#" id="rateLink">قيّم قارِن</a><br>
-      <span dir="ltr" lang="en" class="etsy-note">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</span>
+      <nav class="foot-links"><a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a> · <a href="#" id="rateLink">قيّم قارِن</a></nav>
+      <p class="foot-note"><span>قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.</span> <span>الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.</span> <span>بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <span>بدون ما يزيد السعر عليك</span>.</span></p>
+      <p class="foot-note etsy-note" dir="ltr" lang="en">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
     </footer>
   </main>
 </div>
@@ -832,10 +857,17 @@ table.dt { min-width: 0; font-size: .76rem; }
   </div>
 </div>
 
+<div class="modal sheet" id="swapModal" role="dialog" aria-modal="true" aria-labelledby="swapTitle">
+  <div class="box">
+    <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
+    <h3 id="swapTitle">اختر بديل</h3>
+    <div id="swapBody"></div>
+  </div>
+</div>
 <div class="modal" id="cmpModal" role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
   <div class="box wide">
     <button type="button" class="x" data-close aria-label="إغلاق">✕</button>
-    <h3 id="cmpTitle">⚖️ مقارنة المنتجات</h3>
+    <h3 id="cmpTitle">مقارنة المنتجات</h3>
     <div class="cmp-scroll" id="cmpBody"></div>
   </div>
 </div>
@@ -2925,9 +2957,9 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   // ================= أفضل سلة: عدة منتجات، وأفضل سلة من كل متجر لحاله =================
   const BK_EX = ['مثلًا: سماعة', 'مثلًا: ساعة ذكية', 'مثلًا: مطحنة قهوة', 'مثلًا: حقيبة ظهر', 'مثلًا: كفر جوال', 'مثلًا: شاحن'];
-  const BK_MAX = 6;
+  const BK_MAX = 20;
   function basketRows(vals) {
-    $('basketInputs').innerHTML = vals.map((v, i) => `<div class="bb-row"><span class="bb-n">${i + 1}</span><input type="text" class="bb-in" enterkeyhint="search" value="${esc(v)}" placeholder="${BK_EX[i]}" aria-label="المنتج ${i + 1}">${i >= 3 ? `<button type="button" class="bb-del" data-bb-del="${i}" aria-label="احذف">✕</button>` : ''}</div>`).join('');
+    $('basketInputs').innerHTML = vals.map((v, i) => `<div class="bb-row"><span class="bb-n">${i + 1}</span><input type="text" class="bb-in" enterkeyhint="search" value="${esc(v)}" placeholder="${BK_EX[i % BK_EX.length]}" aria-label="المنتج ${i + 1}">${i >= 3 ? `<button type="button" class="bb-del" data-bb-del="${i}" aria-label="احذف">✕</button>` : ''}</div>`).join('');
     $('basketAdd').hidden = vals.length >= BK_MAX;
   }
   const basketVals = () => [...document.querySelectorAll('.bb-in')].map(i => i.value);
@@ -2952,15 +2984,20 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (queries.length < 2) { status.innerHTML = '<div class="status warn">اكتب منتجين على الأقل في خانات السلة.</div>'; return; }
     document.body.classList.remove('pre-search');
     const id = ++searchId;
-    state.mode = 'basket'; state.query = queries.join(' + '); state.basket = { queries, data: null }; state.loading = true;
+    state.mode = 'basket'; state.query = queries.join(' + '); state.basket = { queries, data: null, pick: {} }; state.loading = true;
     track('basket', state.query);
     status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن ${queries.length} منتجات في ${KEYS.length} متاجر...</b>${queries.map((q, i) =>
       `<div class="row" id="bk-${i}"><span class="spinner"></span><bdi>${esc(q)}</bdi></div>`).join('')}</div>`;
     $('results').innerHTML = skeletonHtml(6);
     const data = [];
-    await Promise.all(queries.map(async (q, i) => {
-      data[i] = await fetchAllFor(q);
-      const row = $('bk-' + i); if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span><bdi>${esc(q)}</bdi>`;
+    // نبحث 4 منتجات في نفس الوقت عشان ما نضغط على السيرفر لما تكون السلة كبيرة (لين 20 منتج)
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(4, queries.length) }, async () => {
+      while (next < queries.length) {
+        const i = next++, q = queries[i];
+        data[i] = await fetchAllFor(q);
+        const row = $('bk-' + i); if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span><bdi>${esc(q)}</bdi>`;
+      }
     }));
     if (id !== searchId) return;
     state.basket.data = data; state.loading = false;
@@ -2971,13 +3008,20 @@ table.dt { min-width: 0; font-size: .76rem; }
   function basketHtml() {
     const { queries, data } = state.basket;
     const w = PRIORITY[state.priority][1];
+    const pick = state.basket.pick || (state.basket.pick = {});
     const bs = KEYS.filter(k => state.platforms.has(k)).map(k => {
+      let custom = false;
       const items = queries.map((q, i) => {
-        const list = (data[i] || []).filter(p => p.platform === k && passFilters(p));
-        return { q, p: scoreProducts(list, w) };
+        const list = bkList(k, i);
+        const auto = scoreProducts(list, w);
+        const ov = pick[k + ':' + i];
+        if (ov === 'none' && auto) { custom = true; return { q, i, p: null, removed: true }; }
+        const mine = ov && ov !== 'none' ? list.find(x => pkey(x) === ov) : null;
+        if (mine) custom = true;
+        return { q, i, p: mine || auto, mine: !!mine };
       });
       const got = items.filter(x => x.p);
-      return { k, items, got: got.length, total: got.reduce((s, x) => s + tot(x.p), 0), avg: got.length ? got.reduce((s, x) => s + x.p.score, 0) / got.length : 0 };
+      return { k, items, custom, got: got.length, total: got.reduce((s, x) => s + tot(x.p), 0), avg: got.length ? got.reduce((s, x) => s + x.p.score, 0) / got.length : 0 };
     });
     state.basket.bs = bs;
     const maxGot = Math.max(0, ...bs.map(b => b.got));
@@ -2986,17 +3030,50 @@ table.dt { min-width: 0; font-size: .76rem; }
     const value = pool.length ? pool.reduce((a, b) => (b.avg > a.avg ? b : a)) : null;
     let html = `<div class="section-title"><h2>أفضل سلة</h2><span>${queries.map(q => '«' + esc(q) + '»').join(' + ')}</span></div>`;
     if (!maxGot) return html + '<div class="empty">ما لقينا منتجات لهالسلة. جرّب كلمات أبسط.</div>';
-    html += '<div class="notice"><div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف.</div></div>';
+    html += '<div class="notice"><div>من كل متجر اخترنا أفضل منتج لكل خانة حسب أولويتك، وجمعنا السعر مع الشحن إذا كان معروف. ما عجبك اختيار؟ اضغط «تغيير» واختر غيره، أو ✕ عشان تشيله من السلة.</div></div>';
     return html + `<div class="bk-grid bsk">${bs.map(b => {
       const pl = PLATFORMS[b.k];
       const tags = [b === cheap ? 'أرخص سلة' : '', b === value ? 'أفضل قيمة' : ''].filter(Boolean);
       return `<article class="bk-card${tags.length ? ' win' : ''}"><header><b>${dotI(b.k)}${pl.name}</b>${tags.map(t => `<span class="bk-tag">${t}</span>`).join('')}</header>
-        <ol class="bk-items">${b.items.map(x => x.p
-          ? `<li><img referrerpolicy="no-referrer" src="${x.p.image}" alt="" loading="lazy"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><a class="bk-t" href="${esc(x.p.url)}" target="_blank" rel="noopener noreferrer">${esc(x.p.title)}</a><div class="bk-m"><b>${money(tot(x.p))}</b>${x.p.unrated ? '' : ` · ⭐ <bdi>${ratingNum(x.p)}</bdi>`}</div></div></li>`
-          : `<li class="miss"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><div class="bk-m">ما لقينا هذا المنتج هنا</div></div></li>`).join('')}</ol>
+        <ol class="bk-items">${b.items.map(x => { const id = b.k + ':' + x.i; return x.p
+          ? `<li><img referrerpolicy="no-referrer" src="${x.p.image}" alt="" loading="lazy"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span>${x.mine ? '<span class="bk-mine">اختيارك</span>' : ''}<a class="bk-t" href="${esc(x.p.url)}" target="_blank" rel="noopener noreferrer">${esc(x.p.title)}</a><div class="bk-m"><b>${money(tot(x.p))}</b>${x.p.unrated ? '' : ` · ★ <bdi>${ratingNum(x.p)}</bdi>`}</div></div>
+            <div class="bk-ops">${bkList(b.k, x.i).length > 1 ? `<button type="button" data-bk-swap="${id}">تغيير</button>` : ''}<button type="button" class="bk-x" data-bk-del="${id}" aria-label="شيله من السلة" title="شيله من السلة">✕</button></div></li>`
+          : x.removed
+          ? `<li class="miss removed"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><div class="bk-m">شلته من السلة <button type="button" class="bk-undo" data-bk-undo="${id}">رجّعه</button></div></div></li>`
+          : `<li class="miss"><div><span class="bk-q"><bdi>${esc(x.q)}</bdi></span><div class="bk-m">ما لقينا هذا المنتج هنا</div></div></li>`; }).join('')}</ol>
+        ${b.custom ? `<button type="button" class="bk-reset" data-bk-reset="${b.k}">رجّع اختيار قارِن</button>` : ''}
         <div class="bk-total"><span>المجموع (${b.got} من ${queries.length})</span><b>${money(b.total)}</b></div>
         <div class="bk-acts"><button type="button" data-bk-cart="${b.k}">أضف السلة كلها</button><button type="button" data-bk-share="${b.k}">شارك</button></div></article>`;
     }).join('')}</div>`;
+  }
+  // المنتجات المتاحة لخانة معيّنة في متجر معيّن (بعد الفلاتر)
+  function bkList(k, i) {
+    const d = state.basket && state.basket.data && state.basket.data[i];
+    return (d || []).filter(p => p.platform === k && p.real && passFilters(p));
+  }
+  let swapCtx = null;
+  function openSwap(id, sort) {
+    const [k, si] = id.split(':'), i = +si;
+    const list = bkList(k, i); if (!list.length) return;
+    scoreProducts(list, PRIORITY[state.priority][1]);
+    sort = sort || (swapCtx && swapCtx.id === id ? swapCtx.sort : 'best');
+    swapCtx = { id, sort };
+    const by = { best: (a, b) => b.score - a.score, cheap: (a, b) => tot(a) - tot(b), rated: (a, b) => (b.adj || 0) - (a.adj || 0) }[sort];
+    const b = (state.basket.bs || []).find(x => x.k === k), cur = b && b.items[i] && b.items[i].p ? pkey(b.items[i].p) : '';
+    const rows = list.slice().sort(by).slice(0, 30);
+    $('swapTitle').innerHTML = `بديل «${esc(state.basket.queries[i])}» <small class="sw-store">${dotI(k)}${PLATFORMS[k].name}</small>`;
+    $('swapBody').innerHTML = `<div class="sw-sort" role="radiogroup">${[['best', 'الأفضل'], ['cheap', 'الأرخص'], ['rated', 'الأعلى تقييمًا']].map(([v, l]) =>
+      `<button type="button" role="radio" aria-checked="${v === sort}" class="${v === sort ? 'on' : ''}" data-sw-sort="${v}">${l}</button>`).join('')}</div>
+      <div class="sw-list">${rows.map(p => `<button type="button" class="sw-item${pkey(p) === cur ? ' on' : ''}" data-sw-pick="${esc(pkey(p))}"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">
+        <span><span class="t">${esc(p.title)}</span><span class="m">${p.unrated ? '' : `★ <bdi>${ratingNum(p)}</bdi>`}</span></span>
+        <span><span class="pr">${money(tot(p))}</span>${pkey(p) === cur ? '<span class="cur">✓ الحالي</span>' : ''}</span></button>`).join('')}</div>`;
+    openModal('swapModal');
+  }
+  function bkSet(id, v) {
+    if (!state.basket) return;
+    const pick = state.basket.pick || (state.basket.pick = {});
+    if (v == null) delete pick[id]; else pick[id] = v;
+    render();
   }
   function basketToCart(k) {
     const b = state.basket && state.basket.bs && state.basket.bs.find(x => x.k === k); if (!b) return;
@@ -3255,6 +3332,10 @@ table.dt { min-width: 0; font-size: .76rem; }
       $('foundPick').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
     });
     $('rateSend').addEventListener('click', sendRating);
+    $('swapBody').addEventListener('click', e => {
+      const so = e.target.closest('[data-sw-sort]'); if (so && swapCtx) { openSwap(swapCtx.id, so.dataset.swSort); return; }
+      const pk = e.target.closest('[data-sw-pick]'); if (pk && swapCtx) { bkSet(swapCtx.id, pk.dataset.swPick); closeModals(); toast('تم تغيير المنتج'); }
+    });
     document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) closeModals(); }));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
     $('favList').addEventListener('click', e => {
@@ -3267,6 +3348,10 @@ table.dt { min-width: 0; font-size: .76rem; }
       const ct = e.target.closest('[data-cart]'); if (ct) { toggleCart(ct.dataset.cart); return; }
       const sh = e.target.closest('[data-share]'); if (sh) { shareProduct(sh.dataset.share); return; }
       const bc = e.target.closest('[data-bk-cart]'); if (bc) { basketToCart(bc.dataset.bkCart); return; }
+      const bw = e.target.closest('[data-bk-swap]'); if (bw) { openSwap(bw.dataset.bkSwap, 'best'); return; }
+      const bd = e.target.closest('[data-bk-del]'); if (bd) { bkSet(bd.dataset.bkDel, 'none'); return; }
+      const bu = e.target.closest('[data-bk-undo]'); if (bu) { bkSet(bu.dataset.bkUndo, null); return; }
+      const br = e.target.closest('[data-bk-reset]'); if (br) { const k = br.dataset.bkReset; Object.keys(state.basket.pick || {}).forEach(id => { if (id.startsWith(k + ':')) delete state.basket.pick[id]; }); render(); return; }
       const bs = e.target.closest('[data-bk-share]'); if (bs) { shareBasket(bs.dataset.bkShare); return; }
       const f = e.target.closest('[data-fav]'); if (f) { toggleFav(f.dataset.fav); return; }
       const c = e.target.closest('[data-cmp]'); if (c) { toggleCmp(c.dataset.cmp); return; }
