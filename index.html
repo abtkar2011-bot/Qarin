@@ -59,7 +59,6 @@
   --tint-2: #F2F2F5;
   --tint-3: #F2F2F5;
   --tint-4: #F2F2F5;
-  --shein-bar: #1D1D1F;
   --scrim: rgba(0, 0, 0, 0.32);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.10);
@@ -76,7 +75,7 @@
     --good: #30D158; --bad: #FF453A; --notice-bg: #1C1C1E; --notice-fg: #D1D1D6; --notice-line: #38383A;
     --best-1: #1C1C1E; --best-2: #1C1C1E; --best-line: #2997FF; --reason-bg: #2C2C2E; --reason-fg: #D1D1D6;
     --skel-1: #1C1C1E; --skel-2: #2C2C2E; --star-off: #48484A; --star-on: #F5F5F7; --tint-1: #2C2C2E; --tint-2: #2C2C2E;
-    --tint-3: #2C2C2E; --tint-4: #2C2C2E; --shein-bar: #F5F5F7; --scrim: rgba(0, 0, 0, 0.6);
+    --tint-3: #2C2C2E; --tint-4: #2C2C2E; --scrim: rgba(0, 0, 0, 0.6);
     --shadow: none; --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.5); --glass: rgba(44, 44, 46, 0.82);
     --mark-filter: none; --logo-bg: #2C2C2E;
     color-scheme: dark;
@@ -88,7 +87,7 @@
   --good: #30D158; --bad: #FF453A; --notice-bg: #1C1C1E; --notice-fg: #D1D1D6; --notice-line: #38383A;
   --best-1: #1C1C1E; --best-2: #1C1C1E; --best-line: #2997FF; --reason-bg: #2C2C2E; --reason-fg: #D1D1D6;
   --skel-1: #1C1C1E; --skel-2: #2C2C2E; --star-off: #48484A; --star-on: #F5F5F7; --tint-1: #2C2C2E; --tint-2: #2C2C2E;
-  --tint-3: #2C2C2E; --tint-4: #2C2C2E; --shein-bar: #F5F5F7; --scrim: rgba(0, 0, 0, 0.6);
+  --tint-3: #2C2C2E; --tint-4: #2C2C2E; --scrim: rgba(0, 0, 0, 0.6);
   --shadow: none; --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.5); --glass: rgba(44, 44, 46, 0.82);
   --mark-filter: none; --logo-bg: #2C2C2E;
   color-scheme: dark;
@@ -147,9 +146,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .pr-dash { color: var(--muted); flex: none; }
 .pr-clear { align-self: flex-start; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 2px 0; }
 .pr-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
-.shein-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; font-size: 0.9rem; }
-.shein-bar a { display: inline-flex; align-items: center; gap: 6px; background: var(--fg); color: var(--surface); text-decoration: none; border-radius: 99px; padding: 6px 14px; font-weight: 700; font-size: 0.85rem; white-space: nowrap; }
-.shein-bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pr-note button { border: 0; background: var(--accent); color: #fff; border-radius: 99px; padding: 4px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .range-ends { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
 .range-ends b { color: var(--accent-strong); font-size: 0.88rem; }
@@ -2494,17 +2490,6 @@ table.dt { min-width: 0; font-size: .76rem; }
     const clr = $('priceClear'); if (clr) clr.hidden = state.priceMin == null && state.priceMax == null;
   }
   function clearPrice() { state.priceMin = state.priceMax = null; $('priceMin').value = ''; $('priceMax').value = ''; priceBox(); render(); }
-  // زر «نفس البحث في SHEIN» (بدون عمولة للحين؛ لما يوافق البرنامج نحوّله لرابط عمولة)
-  function sheinUrl(q) {
-    const en = (toEnglish(q) || q || '').trim();
-    if (!en) return '';
-    return (LANG === 'ar' ? 'https://ar.shein.com' : 'https://www.shein.com') + '/pdsearch/' + encodeURIComponent(en) + '/';
-  }
-  function sheinBarHtml() {
-    if (state.mode !== 'search' || !state.query) return '';
-    const u = sheinUrl(state.query);
-    return u ? `<div class="shein-bar"><span>تبي تشوف خيارات أكثر في الأزياء؟</span><a href="${esc(u)}" target="_blank" rel="noopener nofollow">نفس البحث في SHEIN ↗</a></div>` : '';
-  }
   function priceNoteHtml() {
     if (state.priceMin == null && state.priceMax == null) return '';
     let lo = state.priceMin, hi = state.priceMax;
@@ -2778,7 +2763,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${sheinBarHtml()}`;
+      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
