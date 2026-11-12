@@ -515,8 +515,8 @@ table.dt { min-width: 0; font-size: .76rem; }
 .pre-search .prio-bar { display: none; }
 .img-btn { flex: none; border: 0; background: transparent; color: var(--muted); border-radius: 50%; width: 44px; height: 44px; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .img-btn svg { width: 21px; height: 21px; }
-.mic-btn.on { background: var(--bad); color: #FFFFFF; animation: micPulse 1.2s ease-in-out infinite; }
-@keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(215, 0, 21, 0.35); } 50% { box-shadow: 0 0 0 7px rgba(215, 0, 21, 0); } }
+.mic-btn.on { background: transparent; color: var(--bad); animation: micPulse 1.1s ease-in-out infinite; }
+@keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 .tools-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .tools-row .tool-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; border-radius: 18px; text-align: start; min-width: 0; }
 .tools-row .tool-btn svg { width: 24px; height: 24px; margin-bottom: 4px; }
