@@ -1,6 +1,10 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"اكتب بالصوت": ["Type by voice", "Dicter", "Dictar por voz", "语音输入", "आवाज़ से लिखें", "آواز سے لکھیں", "Ввести голосом", "Sesle yaz", "Ketik dengan suara"],
+"من صورة": ["From a photo", "Depuis une photo", "Desde una foto", "从照片识别", "फ़ोटो से", "تصویر سے", "По фото", "Fotoğraftan", "Dari foto"],
+"جارِ التعرف على الصورة...": ["Recognizing the photo...", "Analyse de la photo...", "Reconociendo la foto...", "正在识别照片...", "फ़ोटो पहचान रहे हैं...", "تصویر پہچانی جا رہی ہے...", "Распознаём фото...", "Fotoğraf tanınıyor...", "Mengenali foto..."],
+"ما قدرنا نتعرف على المنتج في الصورة": ["Couldn't recognize the product in the photo", "Impossible de reconnaître le produit sur la photo", "No pudimos reconocer el producto en la foto", "无法识别照片中的商品", "फ़ोटो में उत्पाद नहीं पहचान पाए", "تصویر میں پروڈکٹ پہچان نہیں سکے", "Не удалось распознать товар на фото", "Fotoğraftaki ürün tanınamadı", "Produk di foto tidak dikenali"],
 "تغيير": ["Change", "Changer", "Cambiar", "更换", "बदलें", "تبدیل", "Заменить", "Değiştir", "Ganti"],
 "شيله من السلة": ["Remove from basket", "Retirer du panier", "Quitar de la cesta", "从篮子移除", "बास्केट से हटाएँ", "باسکٹ سے ہٹائیں", "Убрать из корзины", "Sepetten çıkar", "Hapus dari keranjang"],
 "شلته من السلة": ["Removed from basket", "Retiré du panier", "Quitado de la cesta", "已从篮子移除", "बास्केट से हटाया", "باسکٹ سے ہٹا دیا", "Убрано из корзины", "Sepetten çıkarıldı", "Dihapus dari keranjang"],

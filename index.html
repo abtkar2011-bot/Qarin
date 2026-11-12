@@ -531,11 +531,19 @@ table.dt { min-width: 0; font-size: .76rem; }
 .basket-box { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; margin-bottom: 14px; }
 .bb-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
 .bb-head span { color: var(--muted); font-size: .85rem; }
-.bb-inputs { display: grid; gap: 8px; }
-.bb-row { display: flex; align-items: center; gap: 8px; }
+.bb-inputs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.bb-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .bb-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--tint-1); color: var(--accent-strong); font-weight: 700; flex: none; }
-.bb-in { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; }
-.bb-del { border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px; }
+.bb-field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 2px; padding-inline-end: 4px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); transition: border-color .15s; }
+.bb-field:focus-within { border-color: var(--accent); }
+.bb-field.busy { opacity: .7; }
+.bb-in { flex: 1 1 0; width: 100%; min-width: 0; padding: 10px 12px; border: 0; border-radius: 12px; background: transparent; color: var(--fg); font: inherit; }
+.bb-in:focus, .bb-in:focus-visible { outline: none; }
+.bb-ic { flex: none; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.bb-ic svg { width: 19px; height: 19px; }
+.bb-ic.on { color: var(--bad); animation: micPulse 1.1s ease-in-out infinite; }
+.bb-del { flex: none; width: 30px; border: 0; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px 0; text-align: center; }
+.bb-sp { visibility: hidden; }
 .bb-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .bsk .bk-card.win { border: 2px solid var(--best-line); }
 .bk-card header { border-bottom: 1px solid var(--line); padding: 12px 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
@@ -765,6 +773,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     <section class="basket-box" id="basketBox" hidden>
       <div class="bb-head"><b>أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
       <div class="bb-inputs" id="basketInputs"></div>
+      <input type="file" id="bbImgIn" accept="image/*" hidden>
       <div class="bb-acts"><button type="button" class="tool-btn" id="basketAdd">أضف منتج</button><button type="button" class="btn-primary" id="basketGo">دوّر أفضل سلة</button></div>
     </section>
 
@@ -2959,7 +2968,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const BK_EX = ['مثلًا: سماعة', 'مثلًا: ساعة ذكية', 'مثلًا: مطحنة قهوة', 'مثلًا: حقيبة ظهر', 'مثلًا: كفر جوال', 'مثلًا: شاحن'];
   const BK_MAX = 20;
   function basketRows(vals) {
-    $('basketInputs').innerHTML = vals.map((v, i) => `<div class="bb-row"><span class="bb-n">${i + 1}</span><input type="text" class="bb-in" enterkeyhint="search" value="${esc(v)}" placeholder="${BK_EX[i % BK_EX.length]}" aria-label="المنتج ${i + 1}">${i >= 3 ? `<button type="button" class="bb-del" data-bb-del="${i}" aria-label="احذف">✕</button>` : ''}</div>`).join('');
+    $('basketInputs').innerHTML = vals.map((v, i) => `<div class="bb-row"><span class="bb-n">${i + 1}</span><div class="bb-field"><input type="text" class="bb-in" enterkeyhint="search" value="${esc(v)}" placeholder="${BK_EX[i % BK_EX.length]}" aria-label="المنتج ${i + 1}">${SR_API ? `<button type="button" class="bb-ic" data-bb-mic="${i}" aria-label="اكتب بالصوت" title="اكتب بالصوت"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></svg></button>` : ''}<button type="button" class="bb-ic" data-bb-img="${i}" aria-label="من صورة" title="من صورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></button></div>${i >= 3 ? `<button type="button" class="bb-del" data-bb-del="${i}" aria-label="احذف">✕</button>` : '<span class="bb-del bb-sp" aria-hidden="true"></span>'}</div>`).join('');
     $('basketAdd').hidden = vals.length >= BK_MAX;
   }
   const basketVals = () => [...document.querySelectorAll('.bb-in')].map(i => i.value);
@@ -3106,20 +3115,25 @@ table.dt { min-width: 0; font-size: .76rem; }
       img.src = u;
     });
   }
+  // يرسل الصورة للسيرفر ويرجع اسم المنتج اللي فيها
+  async function imageToQuery(file) {
+    const image = await shrinkImage(file, 512);
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+    const r = await fetch(EBAY_API + 'img', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ image }), signal: ctl.signal });
+    clearTimeout(t);
+    const d = await r.json();
+    if (!d || !d.query) throw new Error((d && d.error) || 'no query');
+    track('image', d.query);
+    return d.query;
+  }
   async function imageSearch(file) {
     if (!file) return;
     const status = $('status');
     status.innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
     try {
-      const image = await shrinkImage(file, 512);
-      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
-      const r = await fetch(EBAY_API + 'img', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ image }), signal: ctl.signal });
-      clearTimeout(t);
-      const d = await r.json();
-      if (!d || !d.query) throw new Error((d && d.error) || 'no query');
-      track('image', d.query);
-      toast('📷 ' + d.query);
-      search(d.query, false);
+      const q = await imageToQuery(file);
+      toast('📷 ' + q);
+      search(q, false);
     } catch (e) {
       status.innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
     }
@@ -3389,40 +3403,35 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   // ================= البحث بالصوت =================
   const SPEECH_LANG = { ar: 'ar-SA', en: 'en-US', fr: 'fr-FR', es: 'es-ES', zh: 'zh-CN', hi: 'hi-IN', ur: 'ur-PK', ru: 'ru-RU', tr: 'tr-TR', id: 'id-ID' };
-  let rec = null, recOn = false;
+  const SR_API = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null, recOn = false, recStop = null;
+  // يسمع ويكتب في الخانة المطلوبة؛ onFinal ينادى بالنص لما يخلص
+  function voiceInto(btn, input, onFinal) {
+    if (!SR_API) return;
+    if (recOn && rec) { const same = rec.__btn === btn; try { rec.stop(); } catch (e) { /* موقّف */ } if (same) return; if (recStop) recStop(); }
+    const r = new SR_API(); rec = r; r.__btn = btn;
+    r.lang = SPEECH_LANG[LANG] || 'ar-SA'; r.interimResults = true; r.maxAlternatives = 1;
+    let heard = '';
+    const ph = input.getAttribute('placeholder'), old = input.value;
+    const stopUi = () => { if (rec === r) { recOn = false; recStop = null; } btn.classList.remove('on'); btn.setAttribute('aria-pressed', 'false'); input.setAttribute('placeholder', ph); if (!heard && !input.value) input.value = old; };
+    r.onresult = e => { let txt = ''; for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript; heard = txt.trim(); input.value = heard; };
+    r.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('اسمح لقارِن يستخدم المايك من إعدادات المتصفح');
+      else if (e.error === 'no-speech') toast('ما سمعت شي، جرّب مرة ثانية');
+      else if (e.error !== 'aborted') toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية');
+    };
+    r.onend = () => { stopUi(); if (heard && onFinal) onFinal(heard); };
+    try {
+      r.start(); recOn = true; recStop = stopUi;
+      btn.classList.add('on'); btn.setAttribute('aria-pressed', 'true');
+      input.value = ''; input.setAttribute('placeholder', 'تكلّم الحين...');
+    } catch (e) { stopUi(); toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية'); }
+  }
   function initVoice() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const btn = $('micBtn');
-    if (!SR || !btn) return;
+    if (!SR_API || !btn) return;
     btn.hidden = false;
-    const q = $('q');
-    let heard = '', ph = '';
-    const stopUi = () => { recOn = false; btn.classList.remove('on'); btn.setAttribute('aria-pressed', 'false'); if (ph) q.setAttribute('placeholder', ph); };
-    btn.addEventListener('click', () => {
-      if (recOn && rec) { try { rec.stop(); } catch (e) { /* موقّف */ } return; }
-      rec = new SR();
-      rec.lang = SPEECH_LANG[LANG] || 'ar-SA';
-      rec.interimResults = true;
-      rec.maxAlternatives = 1;
-      heard = '';
-      rec.onresult = e => {
-        let txt = '';
-        for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
-        heard = txt.trim();
-        q.value = heard;
-      };
-      rec.onerror = e => {
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('اسمح لقارِن يستخدم المايك من إعدادات المتصفح');
-        else if (e.error === 'no-speech') toast('ما سمعت شي، جرّب مرة ثانية');
-        else if (e.error !== 'aborted') toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية');
-      };
-      rec.onend = () => { stopUi(); if (heard) search(heard, false); };
-      try {
-        rec.start();
-        recOn = true; btn.classList.add('on'); btn.setAttribute('aria-pressed', 'true');
-        ph = q.getAttribute('placeholder'); q.value = ''; q.setAttribute('placeholder', 'تكلّم الحين...');
-      } catch (e) { stopUi(); toast('البحث بالصوت ما اشتغل، جرّب مرة ثانية'); }
-    });
+    btn.addEventListener('click', () => voiceInto(btn, $('q'), q => search(q, false)));
   }
 
   function init() {
@@ -3454,6 +3463,22 @@ table.dt { min-width: 0; font-size: .76rem; }
       if (open) { if (!$('basketInputs').children.length) basketRows(['', '', '']); const f = document.querySelector('.bb-in'); if (f) f.focus(); }
     });
     $('basketAdd').addEventListener('click', () => { const v = basketVals(); if (v.length < BK_MAX) { basketRows([...v, '']); const all = document.querySelectorAll('.bb-in'); all[all.length - 1].focus(); } });
+    let bbImgRow = -1;
+    $('basketInputs').addEventListener('click', e => {
+      const m = e.target.closest('[data-bb-mic]');
+      if (m) { const inp = m.parentElement.querySelector('.bb-in'); voiceInto(m, inp, () => { const nx = [...document.querySelectorAll('.bb-in')].find(x => !x.value.trim()); if (nx) nx.focus(); }); return; }
+      const im = e.target.closest('[data-bb-img]');
+      if (im) { bbImgRow = +im.dataset.bbImg; $('bbImgIn').click(); return; }
+    });
+    $('bbImgIn').addEventListener('change', async e => {
+      const f = e.target.files && e.target.files[0]; e.target.value = '';
+      const inp = document.querySelectorAll('.bb-in')[bbImgRow]; if (!f || !inp) return;
+      const ph = inp.getAttribute('placeholder'), field = inp.parentElement;
+      field.classList.add('busy'); inp.value = ''; inp.setAttribute('placeholder', 'جارِ التعرف على الصورة...');
+      try { inp.value = await imageToQuery(f); }
+      catch (err) { toast('ما قدرنا نتعرف على المنتج في الصورة'); }
+      field.classList.remove('busy'); inp.setAttribute('placeholder', ph);
+    });
     $('basketInputs').addEventListener('click', e => { const d = e.target.closest('[data-bb-del]'); if (d) { const v = basketVals(); v.splice(+d.dataset.bbDel, 1); basketRows(v); } });
     $('basketInputs').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList.contains('bb-in')) { e.preventDefault(); runBasket(basketVals()); } });
     $('basketGo').addEventListener('click', () => runBasket(basketVals()));
