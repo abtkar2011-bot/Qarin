@@ -105,7 +105,7 @@ a { color: inherit; }
   padding-block: 20px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 22px; align-items: start;
+  display: grid; grid-template-columns: 244px minmax(0, 1fr); gap: 20px; align-items: start;
 }
 .main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 
@@ -113,35 +113,37 @@ a { color: inherit; }
 .sidebar {
   position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 16px; display: flex; flex-direction: column; gap: 14px;
-  max-height: calc(100vh - 32px); overflow-y: auto;
+  padding: 14px; display: flex; flex-direction: column; gap: 12px;
+  max-height: calc(100vh - 32px); overflow-y: auto; scrollbar-width: thin;
 }
-.side-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px dashed var(--line); }
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand .logo { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 22px; background: var(--logo-bg); }
-.brand .logo img { width: 27px; height: auto; display: block; }
+.brand .logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 22px; background: var(--logo-bg); }
+.brand .logo img { width: 23px; height: auto; display: block; }
 .h1-mark { height: .8em; width: auto; vertical-align: -0.06em; margin-inline-start: .12em; filter: var(--mark-filter); }
-.brand b { display: block; font-size: 1.15rem; font-weight: 700; }
-.brand small { display: block; font-size: 0.8rem; color: var(--muted); }
+.brand b { display: block; font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
+.brand small { display: block; font-size: 0.72rem; color: var(--muted); }
 .icon-btn { display: none; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; }
-.side-sec { display: flex; flex-direction: column; gap: 8px; }
-.side-sec h3 { margin: 0; font-size: 0.95rem; font-weight: 700; }
-.checks { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.side-sec { display: flex; flex-direction: column; gap: 6px; }
+.side-sec h3 { margin: 0; font-size: 0.88rem; font-weight: 700; }
+.side-sec .field + .field, .side-sec .field + .switch, .side-sec .switch + .field { margin-top: 4px; }
+.checks { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
 .check {
-  display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line);
-  border-radius: 12px; cursor: pointer; font-size: 0.9rem; font-weight: 600; background: var(--surface);
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 0;
+  border-radius: 0; cursor: pointer; font-size: 0.86rem; font-weight: 600; background: var(--surface);
 }
+.check + .check { border-top: 1px solid var(--line); }
 .check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
 .check .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px var(--line); }
 select {
-  width: 100%; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2);
+  width: 100%; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2);
 }
-.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.88rem; }
+.field { display: flex; flex-direction: column; gap: 2px; font-size: 0.84rem; }
 .field > span { display: flex; justify-content: space-between; color: var(--muted); }
 .field > span b { color: var(--fg); }
 input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .pr-row { display: flex; align-items: center; gap: 8px; }
-.pr-in { flex: 1; min-width: 0; width: 100%; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; font-weight: 700; text-align: center; }
+.pr-in { flex: 1; min-width: 0; width: 100%; padding: 7px 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; font-weight: 700; text-align: center; }
 .pr-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .pr-dash { color: var(--muted); flex: none; }
 .pr-clear { align-self: flex-start; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 2px 0; }
@@ -149,7 +151,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .pr-note button { border: 0; background: var(--accent); color: #fff; border-radius: 99px; padding: 4px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .range-ends { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
 .range-ends b { color: var(--accent-strong); font-size: 0.88rem; }
-.switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; }
+.switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.84rem; }
 .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .switch .track { width: 40px; height: 22px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); position: relative; flex: none; transition: background 0.15s; }
 .switch .track::after { content: ""; position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform 0.15s, background 0.15s; }
@@ -157,6 +159,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .switch input:checked + .track::after { transform: translateX(-18px); background: #fff; }
 .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
 .rate-box { background: var(--surface-2); border: 0; border-radius: 14px; padding: 10px 12px; font-size: 0.86rem; line-height: 1.9; }
+.side-fx { padding-top: 10px; border-top: 1px solid var(--line); }
+.side-fx .rate-box { background: transparent; padding: 0; font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+.side-fx .rate-box b { color: var(--fg); }
 .rate-box small { color: var(--muted); display: block; line-height: 1.5; }
 .src-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
 .src-row:last-child { border-bottom: 0; }
@@ -721,23 +726,9 @@ table.dt { min-width: 0; font-size: .76rem; }
       </label>
     </section>
 
-    <section class="side-sec">
-      <h3>أولوية التوصية</h3>
-      <div class="field">
-        <input type="range" id="priority" min="0" max="4" step="1" value="2" aria-label="أولوية التوصية بين السعر والجودة">
-        <div class="range-ends"><span>السعر أولًا</span><b id="priorityVal">متوازن</b><span>الجودة أولًا</span></div>
-      </div>
-    </section>
-
-    <section class="side-sec">
+    <section class="side-sec side-fx">
       <h3>سعر الصرف</h3>
       <div class="rate-box" id="rateBox"></div>
-    </section>
-
-    <section class="side-sec">
-      <h3>مصادر البيانات</h3>
-      <div id="sources"></div>
-      <p class="hint">كل المتاجر هنا تعطينا بياناتها رسميًا عن طريق الـAPI أو ملفات المنتجات.</p>
     </section>
   </aside>
   <div class="scrim" id="scrim"></div>
@@ -2547,9 +2538,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     const box = $('rateBox');
     if (!box) return;
     const k = state.currency, c = CURRENCIES[k], r = RATES[k];
-    if (k === 'USD') { box.innerHTML = 'الأسعار بالدولار الأمريكي، مثل ما تعطيها المتاجر.<small>غيّر «عملة العرض» فوق عشان تشوفها بعملتك.</small>'; return; }
+    if (k === 'USD') { box.innerHTML = 'الأسعار بالدولار الأمريكي، مثل ما تعطيها المتاجر.'; box.title = ''; return; }
     const note = c.peg || (fxDate ? `سعر السوق اليوم (${esc(fxDate)}). يتغيّر كل يوم.` : 'سعر تقريبي، والسعر الفعلي يتغيّر كل يوم.');
-    box.innerHTML = `1 دولار أمريكي = <b class="num"><bdi>${fmt(r, 4)}</bdi></b> ${c.symbol}<br>1 ${c.name} = <b class="num"><bdi>${fmt(1 / r, 4)}</bdi></b> دولار<small>${note}</small>`;
+    box.innerHTML = `1 دولار أمريكي = <b class="num"><bdi>${fmt(r, 4)}</bdi></b> ${c.symbol}`;
+    box.title = note;
   }
   // سعر الدينار الكويتي واليورو اليوم (خدمة مجانية بدون مفتاح). لو ما اشتغلت نستخدم السعر التقريبي
   fetch('https://open.er-api.com/v6/latest/USD').then(r => r.json()).then(d => {
@@ -2893,7 +2885,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   function setPrio(i) {
     state.priority = i;
-    $('priority').value = i; $('priorityVal').textContent = PRIORITY[i][0];
+    if ($('priority')) { $('priority').value = i; $('priorityVal').textContent = PRIORITY[i][0]; }
     document.querySelectorAll('[data-prio]').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.prio === i)));
     render();
   }
@@ -3443,7 +3435,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
     $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l.replace(EMO_LEAD, '')}</option>`).join('');
     const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
-    const renderSources = () => { $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
+    const renderSources = () => { if (!$('sources')) return; $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
     renderSources();
     aliMeta().then(m => {
       if (m) {
@@ -3508,7 +3500,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     $('priceClear').addEventListener('click', clearPrice);
     $('limit').addEventListener('input', e => { $('limitVal').textContent = e.target.value; });
     $('limit').addEventListener('input', e => { state.limit = +e.target.value; render(); });
-    $('priority').addEventListener('input', e => setPrio(+e.target.value));
+    if ($('priority')) $('priority').addEventListener('input', e => setPrio(+e.target.value));
     document.querySelectorAll('[data-prio]').forEach(b => b.addEventListener('click', () => setPrio(+b.dataset.prio)));
 
     $('results').addEventListener('click', e => {
