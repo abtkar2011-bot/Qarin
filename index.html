@@ -478,6 +478,40 @@ table.dt { min-width: 0; font-size: .76rem; }
 .btn-copy { display: inline-block; text-decoration: none; margin: 10px 0 0 6px; border: 0; border-radius: 999px; padding: 10px 18px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); cursor: pointer; }
 @keyframes ibIn { from { opacity: 0; transform: translate(-50%, 24px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .footer .etsy-note { font-size: 0.62rem; opacity: 0.55; }
+.foot-legal { display: flex; flex-direction: column; gap: 6px; }
+.pre-search .foot-legal { display: none; }
+#status:empty, #results:empty { display: none; }
+.side-links { font-size: 0.74rem; line-height: 1.9; color: var(--muted); text-align: center; padding-top: 8px; border-top: 1px solid var(--line); }
+.side-links a { color: var(--muted); text-decoration: none; font-weight: 600; white-space: nowrap; }
+.side-links a:hover { color: var(--fg); text-decoration: underline; }
+.dock .rate-fab, .dock.only-rate { display: none; }
+@media (min-width: 921px) {
+  .foot-links { display: none; }
+  .pre-search .footer { display: none; }
+  /* الآيباد والكمبيوتر: عناصر أكبر تعبّي الشاشة */
+  .hero { padding-top: 26px; }
+  .hero h1 { font-size: 3.6rem; }
+  .hero p { font-size: 1.3rem; margin-bottom: 10px; }
+  .search { padding: 7px; }
+  .search input { font-size: 1.15rem; padding: 13px 18px; }
+  .search .btn-primary { height: 52px; min-width: 52px; padding: 0 26px; font-size: 1.08rem; }
+  .img-btn { width: 50px; height: 50px; }
+  .img-btn svg { width: 24px; height: 24px; }
+  .src-line { font-size: 0.95rem; }
+  .tools-row { gap: 14px; }
+  .tools-row .tool-btn { padding: 24px 24px 22px; border-radius: 22px; gap: 5px; }
+  .tools-row .tool-btn svg { width: 38px; height: 38px; margin-bottom: 8px; }
+  .tools-row .tool-btn span { font-size: 1.25rem; }
+  .tools-row .tool-btn small { font-size: 0.95rem; }
+  .follow { border-radius: 22px; }
+  .follow-list a { padding: 20px 22px; font-size: 1.1rem; gap: 14px; }
+  .follow-list a svg { width: 28px; height: 28px; }
+  .mini-sel select { font-size: 0.95rem; padding: 9px 14px 9px 30px; }
+  html[dir="ltr"] .mini-sel select { padding: 9px 30px 9px 14px; }
+  .theme-btn { width: 44px; height: 44px; }
+  .theme-btn svg { width: 22px; height: 22px; }
+  .pre-search .main { gap: 22px; }
+}
 #installSteps ol { margin: 8px 0 0; padding-inline-start: 22px; line-height: 2; }
 
 /* ---------- السلة المتعددة ---------- */
@@ -730,6 +764,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       <h3>سعر الصرف</h3>
       <div class="rate-box" id="rateBox"></div>
     </section>
+    <nav class="side-links"><a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" class="rate-link">قيّم قارِن</a></nav>
   </aside>
   <div class="scrim" id="scrim"></div>
 
@@ -791,9 +826,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     </section>
 
     <footer class="footer">
-      <nav class="foot-links"><a href="coupons.html">الكوبونات</a> · <a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" id="installLink">ثبّت التطبيق</a> · <a href="https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F" target="_blank" rel="noopener noreferrer">قناة الواتساب</a> · <a href="https://www.instagram.com/qarin_app/" target="_blank" rel="noopener noreferrer">انستقرام</a> · <a href="#" id="rateLink">قيّم قارِن</a></nav>
-      <p class="foot-note"><span>قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.</span> <span>الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.</span> <span>بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <span>بدون ما يزيد السعر عليك</span>.</span></p>
-      <p class="foot-note etsy-note" dir="ltr" lang="en">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
+      <nav class="foot-links"><a href="searches.html">أشهر المنتجات</a> · <a href="about.html">من نحن</a> · <a href="privacy.html">الخصوصية</a> · <a href="stats.html">الإحصائيات</a> · <a href="#" class="rate-link">قيّم قارِن</a></nav>
+      <div class="foot-legal"><p class="foot-note"><span>قارِن أداة مقارنة مستقلة ولا ترتبط رسميًا بعلي إكسبريس أو إيباي أو إتسي.</span> <span>الأسعار تتحدّث من المتاجر مباشرة، والسعر النهائي في المتجر قد يختلف بسبب الشحن والضرائب.</span> <span>بعض روابط المتاجر روابط تسويق بالعمولة: يعني ممكن «قارِن» ياخذ عمولة صغيرة من المتجر، <span>بدون ما يزيد السعر عليك</span>.</span></p>
+      <p class="foot-note etsy-note" dir="ltr" lang="en">The term 'Etsy' is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p></div>
     </footer>
   </main>
 </div>
@@ -3313,8 +3348,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     });
     if (store.get('qarin.rated', false)) $('rateFab').textContent = '✓ شكرًا لتقييمك';
     $('rateFab').addEventListener('click', () => { $('rateMsg').textContent = ''; openModal('rateModal'); });
-    $('installLink').addEventListener('click', e => { e.preventDefault(); openInstall(); });
-    $('rateLink').addEventListener('click', e => { e.preventDefault(); $('rateMsg').textContent = ''; openModal('rateModal'); });
+    document.querySelectorAll('.rate-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); $('rateMsg').textContent = ''; openModal('rateModal'); }));
     $('installHero').addEventListener('click', e => { e.preventDefault(); openInstall(); });
     if (isStandalone()) $('installHero').hidden = true;
     $('instBarGo').addEventListener('click', openInstall);
