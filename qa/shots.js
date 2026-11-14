@@ -15,7 +15,7 @@ const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
     await p.waitForTimeout(3500);
     const r = await p.evaluate(() => ({ status: document.getElementById('status').innerText.replace(/\s+/g, ' '), stores: [...document.querySelectorAll('#panel-cards .pcard .pstore span')].map(e => e.textContent) }));
     log.push(`${q}: ${r.status} | ${JSON.stringify(r.stores.reduce((a, s) => (a[s] = (a[s] || 0) + 1, a), {}))}`);
-    await p.evaluate(() => { const g = document.querySelector('#panel-cards'); if (g) window.scrollTo(0, g.getBoundingClientRect().top + scrollY - 10); });
+    await p.evaluate(() => { const c = [...document.querySelectorAll('#panel-cards .pcard')].find(x => /V Perfumes|DermaZone/.test(x.querySelector('.pstore span').textContent)) || document.querySelector('#panel-cards'); if (c) window.scrollTo(0, c.getBoundingClientRect().top + scrollY - 40); });
     await p.waitForTimeout(2500);
     await p.screenshot({ path: path.join(OUT, name + '.png') });
     await ctx.close();
