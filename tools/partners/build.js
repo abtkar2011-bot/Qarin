@@ -1,7 +1,8 @@
-// يبني ملفات منتجات المتاجر الشريكة (Admitad) لقارِن: V Perfumes (عُمان) و DermaZone.
+// يبني ملفات منتجات المتاجر الشريكة لقارِن: V Perfumes (عُمان) و DermaZone (Admitad)،
+// ومحامص القهوة العمانية: Copper Roastery و بن القصاب و Spirit Hub (روابط مباشرة).
 // node tools/partners/build.js <out-dir>
-// الناتج: <out>/vperfumes.json و <out>/dermazone.json بشكل مضغوط:
-//   { updated, cur, items: [[title, price, image, url, tags], ...], brands: [...] }
+// الناتج: <out>/<store>.json بشكل مضغوط:
+//   { updated, cur, items: [[title, price, image, url, tags, original?, rating?, reviews?], ...], brands: [...] }
 const fs = require('fs'), path = require('path');
 const OUT = process.argv[2] || 'partners';
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/about.html)';
@@ -99,14 +100,107 @@ async function dermazone() {
     items: all.map(x => [x.t, x.p, x.i, x.u, (x.b + ' | ' + x.ty + ' | ' + x.tags).toLowerCase()]) };
 }
 
-module.exports = { parseVListing, parseShopify };
+// ---------- محامص القهوة العمانية ----------
+const ent = v => fixText(String(v || '').replace(/&#(\d+);/g, (m, n) => String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCharCode(parseInt(n, 16)))
+  .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#039;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<[^>]+>/g, ' '));
+const pack = (x, extra) => [x.t, x.p, x.i, x.u, x.tags.toLowerCase(), x.o || 0, x.r || 0, x.n || 0];
+
+// Copper Roastery (مسقط): ووكومرس — واجهة المتجر العامة /wp-json/wc/store/v1/products
+function parseWoo(list) {
+  const out = [];
+  for (const p of list || []) {
+    const cats = (p.categories || []).map(c => ent(c.name));
+    if (!p.is_in_stock || cats.some(c => /cafe beverages/i.test(c))) continue;  // مشروبات الكوفي (داخل المقهى) مو للشحن
+    const pr = p.prices || {}, mu = Math.pow(10, pr.currency_minor_unit ?? 3);
+    const price = (+pr.price || +(pr.price_range && pr.price_range.min_amount) || 0) / mu, reg = (+pr.regular_price || 0) / mu;
+    if (!(price > 0) || !p.permalink) continue;
+    const img = p.images && p.images[0] ? (p.images[0].thumbnail || p.images[0].src) : '';
+    out.push({ t: ent(p.name), p: Math.round(price * 1000) / 1000, o: reg > price * 1.02 ? Math.round(reg * 1000) / 1000 : 0, i: img, u: p.permalink,
+      r: +p.average_rating > 0 && p.review_count > 0 ? +p.average_rating : 0, n: p.review_count || 0,
+      tags: ['copper roastery', ...cats, ...(p.tags || []).map(t => ent(t.name))].join(' | ') });
+  }
+  return out;
+}
+async function copper() {
+  const B = 'https://copperroastery.com', all = [];
+  for (let page = 1; page <= 10; page++) {
+    const txt = await get(`${B}/wp-json/wc/store/v1/products?per_page=100&page=${page}`);
+    let d = null; try { d = JSON.parse(txt); } catch (e) { /* */ }
+    if (!Array.isArray(d) || !d.length) break;
+    all.push(...parseWoo(d)); console.log('copper page', page, all.length);
+    if (d.length < 100) break;
+    await sleep(800);
+  }
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+}
+
+// بن القصاب (مسقط): أودو — صفحة المتجر وصفحات الأقسام (القسم يصير وسم للمنتج)
+const BQ_CATS = { 'omani-coffee-1': 'omani coffee | arabic coffee | قهوة عمانية', 'turkish-coffee-6': 'turkish coffee | قهوة تركية', 'espresso-and-filter-coffee-2': 'specialty coffee beans | قهوة مختصة',
+  'espresso-and-filter-coffee-brewing-classic-coffee-8': 'filter coffee | classic | قهوة مقطرة', 'espresso-and-filter-coffee-brewing-fruit-coffee-9': 'filter coffee | fruity | قهوة مقطرة',
+  'espresso-and-filter-coffee-espresso-classic-coffee-10': 'espresso | classic | اسبريسو', 'espresso-and-filter-coffee-espresso-fruit-coffee-11': 'espresso | fruity | اسبريسو',
+  'drip-boxes-5': 'drip coffee bags | قهوة مقطرة | دريب', 'gift-boxes-4': 'coffee gift box | بوكس هدية', 'offers-7': 'offers' };
+function parseOdoo(html, base) {
+  const out = [];
+  for (const c of String(html || '').match(/<form[^>]*class="[^"]*oe_product_cart[^"]*"[\s\S]*?<\/form>/g) || []) {
+    const name = c.match(/itemprop="name"[^>]*>([\s\S]*?)<\/a>/) || c.match(/o_wsale_products_item_title[\s\S]*?<a[^>]*>([\s\S]*?)<\/a>/);
+    const prices = [...c.matchAll(/oe_currency_value">([^<]+)</g)].map(m => +m[1].replace(/,/g, '')).filter(n => n > 0);
+    const href = c.match(/href="(\/shop\/[^"#?]+)"/), img = c.match(/<img[^>]+src="([^"]+)"/);
+    if (!name || !prices.length || !href) continue;
+    const price = Math.min(...prices), orig = Math.max(...prices);
+    out.push({ t: ent(name[1]), p: price, o: orig > price * 1.02 ? orig : 0, u: base + encodeURI(decodeURI(href[1])), i: img ? (img[1].startsWith('http') ? img[1] : base + img[1]) : '', tags: 'bun al qassab | بن القصاب | coffee | قهوة' });
+  }
+  return out;
+}
+async function bunalqassab() {
+  const B = 'https://bunalqassab.com', items = new Map();
+  for (const c of [''].concat(Object.keys(BQ_CATS))) {
+    const html = await get(B + (c ? '/shop/category/' + c : '/shop') + '?ppg=200');
+    for (const it of parseOdoo(html, B)) { const x = items.get(it.u) || (items.set(it.u, it), it); if (c) x.tags += ' | ' + BQ_CATS[c]; }
+    console.log('bunalqassab', c || 'all', items.size);
+    await sleep(700);
+  }
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: [...items.values()].map(pack) };
+}
+
+// Spirit Hub Cafe (مسقط): صفحات المنتجات فيها JSON-LD (الاسم، السعر، التوفر، والتقييم الحقيقي)
+function parseLdProduct(html, url) {
+  for (const m of String(html || '').matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)) {
+    let d; try { d = JSON.parse(m[1]); } catch (e) { continue; }
+    for (const x of [].concat(d, d && d['@graph'] || [])) {
+      if (!x || x['@type'] !== 'Product') continue;
+      const of = [].concat(x.offers || [])[0] || {};
+      const price = +(of.price || of.lowPrice || 0);
+      if (!(price > 0) || (of.availability && !/InStock|LimitedAvailability|PreOrder/i.test(of.availability))) return null;
+      const ar = x.aggregateRating || {};
+      return { t: ent(x.name), p: price, o: 0, i: [].concat(x.image || [])[0] || '', u: url, r: +ar.ratingValue || 0, n: +ar.reviewCount || +ar.ratingCount || 0,
+        tags: ['spirit hub', ent(x.description || '').slice(0, 220), x.category ? ent(x.category) : ''].filter(Boolean).join(' | ') };
+    }
+  }
+  return null;
+}
+async function spirithub() {
+  const B = 'https://www.spirithubcafe.com';
+  const urls = [...new Set(locs(await get(B + '/sitemap.xml')).filter(u => /\/om\/(shop\/)?products?\/[^/]+$/.test(u)))].slice(0, 400);
+  console.log('spirithub urls', urls.length);
+  const all = [];
+  for (const u of urls) {
+    const it = parseLdProduct(await get(u), u);
+    if (it) all.push(it);
+    await sleep(300);
+  }
+  console.log('spirithub items', all.length);
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+}
+
+module.exports = { parseVListing, parseShopify, parseWoo, parseOdoo, parseLdProduct };
 if (require.main === module) (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = {};
-  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone]]) {
+  const MIN = { bunalqassab: 8, spirithub: 10 };
+  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub]]) {
     try {
       const data = await fn();
-      if (data.items.length < 20) throw new Error('too few items: ' + data.items.length);
+      if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
       fs.writeFileSync(path.join(OUT, name + '.json'), JSON.stringify(data));
       console.log(name, 'items', data.items.length, 'size', fs.statSync(path.join(OUT, name + '.json')).size);
     } catch (e) { console.log(name, 'FAILED', e.message, '(keeping the previous file if any)'); }

@@ -127,14 +127,19 @@ a { color: inherit; }
 .side-sec { display: flex; flex-direction: column; gap: 6px; }
 .side-sec h3 { margin: 0; font-size: 0.88rem; font-weight: 700; }
 .side-sec .field + .field, .side-sec .field + .switch, .side-sec .switch + .field { margin-top: 4px; }
-.checks { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+/* المتاجر: حبوب صغيرة تلتف (٨ متاجر بدون ما يطول الشريط الجانبي) */
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
 .check {
-  display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 0;
-  border-radius: 0; cursor: pointer; font-size: 0.86rem; font-weight: 600; background: var(--surface);
+  position: relative; display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid var(--line);
+  border-radius: 999px; cursor: pointer; font-size: 0.78rem; font-weight: 600; background: var(--surface); white-space: nowrap;
 }
-.check + .check { border-top: 1px solid var(--line); }
-.check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
-.check .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px var(--line); }
+/* المربع نفسه شفاف ومغطي الحبة كاملة (الضغط في أي مكان يشغّل/يطفي المتجر) */
+.check input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.check:has(input:checked) { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.check:has(input:not(:checked)) { color: var(--muted); background: var(--surface-2); text-decoration: line-through; }
+.check:has(input:not(:checked)) .dot { opacity: .35; }
+.check:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 select {
   width: 100%; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2);
 }
@@ -937,6 +942,13 @@ table.dt { min-width: 0; font-size: .76rem; }
                   url: () => 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/?ulp=' + encodeURIComponent('https://www.vperfumes.com/om-en/collection/best-sellers') },
     dermazone:  { name: 'DermaZone',   color: '#2E8B57', text: '#FFFFFF', bar: '#2E8B57', tagline: 'عناية بالبشرة ومنتجات كورية',
                   url: q => 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/?ulp=' + encodeURIComponent('https://www.dermazonestore.com/search?q=' + qp(q)) },
+    // محامص قهوة عمانية (روابط مباشرة، منتجاتها من صفحاتها العامة كل يوم)
+    copper:      { name: 'Copper Roastery', color: '#B87333', text: '#FFFFFF', bar: '#B87333', tagline: 'محمصة عمانية: قهوة مختصة وأدوات',
+                   url: q => 'https://copperroastery.com/?post_type=product&s=' + qp(q) },
+    bunalqassab: { name: 'بن القصاب', color: '#7B4B2A', text: '#FFFFFF', bar: '#7B4B2A', tagline: 'محمصة عمانية: قهوة عمانية ومختصة',
+                   url: q => 'https://bunalqassab.com/shop?search=' + qp(q) },
+    spirithub:   { name: 'Spirit Hub', color: '#3A6B5A', text: '#FFFFFF', bar: '#3A6B5A', tagline: 'محمصة عمانية: قهوة مختصة ودريب',
+                   url: () => 'https://www.spirithubcafe.com/om/shop' },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1677,6 +1689,17 @@ table.dt { min-width: 0; font-size: .76rem; }
     "نيوتري ويف": "nutriwave", "ايلمينت": "elment", "انيسفري": "innisfree", "اينسفري": "innisfree", "بيوتي اوف جوسون": "beauty of joseon", "انوا": "anua", "نيوتروجينا": "neutrogena",
     "فيشي": "vichy", "يوسيرين": "eucerin", "سيتافيل": "cetaphil", "نيفيا": "nivea", "فازلين": "vaseline", "كيلز": "kiehls", "لوريال": "loreal", "مايبيلين": "maybelline",
     "هدى بيوتي": "huda beauty",
+    // القهوة: عمانية، مختصة، دريب، بلدان المنشأ، والتحميص
+    "قهوه عمانيه": "omani coffee", "قهوه عماني": "omani coffee", "بن عماني": "omani coffee", "اسبرسو": "espresso machine", "طاحونه قهوه": "coffee grinder", "طاحونه بن": "coffee grinder",
+    "دريب": "drip coffee bags", "قهوه دريب": "drip coffee bags", "اكياس دريب": "drip coffee bags", "دريب باق": "drip coffee bags", "غلايه قهوه": "gooseneck kettle", "سيروب": "coffee syrup",
+    "سيرب": "coffee syrup", "سيروب قهوه": "coffee syrup", "نكهات قهوه": "coffee syrup", "قهوه اثيوبيه": "ethiopia coffee beans", "قهوه اثيوبي": "ethiopia coffee beans",
+    "بن اثيوبي": "ethiopia coffee beans", "قهوه كولومبيه": "colombia coffee beans", "قهوه كولومبي": "colombia coffee beans", "قهوه برازيليه": "brazil coffee beans",
+    "قهوه برازيلي": "brazil coffee beans", "قهوه يمنيه": "yemen coffee beans", "قهوه يمني": "yemen coffee beans", "بن يمني": "yemen coffee beans", "قهوه كينيه": "kenya coffee beans",
+    "قهوه كيني": "kenya coffee beans", "اثيوبيا": "ethiopia", "كولومبيا": "colombia", "تحميص فاتح": "light roast", "تحميص متوسط": "medium roast", "تحميص غامق": "dark roast",
+    "تحميص داكن": "dark roast", "قهوه بالهيل": "cardamom coffee", "قهوه فواكه": "fruity coffee", "قهوه فواكهيه": "fruity coffee", "لاتيه": "latte", "كابتشينو": "cappuccino",
+    "كابتشينو قهوه": "cappuccino", "بوكس قهوه": "coffee gift box", "هديه قهوه": "coffee gift box", "قهوه منزوعه الكافيين": "decaf coffee", "ديكاف": "decaf coffee",
+    "قهوه فلتر": "filter coffee beans", "قهوه للفلتر": "filter coffee beans", "قهوه اسبريسو": "espresso coffee beans", "حبوب اسبريسو": "espresso coffee beans",
+    "بن القصاب": "bun al qassab coffee", "كوبر روستري": "copper roastery coffee", "سبيريت هب": "spirit hub coffee",
   });
   const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
   // ترجمة البحث: نلقط كل كلمات المعجم الموجودة (الأطول أول)، بشرط تكون كلمة كاملة
@@ -1873,6 +1896,19 @@ table.dt { min-width: 0; font-size: .76rem; }
   let etsyLive = false;
 
   // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
+  // محامص القهوة: نفس طريقة البحث، مع معنى خاص لكلمة «قهوة» (القهوة نفسها مو المكاين والأدوات)
+  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe';
+  const COFFEE_FEED = { perUsd: () => OMR_PER_USD, aff: '', generic: /^(products?|original)$/,
+    gate: /(قهو|(^|\s)(ال)?بن(\s|$)|اسبريسو|اسبرسو|كابتشينو|لاتيه|كبسول|في ?60|كيمكس|ايروبرس|مطحن|طاحون|دريب|تقطير|دله|محمص|سيروب|سيرب|coffee|espresso|capsule|\bbeans?\b|grinder|chemex|aeropress|\bv60\b|\bdrip|kettle|tamper|barista|latte|cappuccino|moka|french press|cold brew|syrup|dallah|copper roastery|bun al qassab|spirit hub)/i,
+    syn: { coffee: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast)',
+      beans: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
+      capsules: '(capsule|كبسول)', drip: '(\\bdrip|دريب|مقطر)', ground: '(ground|grind|مطحون)', omani: '(omani|عماني)', turkish: '(turkish|تركي)', decaf: '(decaf)',
+      machine: '(machine|maker|brewer|boiler|automatic|espresso machine)', maker: '(machine|maker|brewer|boiler|automatic)', grinder: '(grinder|مطحن|طاحون)', kettle: '(kettle|غلاي|ابريق)', gooseneck: '(gooseneck|kettle)',
+      dripper: '(dripper|v60|kalita|chemex|origami)', v60: '(v60)', paper: '(paper|filters?)', filter: '(filter|فلتر)', syrup: '(syrup|سيروب)', thermos: '(thermos|flask|vacuum)', flask: '(thermos|flask|vacuum)',
+      ethiopia: '(ethiopia|اثيوبيا|yirgacheffe|guji|sidamo)', colombia: '(colombia|كولومبيا)', brazil: '(brazil|برازيل)', kenya: '(kenya|كينيا)', yemen: '(yemen|يمن)', indonesia: '(indonesia|sumatra|java)' },
+    dropWith: { coffee: /^(machines?|maker|brewer|grinders?|kettles?|drippers?|v60|chemex|aeropress|press|moka|scales?|tampers?|filters?|paper|syrups?|cups?|mugs?|jars?|thermos|flask|dallah|pot|gift|set)$/,
+      espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/ },
+    titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/ };
   const PARTNER_FEEDS = {
     vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
       gate: /(عطر|عطور|عود|دهن|بخور|دخون|مبخر|مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
@@ -1880,6 +1916,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
       gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|ريتينول|هيالورونيك|نياسيناميد|حلزون|امبول|مستحلب|لوشن|تقشير|ليفه|لصقات|شامبو|تساقط|بيوتين|بايوتين|جاميز|اوميغا|اوميجا|زنك|مغنيسيوم|ميلاتونين|مكياج|شفاه|شفايف|بلاشر|كوري|شعر|\bhair\b|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|retinol|hyaluronic|niacinamide|snail|ampoule|gumm|biotin|omega|makeup|\blip|shampoo|hair loss|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
       generic: /^(products?|original)$/, titleOnly: true },
+    copper: Object.assign({ file: 'data/p/copper.json' }, COFFEE_FEED),
+    bunalqassab: Object.assign({ file: 'data/p/bunalqassab.json' }, COFFEE_FEED),
+    spirithub: Object.assign({ file: 'data/p/spirithub.json' }, COFFEE_FEED),
   };
   const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
   // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
@@ -1911,13 +1950,19 @@ table.dt { min-width: 0; font-size: .76rem; }
   };
   // كلمات وصف (ثابت، صيفي…): نفضّل اللي يطابقها، وإذا ما فيه نرجع لكل المطابق
   const P_SOFT = new Set(['long', 'lasting', 'sweet', 'summer', 'winter', 'daily', 'evening', 'oriental', 'luxury', 'fresh', 'strong', 'woody', 'floral', 'fruity', 'powdery', 'niche',
-    'designer', 'french', 'arabic', 'korean', 'face', 'care', 'natural', 'concentrated', 'perfume', 'fragrance', 'beauty', 'dietary', 'oily', 'dry', 'sensitive', 'combination']);
+    'designer', 'french', 'arabic', 'korean', 'face', 'care', 'natural', 'concentrated', 'perfume', 'fragrance', 'beauty', 'dietary', 'oily', 'dry', 'sensitive', 'combination', 'roast', 'light', 'medium', 'dark', 'fruity', 'classic', 'premium']);
   const pEsc = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // «eau de parfum» ← edp، «100 ml» ← 100ml (نفس كتابة عناوين المتجر)
   const pPhrase = en => en.replace(/eau de parfum/g, 'edp').replace(/eau de toilette/g, 'edt').replace(/eau de cologne/g, 'cologne').replace(/extrait de parfum/g, 'extrait')
     .replace(/(\d+(?:\.\d+)?)\s*ml\b/g, '$1ml').replace(/\bperfume oil\b/g, 'oil').replace(/\b(perfumes|fragrances?|parfums)\b/g, 'perfume').replace(/\bvitamin ([acde])\b/g, 'vitamin$1');
   const P_VIT = { a: 'ا|اي', c: 'سي', d: 'د|دي', e: 'اي|e' };
-  const pTok = w => {
+  const pTok = (w, F) => {
+    if (F && F.syn && F.syn[w]) {
+      const re = new RegExp(F.syn[w], 'i'), ar = P_AR[w] ? new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?(' + P_AR[w] + ')') : null;
+      // أدوات («مطحنة»، «ابريق»): لازم تكون في اسم المنتج، لأن قسم «Machines & Grinders» يجمع كل شي
+      if (F.titleToks && F.titleToks.test(w)) return (t, tn, title) => re.test(title);
+      return (t, tn) => re.test(t) || (!!ar && ar.test(tn));
+    }
     const v = w.match(/^vitamin([acde])$/);
     if (v) { const en = new RegExp('vit(amin|a)[- ]?' + v[1] + '\\b', 'i'), ar = new RegExp('فيتا(مين)?[- ]?(' + P_VIT[v[1]] + ')(\\s|$|[-|)])'); return (t, tn) => en.test(t) || ar.test(tn); }
     const m = w.match(/^(\d+(?:\.\d+)?)ml$/);
@@ -1938,30 +1983,33 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (!F.gate.test(query) && !F.gate.test(en) && !brandHit) return [];
     const d = await loadPartner(k);
     if (!d || !Array.isArray(d.items)) return [];
-    const toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
-    const hard = toks.filter(w => !P_SOFT.has(w)).map(pTok), soft = toks.filter(w => P_SOFT.has(w)).map(pTok);
+    let toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
+    // «مكينة قهوة» ← المكينة هي المطلوبة، فكلمة «قهوة» ما تشترط إن المنتج قهوة
+    if (F.dropWith) toks = toks.filter(w => !(F.dropWith[w] && toks.some(o => o !== w && F.dropWith[w].test(o))));
+    const hard = toks.filter(w => !P_SOFT.has(w)).map(w => pTok(w, F)), soft = toks.filter(w => P_SOFT.has(w)).map(w => pTok(w, F));
     // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
     const arToks = /[؀-ۿ]/.test(ar) ? ar.split(' ').map(w => w.replace(/^(ال|لل|بال|وال)(?=..)/, '')).filter(w => w.length > 1 && !AR_IGNORE.has(w)) : [];
     const arRes = arToks.map(w => new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?' + pEsc(w)));
     const hit = [];
     // «ماسك» أو «سيروم» بدون «شعر» ← منتج للوجه، فنستبعد ماسكات وسيرومات الشعر
     const noHair = toks.some(w => /^(mask|cream|serum|oil|lotion|toner|ampoule)$/.test(w)) && !toks.includes('hair');
-    for (const [t, price, img, url, tags] of d.items) {
+    for (const [t, price, img, url, tags, orig, rate, nrev] of d.items) {
       if (noHair && /شعر|\bhair\b/i.test(t)) continue;
       // DermaZone: وسوم المنتج تسويقية وعامة («i dew care mask» على فرشاة شعر) ← الكلمات الأساسية لازم تكون في العنوان أو النوع
       const text = t + ' | ' + (F.titleOnly ? String(tags).split(' | ').slice(0, 2).join(' | ') : tags), tn = normalize(text);
-      const okEn = hard.every(f => f(text, tn)) && (hard.length || soft.length || F.generic.test(en.trim()) || !arToks.length);
+      const okEn = hard.every(f => f(text, tn, t)) && (hard.length || soft.length || F.generic.test(en.trim()) || !arToks.length);
       const okAr = k === 'dermazone' && arRes.length && arRes.every(r => r.test(tn));
       if (!(okEn || okAr)) continue;
       const usd = price / F.perUsd();
       // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
       const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
-      const p = { platform: k, title: t, price: usd, unrated: true, partner: true, rating: PRIOR_RATING, reviews: 0,
-        url: safeUrl(F.aff + '?ulp=' + encodeURIComponent(url)), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
-        original: null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
+      const rated = rate > 0 && nrev > 0;  // تقييم حقيقي من صفحة المنتج (Spirit Hub)
+      const p = { platform: k, title: t, price: usd, unrated: !rated, partner: true, rating: rated ? rate : PRIOR_RATING, reviews: rated ? nrev : 0,
+        url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : url), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
+        original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
         shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
       const full = F.titleOnly ? t + ' | ' + tags : text, fulln = F.titleOnly ? normalize(full) : tn;
-      p._soft = soft.filter(f => f(full, fulln)).length;
+      p._soft = soft.filter(f => f(full, fulln, t)).length;
       hit.push(p);
     }
     // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
@@ -2627,7 +2675,9 @@ table.dt { min-width: 0; font-size: .76rem; }
   function perfOf(p) {
     if (p._pf !== undefined) return p._pf;
     const t = String(p.title || '');
-    const c = PF_CONC.find(([re]) => re.test(t));
+    let c = PF_CONC.find(([re]) => re.test(t));
+    // «Mist» و«Elixir» و«Oil» تجي في أسماء قهوة وعناية، فنحتاج دليل إنه عطر
+    if (c && /mist|elixir|attar|dehn|oil|concentrated/.test(c[0].source) && p.platform !== 'vperfumes' && !PF_WORD.test(t)) c = null;
     const m = t.match(/(\d+(?:\.\d+)?)\s*(ml|مل)\b/i);
     const ml = m ? +m[1] : 0;
     if (!c && !(ml && PF_WORD.test(t))) return (p._pf = null);
@@ -2655,8 +2705,11 @@ table.dt { min-width: 0; font-size: .76rem; }
   }
   // المتاجر الشريكة: ما عندها تقييمات للمنتجات، فنعرض اللي نعرفه عنها من صفحاتها (أصلي، التوصيل، الدفع)
   const PARTNER_INFO = {
-    vperfumes: { trust: 'أصلي ومغلّف حسب المتجر', why: 'عطر أصلي ومغلّف حسب V Perfumes', whyItem: 'منتج أصلي ومغلّف حسب V Perfumes', freeOverOmr: 20, cod: true },
-    dermazone: { trust: 'أصلي بضمان المتجر', why: 'منتج أصلي بضمان DermaZone', ship: 'التوصيل لعمان قد يأخذ 10 إلى 15 يوم' },
+    vperfumes: { trust: 'أصلي ومغلّف حسب المتجر', short: 'أصلي حسب المتجر', why: 'عطر أصلي ومغلّف حسب V Perfumes', whyItem: 'منتج أصلي ومغلّف حسب V Perfumes', freeOverOmr: 20, cod: true },
+    dermazone: { trust: 'أصلي بضمان المتجر', short: 'أصلي حسب المتجر', why: 'منتج أصلي بضمان DermaZone', ship: 'التوصيل لعمان قد يأخذ 10 إلى 15 يوم' },
+    copper: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
+    bunalqassab: { trust: 'محمصة عمانية', short: 'محمصة عمانية', ship: 'يوصل داخل عمان خلال 2 إلى 3 أيام عمل' },
+    spirithub: { trust: 'محمصة عمانية', short: 'محمصة عمانية', ship: 'يوصل داخل عمان خلال 1 إلى 5 أيام' },
   };
 
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;
@@ -2729,6 +2782,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const pm = perfMode(list), f = perfOf(best);
     if (!info) return esc(bestReason(best, list));
     const parts = [];  // «أصلي» والتركيز والحجم ظاهرين فوقه، فهنا بس ليش هو الأفضل
+    if (!best.unrated && best.reviews) parts.push(`تقييم ${best.rating.toFixed(1)} من 5 من ${best.reviews.toLocaleString('en-US')} مراجعة`);
     const priced = pm ? list.filter(p => { const g = perfOf(p); return g && g.ml; }) : list;
     const avg = priced.reduce((s, p) => s + unitPrice(p, pm), 0) / Math.max(priced.length, 1);
     const diff = avg ? (avg - unitPrice(best, pm)) / avg * 100 : 0;
@@ -2852,10 +2906,10 @@ table.dt { min-width: 0; font-size: .76rem; }
   const dotI = k => `<i style="background:${PLATFORMS[k] ? PLATFORMS[k].color : '#8E8E93'}" aria-hidden="true"></i>`;
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}">${dotI(k)}${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => PARTNER_INFO[p.platform] ? `<span class="ok">${PARTNER_INFO[p.platform].trust}</span>` : (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
+  const reviewsText = p => PARTNER_INFO[p.platform] && p.unrated ? `<span class="ok">${PARTNER_INFO[p.platform].trust}</span>` : (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
-  const ratingNum = p => PARTNER_INFO[p.platform] ? '<span class="ok">✓</span>' : p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
+  const ratingNum = p => PARTNER_INFO[p.platform] && p.unrated ? '<span class="ok">✓</span>' : p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
     return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
@@ -2932,7 +2986,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       <div class="pbody">
         <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
-        <div class="rating">${PARTNER_INFO[p.platform] ? '<span class="ok">✓ أصلي حسب المتجر</span>' : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
+        <div class="rating">${PARTNER_INFO[p.platform] && p.unrated ? `<span class="ok">✓ ${PARTNER_INFO[p.platform].short}</span>` : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
         ${perfHtml(p, false)}
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
