@@ -11,7 +11,7 @@ const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
     const p = await ctx.newPage();
     await p.goto(SITE + '?qa=1&v=' + Date.now(), { waitUntil: 'load', timeout: 60000 }); await p.waitForTimeout(2500);
     await p.fill('#q', q); await p.press('#q', 'Enter');
-    await p.waitForFunction(() => /✓/.test(document.getElementById('status').innerText), null, { timeout: 90000 }).catch(() => {});
+    await p.waitForFunction(() => document.querySelector('.status.done') && document.querySelector('#panel-cards .pcard'), null, { timeout: 120000 }).catch(() => {});
     await p.waitForTimeout(3500);
     const r = await p.evaluate(() => ({ status: document.getElementById('status').innerText.replace(/\s+/g, ' '), stores: [...document.querySelectorAll('#panel-cards .pcard .pstore span')].map(e => e.textContent) }));
     log.push(`${q}: ${r.status} | ${JSON.stringify(r.stores.reduce((a, s) => (a[s] = (a[s] || 0) + 1, a), {}))}`);
