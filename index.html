@@ -2518,7 +2518,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   let vid = store.get('qarin.vid', '');
   if (!/^[a-z0-9]{8,40}$/.test(vid)) { vid = (Math.random().toString(36).slice(2) + Date.now().toString(36)).slice(0, 20); store.set('qarin.vid', vid); }
   function track(kind, q) {
-    if (!API) return;
+    if (!API || QA || navigator.webdriver) return;  // لا نحسب زيارات الاختبارات والستوري الآلية
     try { fetch(API + 'event', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, keepalive: true,
       body: JSON.stringify({ vid, kind, q: (q || '').slice(0, 60) }) }).catch(() => {}); } catch (e) { /* تجاهل */ }
   }
