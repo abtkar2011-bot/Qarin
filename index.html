@@ -147,6 +147,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .pr-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .pr-dash { color: var(--muted); flex: none; }
 .pr-clear { align-self: flex-start; border: 0; background: transparent; color: var(--accent-strong); font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 2px 0; }
+.partner-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px 10px 14px; }
+.partner-bar .pb-t { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.partner-bar .pb-t i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.partner-bar .pb-t b { display: block; font-size: 0.95rem; }
+.partner-bar .pb-t small { display: block; font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+.partner-bar a { flex: none; background: var(--accent); color: #fff; text-decoration: none; font-weight: 700; font-size: 0.88rem; padding: 8px 16px; border-radius: 999px; }
 .pr-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 0.9rem; }
 .pr-note button { border: 0; background: var(--accent); color: #fff; border-radius: 99px; padding: 4px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .range-ends { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--muted); }
@@ -2562,6 +2568,27 @@ table.dt { min-width: 0; font-size: .76rem; }
     const clr = $('priceClear'); if (clr) clr.hidden = state.priceMin == null && state.priceMax == null;
   }
   function clearPrice() { state.priceMin = state.priceMax = null; $('priceMin').value = ''; $('priceMax').value = ''; priceBox(); render(); }
+  // متاجر شريكة (Admitad): تطلع لما يكون البحث من نوعها، برابط تسويق بالعمولة
+  const PARTNERS = [
+    { name: 'V Perfumes', dot: '#B8860B', test: /(عطر|عطور|عود|دهن|بخور|مبخر|مسك|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk)/i,
+      line: 'عطور أصلية من متجر V Perfumes في عُمان، بالريال العماني', base: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
+      target: (q, en) => { const loc = LANG === 'ar' ? 'om-ar' : 'om-en', t = q + ' ' + en;
+        const cat = /بخور|مبخر|bakhoor|incense/i.test(t) ? 'category/bakhoor-set' : /دهن|oil|attar/i.test(t) ? 'category/perfume-oils'
+          : /نسائ|نساء|women|ladies|female/i.test(t) ? 'category/perfumes-for-women' : /رجال|men\b|male/i.test(t) ? 'category/perfumes-for-men' : 'collection/best-sellers';
+        return `https://www.vperfumes.com/${loc}/${cat}`; } },
+    { name: 'DermaZone', dot: '#2E8B57', test: /(كريم|سيروم|واقي شمس|واقي الشمس|مرطب|غسول|بشره|بشرة|حبوب الوجه|skin ?care|serum|sunscreen|moisturi[sz]er|cleanser|cerave|la roche|bioderma|vichy|the ordinary)/i,
+      line: 'منتجات عناية بالبشرة أصلية من DermaZone', base: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/' },
+    { name: 'Woodestic', dot: '#8B5A2B', test: /(خشب|خشبي|wooden|\bwood\b)/i,
+      line: 'ساعات ونظارات وإكسسوارات خشب من Woodestic', base: 'https://naiawork.com/g/do86ucnzhx683a5815ddc586cc6aee/' },
+  ];
+  function partnersHtml() {
+    if (state.mode !== 'search' || !state.query) return '';
+    const q = state.query, en = (toEnglish(q) || '').toLowerCase();
+    return PARTNERS.filter(p => p.test.test(q) || p.test.test(en)).slice(0, 2).map(p => {
+      const url = p.target ? p.base + '?ulp=' + encodeURIComponent(p.target(q, en)) : p.base;
+      return `<div class="partner-bar"><span class="pb-t"><i style="background:${p.dot}"></i><span><b>${esc(p.name)}</b><small>${p.line}</small></span></span><a href="${esc(url)}" target="_blank" rel="sponsored noopener">تسوّق ↗</a></div>`;
+    }).join('');
+  }
   function priceNoteHtml() {
     if (state.priceMin == null && state.priceMax == null) return '';
     let lo = state.priceMin, hi = state.priceMax;
@@ -2836,7 +2863,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}`;
+      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
