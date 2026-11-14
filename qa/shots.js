@@ -1,22 +1,28 @@
-// فحص ٢: صفحات المتجر عند بن القصاب و Spirit Hub، وعدد منتجات Copper
+// لقطات من الموقع الحقيقي: عطور، عناية، قهوة
+const { chromium, devices } = require('playwright');
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
-const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
-const urls = ['https://bunalqassab.com/shop', 'https://bunalqassab.com/shop-new', 'https://bunalqassab.com/shop/cloud-' + encodeURIComponent('كلاود') + '-5590', 'https://bunalqassab.com/shipping-policy',
-  'https://www.spirithubcafe.com/om/products/decaf-colombia-swiss-water-decaffeinated', 'https://www.spirithubcafe.com/assets/index-CO4zIFE4.js', 'https://www.spirithubcafe.com/om/delivery',
-  'https://copperroastery.com/wp-json/wc/store/v1/products?per_page=100&page=1', 'https://copperroastery.com/shipping-policy/'];
+const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
 (async () => {
-  const log = [];
-  for (const u of urls) {
-    let line;
-    try {
-      const r = await fetch(u, { headers: { 'user-agent': UA, 'accept-language': 'ar,en' } });
-      const t = await r.text();
-      const f = u.replace(/^https:\/\/(www\.)?/, '').replace(/[^a-z0-9.]+/gi, '_').slice(0, 80);
-      fs.writeFileSync(path.join(OUT, f + '.txt'), t.slice(0, 3000000));
-      line = `${r.status} ${u} len=${t.length} total=${r.headers.get('x-wp-total')} pages=${r.headers.get('x-wp-totalpages')}`;
-    } catch (e) { line = `ERR ${u} ${e.message}`; }
-    log.push(line); console.log(line);
+  const b = await chromium.launch(); const log = [];
+  for (const [name, q] of [['perfume', 'عطر رجالي'], ['edp', 'او دو بارفان للجنسين'], ['skin', 'سيروم ريتينول'], ['coffee', 'قهوة مختصة'], ['omani', 'قهوة عمانية'], ['v60', 'في 60']]) {
+    const ctx = await b.newContext({ ...devices['iPhone 14 Pro'], deviceScaleFactor: 2, locale: 'ar-OM' });
+    await ctx.addInitScript(() => { localStorage.setItem('qarin.lang', 'ar'); localStorage.setItem('qarin.instHide', String(Date.now())); });
+    const p = await ctx.newPage();
+    await p.goto(SITE + '?qa=1&v=' + Date.now(), { waitUntil: 'load', timeout: 60000 }); await p.waitForTimeout(2500);
+    await p.fill('#q', q); await p.press('#q', 'Enter');
+    await p.waitForFunction(() => document.querySelector('.status.done') && document.querySelector('#panel-cards .pcard'), null, { timeout: 120000 }).catch(() => {});
+    await p.waitForTimeout(4000);
+    const r = await p.evaluate(() => ({ status: document.getElementById('status').innerText.replace(/\s+/g, ' '),
+      stores: [...document.querySelectorAll('#panel-cards .pcard .pstore span')].map(e => e.textContent),
+      best: (document.querySelector('.best-card') || { innerText: '' }).innerText.replace(/\s+/g, ' ').slice(0, 400) }));
+    log.push(`${q}: ${r.status} | ${JSON.stringify(r.stores.reduce((a, s) => (a[s] = (a[s] || 0) + 1, a), {}))}\n   BEST: ${r.best}`);
+    const bc = await p.$('.best-card'); if (bc) await bc.screenshot({ path: path.join(OUT, name + '_best.png') });
+    await p.evaluate(() => { const c = [...document.querySelectorAll('#panel-cards .pcard')].find(x => /V Perfumes|DermaZone|Copper|القصاب|Spirit/.test(x.querySelector('.pstore span').textContent)); if (c) window.scrollTo(0, c.getBoundingClientRect().top + scrollY - 40); });
+    await p.waitForTimeout(2000);
+    await p.screenshot({ path: path.join(OUT, name + '_cards.png') });
+    await ctx.close();
   }
-  fs.writeFileSync(path.join(OUT, 'log.txt'), log.join('\n'));
+  fs.writeFileSync(path.join(OUT, 'log.txt'), log.join('\n')); console.log(log.join('\n'));
+  await b.close();
 })();
