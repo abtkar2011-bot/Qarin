@@ -42,32 +42,31 @@ function page(d) {
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1080px;height:1920px;overflow:hidden;background:#F5F5F7;font-family:'Almarai',sans-serif;color:#1D1D1F}
-.wrap{position:absolute;inset:0;padding:230px 72px 0;display:flex;flex-direction:column;align-items:center}
-.brand{display:flex;align-items:center;gap:16px;font-size:58px;font-weight:800;line-height:1.3}
-.brand img{height:50px;filter:brightness(0)}
-.tag{margin-top:26px;background:#0071E3;color:#fff;font-size:34px;font-weight:700;padding:12px 30px;border-radius:999px}
-h1{margin-top:22px;font-size:${d.query.length > 14 ? 84 : 100}px;font-weight:800;line-height:1.25;text-align:center}
-.card{margin-top:36px;width:936px;background:#fff;border-radius:52px;padding:30px;box-shadow:0 30px 70px rgba(0,0,0,.08)}
-.ph{width:876px;height:560px;border-radius:34px;background:#F5F5F7;overflow:hidden;display:grid;place-items:center}
+.wrap{position:absolute;inset:0;padding:200px 72px 0;display:flex;flex-direction:column;align-items:center}
+.tag{display:flex;align-items:center;gap:14px;background:#fff;color:#1D1D1F;font-size:34px;font-weight:800;padding:12px 30px 12px 34px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.tag img{height:34px;filter:brightness(0)}
+.tag span{color:#0071E3}
+h1{margin-top:18px;font-size:${d.query.length > 14 ? 84 : 100}px;font-weight:800;line-height:1.25;text-align:center}
+.card{margin-top:30px;width:936px;background:#fff;border-radius:52px;padding:30px;box-shadow:0 30px 70px rgba(0,0,0,.08)}
+.ph{width:876px;height:var(--ph,480px);border-radius:34px;background:#F5F5F7;overflow:hidden;display:grid;place-items:center}
 .ph img{width:100%;height:100%;object-fit:contain;background:#fff}
 .meta{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding:0 6px}
 .best{color:#BF4800;font-size:32px;font-weight:700}
 .st{display:flex;align-items:center;gap:10px;font-size:30px;color:#6E6E73;font-weight:700}
 .st i,.sn i{width:16px;height:16px;border-radius:50%;display:inline-block}
-.tt{margin-top:12px;padding:0 6px;font-size:30px;line-height:1.4;color:#424245;direction:ltr;text-align:left;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pr{margin-top:14px;padding:0 6px;font-size:86px;font-weight:800;line-height:1.1}
-.cmp{margin-top:26px;width:936px;background:#fff;border-radius:40px;padding:22px 36px}
+.tt{margin-top:8px;padding:0 6px;font-size:28px;line-height:1.4;color:#6E6E73;direction:ltr;text-align:left;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.pr{margin-top:8px;padding:0 6px;font-size:80px;font-weight:800;line-height:1.1}
+.cmp{margin-top:22px;width:936px;background:#fff;border-radius:40px;padding:22px 36px}
 .cmp h2{font-size:32px;font-weight:700;color:#6E6E73;margin-bottom:6px}
-.srow{display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-size:38px}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:36px}
 .srow+.srow{border-top:2px solid #EDEDF0}
 .sn{display:flex;align-items:center;gap:14px;font-weight:700}
 .srow b{font-weight:800}
-.cta{position:absolute;bottom:260px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+.cta{margin-top:30px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .cta .btn{background:#1D1D1F;color:#fff;font-size:40px;font-weight:800;padding:24px 56px;border-radius:999px}
 .cta small{font-size:30px;color:#6E6E73}
 </style></head><body><div class="wrap">
-<div class="brand">قارِن <img src="data:image/png;base64,${d.mark}"></div>
-<div class="tag">عرض اليوم</div>
+<div class="tag">قارِن <img src="data:image/png;base64,${d.mark}"> · <span>عرض اليوم</span></div>
 <h1>${esc(d.query)}</h1>
 <div class="card">
   <div class="ph"><img referrerpolicy="no-referrer" src="${esc(d.best.image)}"></div>
@@ -76,8 +75,8 @@ h1{margin-top:22px;font-size:${d.query.length > 14 ? 84 : 100}px;font-weight:800
   <div class="pr">${esc(d.best.price)}</div>
 </div>
 ${rows ? `<div class="cmp"><h2>أرخص سعر في كل متجر</h2>${rows}</div>` : ''}
-</div>
 <div class="cta"><div class="btn">قارن بنفسك في قارِن</div><small>الرابط في البايو</small></div>
+</div>
 </body></html>`;
 }
 
@@ -107,6 +106,11 @@ ${rows ? `<div class="cmp"><h2>أرخص سعر في كل متجر</h2>${rows}</d
   await p.evaluate(() => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
   const imgOk = await p.evaluate(() => { const i = document.querySelector('.ph img'); return !!(i && i.naturalWidth > 10); });
   if (!imgOk) await p.evaluate(() => { document.querySelector('.ph').innerHTML = '<div style="font-size:120px">🛍️</div>'; });
+  // لو المحتوى طويل، نصغّر الصورة لين يبعد عن منطقة أزرار انستقرام تحت (آخر 250 بكسل)
+  const fit = await p.evaluate(() => { let h = 480; const bottom = () => document.querySelector('.cta').getBoundingClientRect().bottom;
+    while (bottom() > 1665 && h > 300) { h -= 10; document.documentElement.style.setProperty('--ph', h + 'px'); }
+    return { photo: h, bottom: Math.round(bottom()) }; });
+  console.log('fit', JSON.stringify(fit));
   await sleep(500);
   await p.screenshot({ path: path.join(OUT, 'story.jpg'), type: 'jpeg', quality: 92 });
   data.imageOk = imgOk;
