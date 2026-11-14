@@ -13,18 +13,14 @@ async function get(name, url, opt = {}) {
 }
 (async () => {
   const V = 'https://www.vperfumes.com';
-  await get('v_feed_en.xml', V + '/api/v1/w/admin/auth/export-feed?type=google&lang=en');
-  await get('v_om_sitemap.xml', V + '/om-en/sitemap.xml');
-  await get('v_oils.html', V + '/om-en/category/perfume-oils');
-  await get('v_best.html', V + '/om-en/collection/best-sellers');
-  await get('v_ar_men.html', V + '/om-ar/category/perfumes-for-men');
-  await get('d_products.json', 'https://www.dermazonestore.com/products.json?limit=3');
-  await get('d_suggest.json', 'https://www.dermazonestore.com/search/suggest.json?q=sunscreen&resources[type]=product');
-  await get('d_home.html', 'https://www.dermazonestore.com/');
-  await get('w_products.json', 'https://woodestic.com/products.json?limit=3');
-  await get('w_suggest.json', 'https://woodestic.com/search/suggest.json?q=watch&resources[type]=product');
-  await get('d_robots.txt', 'https://www.dermazonestore.com/robots.txt');
-  await get('w_robots.txt', 'https://woodestic.com/robots.txt');
+  await get('v_cats.xml', V + '/om-en/sitemaps/categories/0.xml');
+  await get('v_cols.xml', V + '/om-en/sitemaps/collections/0.xml');
+  await get('v_brands.xml', V + '/om-en/sitemaps/brands/0.xml');
+  await get('v_prod0.xml', V + '/om-en/sitemaps/products/0.xml');
+  await get('v_brandpage.html', V + '/om-en/brand/lattafa');
+  await get('d_ship.html', 'https://www.dermazonestore.com/policies/shipping-policy');
+  await get('d_ship2.html', 'https://www.dermazonestore.com/pages/shipping');
+  await get('d_count.json', 'https://www.dermazonestore.com/products.json?limit=250&page=1');
   fs.writeFileSync(path.join(OUT, 'log.tsv'), log.join('\n'));
   console.log(log.join('\n'));
 })();
