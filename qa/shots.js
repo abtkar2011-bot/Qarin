@@ -13,16 +13,18 @@ async function get(name, url, opt = {}) {
 }
 (async () => {
   const V = 'https://www.vperfumes.com';
-  await get('v_robots.txt', V + '/robots.txt');
-  await get('v_men.html', V + '/om-en/category/perfumes-for-men');
-  await get('v_search1.html', V + '/om-en/search?q=oud');
-  await get('v_search2.html', V + '/om-en/search?query=oud');
-  await get('v_products.json', V + '/products.json?limit=5');
-  await get('v_sitemap.xml', V + '/sitemap.xml');
-  // روابط الأفلييت: نشوف وين توصل (الدومين الحقيقي) بدون ما نتبعها كاملة
-  await get('d_aff.txt', 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/', { manual: true });
-  await get('w_aff.txt', 'https://naiawork.com/g/do86ucnzhx683a5815ddc586cc6aee/', { manual: true });
-  await get('v_aff.txt', 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/', { manual: true });
+  await get('v_feed_en.xml', V + '/api/v1/w/admin/auth/export-feed?type=google&lang=en');
+  await get('v_om_sitemap.xml', V + '/om-en/sitemap.xml');
+  await get('v_oils.html', V + '/om-en/category/perfume-oils');
+  await get('v_best.html', V + '/om-en/collection/best-sellers');
+  await get('v_ar_men.html', V + '/om-ar/category/perfumes-for-men');
+  await get('d_products.json', 'https://www.dermazonestore.com/products.json?limit=3');
+  await get('d_suggest.json', 'https://www.dermazonestore.com/search/suggest.json?q=sunscreen&resources[type]=product');
+  await get('d_home.html', 'https://www.dermazonestore.com/');
+  await get('w_products.json', 'https://woodestic.com/products.json?limit=3');
+  await get('w_suggest.json', 'https://woodestic.com/search/suggest.json?q=watch&resources[type]=product');
+  await get('d_robots.txt', 'https://www.dermazonestore.com/robots.txt');
+  await get('w_robots.txt', 'https://woodestic.com/robots.txt');
   fs.writeFileSync(path.join(OUT, 'log.tsv'), log.join('\n'));
   console.log(log.join('\n'));
 })();
