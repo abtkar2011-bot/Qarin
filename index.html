@@ -3463,7 +3463,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   function init() {
     initVoice();
     initTheme();
-    if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache };
+    if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
     $('heroChips').innerHTML = KEYS.map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('');
     $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
