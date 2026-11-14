@@ -68,7 +68,7 @@ async function vperfumes() {
 // ---------- DermaZone: متجر Shopify، الكتالوج كامل من products.json ----------
 function parseShopify(json, base) {
   let d; try { d = JSON.parse(json); } catch (e) { return []; }
-  return (d.products || []).map(p => {
+  const out = (d.products || []).map(p => {
     const vs = (p.variants || []).filter(v => v.available !== false);
     if (!vs.length) return null;
     const price = Math.min(...vs.map(v => +v.price).filter(x => x > 0));
@@ -77,12 +77,14 @@ function parseShopify(json, base) {
     const tags = Array.isArray(p.tags) ? p.tags.join(' ') : String(p.tags || '');
     return { t: String(p.title || '').trim(), p: price, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
   }).filter(Boolean);
+  out.raw = (d.products || []).length;  // عدد المنتجات في الصفحة قبل حذف غير المتوفر
+  return out;
 }
 async function dermazone() {
   const B = 'https://www.dermazonestore.com', all = [];
   for (let page = 1; page <= 60; page++) {
     const items = parseShopify(await get(`${B}/products.json?limit=250&page=${page}`), B);
-    if (!items.length) break;
+    if (!items.raw) break;
     all.push(...items); console.log('dermazone page', page, all.length);
     await sleep(600);
   }
