@@ -315,6 +315,11 @@ html[dir="ltr"] .app, html[dir="ltr"] .dock, html[dir="ltr"] .cmp-bar, html[dir=
 .meta-line { display: flex; gap: 4px 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
 .meta-line > span { white-space: nowrap; }
 .meta-line .free { color: var(--good); font-weight: 700; }
+.rating .ok { color: var(--good); }
+.pf { display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.76rem; }
+.pf > span { background: var(--surface-2, #F2F2F7); color: var(--fg); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.pf > span.c { font-weight: 700; }
+.pf > span.u { background: none; color: var(--muted); padding-inline: 2px; }
 .score { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); }
 .bar { flex: 1; height: 5px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
 .bar span { display: block; height: 100%; border-radius: 99px; background: var(--fg); opacity: .75; }
@@ -1614,6 +1619,65 @@ table.dt { min-width: 0; font-size: .76rem; }
     "كره قدم": "soccer ball size 5", "كرة قدم": "soccer ball size 5",
     "ستيك سيلفي": "selfie stick", "عصا سيلفي": "selfie stick", "حامل كاميرا": "tripod", "ترايبود": "tripod",
   });
+  // مصطلحات العطور والعناية بالبشرة (التركيز، الجنس، المكونات، الماركات) عشان يفهم «او دو بارفان» و«ريتينول»
+  Object.assign(AR_EN, {
+    "او دو بارفان": "eau de parfum", "او دي بارفان": "eau de parfum", "اودو بارفان": "eau de parfum", "اودي بارفان": "eau de parfum", "او دو برفان": "eau de parfum",
+    "او دي برفان": "eau de parfum", "بارفان": "parfum", "برفان": "parfum", "برفيوم": "parfum", "بيرفيوم": "parfum", "لو بارفان": "le parfum", "اكستريت": "extrait de parfum",
+    "اكسترايت": "extrait de parfum", "اكستريه": "extrait de parfum", "اكستريت دي بارفان": "extrait de parfum", "الكسير": "elixir", "اليكسير": "elixir", "الكسير عطر": "elixir",
+    "او دو تواليت": "eau de toilette", "او دي تواليت": "eau de toilette", "اودو تواليت": "eau de toilette", "اودي تواليت": "eau de toilette", "تواليت": "eau de toilette",
+    "كولونيا": "cologne", "كولون": "cologne", "او دو كولون": "eau de cologne", "انتنس": "intense", "انتينس": "intense", "للجنسين": "unisex", "يونيسكس": "unisex", "يونيسيكس": "unisex",
+    "يونسكس": "unisex", "تستر": "tester", "عطر تستر": "perfume tester", "عطور تستر": "perfume tester", "عينات عطور": "perfume samples", "عينه عطر": "perfume sample",
+    "عطر ميني": "mini perfume", "عطور ميني": "mini perfume", "عطر صغير": "mini perfume", "عطر جيب": "pocket perfume", "طقم عطور": "perfume gift set", "طقم عطر": "perfume gift set",
+    "بوكس عطور": "perfume gift set", "بوكس عطر": "perfume gift set", "هديه عطر": "perfume gift set", "مجموعه عطور": "perfume gift set", "عطر هديه": "perfume gift set",
+    "معطر جسم": "body mist", "بخاخ جسم": "body mist", "سبراي جسم": "body mist", "بودي مست": "body mist", "بودي مسك": "body mist", "بودي سبلاش": "body splash", "معطر شعر": "hair mist",
+    "بخاخ شعر": "hair mist", "عطر ثابت": "long lasting perfume", "عطر فواح": "long lasting perfume", "عطر قوي": "long lasting perfume", "فواح": "long lasting",
+    "منعش": "fresh", "عطر شرقي": "oriental perfume", "عطور شرقيه": "oriental perfume", "عطر خشبي": "woody perfume", "عطر زهري": "floral perfume", "عطر منعش": "fresh perfume", "عطر حلو": "sweet perfume",
+    "عطر فواكه": "fruity perfume", "عطر فواكهي": "fruity perfume", "عطر بودري": "powdery perfume", "عطر صيفي": "summer perfume", "عطر شتوي": "winter perfume", "عطر مسائي": "evening perfume",
+    "عطر يومي": "daily perfume", "عطر دوام": "daily perfume", "عطر مناسبات": "evening perfume", "عطر عرس": "evening perfume", "عنبر": "amber", "عطر عنبر": "amber perfume",
+    "دهن عنبر": "amber perfume oil", "عطر ورد": "rose perfume", "ورد طائفي": "taif rose", "دهن ورد": "rose perfume oil", "مويه ورد": "rose water", "عطر صندل": "sandalwood perfume",
+    "دهن صندل": "sandalwood oil", "خشب الصندل": "sandalwood", "عطر زعفران": "saffron perfume", "فانيلا": "vanilla", "فانيليا": "vanilla", "عطر فانيلا": "vanilla perfume",
+    "عطر فانيليا": "vanilla perfume", "باتشولي": "patchouli", "لافندر": "lavender", "عطر قهوه": "coffee perfume", "عطر تبغ": "tobacco perfume", "عطر جلد": "leather perfume",
+    "مسك الطهاره": "white musk", "مسك الغزال": "musk perfume", "مسك اسود": "black musk", "دهن": "perfume oil", "دهون": "perfume oil", "زيت عطري": "perfume oil", "زيوت عطريه": "perfume oil",
+    "عطر زيتي": "perfume oil", "عطر مركز": "concentrated perfume oil", "عطور مركزه": "concentrated perfume oil", "مخمريه": "mukhamaria perfume", "مخلط": "mukhallat perfume",
+    "مخلطات": "mukhallat perfume", "دخون": "bakhoor", "عود كمبودي": "cambodian oud", "عود هندي": "indian oud", "عود طبيعي": "natural oud", "عطر عماني": "omani perfume",
+    "عطور عمانيه": "omani perfume", "عطر اماراتي": "arabic perfume", "عطر سعودي": "arabic perfume", "عطر خليجي": "arabic perfume", "عطر ماركه": "designer perfume",
+    "عطور ماركات": "designer perfume", "عطر نيش": "niche perfume", "عطور نيش": "niche perfume", "امواج": "amouage", "مونتال": "montale", "مانسيرا": "mancera", "كريد": "creed",
+    "ايف سان لوران": "yves saint laurent", "سان لوران": "yves saint laurent", "جيفنشي": "givenchy", "جفنشي": "givenchy", "قيفنشي": "givenchy", "فالنتينو": "valentino",
+    "جان بول غوتييه": "jean paul gaultier", "جان بول قوتييه": "jean paul gaultier", "جان بول": "jean paul gaultier", "جيمي تشو": "jimmy choo", "برادا": "prada",
+    "دولتشي اند غابانا": "dolce gabbana", "دولتشي": "dolce gabbana", "دولشي": "dolce gabbana", "لانكوم": "lancome", "باكو رابان": "rabanne", "رابان": "rabanne", "ايسي مياكي": "issey miyake",
+    "قيرلان": "guerlain", "جيرلان": "guerlain", "غيرلان": "guerlain", "نارسيسو": "narciso rodriguez", "نارسيسو رودريغيز": "narciso rodriguez", "ازارو": "azzaro",
+    "كالفن كلاين": "calvin klein", "لاكوست": "lacoste", "جيس": "guess", "موسكينو": "moschino", "بولغاري": "bvlgari", "بلغاري": "bvlgari", "بولقاري": "bvlgari", "شوبارد": "chopard",
+    "زيرجوف": "xerjoff", "اكزرجوف": "xerjoff", "نيشان": "nishane", "بايريدو": "byredo", "ميزون مارجيلا": "maison margiela", "مارجيلا": "margiela", "اسكادا": "escada",
+    "رالف لورين": "ralph lauren", "تومي هيلفيغر": "tommy hilfiger", "مايكل كورس": "michael kors", "هيرمس": "hermes", "ارميس": "hermes", "كينزو": "kenzo", "لانفان": "lanvin",
+    "موغلر": "mugler", "موقلر": "mugler", "نينا ريتشي": "nina ricci", "كلوي": "chloe", "ديزل": "diesel", "بنتلي": "bentley", "دنهل": "dunhill", "ايلي صعب": "elie saab",
+    "روبرتو كفالي": "roberto cavalli", "فيراغامو": "ferragamo", "فيراجامو": "ferragamo", "بوشرون": "boucheron", "فيكتور اند رولف": "viktor rolf", "العربيه للعود": "arabian oud",
+    "عبدالصمد القرشي": "abdul samad al qurashi", "عبد الصمد القرشي": "abdul samad al qurashi", "سويس ارابيان": "swiss arabian", "افنان": "afnan", "فرنش افنيو": "french avenue",
+    "هولي عود": "holy oud", "لا مونارك": "la monarch", "لامونارك": "la monarch", "فيكتور هيلز": "victor hills", "مون دستان": "mon destin", "ارابيان ايجل": "arabian eagle", "قصتي": "qissati",
+    "ورد العرب": "ward al arab", "ميزون عود": "maison oud", "مارك دي فينس": "mark des vince", "لويس بريتون": "louis breton", "مانزانا": "manzana", "ايسنزا": "essenza", "ريتينول": "retinol",
+    "سيروم ريتينول": "retinol serum", "كريم ريتينول": "retinol cream", "هيالورونيك": "hyaluronic acid", "هيالورونيك اسيد": "hyaluronic acid", "حمض الهيالورونيك": "hyaluronic acid",
+    "هيالرونيك": "hyaluronic acid", "نياسيناميد": "niacinamide", "نياسينامايد": "niacinamide", "نياسيناميد سيروم": "niacinamide serum", "فيتامين سي": "vitamin c", "فيتا سي": "vitamin c",
+    "كريم فيتامين سي": "vitamin c cream", "كولاجين": "collagen", "كولاجين بحري": "marine collagen", "ببتيد": "peptide", "ببتيدات": "peptide", "حلزون": "snail mucin",
+    "مخاط الحلزون": "snail mucin", "سيكا": "cica", "سنتيلا": "centella", "اكسوزوم": "exosome", "امبول": "ampoule", "امبولات": "ampoule", "مستحلب": "emulsion", "لوشن": "lotion",
+    "لوشن جسم": "body lotion", "حليب جسم": "body lotion", "زبده جسم": "body butter", "مقشر جسم": "body scrub", "تقشير": "exfoliating", "ليفه تقشير": "exfoliating bath mitt",
+    "ليفه كوريه": "korean exfoliating mitt", "ماسك": "face mask skincare", "ماسكات": "face mask skincare", "ماسك جوال": "phone holder", "ماسك سياره": "car phone holder",
+    "ماسك شيت": "sheet mask", "ماسك طين": "clay mask", "ماسك شعر": "hair mask", "كريم عين": "eye cream", "كريم تحت العين": "eye cream", "هالات سوداء": "dark circles eye cream",
+    "كريم رقبه": "neck cream", "تفتيح": "whitening", "كريم تفتيح": "whitening cream", "تفتيح البشره": "skin whitening", "بقع داكنه": "dark spot corrector", "تصبغات": "dark spot corrector",
+    "كلف": "melasma cream", "مسام": "pore", "شد البشره": "skin tightening", "تجاعيد": "anti wrinkle", "كريم تجاعيد": "anti wrinkle cream", "مكافحه الشيخوخه": "anti aging",
+    "بشره دهنيه": "oily skin", "بشره جافه": "dry skin", "بشره حساسه": "sensitive skin", "بشره مختلطه": "combination skin", "حب الشباب": "acne", "حبوب الوجه": "acne",
+    "لصقات حبوب": "pimple patches", "لصقات حب الشباب": "pimple patches", "لصقات بثور": "pimple patches", "رؤوس سوداء": "blackhead", "غسول وجه": "face wash", "منظف وجه": "face cleanser",
+    "ماء ميسيلار": "micellar water", "ميسيلار": "micellar water", "مرطب شفايف": "lip balm", "مرطب شفاه": "lip balm", "بلسم شفايف": "lip balm", "بلسم شفاه": "lip balm",
+    "زيت شفايف": "lip oil", "زيت شفاه": "lip oil", "جلوس": "lip gloss", "ظل عيون": "eyeshadow", "برايمر": "makeup primer", "كونتور": "contour", "بودره وجه": "face powder",
+    "بيوتين": "biotin", "بايوتين": "biotin", "جاميز": "gummies", "فيتامينات شعر": "hair vitamins", "اوميغا 3": "omega 3", "اوميجا 3": "omega 3", "اوميقا 3": "omega 3",
+    "مغنيسيوم": "magnesium", "زنك": "zinc", "ميلاتونين": "melatonin", "خل التفاح": "apple cider vinegar", "كركم": "turmeric", "بروبيوتيك": "probiotic", "مكمل غذائي": "dietary supplement",
+    "مكملات غذائيه": "dietary supplement", "فيتامين د": "vitamin d", "جلوتاثيون": "glutathione", "شامبو جاف": "dry shampoo", "تساقط الشعر": "hair loss", "انبات الشعر": "hair growth",
+    "تكثيف الشعر": "hair growth", "سيروم شعر": "hair serum", "عنايه كوريه": "korean skincare", "منتجات كوريه": "korean skincare", "كوري": "korean", "كوريه": "korean",
+    "عنايه بالبشره": "skincare", "العنايه بالبشره": "skincare", "روتين بشره": "skincare set", "سبف": "spf", "واقي شمسي": "sunscreen", "سيليماكس": "celimax", "كوكسير": "coxir",
+    "كاجا": "kaja", "مومز باث": "moms bath recipe", "اي دو كير": "i dew care", "ايدو كير": "i dew care", "هوليستا": "holista", "سنسيلاب": "sensilab", "سينسلاب": "sensilab",
+    "سينسيلاب": "sensilab", "دكتور التيا": "dr althea", "د التيا": "dr althea", "التيا": "dr althea", "شيسيدو": "shiseido", "فينو": "fino hair mask", "ووترمانز": "watermans",
+    "نيوتري ويف": "nutriwave", "ايلمينت": "elment", "انيسفري": "innisfree", "اينسفري": "innisfree", "بيوتي اوف جوسون": "beauty of joseon", "انوا": "anua", "نيوتروجينا": "neutrogena",
+    "فيشي": "vichy", "يوسيرين": "eucerin", "سيتافيل": "cetaphil", "نيفيا": "nivea", "فازلين": "vaseline", "كيلز": "kiehls", "لوريال": "loreal", "مايبيلين": "maybelline",
+    "هدى بيوتي": "huda beauty",
+  });
   const TR = new Map();  // ترجمات محفوظة من خدمة الترجمة
   // ترجمة البحث: نلقط كل كلمات المعجم الموجودة (الأطول أول)، بشرط تكون كلمة كاملة
   // (مع «ال» و«و» و«ب» و«ل» قبلها، أو «ة/ات/ي» بعدها) عشان «فرنسي» ما تصير «فرن»
@@ -1653,7 +1717,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   const AR_MOD = { 'احدعش': '11', 'اثنعش': '12', 'ثنعش': '12', 'ثلطعش': '13', 'ثلاثطعش': '13', 'اربعطعش': '14', 'خمسطعش': '15', 'سطعش': '16', 'ستطعش': '16', 'سبعطعش': '17', 'فايف': '5', 'فور': '4',
     'برو': 'pro', 'ماكس': 'max', 'الترا': 'ultra', 'اير': 'air', 'ميني': 'mini', 'بلس': 'plus', 'لايت': 'lite',
     'نوت': 'note', 'فولد': 'fold', 'فليب': 'flip', 'سيريس': 'series', 'انش': 'inch', 'انج': 'inch', 'بوصه': 'inch', 'جيجا': 'gb', 'قيقا': 'gb',
-    'جيجابايت': 'gb', 'تيرا': 'tb', 'تيرابايت': 'tb', 'واط': 'w', 'هيرتز': 'hz' };
+    'جيجابايت': 'gb', 'تيرا': 'tb', 'تيرابايت': 'tb', 'واط': 'w', 'هيرتز': 'hz', 'مل': 'ml', 'ملي': 'ml', 'مللي': 'ml' };
   const BRAND_DEFAULT = { canon: 'camera', nikon: 'camera', fujifilm: 'camera', sony: 'playstation 5', honor: 'smartphone', realme: 'smartphone',
     oneplus: 'smartphone', nokia: 'phone', lenovo: 'laptop', dell: 'laptop', hp: 'laptop', acer: 'laptop', asus: 'laptop', logitech: 'mouse',
     razer: 'gaming mouse', anker: 'power bank', baseus: 'charger', jbl: 'speaker', bose: 'headphones', beats: 'headphones', braun: 'shaver',
@@ -1811,46 +1875,99 @@ table.dt { min-width: 0; font-size: .76rem; }
   // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
   const PARTNER_FEEDS = {
     vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
-      gate: /(عطر|عطور|عود|دهن|بخور|مبخر|مسك|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de)/i,
-      generic: /^(perfumes?|fragrances?|scents?|parfums?|colognes?|smell)$/ },
+      gate: /(عطر|عطور|عود|دهن|بخور|دخون|مبخر|مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
+      generic: /^(scents?|smell)$/ },
     dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
-      gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
-      generic: /^(products?|care|cream|original)$/ },
+      gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|ريتينول|هيالورونيك|نياسيناميد|حلزون|امبول|مستحلب|لوشن|تقشير|ليفه|لصقات|شامبو|تساقط|بيوتين|بايوتين|جاميز|اوميغا|اوميجا|زنك|مغنيسيوم|ميلاتونين|مكياج|شفاه|شفايف|بلاشر|كوري|شعر|\bhair\b|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|retinol|hyaluronic|niacinamide|snail|ampoule|gumm|biotin|omega|makeup|\blip|shampoo|hair loss|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
+      generic: /^(products?|original)$/, titleOnly: true },
   };
-  const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy']);
-  const P_SYN = { men: '(\\bmen\\b|\\bman\\b|for him|homme|\\bmale\\b)', women: '(women|woman|for her|femme|female|ladies)', oil: '(oil|concentrated|attar|dehn)',
-    bakhoor: '(bakhoor|bukhoor|bakhour|incense|bakhoor set)', musk: '(musk|musc)', oud: '(\\boud|oudh|aoud)', sunscreen: '(sunscreen|sun ?block|sun ?screen|spf|واقي)',
-    moisturizer: '(moisturi[sz]|مرطب|hydrat)', cleanser: '(cleans|غسول|wash)', serum: '(serum|سيروم)' };
+  const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
+  // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
+  const P_ARAB_HOUSES = 'lattafa|rasasi|armaf|afnan|arabian|ajmal|swiss arabian|amouage|maison oud|holy oud|qissati|ward al arab|fellah|al qurashi|la monarch|mon destin|victor hills|essenza|olive perfumes|scent nostalgia|\\boud\\b|oudh|dehn|attar|bakhoor';
+  const P_SYN = {
+    men: '(\\bmen\\b|\\bman\\b|for him|homme|\\bmale\\b|unisex)', women: '(women|woman|for her|femme|female|ladies|unisex)', unisex: '(unisex)',
+    perfume: '(\\bedp\\b|\\bedt\\b|\\bedc\\b|parfum|perfume|cologne|eau de|elixir|extrait|attar|\\bdehn|\\boil\\b|bakhoor|\\d\\s*ml\\b)',
+    edp: '(\\bedp\\b|eau de parfum)', edt: '(\\bedt\\b|eau de toilette)', parfum: '(\\bparfum\\b|extrait|\\belixir)', extrait: '(extrait)', elixir: '(elixir)',
+    cologne: '(cologne|\\bedc\\b)', intense: '(intense|intensit)', tester: '(tester)', mini: '(\\bmini|miniature|\\b([1-9]|[12]\\d|30)\\s*ml\\b)', pocket: '(\\bmini|pocket|\\b([1-9]|[12]\\d|30)\\s*ml\\b)',
+    set: '(\\bset\\b|gift|coffret)', gift: '(\\bset\\b|gift|coffret)', mist: '(mist|splash)', splash: '(mist|splash)', samples: '(sample|discovery|\\bmini)', sample: '(sample|discovery|\\bmini)',
+    oil: '(\\boil\\b|concentrated|attar|dehn)', bakhoor: '(bakhoor|bukhoor|bakhour|incense|dukhoon)', incense: '(bakhoor|bukhoor|incense|dukhoon)', musk: '(musk|musc)', oud: '(\\boud|oudh|aoud)',
+    amber: '(amber|ambre|anbar)', rose: '(\\broses?\\b|\\brosa\\b|\\bward\\b|taif)', taif: '(taif)', sandalwood: '(sandal)', saffron: '(saffron|zafaran)', vanilla: '(vanil)', patchouli: '(patchouli)', lavender: '(lavend)',
+    coffee: '(coffee|cafe|caf[eé]|qahwa)', tobacco: '(tobacco|tabac)', leather: '(leather|cuir)', woody: '(wood|\\boud|sandal|cedar)', floral: '(floral|flower|fleur|\\brose|jasmin|lily)', fruity: '(fruit|berry|apple|peach|cherry)',
+    fresh: '(fresh|aqua|acqua|\\bblue\\b|bleu|cool|sport|marine|ocean|citrus)', summer: '(summer|fresh|aqua|acqua|citrus|\\bblue\\b|bleu|cool|sport|marine)', winter: '(winter|autumn|\\boud|amber|vanil|tobacco|leather|intense|noir|black)',
+    sweet: '(sweet|vanil|candy|sugar|caramel|gourmand|honey)', oriental: '(oriental|\\boud|amber|musk|saffron|incense|' + P_ARAB_HOUSES + ')', arabic: '(' + P_ARAB_HOUSES + ')', omani: '(amouage|omani)', designer: '^(?!.*(' + P_ARAB_HOUSES + '))',
+    french: '^(?!.*(' + P_ARAB_HOUSES + '))',
+    sunscreen: '(sunscreen|sun ?block|sun ?screen|spf|واقي)', moisturizer: '(moisturi[sz]|مرطب|hydrat)', cleanser: '(cleans|غسول|wash)', serum: '(serum|سيروم)', cream: '(cream|كريم)',
+  };
+  // نفس الكلمة بالعربي (عناوين DermaZone عربية): «retinol» تلقى «ريتينول»
+  const P_AR = {
+    retinol: 'ريتينول|ريتينو', serum: 'سيروم|امبول', cream: 'كريم', collagen: 'كولاجين|كولاجن', hyaluronic: 'هيالورونيك|هيالرونيك', acid: 'هيالورونيك|احماض|حمض', niacinamide: 'نياسيناميد',
+    vitamin: 'فيتامين|فيتا', vitamins: 'فيتامين|فيتا', snail: 'حلزون', mucin: 'حلزون', peptide: 'ببتيد', toner: 'تونر', emulsion: 'مستحلب', ampoule: 'امبول', exosome: 'اكسوزوم', centella: 'سنتيلا|سيكا', cica: 'سيكا|سنتيلا',
+    mask: 'ماسك', sheet: 'ماسك', lip: 'شفاه|شفا|شفايف', balm: 'بالم|بلسم', gloss: 'جلوس|قلوس', oil: 'زيت', eyeshadow: 'ظل عيون|ظلال', blush: 'بلشر|بلاشر|خدود', foundation: 'فاونديشن|كوشن', cushion: 'كوشن', liner: 'لاينر',
+    eye: 'عين|العين', neck: 'رقبه', face: 'وجه', body: 'جسم', scrub: 'تقشير|مقشر', exfoliating: 'تقشير|مقشر', mitt: 'ليفه', moisturizer: 'ترطيب|مرطب', hydrating: 'ترطيب|مرطب', whitening: 'تفتيح|نضار|برايت', brightening: 'تفتيح|نضار|برايت',
+    acne: 'حب الشباب|بثور|حبوب', pimple: 'بثور|حب الشباب', patches: 'لصقات', dark: 'داكن|تصبغ', spot: 'بقع|عيوب', pore: 'مسام', wrinkle: 'تجاعيد|شد', aging: 'شيخوخه|شباب', tightening: 'شد',
+    gummies: 'جاميز|جامي', biotin: 'بيوتين|بايوتين', omega: 'اوميغا|اوميجا|اوميقا', magnesium: 'مغنيسيوم', zinc: 'زنك', melatonin: 'ميلاتونين', creatine: 'كرياتين', turmeric: 'كركم|كوركومين', probiotic: 'بروبيوتك|بروبيوتيك',
+    supplement: 'مكمل|فيتامين|كبسول|جاميز', dietary: 'مكمل|غذائي', glutathione: 'جلوتاثيون', iron: 'حديد', vinegar: 'خل', cider: 'خل', apple: 'تفاح', ginseng: 'جنسنج', pomegranate: 'رمان',
+    hair: 'شعر', shampoo: 'شامبو', conditioner: 'بلسم', loss: 'تساقط', growth: 'انبات|نمو|تكثيف', korean: 'كوري|korea', skin: 'بشر', skincare: 'بشر|سيروم|كريم|تونر|ماسك|مستحلب|امبول', makeup: 'مكياج|شفاه|عيون|خدود|كوشن', test: 'اختبار|فحص',
+  };
+  // كلمات وصف (ثابت، صيفي…): نفضّل اللي يطابقها، وإذا ما فيه نرجع لكل المطابق
+  const P_SOFT = new Set(['long', 'lasting', 'sweet', 'summer', 'winter', 'daily', 'evening', 'oriental', 'luxury', 'fresh', 'strong', 'woody', 'floral', 'fruity', 'powdery', 'niche',
+    'designer', 'french', 'arabic', 'korean', 'face', 'care', 'natural', 'concentrated', 'perfume', 'fragrance', 'beauty', 'dietary', 'oily', 'dry', 'sensitive', 'combination']);
+  const pEsc = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // «eau de parfum» ← edp، «100 ml» ← 100ml (نفس كتابة عناوين المتجر)
+  const pPhrase = en => en.replace(/eau de parfum/g, 'edp').replace(/eau de toilette/g, 'edt').replace(/eau de cologne/g, 'cologne').replace(/extrait de parfum/g, 'extrait')
+    .replace(/(\d+(?:\.\d+)?)\s*ml\b/g, '$1ml').replace(/\bperfume oil\b/g, 'oil').replace(/\b(perfumes|fragrances?|parfums)\b/g, 'perfume').replace(/\bvitamin ([acde])\b/g, 'vitamin$1');
+  const P_VIT = { a: 'ا|اي', c: 'سي', d: 'د|دي', e: 'اي|e' };
+  const pTok = w => {
+    const v = w.match(/^vitamin([acde])$/);
+    if (v) { const en = new RegExp('vit(amin|a)[- ]?' + v[1] + '\\b', 'i'), ar = new RegExp('فيتا(مين)?[- ]?(' + P_VIT[v[1]] + ')(\\s|$|[-|)])'); return (t, tn) => en.test(t) || ar.test(tn); }
+    const m = w.match(/^(\d+(?:\.\d+)?)ml$/);
+    const en = new RegExp(m ? '\\b' + pEsc(m[1]) + '\\s*ml\\b' : (P_SYN[w] || ('\\b' + pEsc(w))), 'i');
+    const ar = P_AR[w] ? new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?(' + P_AR[w] + ')') : null;
+    return (t, tn) => en.test(t) || (!!ar && ar.test(tn));
+  };
   const partnerData = {};
   // أسماء الماركات في كل متجر شريك (ملف صغير) عشان نعرف إن «ديور» أو «سيرافي» تخص متجر معيّن
   let partnerIndex = null;
   const partnerIndexP = fetch('data/p/index.json').then(r => r.ok ? r.json() : null).then(d => (partnerIndex = d)).catch(() => null);
   const loadPartner = k => partnerData[k] || (partnerData[k] = fetch(PARTNER_FEEDS[k].file).then(r => r.ok ? r.json() : null).catch(() => null));
   async function fetchPartner(k, query, limit) {
-    const F = PARTNER_FEEDS[k], en = (toEnglish(query) || query).toLowerCase(), ar = normalize(query);
+    const F = PARTNER_FEEDS[k], en = pPhrase((toEnglish(query) || query).toLowerCase()), ar = normalize(query);
     await partnerIndexP;
     const brands = partnerIndex && partnerIndex[k] && partnerIndex[k].brands || [];
     const brandHit = en.split(/[^a-z0-9]+/).some(w => w.length > 3 && brands.some(b => b.split(/[^a-z0-9]+/).includes(w)));
     if (!F.gate.test(query) && !F.gate.test(en) && !brandHit) return [];
     const d = await loadPartner(k);
     if (!d || !Array.isArray(d.items)) return [];
-    const toks = en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w));
-    const res = toks.map(w => new RegExp(P_SYN[w] || ('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'i'));
-    const arToks = /[\u0600-\u06FF]/.test(ar) ? ar.split(' ').map(w => w.replace(/^ال(?=..)/, '')).filter(w => w.length > 1) : [];
-    const out = [];
+    const toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
+    const hard = toks.filter(w => !P_SOFT.has(w)).map(pTok), soft = toks.filter(w => P_SOFT.has(w)).map(pTok);
+    // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
+    const arToks = /[؀-ۿ]/.test(ar) ? ar.split(' ').map(w => w.replace(/^(ال|لل|بال|وال)(?=..)/, '')).filter(w => w.length > 1 && !AR_IGNORE.has(w)) : [];
+    const arRes = arToks.map(w => new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?' + pEsc(w)));
+    const hit = [];
+    // «ماسك» أو «سيروم» بدون «شعر» ← منتج للوجه، فنستبعد ماسكات وسيرومات الشعر
+    const noHair = toks.some(w => /^(mask|cream|serum|oil|lotion|toner|ampoule)$/.test(w)) && !toks.includes('hair');
     for (const [t, price, img, url, tags] of d.items) {
-      const text = t + ' | ' + tags;
-      const okEn = res.every(r => r.test(text));
-      const okAr = k === 'dermazone' && arToks.length && arToks.every(w => normalize(text).includes(w));
+      if (noHair && /شعر|\bhair\b/i.test(t)) continue;
+      // DermaZone: وسوم المنتج تسويقية وعامة («i dew care mask» على فرشاة شعر) ← الكلمات الأساسية لازم تكون في العنوان أو النوع
+      const text = t + ' | ' + (F.titleOnly ? String(tags).split(' | ').slice(0, 2).join(' | ') : tags), tn = normalize(text);
+      const okEn = hard.every(f => f(text, tn)) && (hard.length || soft.length || F.generic.test(en.trim()) || !arToks.length);
+      const okAr = k === 'dermazone' && arRes.length && arRes.every(r => r.test(tn));
       if (!(okEn || okAr)) continue;
       const usd = price / F.perUsd();
-      out.push({ platform: k, title: t, price: usd, unrated: true, rating: PRIOR_RATING, reviews: 0,
+      // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
+      const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
+      const p = { platform: k, title: t, price: usd, unrated: true, partner: true, rating: PRIOR_RATING, reviews: 0,
         url: safeUrl(F.aff + '?ulp=' + encodeURIComponent(url)), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
-        original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true,
-        shipCost: null, total: usd, score: 0, adj: 0, badges: [] });
-      if (out.length >= Math.max(limit, 40)) break;
+        original: null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
+        shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
+      const full = F.titleOnly ? t + ' | ' + tags : text, fulln = F.titleOnly ? normalize(full) : tn;
+      p._soft = soft.filter(f => f(full, fulln)).length;
+      hit.push(p);
     }
-    return out;
+    // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
+    hit.sort((a, b) => b._soft - a._soft);
+    const withSoft = hit.filter(x => x._soft > 0);
+    return (withSoft.length >= 3 ? withSoft : hit).slice(0, Math.max(limit, 40));
   }
 
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
@@ -2498,6 +2615,50 @@ table.dt { min-width: 0; font-size: .76rem; }
   // ================= خوارزمية «الخيار الأفضل» =================
   // الجودة = متوسط بايزي للتقييم (5.0 من 3 مراجعات لا يتفوق على 4.8 من 5,000)،
   // والسعر على مقياس لوغاريتمي بين أرخص وأغلى نتيجة، ثم مزيج موزون حسب أولوية المستخدم.
+  // ================= العطور: التركيز والحجم والجنس من العنوان =================
+  // التركيز (كمية الزيت العطري) يحدد الثبات تقريبًا: بارفان > أو دو بارفان > أو دو تواليت > كولونيا
+  const PF_CONC = [
+    [/body mist|body splash|hair mist|\bmist\b/i, 'معطر جسم', 1], [/\bedp\b|eau de parfum/i, 'أو دو بارفان', 3], [/\bedt\b|eau de toilette/i, 'أو دو تواليت', 2],
+    [/\bextrait\b/i, 'إكستريت دي بارفان', 4], [/\belixir\b/i, 'إليكسير', 0], [/\bedc\b|cologne/i, 'كولونيا', 1], [/\bparfum\b|\bperfume extract\b/i, 'بارفان', 4],
+    [/\b(attar|dehn|perfume oil|oud oil|concentrated)\b/i, 'دهن عطري', 0],
+  ];
+  const PF_LEVEL = ['', 'تركيز خفيف', 'تركيز متوسط', 'تركيز عالي', 'تركيز عالي جدًا'];
+  const PF_WORD = /\b(perfume|parfum|fragrance|cologne|eau de|edp|edt|edc|attar|oud|musk|bakhoor|body mist)\b|عطر|عطور/i;
+  function perfOf(p) {
+    if (p._pf !== undefined) return p._pf;
+    const t = String(p.title || '');
+    const c = PF_CONC.find(([re]) => re.test(t));
+    const m = t.match(/(\d+(?:\.\d+)?)\s*(ml|مل)\b/i);
+    const ml = m ? +m[1] : 0;
+    if (!c && !(ml && PF_WORD.test(t))) return (p._pf = null);
+    const g = /\bunisex\b|للجنسين/i.test(t) ? 'للجنسين' : /\b(women|woman|ladies|femme|for her)\b|نسائي/i.test(t) ? 'نسائي' : /\b(men|man|homme|for him)\b|رجالي/i.test(t) ? 'رجالي' : '';
+    return (p._pf = { conc: c ? c[1] : '', level: c ? c[2] : 0, ml: ml > 0 && ml < 2000 ? ml : 0, g,
+      set: /\bset\b|gift set|coffret|طقم/i.test(t), tester: /\btester\b|تستر/i.test(t) });
+  }
+  // بحث عطور: أغلب النتائج فيها حجم بالمل ← نقارن سعر الـ100 مل بدل سعر القارورة
+  const perfMode = list => list.length > 0 && list.filter(p => { const f = perfOf(p); return f && f.ml; }).length >= list.length * 0.5;
+  const unitPrice = (p, pm) => { const f = pm && perfOf(p); return f && f.ml ? tot(p) / f.ml * 100 : tot(p); };
+  const CONC_BONUS = [0, -0.2, 0, 0.15, 0.3];
+  function perfHtml(p, withUnit) {
+    const f = perfOf(p);
+    if (!f || (!f.conc && !f.ml)) return '';
+    const bits = [];
+    if (f.conc) bits.push(`<span class="c">${f.conc}</span>`);
+    if (f.level && withUnit) bits.push(`<span>${PF_LEVEL[f.level]}</span>`);
+    if (f.ml) bits.push(`<span><bdi>${f.ml}</bdi> مل</span>`);
+    if (f.g && withUnit) bits.push(`<span>${f.g}</span>`);
+    if (f.set) bits.push('<span>طقم</span>');
+    if (f.tester) bits.push('<span>تستر</span>');
+    const base = f.ml && f.ml < 30 ? 10 : 100;  // الدهن والعينات: نقارن لكل 10 مل
+    if (withUnit && f.ml && f.ml !== base) bits.push(`<span class="u"><bdi>${money(p.price / f.ml * base)}</bdi> لكل ${base} مل</span>`);
+    return `<div class="pf">${bits.join('')}</div>`;
+  }
+  // المتاجر الشريكة: ما عندها تقييمات للمنتجات، فنعرض اللي نعرفه عنها من صفحاتها (أصلي، التوصيل، الدفع)
+  const PARTNER_INFO = {
+    vperfumes: { trust: 'أصلي ومغلّف حسب المتجر', why: 'عطر أصلي ومغلّف حسب V Perfumes', whyItem: 'منتج أصلي ومغلّف حسب V Perfumes', freeOverOmr: 20, cod: true },
+    dermazone: { trust: 'أصلي بضمان المتجر', why: 'منتج أصلي بضمان DermaZone', ship: 'التوصيل لعمان قد يأخذ 10 إلى 15 يوم' },
+  };
+
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;
   const bayes = (r, n) => (n * r + PRIOR_WEIGHT * PRIOR_RATING) / (n + PRIOR_WEIGHT);
 
@@ -2506,11 +2667,14 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (!list.length) return null;
     // نقيّم كل مجموعة لحالها (الحقيقية ضد الحقيقية، والتوضيحية ضد التوضيحية)
     const rate = group => {
-      const logs = group.map(p => Math.log(Math.max(tot(p), 0.01)));
+      const pm = perfMode(group);
+      const logs = group.map(p => Math.log(Math.max(unitPrice(p, pm), 0.01)));
       const lo = Math.min(...logs), hi = Math.max(...logs);
       group.forEach((p, i) => {
         // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
         p.adj = (p.sellerRated || p.unrated) ? bayes(p.rating, 8) : bayes(p.rating, p.reviews ?? p.orders ?? 0);
+        // في العطور: التركيز الأعلى يثبت أكثر، فنعطيه دفعة بسيطة في الجودة
+        if (pm) { const f = perfOf(p); if (f) p.adj += CONC_BONUS[f.level] || 0; }
         const priceScore = hi > lo ? 1 - (logs[i] - lo) / (hi - lo) : 1;
         const qualityScore = Math.min(1, Math.max(0, (p.adj - 3) / 2));
         p.score = (1 - priceWeight) * qualityScore + priceWeight * priceScore;
@@ -2523,14 +2687,20 @@ table.dt { min-width: 0; font-size: .76rem; }
     realOnly.forEach(p => { p.score = Math.round(1000 * p.score) / 10; });  // كل المتاجر بنفس المستوى
     demo.forEach(p => { p.score = Math.round(10 * p.score * 50) / 10; });
     if (!realOnly.length) return null;  // ما نرشّح منتجات توضيحية كأفضل خيار
-    const pool = realOnly;
+    // بحث عطور: الأفضل والأرخص لازم يكونون عطور فعلًا (فيها تركيز مكتوب)، مو مباخر أو شموع
+    const pf = perfMode(realOnly) ? realOnly.filter(p => { const f = perfOf(p); return f && f.conc; }) : [];
+    const pfMain = pf.filter(p => perfOf(p).level !== 1);  // معطر الجسم والكولونيا بس إذا ما فيه غيرها
+    const pool = pfMain.length ? pfMain : pf.length ? pf : realOnly;
     const best = pool.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = pool.reduce((a, b) => tot(b) < tot(a) ? b : a);
     const rated = pool.filter(p => !p.sellerRated && !p.unrated);
-    const top = (rated.length ? rated : pool).reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
     best.badges.push('best');
     if (cheapest !== best) cheapest.badges.push('cheapest');
-    if (top !== best) top.badges.push('top_rated');
+    // «الأعلى تقييمًا» بس لما فيه تقييمات حقيقية للمنتجات
+    if (rated.length) {
+      const top = rated.reduce((a, b) => (b.adj > a.adj || (b.adj === a.adj && b.rating > a.rating)) ? b : a);
+      if (top !== best) top.badges.push('top_rated');
+    }
     return best;
   }
 
@@ -2538,7 +2708,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const avgPrice = list.reduce((s, p) => s + p.price, 0) / list.length;
     const avgRating = list.reduce((s, p) => s + p.rating, 0) / list.length;
     let text;
-    if (best.unrated) text = 'منتج رائج على علي إكسبريس';
+    if (best.unrated && best.platform === 'etsy') text = 'منتج يدوي من Etsy';
+    else if (best.unrated) text = 'منتج رائج على علي إكسبريس';
     else if (best.sellerRated) text = best.sellerPct ? `بائع موثوق بتقييم إيجابي ${best.sellerPct}%` : 'منتج من eBay';
     else {
       text = `تقييم ${best.rating.toFixed(1)} من 5`;
@@ -2550,6 +2721,24 @@ table.dt { min-width: 0; font-size: .76rem; }
     else if (diff <= -3) text += ` وجودة أعلى من المتوسط (${avgRating.toFixed(1)}) مقابل فرق سعر بسيط`;
     else text += ' وسعر قريب من متوسط النتائج';
     return text;
+  }
+
+  // سبب الاختيار للمتاجر الشريكة والعطور: أجزاء قصيرة (كل جزء يترجم لحاله)
+  function reasonHtml(best, list) {
+    const info = PARTNER_INFO[best.platform];
+    const pm = perfMode(list), f = perfOf(best);
+    if (!info) return esc(bestReason(best, list));
+    const parts = [];  // «أصلي» والتركيز والحجم ظاهرين فوقه، فهنا بس ليش هو الأفضل
+    const priced = pm ? list.filter(p => { const g = perfOf(p); return g && g.ml; }) : list;
+    const avg = priced.reduce((s, p) => s + unitPrice(p, pm), 0) / Math.max(priced.length, 1);
+    const diff = avg ? (avg - unitPrice(best, pm)) / avg * 100 : 0;
+    const pre = pm && f && f.ml ? `سعر الـ${f.ml < 30 ? 10 : 100} مل` : 'السعر';
+    if (diff >= 3) parts.push(`${pre} أقل من متوسط النتائج بنسبة <bdi>${diff.toFixed(0)}%</bdi>`);
+    else if (diff > -15) parts.push(`${pre} قريب من متوسط النتائج`);
+    else parts.push(`${pre} أعلى من متوسط النتائج بنسبة <bdi>${(-diff).toFixed(0)}%</bdi>`);
+    if (f && f.level >= 3) parts.push('تركيز عالي يعني ثبات أطول');
+    if (best.shipCost === 0) parts.push('شحن مجاني لعمان');
+    return parts.map(x => `<span>${x}</span>`).join(' · ');
   }
 
   function summarize(list) {
@@ -2663,10 +2852,10 @@ table.dt { min-width: 0; font-size: .76rem; }
   const dotI = k => `<i style="background:${PLATFORMS[k] ? PLATFORMS[k].color : '#8E8E93'}" aria-hidden="true"></i>`;
   const pill = (k, inline) => `<span class="plat${inline ? ' inline' : ''}">${dotI(k)}${PLATFORMS[k].name}</span>`;
   const stars = r => `<span class="stars" style="--r:${Math.max(0, Math.min(100, r / 5 * 100)).toFixed(0)}%" aria-hidden="true"></span>`;
-  const reviewsText = p => (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
+  const reviewsText = p => PARTNER_INFO[p.platform] ? `<span class="ok">${PARTNER_INFO[p.platform].trust}</span>` : (p.platform === 'aliexpress' && p.ratingPct) ? `(<bdi>${p.ratingPct}%</bdi> راضين عنه)` : p.platform === 'etsy' ? (p.favs ? `(❤️ ${p.favs.toLocaleString('en-US')} معجب)` : 'منتج يدوي') : p.unrated ? (p.orders ? `(${p.orders.toLocaleString('en-US')} مبيع)` : 'من المنتجات الرائجة') : p.sellerRated
     ? `تقييم البائع${p.reviews ? ` (${p.reviews.toLocaleString('en-US')})` : ''}`
     : (p.reviews ? `(${p.reviews.toLocaleString('en-US')} تقييم)` : '');
-  const ratingNum = p => p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
+  const ratingNum = p => PARTNER_INFO[p.platform] ? '<span class="ok">✓</span>' : p.unrated ? '🔥' : p.sellerRated && p.sellerPct ? `${p.sellerPct}%` : `${p.rating.toFixed(1)}/5`;
   const shopBtn = (p, label) => {
     const pl = PLATFORMS[p.platform];
     return `<a class="shop-btn" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(label || `تسوّق من ${pl.name} ↗`)}</a>`;
@@ -2675,7 +2864,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     const items = [];
     if (p.shipCost === 0) items.push('<span class="free">✓ شحن مجاني لعمان</span>');
     else if (p.shipCost > 0) items.push(`<span>+ ${money(p.shipCost)} شحن لعمان</span>`);
+    else if (PARTNER_INFO[p.platform] && PARTNER_INFO[p.platform].freeOverOmr) items.push(`<span>توصيل مجاني فوق <bdi>${money(PARTNER_INFO[p.platform].freeOverOmr / OMR_PER_USD).replace(/[.,]0+(?=\D|$)/, '')}</bdi></span>`);
+    else if (PARTNER_INFO[p.platform] && PARTNER_INFO[p.platform].ship) items.push(`<span>${PARTNER_INFO[p.platform].ship}</span>`);
     else if (p.real) items.push('<span>الشحن يظهر في صفحة المتجر</span>');
+    if (PARTNER_INFO[p.platform] && PARTNER_INFO[p.platform].cod) items.push('<span>الدفع عند الاستلام</span>');
     if (p.orders) items.push(`<span><bdi>${p.orders.toLocaleString('en-US')}</bdi> مبيع</span>`);
     if (p.platform === 'aliexpress' && p.shipping) items.push(`<span>يوصل خلال <bdi>${esc(p.shipping)}</bdi></span>`);
     return items.join('');
@@ -2740,7 +2932,8 @@ table.dt { min-width: 0; font-size: .76rem; }
       <div class="pbody">
         <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
-        <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span></div>
+        <div class="rating">${PARTNER_INFO[p.platform] ? '<span class="ok">✓ أصلي حسب المتجر</span>' : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
+        ${perfHtml(p, false)}
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
@@ -2758,7 +2951,8 @@ table.dt { min-width: 0; font-size: .76rem; }
         <span class="ribbon">الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
-        <div class="reason">${esc(bestReason(p, list))}</div>
+        ${perfHtml(p, true)}
+        <div class="reason">${reasonHtml(p, list)}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
           <span class="meta">مؤشر القيمة <b class="num">${p.score.toFixed(0)}</b>/100</span></div>
@@ -2795,10 +2989,10 @@ table.dt { min-width: 0; font-size: .76rem; }
       const head = `<div class="head"><span>${dotI(k)}${pl.name}</span>${tag}</div>`;
       if (!s) return `<div class="plat-card">${head}<div class="stats"><p class="hint">لا توجد نتائج مطابقة للفلاتر الحالية.</p></div></div>`;
       const rows = [['عدد النتائج', `${s.count}`], ['أقل سعر', money(s.min)], ['متوسط السعر', money(s.avgPrice)],
-                    ['متوسط التقييم', `<bdi>${s.avgRating.toFixed(2)}</bdi> ★`], ['متوسط مؤشر القيمة', `<bdi>${s.avgScore.toFixed(0)}/100</bdi>`]]
+                    ['متوسط التقييم', s.items.every(p => p.unrated) ? '—' : `<bdi>${s.avgRating.toFixed(2)}</bdi> ★`], ['متوسط مؤشر القيمة', `<bdi>${s.avgScore.toFixed(0)}/100</bdi>`]]
         .map(([a, b]) => `<div class="stat"><span>${a}</span><b class="num">${b}</b></div>`).join('');
       return `<div class="plat-card${k === winner ? ' winner' : ''}">${head}<div class="stats">${rows}
-        <div class="top-item">أفضل منتج في المنصة:<b>${esc(s.best.title)}</b>${money(s.best.price)} · <bdi>${s.best.rating.toFixed(1)}</bdi> ★</div></div></div>`;
+        <div class="top-item">أفضل منتج في المنصة:<b>${esc(s.best.title)}</b>${money(s.best.price)}${s.best.unrated ? '' : ` · <bdi>${s.best.rating.toFixed(1)}</bdi> ★`}</div></div></div>`;
     }).join('');
     return `<div class="plat-grid">${cards}</div>`;
   }
@@ -3389,7 +3583,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       ${row('المتجر', p => `<td>${pill(p.platform, true)}</td>`)}
       ${row('السعر', p => cell(p.price === minP, `${money(p.price)}${p.price === minP ? '<br>💰 الأرخص' : ''}`))}
       ${row('الخصم', p => `<td>${discountPct(p) >= 5 ? '-' + discountPct(p) + '%' : '—'}</td>`)}
-      ${row('التقييم', p => cell(maxR !== null && !p.unrated && !p.sellerRated && p.rating === maxR, `${ratingNum(p)}<br><small>${esc(reviewsText(p))}</small>`))}
+      ${row('التقييم', p => cell(maxR !== null && !p.unrated && !p.sellerRated && p.rating === maxR, `${ratingNum(p)}<br><small>${reviewsText(p)}</small>`))}
       ${row('التوصيل', p => `<td>${p.shipping ? esc(shipDays(p)) : '—'}</td>`)}
       ${row('شحن مجاني', p => `<td>${p.freeShip ? '✓' : '—'}</td>`)}
       ${row('مؤشر القيمة', p => cell((p.score || 0) === maxS, `${(p.score || 0).toFixed(0)}/100`))}

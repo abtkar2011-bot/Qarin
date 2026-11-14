@@ -6,6 +6,12 @@ const fs = require('fs'), path = require('path');
 const OUT = process.argv[2] || 'partners';
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/about.html)';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+// بعض الأسماء عندهم مكتوبة بترميز خربان («GiÃ²» بدل «Giò»): نرجّعها
+function fixText(v) {
+  let t = String(v || '');
+  if (/[ÃÂ][\u0080-\u00BF]/.test(t) && !/[^\u0000-\u00FF]/.test(t)) { const f = Buffer.from(t, 'latin1').toString('utf8'); if (!f.includes('\uFFFD')) t = f; }
+  return t.replace(/[\u00A0\s]+/g, ' ').trim();
+}
 async function get(url, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
@@ -31,7 +37,7 @@ function parseVListing(html) {
       const of = it.offers || {}; const price = +of.price;
       if (!(price > 0) || of.priceCurrency !== 'OMR') continue;
       if (/OutOfStock|SoldOut|Discontinued/i.test(of.availability || '')) continue;
-      out.push({ t: String(it.name).trim(), p: price, i: String(it.image || ''), u: String(it.url), b: (it.brand && it.brand.name) || '' });
+      out.push({ t: fixText(it.name), p: price, i: String(it.image || ''), u: String(it.url), b: (it.brand && it.brand.name) || '' });
     }
   }
   return out;
