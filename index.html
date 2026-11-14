@@ -927,6 +927,11 @@ table.dt { min-width: 0; font-size: .76rem; }
                   url: q => 'https://www.etsy.com/search?q=' + qp(q) },
     ebay:       { name: 'إيباي',       color: '#0064D2', text: '#FFFFFF', bar: '#0064D2', tagline: 'جديد ومستعمل من العالم',
                   url: q => 'https://www.ebay.com/sch/i.html?_nkw=' + qp(q) },
+    // متاجر شريكة عن طريق Admitad: منتجاتها من ملفات نبنيها كل يوم (tools/partners/build.js)
+    vperfumes:  { name: 'V Perfumes',  color: '#B8860B', text: '#FFFFFF', bar: '#B8860B', tagline: 'عطور أصلية من عُمان',
+                  url: () => 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/?ulp=' + encodeURIComponent('https://www.vperfumes.com/om-en/collection/best-sellers') },
+    dermazone:  { name: 'DermaZone',   color: '#2E8B57', text: '#FFFFFF', bar: '#2E8B57', tagline: 'عناية بالبشرة ومنتجات كورية',
+                  url: q => 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/?ulp=' + encodeURIComponent('https://www.dermazonestore.com/search?q=' + qp(q)) },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1597,6 +1602,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     "طقم كنب": "sofa set", "دله كهربائيه": "electric arabic coffee maker", "فرشات سياره": "car floor mats", "دعاسات": "car floor mats", "دواسات سياره": "car floor mats",
     "ليتات": "led lights", "ليتات سياره": "car led lights", "لعبه سياره": "toy car", "سياره لعبه": "toy car", "عطر عربي": "arabic perfume", "عطور عربيه": "arabic perfume",
     "حامل مصحف": "quran stand", "عطر رجالي فرنسي": "men perfume", "عطر فرنسي رجالي": "men perfume", "عطر نسائي فرنسي": "women perfume", "لعبه تعليميه": "educational toys", "العاب تعليميه": "educational toys", "ليت": "led lights",
+    "ديور": "dior", "عطر ديور": "dior perfume", "شانيل": "chanel", "سوفاج": "sauvage", "ارماني": "armani", "فرزاتشي": "versace", "فيرساتشي": "versace", "توم فورد": "tom ford",
+    "هوجو بوس": "hugo boss", "مونت بلانك": "montblanc", "بربري": "burberry", "كارولينا هيريرا": "carolina herrera", "رصاصي": "rasasi", "اجمل": "ajmal", "ارماف": "armaf", "ديفيدوف": "davidoff",
+    "سيرافي": "cerave", "لاروش بوزيه": "la roche posay", "ميديكيوب": "medicube", "كوزركس": "cosrx", "ذا اورديناري": "the ordinary", "بيوديرما": "bioderma",
     "لطافه": "lattafa", "عطر لطافه": "lattafa perfume", "كارتير": "cartier", "كارتيير": "cartier", "اوميغا": "omega", "اوميجا": "omega", "لويس فيتون": "louis vuitton", "لوي فيتون": "louis vuitton",
     "قوتشي": "gucci", "غوتشي": "gucci", "جوتشي": "gucci", "قوچي": "gucci", "راي بان": "ray-ban", "ريبان": "ray-ban", "طياره درون": "drone", "طياره تصوير": "camera drone",
     "اقلام ملونه": "colored pencils", "الوان خشبيه": "colored pencils", "اواني طبخ": "cookware set", "بن مختص": "specialty coffee beans", "قهوه مختصه": "specialty coffee beans",
@@ -1799,6 +1807,51 @@ table.dt { min-width: 0; font-size: .76rem; }
     }));
   }
   let etsyLive = false;
+
+  // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
+  const PARTNER_FEEDS = {
+    vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
+      gate: /(عطر|عطور|عود|دهن|بخور|مبخر|مسك|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de)/i,
+      generic: /^(perfumes?|fragrances?|scents?|parfums?|colognes?|smell)$/ },
+    dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
+      gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
+      generic: /^(products?|care|cream|original)$/ },
+  };
+  const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy']);
+  const P_SYN = { men: '(\\bmen\\b|\\bman\\b|for him|homme|\\bmale\\b)', women: '(women|woman|for her|femme|female|ladies)', oil: '(oil|concentrated|attar|dehn)',
+    bakhoor: '(bakhoor|bukhoor|bakhour|incense|bakhoor set)', musk: '(musk|musc)', oud: '(\\boud|oudh|aoud)', sunscreen: '(sunscreen|sun ?block|sun ?screen|spf|واقي)',
+    moisturizer: '(moisturi[sz]|مرطب|hydrat)', cleanser: '(cleans|غسول|wash)', serum: '(serum|سيروم)' };
+  const partnerData = {};
+  // أسماء الماركات في كل متجر شريك (ملف صغير) عشان نعرف إن «ديور» أو «سيرافي» تخص متجر معيّن
+  let partnerIndex = null;
+  const partnerIndexP = fetch('data/p/index.json').then(r => r.ok ? r.json() : null).then(d => (partnerIndex = d)).catch(() => null);
+  const loadPartner = k => partnerData[k] || (partnerData[k] = fetch(PARTNER_FEEDS[k].file).then(r => r.ok ? r.json() : null).catch(() => null));
+  async function fetchPartner(k, query, limit) {
+    const F = PARTNER_FEEDS[k], en = (toEnglish(query) || query).toLowerCase(), ar = normalize(query);
+    await partnerIndexP;
+    const brands = partnerIndex && partnerIndex[k] && partnerIndex[k].brands || [];
+    const brandHit = en.split(/[^a-z0-9]+/).some(w => w.length > 3 && brands.some(b => b.split(/[^a-z0-9]+/).includes(w)));
+    if (!F.gate.test(query) && !F.gate.test(en) && !brandHit) return [];
+    const d = await loadPartner(k);
+    if (!d || !Array.isArray(d.items)) return [];
+    const toks = en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w));
+    const res = toks.map(w => new RegExp(P_SYN[w] || ('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'i'));
+    const arToks = /[\u0600-\u06FF]/.test(ar) ? ar.split(' ').map(w => w.replace(/^ال(?=..)/, '')).filter(w => w.length > 1) : [];
+    const out = [];
+    for (const [t, price, img, url, tags] of d.items) {
+      const text = t + ' | ' + tags;
+      const okEn = res.every(r => r.test(text));
+      const okAr = k === 'dermazone' && arToks.length && arToks.every(w => normalize(text).includes(w));
+      if (!(okEn || okAr)) continue;
+      const usd = price / F.perUsd();
+      out.push({ platform: k, title: t, price: usd, unrated: true, rating: PRIOR_RATING, reviews: 0,
+        url: safeUrl(F.aff + '?ulp=' + encodeURIComponent(url)), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
+        original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true,
+        shipCost: null, total: usd, score: 0, adj: 0, badges: [] });
+      if (out.length >= Math.max(limit, 40)) break;
+    }
+    return out;
+  }
 
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
   const fixImg = u => typeof u === 'string' ? u.trim().replace(/^\/\//, 'https://').replace(/^http:\/\//, 'https://') : '';
@@ -2570,14 +2623,6 @@ table.dt { min-width: 0; font-size: .76rem; }
   function clearPrice() { state.priceMin = state.priceMax = null; $('priceMin').value = ''; $('priceMax').value = ''; priceBox(); render(); }
   // متاجر شريكة (Admitad): تطلع لما يكون البحث من نوعها، برابط تسويق بالعمولة
   const PARTNERS = [
-    { name: 'V Perfumes', dot: '#B8860B', test: /(عطر|عطور|عود|دهن|بخور|مبخر|مسك|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk)/i,
-      line: 'عطور أصلية من متجر V Perfumes في عُمان، بالريال العماني', base: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
-      target: (q, en) => { const loc = LANG === 'ar' ? 'om-ar' : 'om-en', t = q + ' ' + en;
-        const cat = /بخور|مبخر|bakhoor|incense/i.test(t) ? 'category/bakhoor-set' : /دهن|oil|attar/i.test(t) ? 'category/perfume-oils'
-          : /نسائ|نساء|women|ladies|female/i.test(t) ? 'category/perfumes-for-women' : /رجال|men\b|male/i.test(t) ? 'category/perfumes-for-men' : 'collection/best-sellers';
-        return `https://www.vperfumes.com/${loc}/${cat}`; } },
-    { name: 'DermaZone', dot: '#2E8B57', test: /(كريم|سيروم|واقي شمس|واقي الشمس|مرطب|غسول|بشره|بشرة|حبوب الوجه|skin ?care|serum|sunscreen|moisturi[sz]er|cleanser|cerave|la roche|bioderma|vichy|the ordinary)/i,
-      line: 'منتجات عناية بالبشرة أصلية من DermaZone', base: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/' },
     { name: 'Woodestic', dot: '#8B5A2B', test: /(خشب|خشبي|wooden|\bwood\b)/i,
       line: 'ساعات ونظارات وإكسسوارات خشب من Woodestic', base: 'https://naiawork.com/g/do86ucnzhx683a5815ddc586cc6aee/' },
   ];
@@ -3005,6 +3050,9 @@ table.dt { min-width: 0; font-size: .76rem; }
       } else if (k === 'ebay' && EBAY_API) {
         try { results[k] = await fetchEbay(query, FETCH_N); }
         catch (e) { console.warn(e); results[k] = []; }  // ما نعرض منتجات مزيّفة باسم إيباي
+      } else if (PARTNER_FEEDS[k]) {
+        try { results[k] = await fetchPartner(k, query, FETCH_N); }
+        catch (e) { results[k] = []; }
       } else results[k] = [];
       const row = $('st-' + k);
       if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span>${PLATFORMS[k].name}: ${results[k].length} منتج`;
@@ -3034,7 +3082,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     await Promise.all(KEYS.map(async k => {
       try {
         results[k] = k === 'aliexpress' ? await fetchAli(query, FETCH_N) : k === 'etsy' ? await fetchEtsy(query, FETCH_N)
-          : (k === 'ebay' && EBAY_API) ? await fetchEbay(query, FETCH_N) : [];
+          : (k === 'ebay' && EBAY_API) ? await fetchEbay(query, FETCH_N) : PARTNER_FEEDS[k] ? await fetchPartner(k, query, FETCH_N) : [];
       } catch (e) { results[k] = []; }
     }));
     const all = KEYS.flatMap(k => results[k]);
@@ -3085,7 +3133,7 @@ table.dt { min-width: 0; font-size: .76rem; }
       });
       const got = items.filter(x => x.p);
       return { k, items, custom, got: got.length, total: got.reduce((s, x) => s + tot(x.p), 0), avg: got.length ? got.reduce((s, x) => s + x.p.score, 0) / got.length : 0 };
-    });
+    }).filter(b => b.got > 0 || !PARTNER_FEEDS[b.k]);  // المتاجر الشريكة تطلع بس لما يكون عندها شي من السلة
     state.basket.bs = bs;
     const maxGot = Math.max(0, ...bs.map(b => b.got));
     const pool = bs.filter(b => b.got === maxGot && b.got > 0);

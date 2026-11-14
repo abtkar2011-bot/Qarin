@@ -85,6 +85,37 @@ jobs:
           path: products
           key: qarin-products-${{ github.run_id }}
 
+      # منتجات المتاجر الشريكة (V Perfumes و DermaZone) من صفحاتها العامة ← data/p
+      - name: Restore partner stores
+        uses: actions/cache/restore@v4
+        with:
+          path: partners
+          key: qarin-partners-${{ github.run_id }}
+          restore-keys: qarin-partners-
+
+      - name: Partner stores
+        id: partners
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          want=$(sha256sum tools/partners/build.js | cut -c1-16)
+          have=$(cat partners/.builder 2>/dev/null || true)
+          if [ "${{ github.event_name }}" = "push" ] && [ -f partners/index.json ] && [ "$want" = "$have" ]; then
+            echo "Using saved partner products"; echo "built=no" >> "$GITHUB_OUTPUT"
+          else
+            node tools/partners/build.js partners && echo "$want" > partners/.builder
+            echo "built=yes" >> "$GITHUB_OUTPUT"
+          fi
+          ls -la partners
+
+      - name: Save partner stores
+        if: steps.partners.outputs.built == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: partners
+          key: qarin-partners-${{ github.run_id }}
+
       # كوبونات Admitad (الرابط سرّي في الإعدادات) ← coupons.json
       - name: Coupons
         continue-on-error: true
@@ -95,9 +126,10 @@ jobs:
       - name: Put the site together
         run: |
           mkdir -p _site
-          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|products|history|_site) ;; *) cp -r "$f" _site/ ;; esac; done
+          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
           cp -r products _site/data/s
+          mkdir -p _site/data/p && cp partners/*.json _site/data/p/ 2>/dev/null || true
           echo "files: $(find _site -type f | wc -l)"; du -sh _site
 
       - uses: actions/upload-pages-artifact@v3
