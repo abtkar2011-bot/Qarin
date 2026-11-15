@@ -2972,7 +2972,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     return (bits.length ? `<div class="pf cf">${bits.join('')}</div>` : '') + cb;
   }
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
-  const CF_KIND = [['beans', 'كيس محصول'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
+  const CF_KIND = [['beans', 'محاصيل'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
   const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
   function passCoffee(p) {
     const f = state.cf || {};

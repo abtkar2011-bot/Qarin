@@ -1,6 +1,7 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"محاصيل": ["Coffee beans", "Grains de café", "Granos de café", "咖啡豆", "कॉफ़ी बीन्स", "کافی بینز", "Кофейные зёрна", "Kahve çekirdeği", "Biji kopi"],
 "كيس محصول": ["Coffee bag", "Sachet de café", "Bolsa de café", "袋装咖啡豆", "कॉफ़ी बैग", "کافی کا بیگ", "Пачка зерна", "Kahve paketi", "Kantong kopi"],
 "جرام": ["g", "g", "g", "克", "ग्राम", "گرام", "г", "g", "g"],
 "كيلو": ["kg", "kg", "kg", "公斤", "किलो", "کلو", "кг", "kg", "kg"],
