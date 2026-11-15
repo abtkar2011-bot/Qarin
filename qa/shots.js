@@ -1,30 +1,23 @@
-// قسم القهوة في الموقع الحقيقي
-const { chromium, devices } = require('playwright');
+// فحص متاجر العطور العمانية: المنصة، robots، العملة، وعينة منتجات
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
-const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
+const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
+const sites = ['https://amouage.com', 'https://om.swissarabian.com', 'https://shop.alharamainperfumes.com/oman', 'https://om.asgharali.com', 'https://omanperfumery.com', 'https://omanluxury.store',
+  'https://alhajisoman.com', 'https://boulevardperfumes.com', 'https://oudbank.com', 'https://alturathoud.com', 'https://oudworlds.com', 'https://www.arabianoud.com', 'https://oman.mojperfumes.com', 'https://www.ajmalperfume.com'];
+const paths = ['/robots.txt', '/', '/products.json?limit=3', '/wp-json/wc/store/v1/products?per_page=3', '/sitemap.xml'];
+const mk = t => ['cdn.shopify', 'Shopify.currency', 'salla', 'zid.store', 'zidcdn', 'woocommerce', 'wp-content', 'magento', 'Magento', 'odoo', 'Odoo', 'kushk', '__NEXT_DATA__', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart', 'expandcart', 'salesforce', 'demandware'].filter(m => t.includes(m));
 (async () => {
-  const b = await chromium.launch(); const log = [];
-  const ctx = await b.newContext({ ...devices['iPhone 14 Pro'], deviceScaleFactor: 2, locale: 'ar-OM' });
-  await ctx.addInitScript(() => { localStorage.setItem('qarin.lang', 'ar'); localStorage.setItem('qarin.instHide', String(Date.now())); });
-  const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
-  await p.goto(SITE + '?v=' + Date.now(), { waitUntil: 'load', timeout: 60000 }); await p.waitForTimeout(2500);
-  const done = () => p.waitForFunction(() => document.querySelector('.status.done'), null, { timeout: 120000 }).then(() => p.waitForTimeout(3000)).catch(() => {});
-  const stores = () => p.$$eval('#panel-cards .pcard .pstore span', e => e.map(x => x.textContent).reduce((a, s) => (a[s] = (a[s] || 0) + 1, a), {}));
-  await p.click('#coffeeTile'); await done();
-  log.push('tile: ' + JSON.stringify(await stores()) + ' hash=' + await p.evaluate(() => location.hash));
-  await p.screenshot({ path: path.join(OUT, 'cf_top.png') });
-  log.push('kinds: ' + (await p.$$eval('.cf-chip[data-cf="kind"]', e => e.map(x => x.innerText.replace(/\s+/g, ' ')))).join(', '));
-  log.push('procs: ' + (await p.$$eval('.cf-chip[data-cf="pr"]', e => e.map(x => x.innerText.replace(/\s+/g, ' ')))).join(', '));
-  const bar = await p.$('.cf-bar'); if (bar) { await bar.scrollIntoViewIfNeeded(); await p.screenshot({ path: path.join(OUT, 'cf_bar.png') }); }
-  await p.fill('#cfQ', 'عقد'); await p.press('#cfQ', 'Enter'); await done();
-  log.push('عقد: ' + JSON.stringify(await stores()) + ' | ' + (await p.$$eval('#panel-cards .pcard .ptitle', e => e.slice(0, 4).map(x => x.textContent.trim()))).join(' ¦ '));
-  await p.click('.cf-quick [data-cfq="كبسولات"]'); await done();
-  log.push('كبسولات: ' + JSON.stringify(await stores()));
-  const bc = await p.$('.best-card'); if (bc) await bc.screenshot({ path: path.join(OUT, 'cf_caps.png') });
-  await p.click('#cfBack'); await p.waitForTimeout(800);
-  log.push('back: hero=' + await p.isVisible('.hero') + ' head=' + await p.isVisible('#coffeeHead'));
-  log.push('errors: ' + errs.join(' | '));
+  const log = [];
+  for (const s of sites) for (const p of paths) {
+    const u = s + p;
+    try {
+      const r = await fetch(u, { headers: { 'user-agent': UA, 'accept-language': 'ar,en' }, signal: AbortSignal.timeout(20000) }); const t = await r.text();
+      fs.writeFileSync(path.join(OUT, u.replace(/^https?:\/\/(www\.)?/, '').replace(/[^a-z0-9.]+/gi, '_').slice(0, 80) + '.txt'), t.slice(0, 3000000));
+      let extra = '';
+      if (p.startsWith('/products.json')) { try { const j = JSON.parse(t); extra = ' products=' + (j.products || []).length + ' ' + ((j.products || [])[0] || {}).title; } catch (e) {} }
+      if (p.startsWith('/wp-json')) { try { const j = JSON.parse(t); extra = ' woo=' + (Array.isArray(j) ? j.length + ' ' + (j[0] || {}).name + ' ' + ((j[0] || {}).prices || {}).currency_code : 'no'); } catch (e) {} }
+      log.push(`${r.status} ${u} -> ${r.url} len=${t.length} [${mk(t).join(',')}]${extra}`);
+    } catch (e) { log.push(`ERR ${u} ${e.message}`); }
+  }
   fs.writeFileSync(path.join(OUT, 'log.txt'), log.join('\n')); console.log(log.join('\n'));
-  await b.close();
 })();
