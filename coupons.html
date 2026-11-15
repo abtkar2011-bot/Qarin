@@ -198,7 +198,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
     const d = daysLeft(c.e);
     const exp = d == null ? 'بدون تاريخ انتهاء' : d <= 0 ? 'ينتهي اليوم' : d === 1 ? 'ينتهي بكرة' : d === 2 ? 'ينتهي بعد يومين' : `ينتهي بعد ${d} ${d >= 3 && d <= 10 ? 'أيام' : 'يوم'}`;
     return `<article class="cp">
-      <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
+      <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
       <div class="cp-t">${esc(c.t)}</div>
       ${tagsOf(c)}
       ${c.d && c.d !== c.t ? `<div class="cp-d">${esc(c.d)}</div>` : ''}

@@ -618,6 +618,12 @@ body.perf-view .check-group > .checks { margin-top: 0; }
 body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body.perf-view .tools-row, body.perf-view .basket-box, body.perf-view .follow { display: none !important; }
 .cf-reset { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
 .more-btn { display: block; margin: 16px auto 4px; padding: 12px 22px; font-weight: 700; }
+/* 📷 نفس الشكل */
+.vs-box { border: 2px solid var(--accent); border-radius: 22px; padding: 14px; background: var(--surface); display: flex; flex-direction: column; gap: 12px; }
+.vs-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.vs-head h2 { font-size: 17px; margin: 0; }
+.vs-head span { color: var(--muted); font-size: 13px; }
+.vs-note { margin: 0; color: var(--muted); font-size: 13px; }
 .pf .q { background: color-mix(in srgb, #eab308 16%, transparent); }
 .pf .dupe { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; font-weight: 700; }
 .notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -2197,6 +2203,21 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (saved !== undefined) TR.delete(n);
     try { return toEnglish(w); } finally { if (saved !== undefined) TR.set(n, saved); }
   }
+  // منتج من سطر في ملف المتجر الشريك (البحث بالكلمات والبحث بنفس الشكل يستخدمونه)
+  function partnerProduct(k, row) {
+    const F = PARTNER_FEEDS[k], [t, price, img, url, tags, orig, rate, nrev] = row;
+    const usd = price / F.perUsd();
+    // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
+    const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
+    const rated = rate > 0 && nrev > 0;  // تقييم حقيقي من صفحة المنتج (Spirit Hub)
+    const p = { platform: k, title: t, price: usd, unrated: !rated, partner: true, rating: rated ? rate : PRIOR_RATING, reviews: rated ? nrev : 0,
+      url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : url), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
+      original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
+      shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
+    if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
+    if (F.perf) p.ptext = (t + ' | ' + tags).slice(0, 700);
+    return p;
+  }
   async function fetchPartner(k, query, limit) {
     const F = PARTNER_FEEDS[k], en = pPhrase((toEnglish(query) || query).toLowerCase()), ar = normalize(query);
     await partnerIndexP;
@@ -2264,7 +2285,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     // «ماسك» أو «سيروم» بدون «شعر» ← منتج للوجه، فنستبعد ماسكات وسيرومات الشعر
     const noHair = toks.some(w => /^(mask|cream|serum|oil|lotion|toner|ampoule)$/.test(w)) && !toks.includes('hair');
     const seenP = new Set();
-    for (const [t, price, img, url, tags, orig, rate, nrev] of d.items) {
+    for (const row of d.items) {
+      const [t, price, , , tags] = row;
       if (noHair && /شعر|\bhair\b/i.test(t)) continue;
       // DermaZone: وسوم المنتج تسويقية وعامة («i dew care mask» على فرشاة شعر) ← الكلمات الأساسية لازم تكون في العنوان أو النوع
       const text = t + ' | ' + (F.titleOnly ? String(tags).split(' | ').slice(0, 2).join(' | ') : tags), tn = normalize(text);
@@ -2273,18 +2295,9 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       if (!(okEn || okAr)) continue;
       if (!(price > 0)) continue;  // عينات مجانية بدون سعر
       const dk = t + '\u0001' + price; if (seenP.has(dk)) continue; seenP.add(dk);  // نفس المنتج في أكثر من قسم
-      const usd = price / F.perUsd();
-      // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
-      const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
-      const rated = rate > 0 && nrev > 0;  // تقييم حقيقي من صفحة المنتج (Spirit Hub)
-      const p = { platform: k, title: t, price: usd, unrated: !rated, partner: true, rating: rated ? rate : PRIOR_RATING, reviews: rated ? nrev : 0,
-        url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : url), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
-        original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
-        shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
+      const p = partnerProduct(k, row);
       const full = F.titleOnly ? t + ' | ' + tags : text, fulln = F.titleOnly ? normalize(full) : tn;
       p._soft = soft.filter(f => f(full, fulln, t)).length;
-      if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
-      if (F.perf) p.ptext = (t + ' | ' + tags).slice(0, 700);
       hit.push(p);
     }
     // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
@@ -4023,6 +4036,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const box = $('results');
     if (state.mode === 'basket' && state.basket && state.basket.data) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
+    if (state.visual && state.visual.only && state.visual.q === state.query) { box.innerHTML = visualHtml(); return; }
     const list = state.products.filter(passFilters);
     const cfBar = cfBarHtml(state.products.filter(passBase)) + pfBarHtml(state.products.filter(passBase));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
@@ -4071,7 +4085,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     let favChanged = false;
     list.forEach(p => { const f = favs[pkey(p)]; if (f && f.last !== p.price) { f.last = p.price; favChanged = true; } });
     if (favChanged) store.set('qarin.favs', favs);
-    html += cfBar + (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
+    html += visualHtml() + cfBar + (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
         <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div>${moreN > 0 ? `<button type="button" class="tool-btn more-btn" data-more>عرض المزيد (<bdi class="num">${moreN}</bdi> منتج ثاني)</button>` : ''}</div>
         <div class="panel${state.tab === 'compare' ? ' on' : ''}" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">${platformsHtml(sum)}${barsHtml(sum)}</div>
@@ -4144,6 +4158,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   let searchId = 0;
   async function search(query, instant) {
     query = query.trim();
+    if (!state.lookHold) state.visual = null;
     if (query) document.body.classList.remove('pre-search');
     const status = $('status');
     if (!query) {
@@ -4382,13 +4397,116 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (!file) return;
     const status = $('status');
     status.innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
-    try {
-      const q = await imageToQuery(file);
+    await withLook(file, KEYS.filter(k => PARTNER_FEEDS[k]), async () => {
+      let q; try { q = await imageToQuery(file); } catch (e) { return false; }
       toast('📷 ' + q);
-      search(q, false);
-    } catch (e) {
-      status.innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
+      await search(q, false);
+      return true;
+    });
+  }
+
+  // ================= 📷 البحث بنفس الشكل =================
+  // كل صورة منتج في المتاجر الشريكة لها «بصمة شكل» (data/pe، تنحسب كل يوم في GitHub).
+  // نحسب بصمة صورة الزبون في جواله بنفس النموذج، ونطلع المنتجات اللي شكلها أقرب.
+  const VS = { idx: null, vec: {}, model: null };
+  const vsIndex = () => VS.idx || (VS.idx = fetch('data/pe/index.json').then(r => r.ok ? r.json() : null).catch(() => null));
+  const vsVec = k => VS.vec[k] || (VS.vec[k] = fetch('data/pe/' + k + '.bin').then(r => r.ok ? r.arrayBuffer() : null).then(b => b && new Int8Array(b)).catch(() => null));
+  function vsModel(meta) {
+    if (VS.model) return VS.model;
+    VS.model = (async () => {
+      const T = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.1');
+      // ملفات النموذج على موقعنا (models/…) عشان ما نعتمد على موقع ثاني
+      T.env.allowLocalModels = false; T.env.remoteHost = new URL('models/', location.href).href; T.env.remotePathTemplate = '{model}/';
+      if (/clip/i.test(meta.model)) {
+        const proc = await T.AutoProcessor.from_pretrained(meta.model);
+        const m = await T.CLIPVisionModelWithProjection.from_pretrained(meta.model, { dtype: meta.dtype });
+        return async blob => (await m(await proc(await T.RawImage.fromBlob(blob)))).image_embeds.data;
+      }
+      const pipe = await T.pipeline('image-feature-extraction', meta.model, { dtype: meta.dtype });
+      return async blob => { const o = await pipe(await T.RawImage.fromBlob(blob)); return o.data.slice(0, o.dims[o.dims.length - 1]); };
+    })();
+    VS.model.catch(() => { VS.model = null; });
+    return VS.model;
+  }
+  // نفس تجهيز صور المتاجر: خلفية بيضاء ومقاس 320 (crop = قص من الوسط عشان نقلل الخلفية)
+  function vsPrep(file, side, crop) {
+    return new Promise((res, rej) => {
+      const img = new Image(), u = URL.createObjectURL(file);
+      img.onload = () => {
+        const cw = img.width * crop, ch = img.height * crop, sx = (img.width - cw) / 2, sy = (img.height - ch) / 2;
+        const sc = Math.min(1, side / Math.max(cw, ch)), c = document.createElement('canvas');
+        c.width = Math.round(cw * sc); c.height = Math.round(ch * sc);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, sx, sy, cw, ch, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(u); c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/jpeg', 0.9);
+      };
+      img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('bad image')); };
+      img.src = u;
+    });
+  }
+  const unit = v => { let n = 0; for (const x of v) n += x * x; n = Math.sqrt(n) || 1; return Float32Array.from(v, x => x / n); };
+  // يرجّع [{p, sim}] الأقرب شكلًا من متاجر keys
+  async function lookSearch(file, keys) {
+    const meta = await vsIndex();
+    if (!meta || !meta.dim) throw new Error('no prints');
+    keys = keys.filter(k => meta.stores[k] && PARTNER_FEEDS[k]);
+    const [embed] = await Promise.all([vsModel(meta), ...keys.map(vsVec), ...keys.map(loadPartner)]);
+    const qs = [];
+    for (const crop of [1, 0.72]) qs.push(unit(await embed(await vsPrep(file, meta.side || 320, crop))));
+    const D = meta.dim, hits = [];
+    for (const k of keys) {
+      const V = await vsVec(k), d = await loadPartner(k);
+      if (!V || !d || !Array.isArray(d.items) || V.length !== d.items.length * D) continue;
+      for (let i = 0; i < d.items.length; i++) {
+        const o = i * D; let nn = 0, best = -1;
+        for (let x = 0; x < D; x++) nn += V[o + x] * V[o + x];
+        if (!nn) continue;
+        for (const q of qs) { let s = 0; for (let x = 0; x < D; x++) s += q[x] * V[o + x]; if (s > best) best = s; }
+        hits.push([best / Math.sqrt(nn), k, i]);
+      }
     }
+    hits.sort((a, b) => b[0] - a[0]);
+    const out = [], seen = new Set();
+    for (const [sim, k, i] of hits) {
+      const row = (await loadPartner(k)).items[i];
+      if (!(row[1] > 0)) continue;
+      const dk = row[0] + '\u0001' + row[1]; if (seen.has(dk)) continue; seen.add(dk);
+      out.push({ p: partnerProduct(k, row), sim });
+      if (out.length >= 12) break;
+    }
+    return out;
+  }
+  const VS_SAME = 0.70;  // فوق هذا = نفس المنتج تقريبًا (اختبار: نفس المنتج ≈ 0.81، اللي بعده ≈ 0.66)
+  // يشغّل البحث بنفس الشكل مع البحث بالاسم، ويحط النتيجة فوق النتائج
+  async function withLook(file, keys, byName) {
+    const id = (state.lookId = (state.lookId || 0) + 1);
+    state.visual = { id, loading: true };
+    const look = lookSearch(file, keys).catch(e => { console.warn('look', e); return null; });
+    state.lookHold = true;
+    let named = false;
+    try { named = await byName(); } finally { state.lookHold = false; }
+    if (state.lookId !== id) return;
+    if (named) { state.visual = { id, loading: true, q: state.query }; render(); }
+    else { state.visual = null; $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 ندوّر على نفس الشكل في المتاجر العمانية...</b><span class="spinner"></span></div>'; }
+    const vs = await look;
+    if (state.lookId !== id) return;
+    if (!vs || !vs.length) {
+      state.visual = null;
+      if (!named) $('status').innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
+      else render();
+      return;
+    }
+    if (!named) { state.query = 'صورتك'; state.products = []; document.body.classList.remove('pre-search'); }
+    const list = vs.map(x => x.p); scoreProducts(list, PRIORITY[state.priority][1]); list.forEach(p => (p.badges = []));
+    state.visual = { id, q: state.query, items: vs, only: !named, same: vs[0].sim >= VS_SAME };
+    if (!named) $('status').innerHTML = '<div class="status done">📷 هذي المنتجات اللي شكلها أقرب لصورتك</div>';
+    render();
+  }
+  function visualHtml() {
+    const v = state.visual;
+    if (!v || (v.q != null && v.q !== state.query)) return '';
+    if (v.loading) return '<section class="vs-box"><div class="vs-head"><h2>📷 ندوّر على نفس الشكل في المتاجر العمانية…</h2><span class="spinner"></span></div><p class="vs-note">أول مرة ياخذ ثواني (نحمّل أداة الصور مرة وحدة بس)</p></section>';
+    return `<section class="vs-box"><div class="vs-head"><h2>📷 ${v.same ? 'نفس الشكل في المتاجر العمانية' : 'أقرب شكل لصورتك في المتاجر العمانية'}</h2><span>${v.items.length} منتج</span></div>
+      <div class="grid">${v.items.map(x => productCard(x.p)).join('')}</div></section>`;
   }
 
   // ================= الإعدادات والأحداث =================
@@ -4407,7 +4525,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const t = $('toast'); t.textContent = msg; t.classList.add('on');
     clearTimeout(toast.tm); toast.tm = setTimeout(() => t.classList.remove('on'), 2600);
   }
-  const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k) || (state.basket && state.basket.data ? state.basket.data.flat().find(p => pkey(p) === k) : undefined);
+  const findProduct = k => state.products.find(p => pkey(p) === k) || cmp.find(p => pkey(p) === k) || (state.visual && state.visual.items ? (state.visual.items.find(x => pkey(x.p) === k) || {}).p : undefined) || (state.basket && state.basket.data ? state.basket.data.flat().find(p => pkey(p) === k) : undefined);
   function openModal(id) { $(id).classList.add('on'); }
   // ================= تثبيت «قارِن» كتطبيق (PWA) =================
   let installEvt = null;
@@ -4609,6 +4727,13 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const sq = e.target.closest('[data-fav-search]');
       if (sq) { closeModals(); search(sq.dataset.favSearch, false); }
     });
+    // صورة منتج ما تفتح (رابط المتجر خربان): نحط صورة بديلة بدل علامة الصورة المكسورة
+    document.addEventListener('error', e => {
+      const t = e.target;
+      if (!t || t.tagName !== 'IMG' || t.dataset.fb || String(t.src).startsWith('data:')) return;
+      t.dataset.fb = '1';
+      t.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f2f2f5"/><text x="50" y="62" font-size="34" text-anchor="middle">🛍️</text></svg>');
+    }, true);
     $('results').addEventListener('click', e => {
       const ct = e.target.closest('[data-cart]'); if (ct) { toggleCart(ct.dataset.cart); return; }
       const sh = e.target.closest('[data-share]'); if (sh) { shareProduct(sh.dataset.share); return; }
@@ -4768,20 +4893,19 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     async function cfImageSearch(file) {
       if (!file) return;
       $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
-      let q;
-      try { q = await imageToQuery(file); } catch (e) {
-        $('status').innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
-        return;
-      }
-      toast('📷 ' + q);
-      const m = cfImageQuery(q);
-      for (const cq of m.qs) {
-        if (!state.coffeeMode) return;
-        if (m.kind) state.cfPending = m.kind;
-        if (m.browse === cq) state.cfBrowseNext = m.kind;
-        await search(cq);
-        if (state.products.some(p => passCoffee(p))) break;
-      }
+      await withLook(file, coffeeKeys(), async () => {
+        let q; try { q = await imageToQuery(file); } catch (e) { return false; }
+        toast('📷 ' + q);
+        const m = cfImageQuery(q);
+        for (const cq of m.qs) {
+          if (!state.coffeeMode) return true;
+          if (m.kind) state.cfPending = m.kind;
+          if (m.browse === cq) state.cfBrowseNext = m.kind;
+          await search(cq);
+          if (state.products.some(p => passCoffee(p))) break;
+        }
+        return true;
+      });
     }
     $('cfImgBtn').addEventListener('click', () => $('cfImgIn').click());
     $('cfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; cfImageSearch(f); });
@@ -4830,20 +4954,19 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     async function pfImageSearch(file) {
       if (!file) return;
       $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
-      let q;
-      try { q = await imageToQuery(file); } catch (e) {
-        $('status').innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
-        return;
-      }
-      toast('📷 ' + q);
-      const s2 = String(q).toLowerCase().replace(/\b(bottle|perfume|fragrance|spray|eau de parfum|eau de toilette|cologne|for (men|women)|men|women|glass|luxury)\b/g, ' ').replace(/\s+/g, ' ').trim();
-      const fam = PF_FAM.find(([, , re]) => re.test(q));
-      const qs = [q, s2, fam ? 'عطر ' + fam[1] : '', 'عطور'].filter((x, i, a) => x && a.indexOf(x) === i);
-      for (const cq of qs) {
-        if (!state.perfMode) return;
-        await search(cq);
-        if (state.products.some(p => passPerf(p))) break;
-      }
+      await withLook(file, perfKeys(), async () => {
+        let q; try { q = await imageToQuery(file); } catch (e) { return false; }
+        toast('📷 ' + q);
+        const s2 = String(q).toLowerCase().replace(/\b(bottle|perfume|fragrance|spray|eau de parfum|eau de toilette|cologne|for (men|women)|men|women|glass|luxury)\b/g, ' ').replace(/\s+/g, ' ').trim();
+        const fam = PF_FAM.find(([, , re]) => re.test(q));
+        const qs = [q, s2, fam ? 'عطر ' + fam[1] : '', 'عطور'].filter((x, i, a) => x && a.indexOf(x) === i);
+        for (const cq of qs) {
+          if (!state.perfMode) return true;
+          await search(cq);
+          if (state.products.some(p => passPerf(p))) break;
+        }
+        return true;
+      });
     }
     document.addEventListener('click', e => { if (!e.target.closest('[data-more]')) return; state.secLimit = (state.secLimit || 24) + 24; render(); });
     // «↺ ابدأ من جديد»: يمسح البحث والفلاتر ويرجّع القسم مثل أول ما فتحته

@@ -116,6 +116,33 @@ jobs:
           path: partners
           key: qarin-partners-${{ github.run_id }}
 
+      # 📷 «بصمة شكل» لكل صورة منتج في المتاجر الشريكة (للبحث بنفس الشكل) ← data/pe + models
+      - name: Restore image prints
+        uses: actions/cache/restore@v4
+        with:
+          path: embcache
+          key: qarin-emb-${{ github.run_id }}
+          restore-keys: qarin-emb-
+
+      - name: Image prints
+        id: emb
+        continue-on-error: true
+        timeout-minutes: 45
+        env:
+          EMB_MODEL: Xenova/dinov2-small
+          EMB_DTYPE: q8
+        run: |
+          (cd tools/embed && npm i --no-save --no-package-lock --silent @huggingface/transformers@3.7.1 sharp@0.33.5)
+          node tools/embed/embed.js partners embcache embout
+
+      - name: Save image prints
+        if: steps.emb.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: embcache
+          key: qarin-emb-${{ github.run_id }}
+
       # كوبونات Admitad (الرابط سرّي في الإعدادات) ← coupons.json
       - name: Coupons
         continue-on-error: true
@@ -126,10 +153,12 @@ jobs:
       - name: Put the site together
         run: |
           mkdir -p _site
-          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|_site) ;; *) cp -r "$f" _site/ ;; esac; done
+          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|embcache|embout|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
           cp -r products _site/data/s
           mkdir -p _site/data/p && cp partners/*.json _site/data/p/ 2>/dev/null || true
+          mkdir -p _site/data/pe && cp embout/pe/* _site/data/pe/ 2>/dev/null || true
+          [ -d embout/models ] && cp -r embout/models _site/models || true
           echo "files: $(find _site -type f | wc -l)"; du -sh _site
 
       - uses: actions/upload-pages-artifact@v3

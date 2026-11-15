@@ -1,0 +1,60 @@
+name: Qarin same-look test
+
+# يبني «بصمات الشكل» من منتجات الموقع الحالية ويختبر البحث بنفس الشكل على نسخة محلية (فرع vs-test) ← probe-out
+on:
+  push:
+    branches: [vs-test]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Partner products from the live site
+        run: |
+          mkdir -p partners
+          for k in $(curl -s https://abtkar2011-bot.github.io/Qarin/data/p/index.json | python3 -c "import json,sys; print(' '.join(json.load(sys.stdin).keys()))"); do
+            curl -s -f -o partners/$k.json https://abtkar2011-bot.github.io/Qarin/data/p/$k.json || echo "miss $k"
+          done
+          curl -s -o partners/index.json https://abtkar2011-bot.github.io/Qarin/data/p/index.json
+          ls partners | wc -l
+      - name: Image prints
+        env:
+          EMB_MODEL: Xenova/dinov2-small
+          EMB_DTYPE: q8
+        run: |
+          (cd tools/embed && npm i --no-save --no-package-lock --silent @huggingface/transformers@3.7.1 sharp@0.33.5)
+          time node tools/embed/embed.js partners embcache embout
+          du -sh embout/pe embout/models
+      - name: Site copy
+        run: |
+          mkdir -p site/data/p site/data/pe
+          for f in *; do case "$f" in qa|tools|partners|embcache|embout|site) ;; *) cp -r "$f" site/ ;; esac; done
+          cp partners/*.json site/data/p/; cp embout/pe/* site/data/pe/; cp -r embout/models site/models
+          find site/models -type f
+      - name: Browser test
+        env:
+          OUT: probe-out
+          SITE_DIR: site
+        run: |
+          npm i --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+          node qa/vstest.js
+      - name: Publish
+        if: always()
+        run: |
+          set -e
+          mkdir -p /tmp/out && cp -r probe-out/* /tmp/out/ 2>/dev/null || true
+          cd /tmp/out
+          git init -q -b probe-out
+          git config user.name "qarin-shots"; git config user.email "shots@users.noreply.github.com"
+          git add -A && git commit -q -m "same-look test ${GITHUB_SHA}"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe-out
