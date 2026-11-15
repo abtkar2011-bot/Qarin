@@ -837,6 +837,8 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       <p>محاصيل وأدوات من متاجر القهوة العمانية بس، مع فلاتر المعالجة والارتفاع والبلد والكولد برو</p>
       <form class="search" id="cfForm" role="search">
         <input type="search" id="cfQ" autocomplete="off" aria-label="ابحث في قسم القهوة" placeholder="ابحث عن محصول، محمصة أو أداة: قوجي، أدهم، V60">
+        <button type="button" class="img-btn" id="cfImgBtn" aria-label="ابحث بصورة" title="ابحث بصورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></button>
+        <input type="file" id="cfImgIn" accept="image/*" hidden>
         <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
       </form>
       <div class="cf-quick" id="cfQuick"></div>
@@ -1970,14 +1972,16 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
   const COFFEE_FEED = { perUsd: () => OMR_PER_USD, aff: '', generic: /^(products?|original)$/,
     gate: /(قهو|(^|\s)(ال)?بن(\s|$)|اسبريسو|اسبرسو|كابتشينو|لاتيه|كبسول|في ?60|كيمكس|ايروبرس|مطحن|طاحون|دريب|تقطير|دله|محمص|سيروب|سيرب|coffee|espresso|capsule|\bbeans?\b|grinder|chemex|aeropress|\bv60\b|\bdrip|kettle|tamper|barista|latte|cappuccino|moka|french press|cold brew|syrup|dallah|copper roastery|bun al qassab|spirit hub)/i,
     // «محمصة X» في عنوان المنتج = محصول قهوة (عناوين محاصيل البن وسوق البن عربية)
-    syn: { coffee: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast|محمص|محصول|محاصيل)',
-      beans: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast|محمص|محصول|محاصيل)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
+    // «قهوة» و«حبوب»: نوع المنتج من اسمه وأقسامه (cfKind)، عشان الباسكت والتامبر اللي وصفها فيه «قهوة» ما تطلع
+    kinds: { coffee: new Set(['beans', 'omani', 'turkish', 'capsule', 'drip', 'box']), beans: new Set(['beans', 'omani', 'turkish', 'box']) },
+    syn: { coffee: '(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast|محمص|محصول|محاصيل)',
+      beans: '(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast|محمص|محصول|محاصيل)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
       arabic: '(arabic coffee|قهوة عربية|قهوه عربيه|omani coffee|قهوة عمانية|al balad|cardamom|هيل)', capsules: '(capsule|كبسول)', drip: '(\\bdrip|دريب|مقطر)', ground: '(ground|grind|مطحون)', omani: '(omani|عماني)', turkish: '(turkish|تركي)', decaf: '(decaf)',
       machine: '(machine|maker|brewer|boiler|automatic|espresso machine)', maker: '(machine|maker|brewer|boiler|automatic)', grinder: '(grinder|مطحن|طاحون)', kettle: '(kettle|غلاي|ابريق)', gooseneck: '(gooseneck|kettle)',
       dripper: '(dripper|v60|kalita|chemex|origami)', v60: '(v60)', paper: '(paper|filters?)', filter: '(filter|فلتر)', syrup: '(syrup|سيروب)', thermos: '(thermos|flask|vacuum)', flask: '(thermos|flask|vacuum)',
       ethiopia: '(ethiopia|اثيوبيا|yirgacheffe|guji|sidamo)', colombia: '(colombia|كولومبيا)', brazil: '(brazil|برازيل)', kenya: '(kenya|كينيا)', yemen: '(yemen|يمن)', indonesia: '(indonesia|sumatra|java)' },
     dropWith: { coffee: /^(machines?|maker|brewer|grinders?|kettles?|drippers?|v60|chemex|aeropress|press|moka|scales?|tampers?|filters?|paper|syrups?|cups?|mugs?|jars?|thermos|flask|dallah|pot|gift|set)$/,
-      espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/ },
+      espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/, bag: /^(coffee|beans|drip)$/, bags: /^(coffee|beans|drip)$/, pack: /^(coffee|beans)$/ },
     titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/, hard: /^(arabic|turkish|omani|saudi)$/,
     accessory: /\b(clean\w*|brush|case|cover|holder|mats?|stand|sleeve|spare|replacement|parts?|protective|pouch|bags?(?! of)|paper|filters?|gasket|burrs?|seal|cap|lid|tool|refill\w*|reusable)\b|فرشا|غطاء|حافظ|فلتر|فلاتر|ورقي|إعادة التعبئة|اعادة التعبئة/i };
   const PARTNER_FEEDS = {
@@ -2088,7 +2092,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
   const CF_GROUPS = [...CF_ORIGINS.map(o => o.re), ...CF_PROC.map(x => x.re), ...CF_NAMES];
   // كلمات عامة في القهوة (ما نشترطها حرفيًا في العنوان)
   const CF_COMMON_EN = /^(black|white|glass|steel|electric|small|large|brown|green|silver|stainless|bottle|holder|cover|water|light|medium|classic|premium|original|special|edition|limited|pro|plus|smart|digital|manual|double|single)$/;
-  const CF_GENERIC = new Set(['قهوه', 'قهوة', 'بن', 'حبوب', 'محصول', 'محاصيل', 'مختصه', 'مختص', 'محمصه', 'محمصة', 'قهوتي', 'كوفي']);
+  const CF_GENERIC = new Set(['قهوه', 'قهوة', 'بن', 'حبوب', 'محصول', 'محاصيل', 'مختصه', 'مختص', 'محمصه', 'محمصة', 'قهوتي', 'كوفي', 'كيس', 'كيسه', 'اكياس', 'عبوه', 'عبوات', 'باكيت', 'بكت']);
 
   const P_VIT = { a: 'ا|اي', c: 'سي', d: 'د|دي', e: 'اي|e' };
   const pTok = (w, F) => {
@@ -2096,6 +2100,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       const re = new RegExp(F.syn[w], 'i'), ar = P_AR[w] ? new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?(' + P_AR[w] + ')') : null;
       // أدوات («مطحنة»، «ابريق»): لازم تكون في اسم المنتج، لأن قسم «Machines & Grinders» يجمع كل شي
       if (F.titleToks && F.titleToks.test(w)) return (t, tn, title) => re.test(title);
+      if (F.kinds && F.kinds[w]) { const ks = F.kinds[w], st = String(F.file).replace(/^.*\/|\.json$/g, ''); return (t, tn, title) => ks.has(cfKind(title, t.slice(0, 700), st)); }
       return (t, tn) => re.test(t) || (!!ar && ar.test(tn));
     }
     const v = w.match(/^vitamin([acde])$/);
@@ -2165,6 +2170,11 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       toks = toks.filter(w => !groups.some(re => re.test(w)) && !/^(ethiopian|colombian|brazilian|kenyan|yemeni|saudi)$/.test(w));
       const extra = qWords.filter(w => !groups.some(re => re.test(w)) && nameWord(w));
       cfTests = [...groups.map(re => (t, tn) => re.test(t) || re.test(tn)), ...extra.map(w => { const re = cfRe(pEsc(w)); return (t, tn) => re.test(tn); })];
+      // ضغطت صنف («أقماع») في قسم القهوة: نجيب كل منتجات هذا الصنف بدل مطابقة الكلمات
+      if (F.kinds && state.coffeeMode && state.cfBrowse) {
+        const bk = state.cfBrowse, st = String(F.file).replace(/^.*\/|\.json$/g, '');
+        toks = []; cfTests = [(t, tn, title) => cfKindIs({ kind: cfKind(title, t.slice(0, 700), st) }, bk)];
+      }
     }
     const hard = [...toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), ...cfTests], soft = toks.filter(isSoft).map(w => pTok(w, F));
     // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
@@ -2913,13 +2923,102 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
   const CF_GOOD_NOTES = /chocolat|cocoa|cacao|\bnut|hazelnut|almond|caramel|toffee|brown sugar|molasses|شوكولا|كاكاو|مكسرات|بندق|لوز|كراميل|توفي|سكر بني|دبس/i;
   const CF_LIGHT_NOTES = /floral|jasmine|bergamot|tea-like|black tea|lemongrass|زهري|ياسمين|برغموت|شاي/i;
   const CF_BODY = ['brazil', 'colombia', 'guatemala', 'honduras', 'mexico', 'peru', 'uganda', 'indonesia', 'india', 'png', 'salvador', 'nicaragua'];
+  // ---- نوع المنتج في متاجر القهوة: محصول ولا أداة؟ ----
+  // نقرأ اسم المنتج أول، بعدين أقسام المتجر القصيرة، وآخر شي الوصف (الوصف يذكر «القهوة» حتى في الباسكت والتامبر)
+  const cfW = (alts, pre) => new RegExp('(^|[\\s\\-–—()\\[\\]/،,|_+&:])(' + (pre || 'ال|لل|بال|وال|و|ب|ل') + ')?(' + alts + ')(?=$|[\\s\\-–—()\\[\\]/،,|_+&.:!\\d])', 'i');
+  const CF_HARD_KINDS = [
+    ['machine', /(machines?\b|espresso maker|coffee maker|automatic|dr\.? ?coffee|\bsage\b|barista (express|pro|touch)|bambino|breville|de'?longhi|gaggia|lelit|rancilio|marzocco|\bflair \d|nespresso (vertuo|essenza|pixie|citiz|inissia|creatista))/i, cfW('مكينه|ماكينه|مكاين|مكائن|ماكينات|مكينات|اله|الة|جهاز|بريفيل|ديلونجي', 'ال|بال|وال|و|ب')],
+    ['grinder', /(grinders?\b|\bburrs?\b|comandante|1zpresso|baratza|fellow ode|niche zero|df64|kingrinder|mazzer|timemore (c\d|chestnut|sculptor|s\d))/i, cfW('مطحنه|مطاحن|طاحونه|طاحون', 'ال|بال|وال|و|ب')],
+    ['kettle', /(kettles?\b|gooseneck|\bstagg\b)/i, cfW('غلايه|غلايات|كتل|كيتل|ابريق تقطير|ابريق التقطير|ابريق صب|ابريق كهربائي|ابريق رقبه', 'ال|بال|وال|و|ب')],
+    ['scale', /(\bscales?\b)/i, cfW('ميزان|موازين', 'ال|بال|وال|و|ب')],
+  ];
+  const CF_SOFT_KINDS = [
+    ['filter', /(filter papers?|paper filters?|\bfilters\b|cloth filter|metal filter|felt filter|filter bags?|filters?\b.*\b\d+ ?(pcs|pes|sheets|ct|count)\b)/i, cfW('فلاتر|فلاتر ورقيه|فلتر ورقيه|اكياس فلتر|ورق فلتر|ورق الفلتر|ورق تقطير|فلتر ورق|فلتر ورقي|فلتر قماش|فلتر معدني|فلتر ستانلس|فلتر (لل?)?(ال)?(ايروبرس|ايروبريس|ايريوبريس)')],
+    ['dripper', /(drippers?\b|\bv ?60\b|kalita|chem[ei]x|origami|\borea\b|april brewer|clever|hario switch|mugen|pour ?over)/i, cfW('قمع|اقماع|كاليتا|كيمكس|كيميكس|اوريجامي|اوريغامي|فلتر تقطير|في ?60|موغن')],
+    ['brewer', /(aero ?press|french press|\bmoka\b|syphon|siphon|cold ?brew (coffee )?(makers?|make|bottle|jar|pitcher|system|kit|tower)|toddy|cezve|ibrik|turkish (coffee )?pot|percolator)/i, cfW('تودي|نظام القهوه البارده|ايروبرس|ايروبريس|ايريوبريس|فرنش ?بريس|فرنش برس|موكا|سيفون|ركوه|دله|دلال|كنكه')],
+  ];
+  const CF_ACC = /(gasket|porta-?f?il?ter|portaflter|cleaner|cleaning|\bclean\b|powder|tablets?\b|descal\w*|\bstem\b|gauge|power supply|\bcase\b|handle|\bspare|\bparts?\b|\bseal|shower|basket|brush|cover\b|\bpads?\b|\bmats?\b|\bburrs?\b(?!.*grinder)|bag\b|bags\b|stand\b|holder|filters?\b|\bmilk\b|maintenance|service|warranty|silicone|o-?rings?|\bring\b|controller|connector|upgrade|\bkit\b|suitcase|puck|\btrays?\b|adapt[eo]r|\bfor (the )?(flair|delonghi|de.?longhi|breville|sage|marzocco|e61|gaggia|rancilio|lelit|aeropress|v60|chemex|kalita|fellow|timemore|comandante))/i,
+    CF_ACC_AR = cfW('حليب|خفق|منظف|منظفات|تنظيف|بودره|جوان|قطع غيار|مقبض|باسكت|بورتافلتر|فلاتر|فلتر|فرشاه|غطاء|حامل|ستاند|لماكينات|لمكينه|للمكينه|للمطحنه|لمطحنه');
+  // أباريق التقديم والسيرفر وأباريق الحليب: أدوات تقديم مو غلاية ولا قمع
+  const CF_SERVE = /(\bservers?\b|pitchers?|\bjugs?\b|carafe|decanter)/i, CF_SERVE_AR = cfW('سيرفر|سرفر|ابريق تقديم|ابريق قهوه زجاجي|ابريق حليب|دورق');
+  const CF_TOOL_T = new RegExp('(' + COFFEE_TOOLS.replace(/\|?(تغليف|بطاقة|اعاده التعبئه|إعادة التعبئة|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين)(?=\||$)/g, '').replace(/\|jars\?/, '')
+    + '|tumbler|flask|storage|container|voucher|tamping|frother|steam\\w*|\\bpots?\\b|glass(es)?\\b|plates?\\b|trays?\\b|\\brack\\b|bottle|spray|\\bstraws?\\b|\\bpen\\b|organi[sz]er|\\bdoses\\b|shaker|whisk|blower|vacuum|espressovac|heater|\\btubes?\\b|station|\\bmodel\\b|artificial|\\btrees?\\b|cellars?|ice (mold|mould|cube)|sticker|apron|towel|cloth\\b|\\blid\\b|cover\\b|sleeve|spare|replacement|\\bparts?\\b|gasket|shower|\\bring\\b|funnel|\\bwdt\\b|puck|tablets?\\b|descal\\w*|service|maintenance|warranty|course|workshop|\\bkit\\b|doser|\\bbin\\b|drawer)', 'i');
+  const CF_TOOL_AR = cfW('ابريق|اباريق|شيكر|حصيره|سجاده|ركن|مكنسه|سخان|قوالب|قالب|ثلج|مجسم|شجره|باسكت|تامبر|تمبر|بورتافلتر|بورتا فلتر|بورتافيلتر|وعاء|اوعيه|كوب|اكواب|كاسات|كاسه|كاس|فنجان|فناجين|فنجال|مج|مق|تمبلر|ترمس|ترامس|حافظه|حافظات|حافظ|ستاند|حامل|منظف|منظفات|تنظيف|فرشاه|فرشايه|فرشه|موزع|ابره|ابر|شاشه|سكرين|علبه|علب|ملعقه|ملاعق|خلاط|مضرب|رغوه|سيروب|سيرب|صوص|بودره|حليب|مصاص|مصاصات|قلم|مقياس|مخبار|دورق|سيرفر|سرفر|قاعده|لباد|مفرش|مفكك|منشفه|فوطه|مريله|حقيبه|شنطه|صينيه|صحن|صحون|مشعل|موقد|ملصقات|ملصق|قطع غيار|جوان|حلقه|دش|قطعه|غطاء|اغطيه|بطاقه|قسيمه|كوبون|دوره|ورشه|صيانه|ضمان|نوك|مكبس|مدك|ضاغط|اداه|ادوات|مبرد|ثلاجه|ساعه|مؤقت|موقت|زجاجه|قاروره|رف|منظم|درج|حوض|سله|مصفاه|كيس فارغ|اكياس فارغه|اعاده التعبئه|اعاده تعبئه|قابل لاعاده التعبئه|تغليف');
+  // مو قهوة ولا أداة: شاي وماتشا وحلويات (محاصيل البن ومثلث يبيعونها)
+  const CF_NONCOF = /(\btea\b|matcha|hot chocolate|chocolate (bar|powder)|chocolatino|cookies?|biscuits?|instant coffee|nescafe)/i, CF_NONCOF_AR = cfW('شاي|ماتشا|ماتش|لوح|الواح|تمر|بسكويت|كوكيز|شوكولاته ساخنه|شوكلتينو|شوكولاتينو|كاكاو|سريعه الذوبان|نسكافيه');
+  const CF_MM = /\d+(\.\d+)?\s*(mm|ملم|مم)(?![a-z\u0600-\u06ff])/i;  // مقاس بالملّي = أداة (باسكت 58mm، تامبر 51 مم)
+  const CF_BEAN_T = /(coffee|\bbeans?\b|espresso|single origin|arabica|robusta|\bblend\b|roast|g[ea]isha|gesha|specialty|decaf\w*|microlot|\bcoe\b)/i;
+  const CF_BEAN_AR = cfW('بن|حبوب|محصول|محصولا|محاصيل|خلطه|مزيج|اسبريسو|اسبرسو|محمصه|مختصه|جيشا|قيشا|عربيكا|ارابيكا|روبوستا|منزوع الكافيين');
+  // «قهوة» في أول الاسم أو «قهوة مختصة/عربية…» = محصول، بس «حصيرة لركن القهوة» أداة
+  const CF_BEAN_AR2 = /^(ال)?قهوه(\s|$)|(^|[\s(\-])(ال)?قهوه\s+(مختصه|عربيه|عمانيه|تركيه|سعوديه|يمنيه|خليجيه|اثيوبيه|كولومبيه|برازيليه|كينيه|مقطره|فلتر|اسبريسو|سوداء|بالهيل|بالزعفران|مطحونه|محمصه|حبوب|منزوعه|نجديه|حجازيه|شقراء)(\s|$)/;
+  const CF_GRAMS = /\d+\s*(g|gm|gr|grams?|kg|جرام|غرام|جم|كيلو|كجم)(?![a-z؀-ۿ])/i;
+  const CF_CAPS = /(capsules?|\bpods?\b|nespresso|dolce gusto)/i, CF_CAPS_AR = cfW('كبسوله|كبسولات|كبسولتين|نسبريسو|نيسبريسو|نيسبرسو');
+  const CF_CAPS_NOT = /(machine|holder|stand|refill|reusable|dispenser|drawer|organi[sz]er|portafilter|adapt[eo]r|basket)/i, CF_CAPS_NOT_AR = cfW('مكينه|ماكينه|حامل|ستاند|اعاده التعبئه|اعاده تعبئه|درج|منظم');
+  const CF_DRIP = /(drip (bags?|box|coffee|pack)|\bufo\b|\bdrip\b)/i, CF_DRIP_AR = cfW('دريب|اظرف|ظرف|اكياس تقطير|قهوه مقطره جاهزه');
+  const CF_TURK = /turkish/i, CF_TURK_AR = cfW('تركي|تركيه');
+  const CF_OMANI = /(omani coffee|arabic coffee|arabian coffee|khaleeji|gulf coffee|cardamom|saffron)/i, CF_OMANI_AR = cfW('قهوه عمانيه|قهوه العمانيه|قهوه عربيه|قهوه العربيه|قهوه خليجيه|بن عماني|بالهيل|هيل|بالزعفران|زعفران');
+  const CF_BOX = /(gift box|\bbox\b|bundle|sampler|collection|discovery set)/i, CF_BOX_AR = cfW('بوكس|صندوق|مجموعه|باقه');
+  const CF_GIFT = /(gift ?card|e-?gift|voucher)/i;
+  // أقسام المتجر: «Grinders» و«Coffee beans»…
+  const CF_CAT_KIND = [['grinder', /^(single dose )?grinders?$/], ['kettle', /^kettles?$/], ['dripper', /^(drippers?|pour ?over)$/], ['scale', /^(drip )?scales?$/],
+    ['machine', /^(coffee makers?|espresso machines?|coffee machines?|machines?)$/], ['filter', /^(paper )?filters?$|^فلاتر$/]];
+  const CF_CAT_BEAN = /(coffee beans|specialty coffee beans|single origin|coffee blends?|espresso blend|filter coffee|drip coffee|capsules?|coffee jars|coffee box|micro ?lots?|fruity profiles|محاصيل|المحاصيل|قهوه مختصه|قهوه مقطره|قهوه عمانيه|قهوه عربيه|قهوه تركيه|كبسولات|بوكس هديه|omani coffee|arabic coffee|turkish coffee|coffee gift box|espresso based|filter based|drip box)/;
+  const CF_CAT_ACC = /(cleaning|\bcups\b|pitchers|servers|syrups?|purees?|sauces?|\btea\b|matcha|maintenance|spare|parts)/;
+  const CF_CAT_TOOL = /(accessor|gadget|essentials|supplies|tools|equipment|\bcups\b|pitchers|cleaning|servers|syrups?|purees?|sauces?|\btea\b|matcha|maintenance|ادوات|اكواب|ورق|حافظات|مستلزمات)/;
+  // وصف محصول حقيقي: «المصدر:» «المعالجة:» «الإيحاءات:»…
+  const CF_DESC = /(المصدر|المنشا|المنطقه|المزرعه|الارتفاع|المعالجه|طريقه المعالجه|الايحاءات|النكهات|الاصناف|السلاله|التحميص|درجه التحميص|origin|region|farm|altitude|elevation|process(ing)?|tasting notes|flavou?r notes|varietal|variety|roast level)\s*[:：]/i;
+  // متاجر أغلب منتجاتها محاصيل: المنتج اللي ما نعرف نوعه («ادهم» في فوح) نحسبه محصول
+  const CF_BEANY = new Set(['fooh', 'mahaseel', 'muthalath', 'bunalqassab', 'spirithub', 'rawasi', 'yield', 'sura']);
+  const CF_COFFEE = new Set(['beans', 'omani', 'turkish', 'capsule', 'drip', 'box']), CF_BAG = new Set(['beans', 'omani', 'turkish']);
+  const cfKindMemo = new Map();
+  function cfKind(title, text, store) {
+    const mk = store + '\u0001' + title + '\u0001' + text.length;
+    let v = cfKindMemo.get(mk);
+    if (v === undefined) { v = cfKindRaw(String(title), String(text || ''), store || ''); if (cfKindMemo.size > 20000) cfKindMemo.clear(); cfKindMemo.set(mk, v); }
+    return v;
+  }
+  function cfKindRaw(title, text, store) {
+    const t = title.toLowerCase(), tn = normalize(title);
+    const has = (en, ar) => en.test(t) || (!!ar && ar.test(tn));
+    // «قهوة لمكينة الإسبريسو» و«for espresso machines» محصول مو مكينة
+    const forTool = /\bfor (all |an? |the |your )?(espresso |home |coffee )?(machines?|grinders?)\b/.test(t);
+    // قطع وملحقات المكاين والمطاحن («Breville Gasket»، «Grinder Brush»، «منظف ماكينات») أخرى مو مكينة
+    const acc = CF_ACC.test(t) || CF_ACC_AR.test(tn) || CF_MM.test(tn) || CF_SERVE.test(t) || CF_SERVE_AR.test(tn), brew = has(CF_SOFT_KINDS[1][1], CF_SOFT_KINDS[1][2]) || has(CF_SOFT_KINDS[2][1], CF_SOFT_KINDS[2][2]);
+    for (const [k, en, ar] of CF_HARD_KINDS) if ((ar.test(tn) || en.test(t) && !forTool) && !(k === 'machine' && brew)) {
+      if (!acc) return k;
+      return has(CF_SOFT_KINDS[0][1], CF_SOFT_KINDS[0][2]) ? 'filter' : 'other';
+    }
+    if (CF_SERVE.test(t) || CF_SERVE_AR.test(tn)) return 'other';
+    if (has(CF_CAPS, CF_CAPS_AR) && !has(CF_CAPS_NOT, CF_CAPS_NOT_AR)) return 'capsule';
+    if (CF_GIFT.test(t)) return 'other';
+    const origin = CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn));
+    // «إثيوبيا قوجي – V60» محصول مو قمع: اسم البلد في العنوان يغلب الأدوات الخفيفة
+    const beanish = origin || (CF_GRAMS.test(tn) && /(محصول|محاصيل|محمصه|خلطه|مزيج|blend|roast|single origin)/i.test(tn));
+    if (!beanish) {
+      for (const [k, en, ar] of CF_SOFT_KINDS) if (has(en, ar)) return k;
+      if (CF_TOOL_T.test(t) || CF_TOOL_AR.test(tn) || CF_MM.test(tn)) return 'other';
+      if (has(CF_NONCOF, CF_NONCOF_AR)) return 'other';
+    }
+    const segs = normalize(text).split(' | ').slice(1).filter(s => s.length > 1 && s.length <= 40);
+    const coffeeKind = () => has(CF_DRIP, CF_DRIP_AR) ? 'drip' : has(CF_TURK, CF_TURK_AR) ? 'turkish' : has(CF_OMANI, CF_OMANI_AR) ? 'omani'
+      : !origin && has(CF_BOX, CF_BOX_AR) ? 'box' : null;
+    const k1 = coffeeKind();
+    if (k1) return k1;
+    if (beanish || CF_BEAN_T.test(t) || CF_BEAN_AR.test(tn) || CF_BEAN_AR2.test(tn) || CF_GRAMS.test(tn) || CF_PROC.some(c => c.re.test(tn))) return 'beans';
+    // من أقسام المتجر: قسم محاصيل أول، بعدين «Grinders» (إلا لو معه «Cleaning tools»)
+    const catBean = segs.find(s => CF_CAT_BEAN.test(s));
+    if (!catBean && !segs.some(s => CF_CAT_ACC.test(s))) for (const [k, re] of CF_CAT_KIND) if (segs.some(s => re.test(s))) return k;
+    if (catBean) return /capsule|كبسول/.test(catBean) ? 'capsule' : /drip|مقطره/.test(catBean) && !/filter coffee/.test(catBean) ? 'drip' : /turkish|تركي/.test(catBean) ? 'turkish' : /omani|arabic|عماني|عربي/.test(catBean) ? 'omani' : /box|بوكس/.test(catBean) ? 'box' : 'beans';
+    if (segs.some(s => CF_CAT_TOOL.test(s))) return 'other';
+    if (CF_DESC.test(normalize(text))) return 'beans';
+    return CF_BEANY.has(store) ? 'beans' : 'other';
+  }
   function coffeeOf(p) {
     if (p._cf !== undefined) return p._cf;
     if (!p.ctext) return (p._cf = null);
     const t = String(p.title), x = p.ctext, tn = normalize(t), xn = normalize(x);
-    if (CF_TOOLS_RE.test(t) || !CF_BEAN_RE.test(x)) return (p._cf = null);
-    // النوع: من العنوان أو قسم المتجر («Capsules» في Yield)
-    const kind = /capsule|كبسول|nespresso|نسبريسو/i.test(t) || /(^|\| )(capsules?|كبسولات|كبسولة)( \||$)/i.test(x) ? 'capsule' : /drip|دريب|ufo/i.test(t) || /(^|\| )(drip bags?|اكياس دريب|دريب)( \||$)/i.test(x) ? 'drip' : /gift card|بطاقه|box|بوكس|صندوق/i.test(t) && !CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn)) ? 'box' : 'beans';
+    const kind = cfKind(t, x, p.platform);
+    if (!CF_COFFEE.has(kind)) return (p._cf = { kind, tool: kind !== 'other' || !CF_NONCOF.test(t) && !CF_NONCOF_AR.test(tn) });
     const o = CF_ORIGINS.find(c => c.re.test(t) || c.re.test(tn)) || null;  // البلد من العنوان بس («المحاصيل السعودية» في سوق البن = محامص سعودية)
     const pr = CF_PROC.find(c => c.re.test(x) || c.re.test(xn)) || null;
     let alt = null;
@@ -2947,20 +3046,21 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const kg = t.match(/(\d+(?:\.\d+)?)\s*(?:kg|كيلو|كجم|كغ)/i); if (kg) return +kg[1] * 1000;
     const g = t.match(/(\d{2,4})\s*(?:g|gm|gr|grams?|جرام|غرام|جم|غ)(?![a-z\u0600-\u06ff])/i); return g ? +g[1] : 0;
   }
-  const cfMode = list => { const b = list.filter(p => { const c = coffeeOf(p); return c && c.kind === 'beans' && cfGrams(p) >= 50; }); return b.length >= 3 && b.length >= list.length * 0.4; };
+  const cfMode = list => { const b = list.filter(p => { const c = coffeeOf(p); return c && CF_BAG.has(c.kind) && cfGrams(p) >= 50; }); return b.length >= 3 && b.length >= list.length * 0.4; };
   const CF_ROAST = { light: 'تحميص فاتح', medium: 'تحميص متوسط', dark: 'تحميص غامق' };
   const CB_TXT = { store: '❄️ يناسب الكولد برو', good: '❄️ يناسب الكولد برو', ok: '❄️ يصلح للكولد برو', less: '❄️ أقل مناسبة للكولد برو' };
   const CB_SHORT = { store: '❄️ للكولد برو ✓', good: '❄️ للكولد برو ✓', ok: '❄️ يصلح كولد برو', less: '❄️ أقل للكولد برو' };
   const altTxt = a => `<bdi>${a[0]}${a[1] !== a[0] ? '–' + a[1] : ''}</bdi> م`;
   function coffeeHtml(p, full) {
     const c = coffeeOf(p);
-    if (!c) return '';
+    if (!c || !CF_COFFEE.has(c.kind)) return '';
     const bits = [];
-    if (c.kind === 'capsule' || c.kind === 'drip') bits.push(`<span>${c.kind === 'capsule' ? 'كبسولات' : 'دريب'}</span>`);
+    const kl = { capsule: 'كبسولات', drip: 'دريب', omani: 'قهوة عمانية', turkish: 'قهوة تركية' }[c.kind];
+    if (kl) bits.push(`<span>${kl}</span>`);
     if (c.o) bits.push(`<span class="c"><span aria-hidden="true">${c.o.flag}</span> ${c.o.name}</span>`);
     if (c.pr) bits.push(`<span>${c.pr.name}</span>`);
     if (c.alt) bits.push(`<span>${altTxt(c.alt)}</span>`);
-    const gr = c.kind === 'beans' ? cfGrams(p) : 0;
+    const gr = CF_BAG.has(c.kind) ? cfGrams(p) : 0;
     if (gr) bits.push(`<span><bdi>${gr >= 1000 ? gr / 1000 : gr}</bdi> ${gr >= 1000 ? 'كيلو' : 'جرام'}</span>`);
     if (full && gr && gr !== 250) bits.push(`<span class="u"><bdi>${money(p.price / gr * 250)}</bdi> لكل 250 جرام</span>`);
     if (full && c.roast) bits.push(`<span>${CF_ROAST[c.roast]}</span>`);
@@ -2972,14 +3072,21 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     return (bits.length ? `<div class="pf cf">${bits.join('')}</div>` : '') + cb;
   }
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
-  const CF_KIND = [['beans', 'محاصيل'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
+  // «النوع»: القهوة نفسها، بعدين الأدوات، و«أخرى» للي ما له صنف (بوكسات، سيروب، أكواب…)
+  const CF_KIND = [['beans', 'محاصيل'], ['omani', 'قهوة عمانية'], ['turkish', 'قهوة تركية'], ['capsule', 'كبسولات'], ['drip', 'دريب'],
+    ['dripper', 'أقماع'], ['grinder', 'مطاحن'], ['kettle', 'غلايات'], ['scale', 'موازين'], ['machine', 'مكاين'], ['brewer', 'أدوات تحضير'], ['filter', 'فلاتر'], ['other', 'أخرى']];
+  // لو الصنف مو في النتائج الحالية: نبحث عنه في قسم القهوة
+  const CF_KIND_Q = { beans: 'قهوة مختصة', omani: 'قهوة عمانية', turkish: 'قهوة تركية', capsule: 'كبسولات', drip: 'دريب', dripper: 'قمع تقطير', grinder: 'مطحنة قهوة', kettle: 'ابريق تقطير', scale: 'ميزان قهوة', machine: 'مكينة قهوة', brewer: 'أدوات تحضير القهوة', filter: 'فلاتر ورق' };
+  const cfKindIs = (c, k) => !!c && (c.kind === k || k === 'other' && c.kind === 'box');
   const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
   function passCoffee(p) {
     const f = state.cf || {};
     if (!f.pr && !f.alt && !f.o && !f.use && !f.kind) return true;
     const c = coffeeOf(p);
-    if (!c || c.kind === 'box') return false;
-    if (f.kind && c.kind !== f.kind) return false;
+    if (!c) return false;
+    if (f.kind && !cfKindIs(c, f.kind)) return false;
+    if (!f.pr && !f.alt && !f.o && !f.use) return true;
+    if (!CF_COFFEE.has(c.kind) || c.kind === 'box') return false;
     if (f.pr && (!c.pr || c.pr.k !== f.pr)) return false;
     if (f.o && (!c.o || c.o.k !== f.o)) return false;
     if (f.alt) { const b = CF_ALT.find(x => x[0] === f.alt); if (!c.alt || !b[1](c.alt)) return false; }
@@ -2987,10 +3094,12 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     return true;
   }
   function cfBarHtml(base) {
-    const beans = base.filter(p => { const c = coffeeOf(p); return c && c.kind !== 'box'; });
+    const all = base.filter(p => coffeeOf(p));
+    const beans = all.filter(p => { const c = coffeeOf(p); return CF_COFFEE.has(c.kind) && c.kind !== 'box'; });
     const on = Object.values(state.cf || {}).some(Boolean);
     if (beans.length < 4 && !on && !state.coffeeMode) return '';
     const f = state.cf || {};
+    const toolOn = !!f.kind && !CF_COFFEE.has(f.kind);  // اخترت «مطاحن»: فلاتر المعالجة والبلد ما لها معنى
     const chip = (k, v, label, n) => `<button type="button" class="cf-chip${(f[k] || '') === v ? ' on' : ''}" data-cf="${k}" data-v="${v}" aria-pressed="${(f[k] || '') === v}">${label}${n != null ? ` <i class="num">${n}</i>` : ''}</button>`;
     const row = (title, k, items) => items.length >= 1 ? `<div class="cf-row"><span class="cf-k">${title}</span><div class="cf-chips">${chip(k, '', 'الكل')}${items.join('')}</div></div>` : '';
     const n = fn => beans.filter(p => fn(coffeeOf(p))).length;
@@ -2999,10 +3108,16 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const origins = CF_ORIGINS.map(o => [o, n(c => c.o && c.o.k === o.k)]).filter(([, c]) => c).sort((a, b) => b[1] - a[1]).slice(0, 12)
       .map(([o, c]) => chip('o', o.k, `<span aria-hidden="true">${o.flag}</span> ${o.name}`, c));
     const uses = CF_USE.map(([k, fn, l]) => [k, l, n(fn)]).filter(x => x[2]).map(([k, l, c]) => chip('use', k, l, c));
-    const kinds = CF_KIND.map(([k, l]) => [k, l, n(c => c.kind === k)]).filter(x => x[2]).map(([k, l, c]) => chip('kind', k, l, c));
+    // في قسم القهوة نعرض كل الأصناف: اللي مو في النتائج يبحث عنه بضغطة
+    const kinds = CF_KIND.map(([k, l]) => [k, l, all.filter(p => cfKindIs(coffeeOf(p), k)).length])
+      .filter(x => x[2] || state.coffeeMode && CF_KIND_Q[x[0]])
+      .map(([k, l, c]) => [k, c ? chip('kind', k, l, c) : `<button type="button" class="cf-chip" data-cfk="${k}">${l}</button>`]);
+    // صفّين: القهوة نفسها، وتحتها الأدوات (أقماع، مطاحن، غلايات…) عشان تبان كلها
+    const kindsCf = kinds.filter(x => CF_COFFEE.has(x[0])).map(x => x[1]), kindsTool = kinds.filter(x => !CF_COFFEE.has(x[0])).map(x => x[1]);
+    const toolRow = kindsTool.length && kindsCf.length ? `<div class="cf-row"><span class="cf-k">الأدوات</span><div class="cf-chips">${kindsTool.join('')}</div></div>` : '';
     return `<section class="cf-bar" aria-label="قسم القهوة">
       <div class="cf-head"><b>☕ قسم القهوة</b><span><bdi class="num">${beans.length}</bdi> محصول من متاجر قهوة عمانية</span></div>
-      ${row('النوع', 'kind', kinds)}${row('المعالجة', 'pr', procs)}${row('البلد', 'o', origins)}${row('الارتفاع', 'alt', alts)}${row('التحضير', 'use', uses)}
+      ${row('النوع', 'kind', kindsCf.length ? kindsCf : kindsTool)}${toolRow}${toolOn ? '' : row('المعالجة', 'pr', procs) + row('البلد', 'o', origins) + row('الارتفاع', 'alt', alts) + row('التحضير', 'use', uses)}
       <p class="cf-note">❄️ الكولد برو: المعالجة الطبيعية والنكهات الشوكولاتية تطلع أحلى بارد، والمغسول الزهري الفاتح يضيع طعمه. هذا تقدير من قارن، وإذا المتجر كاتبها نقول.</p>
     </section>`;
   }
@@ -3042,9 +3157,14 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const pfMain = pf.filter(p => perfOf(p).level !== 1);  // معطر الجسم والكولونيا بس إذا ما فيه غيرها
     let pool = pfMain.length ? pfMain : pf.length ? pf : realOnly;
     // بحث قهوة: الأفضل يكون بُن (مو كبسولات أو دريب)، إلا إذا البحث نفسه عن الكبسولات أو الدريب
-    if (!/(كبسول|capsule|دريب|drip|مكين|مطحن|grinder|machine|ميزان|scale|ابريق|kettle|في ?60|v60)/i.test(state.query || '')) {
-      const beans = pool.filter(p => { const c = coffeeOf(p); return c && c.kind === 'beans'; });
-      if (beans.length >= 3 && beans.length >= pool.length * 0.3) pool = beans;
+    // «قهوة عمانية» أو «تركية»: الأفضل من نفس النوع
+    const cq = normalize(state.query || ''), ck = /تركي|turkish/.test(cq) ? 'turkish' : /(قهوه|بن) (ال)?(عمانيه|عربيه)|omani coffee|arabic coffee/.test(cq) ? 'omani' : '';
+    const ofKind = k => pool.filter(p => { const c = coffeeOf(p); return c && c.kind === k; });
+    if (ck && ofKind(ck).length) pool = ofKind(ck);
+    else if (!(state.cf && state.cf.kind) && !/(كبسول|capsule|دريب|drip|اظرف|مكين|ماكين|مطحن|طاحون|grinder|machine|ميزان|scale|ابريق|غلاي|kettle|قمع|اقماع|dripper|في ?60|v60|فلاتر|ورق فلتر|filter paper|paper filter|باسكت|تامبر|كوب|اكواب)/i.test(cq)) {
+      const beans = ofKind('beans'), weighed = beans.filter(p => cfGrams(p) >= 50);
+      // الأفضل يكون كيس محصول نعرف وزنه (نقارن سعر الـ250 جرام صح)
+      if (beans.length >= 3 && beans.length >= pool.length * 0.3) pool = weighed.length >= 3 ? weighed : beans;
     }
     const best = pool.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = pool.reduce((a, b) => tot(b) < tot(a) ? b : a);
@@ -3580,10 +3700,12 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     // قسم القهوة له بحثه الخاص: متاجر القهوة العمانية بس
     const keys = state.coffeeMode ? coffeeKeys() : KEYS;
     if (state.query !== query) state.cf = {};  // فلاتر القهوة تبدأ من جديد مع كل بحث
+    if (state.cfPending) { state.cf = { kind: state.cfPending }; state.cfPending = null; }  // ضغطت «مطاحن» وهي مو في النتائج
+    state.cfBrowse = state.coffeeMode && state.cfBrowseNext || null; state.cfBrowseNext = null;
     state.query = query;
     { const tq = trText(query); $(state.coffeeMode ? 'cfQ' : 'q').value = tq != null ? tq.trim() : query; }
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
-    const key = (state.coffeeMode ? 'cf:' : '') + normalize(query);
+    const key = (state.coffeeMode ? 'cf:' + (state.cfBrowse ? state.cfBrowse + ':' : '') : '') + normalize(query);
     const cached = cache.get(key);
     if (cached) {
       if (!instant) { userSearches++; track('search', query); }
@@ -4127,9 +4249,12 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     $('imgBtn').addEventListener('click', () => $('imgIn').click());
     $('imgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; imageSearch(f); });
     document.addEventListener('click', e => {
+      const k = e.target.closest('[data-cfk]');
+      if (k) { state.cfPending = state.cfBrowseNext = k.dataset.cfk; search(CF_KIND_Q[k.dataset.cfk] || 'قهوة مختصة'); return; }
       const b = e.target.closest('[data-cf]');
       if (!b) return;
-      state.cf = Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
+      // صنف أداة («مطاحن»): نلغي فلاتر المعالجة والبلد
+      state.cf = b.dataset.cf === 'kind' && b.dataset.v && !CF_COFFEE.has(b.dataset.v) ? { kind: b.dataset.v } : Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
       render();
     });
     // ☕ قسم القهوة: صفحة لها بحثها الخاص (#coffee)، ما تخلط علي إكسبريس وإيباي وإتسي
@@ -4156,6 +4281,37 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     $('cfBack').addEventListener('click', () => closeCoffee(false));
     $('cfForm').addEventListener('submit', e => { e.preventDefault(); const q = $('cfQ').value.trim(); if (q) search(q); });
     $('cfQuick').addEventListener('click', e => { const b = e.target.closest('[data-cfq]'); if (b) search(b.dataset.cfq); });
+    // 📷 بحث بالصورة في قسم القهوة: نعرف المنتج من الصورة (مطحنة، قمع، كيس محصول…) ونجيب الشبيه من متاجر القهوة
+    function cfImageQuery(q) {
+      const s = String(q || '').toLowerCase(), k = cfKind(s, s, '');
+      const brand = (s.match(/\b(hario|timemore|fellow|comandante|kalita|chemex|1zpresso|baratza|breville|sage|delonghi|nespresso|flair|bomber|muvna|ikape|brewista|acaia|bialetti|aeropress|origami|kinto|cafec|toddy|lepresso)\b/) || [])[1] || '';
+      // «hario» ومعه صنف «أقماع»، وإذا ما فيه: كل الأقماع
+      if (CF_KIND_Q[k] && !CF_COFFEE.has(k)) return { kind: k, qs: [brand, CF_KIND_Q[k]].filter(Boolean), browse: CF_KIND_Q[k] };
+      if (!CF_COFFEE.has(k)) return { kind: '', qs: [s, 'قهوة مختصة'] };  // تامبر، باسكت، إبريق حليب…: نبحث باسم المنتج نفسه
+      const o = CF_ORIGINS.find(c => c.re.test(s));
+      if (k === 'capsule' || k === 'drip' || k === 'omani' || k === 'turkish') return { kind: k, qs: [o && CF_KIND_Q[k] + ' ' + o.name, CF_KIND_Q[k]].filter(Boolean) };
+      return { kind: '', qs: [o ? o.name : '', 'قهوة مختصة'].filter(Boolean) };
+    }
+    async function cfImageSearch(file) {
+      if (!file) return;
+      $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
+      let q;
+      try { q = await imageToQuery(file); } catch (e) {
+        $('status').innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
+        return;
+      }
+      toast('📷 ' + q);
+      const m = cfImageQuery(q);
+      for (const cq of m.qs) {
+        if (!state.coffeeMode) return;
+        if (m.kind) state.cfPending = m.kind;
+        if (m.browse === cq) state.cfBrowseNext = m.kind;
+        await search(cq);
+        if (state.products.some(p => passCoffee(p))) break;
+      }
+    }
+    $('cfImgBtn').addEventListener('click', () => $('cfImgIn').click());
+    $('cfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; cfImageSearch(f); });
     window.addEventListener('popstate', () => { if (location.hash === '#coffee') { if (!state.coffeeMode) openCoffee(); } else closeCoffee(true); });
     if (location.hash === '#coffee') setTimeout(() => openCoffee(), 0);
     document.addEventListener('click', e => {

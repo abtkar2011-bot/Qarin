@@ -1,6 +1,20 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"أدوات تحضير القهوة": ["Coffee brewers", "Cafetières manuelles", "Cafeteras manuales", "咖啡冲煮器具", "कॉफ़ी ब्रूअर", "کافی بروئرز", "Заварники для кофе", "Kahve demleme araçları", "Alat seduh kopi"],
+"الأدوات": ["Gear", "Matériel", "Equipo", "器具", "उपकरण", "آلات", "Инвентарь", "Ekipman", "Peralatan"],
+"قهوة تركية": ["Turkish coffee", "Café turc", "Café turco", "土耳其咖啡", "तुर्की कॉफ़ी", "ترکی کافی", "Турецкий кофе", "Türk kahvesi", "Kopi Turki"],
+"أقماع": ["Drippers", "Drippers", "Goteros", "滴滤杯", "ड्रिपर", "ڈرپر", "Воронки", "Dripper", "Dripper"],
+"مطاحن": ["Grinders", "Moulins", "Molinos", "磨豆机", "ग्राइंडर", "گرائنڈر", "Кофемолки", "Öğütücüler", "Penggiling"],
+"غلايات": ["Kettles", "Bouilloires", "Hervidores", "手冲壶", "केतली", "کیتلی", "Чайники", "Kettle'lar", "Ketel"],
+"موازين": ["Scales", "Balances", "Básculas", "咖啡秤", "स्केल", "ترازو", "Весы", "Teraziler", "Timbangan"],
+"مكاين": ["Machines", "Machines", "Máquinas", "咖啡机", "मशीनें", "مشینیں", "Кофемашины", "Makineler", "Mesin"],
+"أدوات تحضير": ["Brewers", "Cafetières manuelles", "Cafeteras manuales", "冲煮器具", "ब्रूअर", "بروئرز", "Заварники", "Demleme araçları", "Alat seduh"],
+"فلاتر": ["Filters", "Filtres", "Filtros", "滤纸", "फ़िल्टर", "فلٹرز", "Фильтры", "Filtreler", "Filter"],
+"أخرى": ["Other", "Autres", "Otros", "其他", "अन्य", "دیگر", "Другое", "Diğer", "Lainnya"],
+"قمع تقطير": ["Coffee drippers", "Drippers à café", "Goteros de café", "咖啡滴滤杯", "कॉफ़ी ड्रिपर", "کافی ڈرپر", "Воронки для кофе", "Kahve dripper", "Dripper kopi"],
+"فلاتر ورق": ["Paper filters", "Filtres papier", "Filtros de papel", "滤纸", "पेपर फ़िल्टर", "پیپر فلٹر", "Бумажные фильтры", "Kâğıt filtre", "Filter kertas"],
+"كيس قهوة": ["Coffee bag", "Sachet de café", "Bolsa de café", "咖啡豆袋", "कॉफ़ी बैग", "کافی بیگ", "Пачка кофе", "Kahve paketi", "Kantong kopi"],
 "محاصيل": ["Coffee beans", "Grains de café", "Granos de café", "咖啡豆", "कॉफ़ी बीन्स", "کافی بینز", "Кофейные зёрна", "Kahve çekirdeği", "Biji kopi"],
 "كيس محصول": ["Coffee bag", "Sachet de café", "Bolsa de café", "袋装咖啡豆", "कॉफ़ी बैग", "کافی کا بیگ", "Пачка зерна", "Kahve paketi", "Kantong kopi"],
 "جرام": ["g", "g", "g", "克", "ग्राम", "گرام", "г", "g", "g"],
