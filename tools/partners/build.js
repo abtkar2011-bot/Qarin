@@ -232,6 +232,9 @@ const oudbank = () => shopifyStore('https://oudbank.com', 'oudbank', 'the oud ba
 const boulevard = () => wooStore('https://boulevardperfumes.com', 'boulevard perfumes | بوليفارد', /^$/);
 const oudworlds = () => wooStore('https://oudworlds.com', 'oud worlds | عالم العود', /^$/);
 const artal = () => wooStore('https://artalofficial.com', 'artal | أرتال', /^$/);
+// نوادر العود (شوبيفاي، أسعارهم بالدرهم الإماراتي) والخنجر للعطور (أودو، بالريال العماني)
+const nawader = () => shopifyStore('https://nwaderoud.com', 'nawader', 'nawader oud | نوادر العود', 'AED');
+const alkhanjar = () => odooPaged('https://www.alkhanjar.om', 'alkhanjar', 'al khanjar | الخنجر للعطور', 30);
 // سلة: واجهة المتجر العامة (api.salla.dev) برقم المتجر، 15 منتج في الصفحة
 async function sallaApi(storeId, B, name, tags) {
   const all = [];
@@ -374,15 +377,15 @@ if (require.main === module) (async () => {
   const index = {};
   // كلمات أسماء المحاصيل والمحامص في كل متجر قهوة (عشان بحث «أدهم» أو «دبليو» يوصل للمتجر الصحيح)
   const COFFEE = new Set(['copper', 'bunalqassab', 'spirithub', 'souqalbon', 'epanda', 'rawasi', 'yield', 'sura', 'fooh', 'mahaseel', 'muthalath', 'barista',
-    'amouage', 'swissarabian', 'asgharali', 'omanluxury', 'alhajis', 'oudbank', 'boulevard', 'oudworlds', 'raydan', 'ibraq', 'almajed', 'artal']);
+    'amouage', 'swissarabian', 'asgharali', 'omanluxury', 'alhajis', 'oudbank', 'boulevard', 'oudworlds', 'raydan', 'ibraq', 'almajed', 'artal', 'nawader', 'alkhanjar']);
   const STOP = new Set(['coffee', 'قهوه', 'جرام', 'غرام', 'gram', 'grams', 'محمصه', 'roastery', 'roasters', 'with', 'and', 'the', 'for', 'من', 'مع', 'حصري', 'لمحاصيل', 'البن', 'الحجم', 'حبه', 'pcs', 'box', 'بوكس']);
   const nrm = t => String(t).toLowerCase().replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632)).replace(/[\u064B-\u0652\u0640]/g, '').replace(/[إأآ]/g, 'ا')
     .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي');
   const namesOf = items => [...new Set(items.flatMap(x => nrm(x[0] + ' ' + String(x[4]).split(' | ').filter(t => /محمص|roaster/i.test(t)).join(' '))
     .split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP.has(w))))].slice(0, 3000);
-  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10, raydan: 10, ibraq: 10, almajed: 10 };
+  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10, raydan: 10, ibraq: 10, almajed: 10, artal: 3, nawader: 10, alkhanjar: 10 };
   for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista],
-    ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds], ['raydan', raydan], ['ibraq', ibraq], ['almajed', almajed], ['artal', artal]]) {
+    ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds], ['raydan', raydan], ['ibraq', ibraq], ['almajed', almajed], ['artal', artal], ['nawader', nawader], ['alkhanjar', alkhanjar]]) {
     // ONLY=amouage,oudbank: نبني متاجر معيّنة بس (للتجربة)
     if (process.env.ONLY && !process.env.ONLY.split(',').includes(name)) continue;
     try {
