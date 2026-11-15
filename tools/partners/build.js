@@ -154,7 +154,7 @@ function parseOdoo(html, base, store = 'bun al qassab | بن القصاب | coff
     const href = c.match(/href="((?:\/[a-z]{2}(?:_[A-Z]{2})?)?\/shop\/[^"#?]+)[^"]*"/), img = c.match(/<img[^>]+src="([^"]+)"/);
     if (!name || !prices.length || !href) continue;
     const price = Math.min(...prices), orig = Math.max(...prices);
-    out.push({ t: ent(name[1]).replace(/^\[[^\]]*\]\s*/, ''), p: price, o: orig > price * 1.02 ? orig : 0, u: base + encodeURI(decodeURI(href[1])), i: img ? (img[1].startsWith('http') ? img[1] : base + img[1]) : '', tags: store });
+    out.push({ t: ent(name[1]).replace(/^\[[^\]]*\]\s*/, ''), p: price, o: orig > price * 1.02 ? orig : 0, u: base + encodeURI(decodeURI(href[1]).replace(/(\/shop\/)(?!category\/)[^/]+\/([^/]+-\d+)$/, '$1$2')), i: img ? (img[1].startsWith('http') ? img[1] : base + img[1]) : '', tags: store });
   }
   return out;
 }

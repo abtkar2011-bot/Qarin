@@ -616,6 +616,8 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
 body.perf-view #platformChecks > .check, body.perf-view .check-group > summary, body.perf-view .check-group.cf-group { display: none !important; }
 body.perf-view .check-group > .checks { margin-top: 0; }
 body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body.perf-view .tools-row, body.perf-view .basket-box, body.perf-view .follow { display: none !important; }
+.more-btn { display: block; margin: 16px auto 4px; padding: 12px 22px; font-weight: 700; }
+.pf .q { background: color-mix(in srgb, #eab308 16%, transparent); }
 .pf .dupe { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; font-weight: 700; }
 .notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .cf-exit { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
@@ -2256,6 +2258,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const hit = [];
     // «ماسك» أو «سيروم» بدون «شعر» ← منتج للوجه، فنستبعد ماسكات وسيرومات الشعر
     const noHair = toks.some(w => /^(mask|cream|serum|oil|lotion|toner|ampoule)$/.test(w)) && !toks.includes('hair');
+    const seenP = new Set();
     for (const [t, price, img, url, tags, orig, rate, nrev] of d.items) {
       if (noHair && /شعر|\bhair\b/i.test(t)) continue;
       // DermaZone: وسوم المنتج تسويقية وعامة («i dew care mask» على فرشاة شعر) ← الكلمات الأساسية لازم تكون في العنوان أو النوع
@@ -2264,6 +2267,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const okAr = (k === 'dermazone' || F.okAr) && arRes.length && arRes.every(r => r.test(tn));
       if (!(okEn || okAr)) continue;
       if (!(price > 0)) continue;  // عينات مجانية بدون سعر
+      const dk = t + '\u0001' + price; if (seenP.has(dk)) continue; seenP.add(dk);  // نفس المنتج في أكثر من قسم
       const usd = price / F.perUsd();
       // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
       const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
@@ -2286,7 +2290,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     }
     hit.sort((a, b) => b._soft - a._soft);
     const withSoft = hit.filter(x => x._soft > 0);
-    return (withSoft.length >= 3 ? withSoft : hit).slice(0, Math.max(limit, 40));
+    // قسم القهوة والعطور: كل المطابق من كل متجر (محاصيل البن فيها 450 منتج)، وبره القسم 40 تكفي
+    return (withSoft.length >= 3 ? withSoft : hit).slice(0, state.coffeeMode || state.perfMode ? 3000 : Math.max(limit, 40));
   }
 
   // صور علي إكسبرس أحيانًا تبدأ بـ http:// أو // فنحوّلها إلى https
@@ -3001,6 +3006,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   const PF_DUPE = /(inspired by\s*:|alternative to|\bdupe\b|our version of|انسبايرد|بديل عطر|نسخه من عطر|inspired by\s+(the\s+)?(creed|dior|chanel|tom ford|bvlgari|bulgari|versace|armani|ysl|yves saint|gucci|prada|lanc[oô]me|givenchy|herm[eè]s|guerlain|kilian|parfums de marly|xerjoff|initio|maison francis|mfk|baccarat|roja|byredo|le labo|jo malone|montblanc|paco rabanne|carolina herrera|valentino|burberry|calvin klein|hugo boss|nautica|mancera|montale)|مستوحى من عطر\s+(ديور|شانيل|توم فورد|كريد|فرزاتشي|فرساتشي|ارماني|جوتشي|غوتشي|برادا|بلغاري|بربري|كارولينا|ايف سان لوران|جيفنشي|ميزون|بكارات|كيليان))/i;
   const PF_FAM = [
     ['oud', 'عود', /\b(oud|oudh|aoud|agarwood)\b|(^|\s)(ال)?عود/i], ['amber', 'عنبر', /\b(amber|ambre|ambergris)\b|عنبر/i], ['musk', 'مسك', /\b(musk|musc)\b|(^|\s)(ال)?مسك/i],
+    ['frankincense', 'لبان', /frankincense|olibanum|\bluban\b|hojari|(^|\s)(ال)?لبان|حوجري/i],
     ['rose', 'ورد', /\b(rose|roses|rosa|taif)\b|(^|\s)(ال)?ورد|طائفي/i], ['saffron', 'زعفران', /saffron|زعفران/i], ['vanilla', 'فانيلا', /vanill|فانيل/i],
     ['woody', 'خشبي', /\b(wood|woody|sandal\w*|cedar\w*|vetiver|patchouli)\b|خشب|صندل|ارز|فيتيفر|باتشولي/i],
     ['fresh', 'منعش', /\b(fresh|citrus|bergamot|lemon|aquatic|marine|mint|green|ocean|blue)\b|منعش|حمضي|برغموت|ليمون|بحري|نعناع/i],
@@ -3023,6 +3029,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     // «مجموعة بلو دايموند» طقم، بس «عطر وود من مجموعة وود» عطر من خط عطور
     const isSet = PF_KIND_DEF[1][1].test(t) || PF_KIND_DEF[1][2].test(tn) || /^(ال)?مجموعه\s/.test(tn);
     v = conc && !isSet ? 'perfume' : isSet ? 'set' : find(t) || find(tn) || (PF_IS.test(t) || PF_IS.test(tn) ? 'perfume' : find(segs) || 'perfume');  // متجر عطور: اللي ما له نوع غالبًا عطر
+    // «عود البيت - 28 جم»: بالجرام ومو مل = بخور أو عود، مو عطر
+    if (v === 'perfume' && !conc && /\d\s*(g|gm|gr|grm|grams?|جم|جرام|غرام)(?![a-z\u0600-\u06ff])/i.test(tn) && !/\d\s*(ml|مل)(?![a-z\u0600-\u06ff])/i.test(tn)) v = 'bakhoor';
     // «Luban Al Akhdar 12ml» عطر زيتي مو بخور: البخور بالجرام
     if (v === 'bakhoor' && /\d\s*(ml|مل)(?![a-z\u0600-\u06ff])/i.test(tn)) v = /attar|oil|دهن|زيت|\b(3|6|12|20|24)\s*ml/i.test(tn) ? 'oil' : 'perfume';
     if (pfKindMemo.size > 20000) pfKindMemo.clear();
@@ -3078,10 +3086,11 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     </section>`;
   }
   const PF_G_TXT = { m: 'رجالي', w: 'نسائي', u: 'للجنسين' };
-  function pfExtraHtml(p) {
+  function pfExtraHtml(p, full) {
     const c = pfInfo(p);
     if (!c) return '';
     const bits = [];
+    if (full) { const dq = qualityOf(p); if (dq) dq.why.filter(w => !/مستوحى/.test(w)).slice(0, 3).forEach(w => bits.push(`<span class="q"><i aria-hidden="true">⭐</i> ${w}</span>`)); }
     if (c.dupe) bits.push('<span class="dupe">مستوحى (مو الأصلي)</span>');
     const kl = c.kind !== 'perfume' && c.kind !== 'other' ? (PF_KINDS.find(k => k[0] === c.kind) || [])[1] : '';
     if (kl) bits.push(`<span>${kl}</span>`);
@@ -3159,7 +3168,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   const CF_CAPS_NOT = /(machine|holder|stand|refill|reusable|dispenser|drawer|organi[sz]er|portafilter|adapt[eo]r|basket)/i, CF_CAPS_NOT_AR = cfW('مكينه|ماكينه|حامل|ستاند|اعاده التعبئه|اعاده تعبئه|درج|منظم');
   const CF_DRIP = /(drip (bags?|box|coffee|pack)|\bufo\b|\bdrip\b)/i, CF_DRIP_AR = cfW('دريب|اظرف|ظرف|اكياس تقطير|قهوه مقطره جاهزه');
   const CF_TURK = /turkish/i, CF_TURK_AR = cfW('تركي|تركيه');
-  const CF_OMANI = /(omani coffee|arabic coffee|arabian coffee|khaleeji|gulf coffee|cardamom|saffron)/i, CF_OMANI_AR = cfW('قهوه عمانيه|قهوه العمانيه|قهوه عربيه|قهوه العربيه|قهوه خليجيه|بن عماني|بالهيل|هيل|بالزعفران|زعفران');
+  const CF_OMANI = /(omani coffee|arabic coffee|arabian coffee|khaleeji|gulf coffee|cardamom|saffron)/i, CF_OMANI_AR = cfW('مهيله|مهيل|قهوه سعوديه|قهوه نجديه|قهوه خليجيه|قهوه عمانيه|قهوه العمانيه|قهوه عربيه|قهوه العربيه|قهوه خليجيه|بن عماني|بالهيل|هيل|بالزعفران|زعفران');
   const CF_BOX = /(gift box|\bbox\b|bundle|sampler|collection|discovery set)/i, CF_BOX_AR = cfW('بوكس|صندوق|مجموعه|باقه');
   const CF_GIFT = /(gift ?card|e-?gift|voucher)/i;
   // أقسام المتجر: «Grinders» و«Coffee beans»…
@@ -3207,6 +3216,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       : !origin && has(CF_BOX, CF_BOX_AR) ? 'box' : null;
     const k1 = coffeeKind();
     if (k1) return k1;
+    if (beanish && /(^|[\s\-–])(ال)?(دله|دلة)($|[\s\-–])/.test(tn)) return 'omani';
     if (beanish || CF_BEAN_T.test(t) || CF_BEAN_AR.test(tn) || CF_BEAN_AR2.test(tn) || CF_GRAMS.test(tn) || CF_PROC.some(c => c.re.test(tn))) return 'beans';
     // من أقسام المتجر: قسم محاصيل أول، بعدين «Grinders» (إلا لو معه «Cleaning tools»)
     const catBean = segs.find(s => CF_CAT_BEAN.test(s));
@@ -3269,6 +3279,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (full && c.roast) bits.push(`<span>${CF_ROAST[c.roast]}</span>`);
     if (full && c.esp) bits.push('<span>إسبريسو</span>');
     if (full && c.fil) bits.push('<span>فلتر</span>');
+    // ليش جودته عالية (تقدير قارن من معلومات المحصول)
+    if (full) { const dq = qualityOf(p); if (dq) dq.why.slice(0, 3).forEach(w => bits.push(`<span class="q"><i aria-hidden="true">⭐</i> ${w}</span>`)); }
     const cb = !c.cb ? '' : full
       ? `<div class="cb ${c.cb}">${CB_TXT[c.cb]}${c.cb !== 'store' && c.why.length ? `<span class="why"> · ${c.why.slice(0, 2).map(w => `<span>${w}</span>`).join('، ')}</span>` : ''} <small>${c.cb === 'store' ? 'حسب المتجر' : 'تقدير قارن'}</small></div>`
       : `<div class="cb ${c.cb}">${CB_SHORT[c.cb]}</div>`;
@@ -3276,10 +3288,10 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   }
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
   // «النوع»: القهوة نفسها، بعدين الأدوات، و«أخرى» للي ما له صنف (بوكسات، سيروب، أكواب…)
-  const CF_KIND = [['beans', 'محاصيل'], ['omani', 'قهوة عمانية'], ['turkish', 'قهوة تركية'], ['capsule', 'كبسولات'], ['drip', 'دريب'],
+  const CF_KIND = [['beans', 'محاصيل'], ['omani', 'قهوة عمانية وعربية'], ['turkish', 'قهوة تركية'], ['capsule', 'كبسولات'], ['drip', 'دريب'],
     ['dripper', 'أقماع'], ['grinder', 'مطاحن'], ['kettle', 'غلايات'], ['scale', 'موازين'], ['machine', 'مكاين'], ['brewer', 'أدوات تحضير'], ['filter', 'فلاتر'], ['other', 'أخرى']];
   // لو الصنف مو في النتائج الحالية: نبحث عنه في قسم القهوة
-  const CF_KIND_Q = { beans: 'قهوة مختصة', omani: 'قهوة عمانية', turkish: 'قهوة تركية', capsule: 'كبسولات', drip: 'دريب', dripper: 'قمع تقطير', grinder: 'مطحنة قهوة', kettle: 'ابريق تقطير', scale: 'ميزان قهوة', machine: 'مكينة قهوة', brewer: 'أدوات تحضير القهوة', filter: 'فلاتر ورق' };
+  const CF_KIND_Q = { beans: 'محاصيل القهوة', omani: 'قهوة عمانية', turkish: 'قهوة تركية', capsule: 'كبسولات', drip: 'دريب', dripper: 'قمع تقطير', grinder: 'مطحنة قهوة', kettle: 'ابريق تقطير', scale: 'ميزان قهوة', machine: 'مكينة قهوة', brewer: 'أدوات تحضير القهوة', filter: 'فلاتر ورق' };
   const cfKindIs = (c, k) => !!c && (c.kind === k || k === 'other' && c.kind === 'box');
 
   // ---- خيارات كل أداة: تضغط «مطاحن» تطلع «يدوية/كهربائية، ترس مخروطي/مسطح، ستانلس/سيراميك» ----
@@ -3390,6 +3402,51 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     </section>`;
   }
 
+  // ================= جودة القهوة والعطور من معلومات المنتج (متاجرها ما فيها تقييمات) =================
+  // عشان «الأرخص» و«الأجود» يفرقون: درجة التذوق والصنف النادر والمعالجة واللوت المحدود والارتفاع،
+  // وفي العطور التركيز ودار العطور والدهن المعتق، والمستوحى ينزل
+  const Q_CUP = /(\b8[4-9]|\b9[0-4])(?:[.,]\d+)?\s*\+?\s*(points?|pts|نقطه|نقطة|درجه|درجة)|\b(sca|scaa|cup score|cupping score)\s*[:：]?\s*(8[4-9]|9[0-4])/i;
+  const Q_RARE = /g[ea]isha|gesha|جيشا|قيشا|sidra|سيدرا|pink bourbon|بينك بوربون|eugenioides|wush ?wush|laurina|pacamara|باكامارا|sl ?28|java|جافا/i;
+  const Q_PROC = /anaerobic|لاهوائي|carbonic|كاربونيك|thermal shock|double ferment|lactic|yeast|koji|كوجي|cultur/i;
+  const Q_LOT = /micro ?lot|nano ?lot|exclusive lot|limited|competition|\bcoe\b|cup of excellence|best of|حصري|محدود|مسابقه|مسابقة|فاخر/i;
+  const Q_NICHE = /amouage|أمواج|creed|kilian|xerjoff|kurkdjian|\bmfk\b|roja|initio|parfums de marly|\bpdm\b|tom ford|clive christian|nishane|frederic malle|byredo|le labo|ormonde|memo paris|ex nihilo|louis vuitton|bvlgari le gemme|maison crivelli|mancera|montale|amouage|guerlain l'art|chanel les exclusifs|dior privee|hermessence/i;
+  const Q_DESIGNER = /chanel|dior|guerlain|hermes|hermès|ysl|yves saint|armani|givenchy|prada|valentino|gucci|versace|burberry|carolina herrera|lancome|lancôme|jo malone|paco rabanne|hugo boss|montblanc/i;
+  const Q_RAREOIL = /معتق|aged|vintage|cambodi|كمبودي|hindi|هندي|assam|اسام|آسام|burm|بورمي|trat|تراد|kalimantan|كلمنتان|super|royal|ملكي|نادر|rare/i;
+  function qualityOf(p) {
+    if (p._q !== undefined) return p._q;
+    const why = [];
+    let q = null;
+    const c = p.ctext ? coffeeOf(p) : null;
+    if (c && CF_COFFEE.has(c.kind)) {
+      const x = normalize(p.ctext);
+      q = 4.0;
+      const m = x.match(Q_CUP); const cup = m ? +(m[1] || m[4]) : 0;
+      if (cup >= 84 && cup <= 94) { q += Math.min(0.6, (cup - 84) * 0.1 + 0.1); why.push('تقييم تذوق ' + cup); }
+      if (Q_RARE.test(x)) { q += 0.3; why.push('صنف نادر'); }
+      if (c.pr && ['anaerobic', 'infused'].includes(c.pr.k) || Q_PROC.test(x)) { q += c.pr && c.pr.k === 'infused' ? 0.05 : 0.15; why.push('معالجة خاصة'); }
+      else if (c.pr && ['natural', 'honey'].includes(c.pr.k)) q += 0.05;
+      if (Q_LOT.test(x)) { q += 0.2; why.push('لوت محدود'); }
+      if (c.alt && c.alt[1] >= 1900) { q += 0.1; why.push('ارتفاع عالي'); } else if (c.alt && c.alt[1] >= 1600) q += 0.05;
+      if (c.o && !/blend|خلطه|مزيج|بليند/i.test(x)) { q += 0.1; why.push('من مصدر واحد'); } else if (/blend|خلطه|مزيج|بليند/i.test(normalize(p.title))) q -= 0.05;
+      if (c.kind === 'capsule') q -= 0.15; else if (c.kind === 'drip') q -= 0.05;
+      q = Math.max(3.7, Math.min(4.9, q));
+    } else if (p.ptext) {
+      const f = pfInfo(p);
+      if (f && f.kind !== 'other') {
+        const x = normalize(p.ptext), t = String(p.title), pf = perfOf(p) || {};
+        q = 4.0;
+        if (pf.level >= 4) { q += 0.35; why.push('تركيز عالي جدًا'); } else if (pf.level === 3) { q += 0.2; why.push('تركيز عالي'); } else if (pf.level === 1) q -= 0.2;
+        if (f.kind === 'oil') { q += 0.15; if (Q_RAREOIL.test(x)) { q += 0.2; why.push('دهن معتق أو نادر'); } }
+        if (f.kind === 'bakhoor' && Q_RAREOIL.test(x)) { q += 0.15; why.push('عود فاخر'); }
+        if (p.platform === 'amouage' || Q_NICHE.test(t)) { q += 0.3; why.push('دار عطور فاخرة'); } else if (Q_DESIGNER.test(t)) q += 0.1;
+        if (f.dupe) { q -= 0.5; why.push('مستوحى (مو الأصلي)'); }
+        if (f.kind === 'mist' || f.kind === 'care' || f.kind === 'home') q -= 0.15;
+        q = Math.max(3.4, Math.min(4.9, q));
+      }
+    }
+    return (p._q = q == null ? null : { q, why });
+  }
+
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;
   const bayes = (r, n) => (n * r + PRIOR_WEIGHT * PRIOR_RATING) / (n + PRIOR_WEIGHT);
 
@@ -3406,8 +3463,11 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       group.forEach((p, i) => {
         // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
         p.adj = (p.sellerRated || p.unrated) ? bayes(p.rating, 8) : bayes(p.rating, p.reviews ?? p.orders ?? 0);
+        // القهوة والعطور: الجودة من معلومات المنتج (وإذا فيه تقييمات حقيقية نخلطها معها)
+        const dq = qualityOf(p);
+        if (dq) p.adj = p.unrated ? dq.q : 0.6 * p.adj + 0.4 * dq.q;
         // في العطور: التركيز الأعلى يثبت أكثر، فنعطيه دفعة بسيطة في الجودة
-        if (pm) { const f = perfOf(p); if (f) p.adj += CONC_BONUS[f.level] || 0; }
+        else if (pm) { const f = perfOf(p); if (f) p.adj += CONC_BONUS[f.level] || 0; }
         const priceScore = hi > lo ? 1 - (logs[i] - lo) / (hi - lo) : 1;
         const qualityScore = Math.min(1, Math.max(0, (p.adj - 3) / 2));
         p.score = (1 - priceWeight) * qualityScore + priceWeight * priceScore;
@@ -3708,7 +3768,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
         <span class="ribbon">الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
-        ${perfHtml(p, true)}${pfExtraHtml(p)}${coffeeHtml(p, true)}
+        ${perfHtml(p, true)}${pfExtraHtml(p, true)}${coffeeHtml(p, true)}
         <div class="reason">${reasonHtml(p, list)}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
@@ -3857,7 +3917,10 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       reviews: (a, b) => (b.reviews || b.orders || 0) - (a.reviews || a.orders || 0),
     };
     // من كل متجر نعرض أفضل N حسب الأولوية الحالية (تتغيّر فوري)
-    const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
+    // في قسم القهوة والعطور نعرض 24 من كل متجر، و«عرض المزيد» يزيد
+    const sec = state.coffeeMode || state.perfMode, perStore = sec ? Math.max(state.secLimit || 24, state.limit) : state.limit;
+    const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, perStore)).sort(sorters[state.sort]);
+    const moreN = sec ? list.length - ordered.length : 0;
 
     const cfKeys = state.coffeeMode ? coffeeKeys().filter(k => state.platforms.has(k)) : state.perfMode ? perfKeys().filter(k => state.platforms.has(k)) : null;
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${cfKeys ? cfKeys.length : state.platforms.size} متاجر</span></div>${linkHtml()}` + (cfKeys
@@ -3892,7 +3955,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (favChanged) store.set('qarin.favs', favs);
     html += cfBar + (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
-        <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div></div>
+        <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div>${moreN > 0 ? `<button type="button" class="tool-btn more-btn" data-more>عرض المزيد (<bdi class="num">${moreN}</bdi> منتج ثاني)</button>` : ''}</div>
         <div class="panel${state.tab === 'compare' ? ' on' : ''}" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">${platformsHtml(sum)}${barsHtml(sum)}</div>
         <div class="panel${state.tab === 'table' ? ' on' : ''}" id="panel-table" role="tabpanel" aria-labelledby="tab-table">${tableHtml(list)}</div></div>`;
     box.innerHTML = html;
@@ -3983,7 +4046,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     state.mode = 'search';
     // قسم القهوة له بحثه الخاص: متاجر القهوة العمانية بس
     const keys = state.coffeeMode ? coffeeKeys() : state.perfMode ? perfKeys() : KEYS;
-    if (state.query !== query) { state.cf = {}; state.pfF = {}; }  // فلاتر القهوة والعطور تبدأ من جديد مع كل بحث
+    if (state.query !== query) { state.cf = {}; state.pfF = {}; state.secLimit = 24; }  // فلاتر القهوة والعطور تبدأ من جديد مع كل بحث
     if (state.pfPending) { state.pfF = { kind: state.pfPending }; state.pfPending = null; }
     state.pfBrowse = state.perfMode && state.pfBrowseNext || null; state.pfBrowseNext = null;
     if (state.cfPending) { state.cf = { kind: state.cfPending }; state.cfPending = null; }  // ضغطت «مطاحن» وهي مو في النتائج
@@ -4542,14 +4605,14 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const b = e.target.closest('[data-cf]');
       if (!b) return;
       // كنت تتصفح «مطاحن» وضغطت «الكل»: نرجع لبحثك قبلها (مو نبقى على المطاحن)
-      if (b.dataset.cf === 'kind' && !b.dataset.v && state.cfBrowse) { search(state.cfPrevQ && state.cfPrevQ !== state.query ? state.cfPrevQ : 'قهوة مختصة'); return; }
+      if (b.dataset.cf === 'kind' && !b.dataset.v && state.cfBrowse) { search(state.cfPrevQ && state.cfPrevQ !== state.query ? state.cfPrevQ : 'قهوة'); return; }
       // صنف أداة («مطاحن»): نلغي فلاتر المعالجة والبلد
       state.cf = b.dataset.cf === 'kind' && b.dataset.v && !CF_COFFEE.has(b.dataset.v) ? { kind: b.dataset.v } : Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
       render();
     });
     // ☕ قسم القهوة: صفحة لها بحثها الخاص (#coffee)، ما تخلط علي إكسبريس وإيباي وإتسي
-    const CF_QUICK = ['قهوة مختصة', 'قهوة عمانية', 'قهوة اثيوبية', 'كولومبيا', 'جيشا', 'كبسولات', 'دريب', 'مطحنة قهوة', 'في 60', 'ميزان قهوة', 'ابريق تقطير'];
-    $('cfQuick').innerHTML = CF_QUICK.map(q => `<button type="button" class="cf-chip" data-cfq="${esc(q)}">${esc(q)}</button>`).join('');
+    const CF_QUICK = [['كل القهوة', 'قهوة'], 'قهوة مختصة', 'قهوة عمانية', 'قهوة اثيوبية', 'كولومبيا', 'جيشا', 'كبسولات', 'دريب', 'مطحنة قهوة', 'في 60', 'ميزان قهوة', 'ابريق تقطير'];
+    $('cfQuick').innerHTML = CF_QUICK.map(q => { const [l, v] = Array.isArray(q) ? q : [q, q]; return `<button type="button" class="cf-chip" data-cfq="${esc(v)}">${esc(l)}</button>`; }).join('');
     function openCoffee(q) {
       if (state.perfMode) closePerf(true);
       state.coffeeMode = true;
@@ -4557,7 +4620,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       document.querySelectorAll('#platformChecks details.cf-group').forEach(d => (d.open = true));
       $('coffeeHead').hidden = false;
       if (location.hash !== '#coffee') history.pushState(null, '', '#coffee');
-      search(q || $('cfQ').value || 'قهوة مختصة');
+      search(q || $('cfQ').value || 'قهوة');
       window.scrollTo(0, 0);
     }
     function closeCoffee(fromHistory) {
@@ -4569,7 +4632,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       if (!fromHistory && location.hash === '#coffee') history.pushState(null, '', location.pathname + location.search);
       render(); window.scrollTo(0, 0);
     }
-    $('coffeeTile').addEventListener('click', () => openCoffee('قهوة مختصة'));
+    $('coffeeTile').addEventListener('click', () => openCoffee('قهوة'));
     $('cfBack').addEventListener('click', () => closeCoffee(false));
     $('cfForm').addEventListener('submit', e => { e.preventDefault(); const q = $('cfQ').value.trim(); if (q) search(q); });
     $('cfQuick').addEventListener('click', e => { const b = e.target.closest('[data-cfq]'); if (b) search(b.dataset.cfq); });
@@ -4663,6 +4726,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
         if (state.products.some(p => passPerf(p))) break;
       }
     }
+    document.addEventListener('click', e => { if (!e.target.closest('[data-more]')) return; state.secLimit = (state.secLimit || 24) + 24; render(); });
     $('pfImgBtn').addEventListener('click', () => $('pfImgIn').click());
     $('pfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; pfImageSearch(f); });
     if (location.hash === '#perfume') setTimeout(() => openPerf(), 0);

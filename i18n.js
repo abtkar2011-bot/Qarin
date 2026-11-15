@@ -1,6 +1,21 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"قهوة عمانية وعربية": ["Omani & Arabic coffee", "Café omanais et arabe", "Café omaní y árabe", "阿曼和阿拉伯咖啡", "ओमानी और अरबी कॉफ़ी", "عمانی اور عربی کافی", "Оманский и арабский кофе", "Umman ve Arap kahvesi", "Kopi Oman & Arab"],
+"تقييم تذوق {n}": ["Cupping score {n}", "Note de dégustation {n}", "Puntuación de cata {n}", "杯测分 {n}", "कपिंग स्कोर {n}", "کپنگ اسکور {n}", "Оценка каппинга {n}", "Tadım puanı {n}", "Skor cupping {n}"],
+"صنف نادر": ["Rare variety", "Variété rare", "Variedad rara", "稀有品种", "दुर्लभ किस्म", "نایاب قسم", "Редкий сорт", "Nadir çeşit", "Varietas langka"],
+"معالجة خاصة": ["Special process", "Process spécial", "Proceso especial", "特殊处理", "ख़ास प्रोसेस", "خاص پروسیس", "Особая обработка", "Özel işlem", "Proses khusus"],
+"لوت محدود": ["Limited lot", "Lot limité", "Lote limitado", "限量批次", "सीमित लॉट", "محدود لاٹ", "Ограниченный лот", "Sınırlı parti", "Lot terbatas"],
+"ارتفاع عالي": ["High altitude", "Haute altitude", "Gran altitud", "高海拔", "ऊँचाई पर उगी", "بلند مقام", "Высокогорье", "Yüksek rakım", "Dataran tinggi"],
+"من مصدر واحد": ["Single origin", "Origine unique", "Origen único", "单一产地", "सिंगल ओरिजिन", "سنگل اوریجن", "Моносорт", "Tek köken", "Single origin"],
+"دهن معتق أو نادر": ["Aged or rare oil", "Huile vieillie ou rare", "Aceite añejo o raro", "陈年或稀有香油", "पुराना या दुर्लभ तेल", "پرانا یا نایاب تیل", "Выдержанное или редкое масло", "Yıllanmış veya nadir yağ", "Minyak tua atau langka"],
+"عود فاخر": ["Premium oud", "Oud de luxe", "Oud de lujo", "高级沉香", "प्रीमियम ऊद", "پریمیم عود", "Премиальный уд", "Lüks ud", "Oud premium"],
+"دار عطور فاخرة": ["Luxury perfume house", "Maison de parfum de luxe", "Casa de perfumes de lujo", "奢华香水品牌", "लग्ज़री परफ़्यूम हाउस", "لگژری پرفیوم ہاؤس", "Люксовый парфюмерный дом", "Lüks parfüm evi", "Rumah parfum mewah"],
+"لبان": ["Frankincense", "Encens", "Incienso", "乳香", "लोबान", "لوبان", "Ладан", "Günlük", "Kemenyan"],
+"كل القهوة": ["All coffee", "Tous les cafés", "Todo el café", "全部咖啡", "सारी कॉफ़ी", "تمام کافی", "Весь кофе", "Tüm kahveler", "Semua kopi"],
+"قهوة": ["Coffee", "Café", "Café", "咖啡", "कॉफ़ी", "کافی", "Кофе", "Kahve", "Kopi"],
+"محاصيل القهوة": ["Coffee beans", "Grains de café", "Granos de café", "咖啡豆", "कॉफ़ी बीन्स", "کافی بینز", "Кофейные зёрна", "Kahve çekirdekleri", "Biji kopi"],
+"عرض المزيد ({n} منتج ثاني)": ["Show more ({n} more products)", "Afficher plus ({n} autres produits)", "Ver más ({n} productos más)", "显示更多（还有{n}件）", "और दिखाएँ ({n} और उत्पाद)", "مزید دکھائیں ({n} مزید مصنوعات)", "Показать ещё ({n} товаров)", "Daha fazla göster ({n} ürün daha)", "Tampilkan lagi ({n} produk lagi)"],
 "منتج من متاجر قهوة عمانية": ["products from Omani coffee stores", "produits de cafés omanais", "productos de tiendas de café omaníes", "件来自阿曼咖啡店的商品", "उत्पाद ओमानी कॉफ़ी स्टोर से", "مصنوعات عمانی کافی اسٹورز سے", "товаров из оманских кофеен", "ürün, Umman kahve mağazalarından", "produk dari toko kopi Oman"],
 "التشغيل": ["Power", "Fonctionnement", "Funcionamiento", "驱动方式", "चलाने का तरीका", "چلانے کا طریقہ", "Привод", "Çalışma", "Daya"],
 "يدوية": ["Manual", "Manuel", "Manual", "手动", "मैनुअल", "دستی", "Ручная", "Manuel", "Manual"],
