@@ -16,7 +16,7 @@ function fixText(v) {
 async function get(url, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, { headers: { 'user-agent': UA, 'accept-language': 'en' } });
+      const r = await fetch(url, { headers: { 'user-agent': UA, 'accept-language': 'en' }, signal: AbortSignal.timeout(30000) });
       if (r.status === 404) return null;
       if (r.ok) return await r.text();
     } catch (e) { /* نعيد المحاولة */ }
@@ -82,7 +82,8 @@ function parseShopify(json, base) {
     const img = (p.images && p.images[0] && p.images[0].src) || '';
     if (!(price > 0) || !img) return null;
     const tags = Array.isArray(p.tags) ? p.tags.join(' ') : String(p.tags || '');
-    return { t: String(p.title || '').trim(), p: price, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
+    const cmp = Math.max(0, ...vs.map(v => +v.compare_at_price || 0));
+    return { t: String(p.title || '').trim(), p: price, o: cmp > price * 1.02 ? cmp : 0, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
   }).filter(Boolean);
   out.raw = (d.products || []).length;  // عدد المنتجات في الصفحة قبل حذف غير المتوفر
   return out;
@@ -190,6 +191,48 @@ async function epanda() {
   return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: [...items.values()].map(pack) };
 }
 
+// فوح (عُمان): شوبيفاي — سوق محامص عمانية وسعودية، الماركة = المحمصة
+async function fooh() {
+  const B = 'https://fooh.store', all = [];
+  for (let page = 1; page <= 20; page++) {
+    const items = parseShopify(await get(`${B}/products.json?limit=250&page=${page}`), B);
+    if (!items.raw) break;
+    all.push(...items.map(x => Object.assign(x, { tags: ['fooh | فوح', x.b, x.ty, x.tags].filter(Boolean).join(' | ') })));
+    console.log('fooh page', page, all.length);
+    await sleep(700);
+  }
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+}
+
+// متاجر أودو كبيرة بصفحات (محاصيل البن، مثلث): كل الصفحات، والأقسام من خريطة الموقع
+// (اسم القسم مكتوب في رابطه: «ادوات-القهوة-المقطرة-المطاحن-23») فيصير وسم للمنتج
+async function odooPaged(B, name, tags, maxPages = 40) {
+  const items = new Map();
+  const pages = async (path, tag) => {
+    for (let page = 1; page <= maxPages; page++) {
+      const got = parseOdoo(await get(`${B}${path}${page > 1 ? '/page/' + page : ''}`), B, tags);
+      let fresh = 0;
+      for (const it of got) {
+        const x = items.get(it.u);
+        if (!x) { if (!tag) { items.set(it.u, it); fresh++; } }
+        else if (tag && !x.tags.includes(tag)) { x.tags += ' | ' + tag; fresh++; }
+      }
+      if (got.length < 10 || !fresh) break;
+      await sleep(600);
+    }
+  };
+  await pages('/shop', '');
+  const cats = [...new Set(locs(await get(B + '/sitemap.xml')).map(u => (u.match(/\/shop\/category\/([^/?#]+)$/) || [])[1]).filter(Boolean))].slice(0, 90);
+  for (const c of cats) {
+    const tag = decodeURIComponent(c).replace(/-\d+$/, '').replace(/-/g, ' ');
+    await pages('/shop/category/' + c, tag);
+  }
+  console.log(name, items.size, 'categories', cats.length);
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: [...items.values()].map(pack) };
+}
+const mahaseel = () => odooPaged('https://mahaseelalbon.com', 'mahaseel', 'mahaseel albon');
+const muthalath = () => odooPaged('https://www.muthalathstore.com', 'muthalath', 'muthalath | مثلث');
+
 // محامص أودو صغيرة (صفحة متجر وحدة): رواسي و سورا
 async function odooShop(B, name, tags) {
   const items = parseOdoo(await get(B + '/shop?ppg=200'), B, tags);
@@ -252,8 +295,8 @@ module.exports = { parseVListing, parseShopify, parseWoo, parseOdoo, parseLdProd
 if (require.main === module) (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = {};
-  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5 };
-  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura]]) {
+  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5 };
+  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath]]) {
     try {
       const data = await fn();
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);

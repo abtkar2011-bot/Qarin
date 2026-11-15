@@ -967,6 +967,12 @@ table.dt { min-width: 0; font-size: .76rem; }
                    url: () => 'https://yield-oman.kyte.site/en' },
     sura:        { name: 'سورا', color: '#A0522D', text: '#FFFFFF', bar: '#A0522D', tagline: 'محمصة عمانية: قهوة مختصة',
                    url: q => 'https://www.suraroastery.om/shop?search=' + qp(q) },
+    fooh:        { name: 'فوح', color: '#C2410C', text: '#FFFFFF', bar: '#C2410C', tagline: 'سوق محامص عمانية وسعودية',
+                   url: q => 'https://fooh.store/search?q=' + qp(q) },
+    mahaseel:    { name: 'محاصيل البن', color: '#6B4226', text: '#FFFFFF', bar: '#6B4226', tagline: 'متجر قهوة عماني: محاصيل من محامص كثيرة',
+                   url: q => 'https://mahaseelalbon.com/shop?search=' + qp(q) },
+    muthalath:   { name: 'مثلث', color: '#1F2937', text: '#FFFFFF', bar: '#1F2937', tagline: 'متجر قهوة عماني: محاصيل وأدوات',
+                   url: q => 'https://www.muthalathstore.com/shop?search=' + qp(q) },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1916,11 +1922,12 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
   // محامص القهوة: نفس طريقة البحث، مع معنى خاص لكلمة «قهوة» (القهوة نفسها مو المكاين والأدوات)
-  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe|canister|mirror|screen|empty|travel|tools?|server|press\\b|needle|distribut|basket|level+er|scoop|brush|clean|holder|\\bmats?\\b|stand\\b|suitcase|\\bcase\\b|thermometer|decanter|spoon|rinser|dosing|portafilter|milk|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين';
+  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe|canister|mirror|screen|empty|travel|packaging|gift card|تغليف|بطاقة|tools?|server|press\\b|needle|distribut|basket|level+er|scoop|brush|clean|holder|\\bmats?\\b|stand\\b|suitcase|\\bcase\\b|thermometer|decanter|spoon|rinser|dosing|portafilter|milk|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين';
   const COFFEE_FEED = { perUsd: () => OMR_PER_USD, aff: '', generic: /^(products?|original)$/,
     gate: /(قهو|(^|\s)(ال)?بن(\s|$)|اسبريسو|اسبرسو|كابتشينو|لاتيه|كبسول|في ?60|كيمكس|ايروبرس|مطحن|طاحون|دريب|تقطير|دله|محمص|سيروب|سيرب|coffee|espresso|capsule|\bbeans?\b|grinder|chemex|aeropress|\bv60\b|\bdrip|kettle|tamper|barista|latte|cappuccino|moka|french press|cold brew|syrup|dallah|copper roastery|bun al qassab|spirit hub)/i,
-    syn: { coffee: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast)',
-      beans: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
+    // «محمصة X» في عنوان المنتج = محصول قهوة (عناوين محاصيل البن وسوق البن عربية)
+    syn: { coffee: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast|محمص|محصول|محاصيل)',
+      beans: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast|محمص|محصول|محاصيل)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
       arabic: '(arabic coffee|قهوة عربية|قهوه عربيه|omani coffee|قهوة عمانية|al balad|cardamom|هيل)', capsules: '(capsule|كبسول)', drip: '(\\bdrip|دريب|مقطر)', ground: '(ground|grind|مطحون)', omani: '(omani|عماني)', turkish: '(turkish|تركي)', decaf: '(decaf)',
       machine: '(machine|maker|brewer|boiler|automatic|espresso machine)', maker: '(machine|maker|brewer|boiler|automatic)', grinder: '(grinder|مطحن|طاحون)', kettle: '(kettle|غلاي|ابريق)', gooseneck: '(gooseneck|kettle)',
       dripper: '(dripper|v60|kalita|chemex|origami)', v60: '(v60)', paper: '(paper|filters?)', filter: '(filter|فلتر)', syrup: '(syrup|سيروب)', thermos: '(thermos|flask|vacuum)', flask: '(thermos|flask|vacuum)',
@@ -1944,6 +1951,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     rawasi: Object.assign({ file: 'data/p/rawasi.json' }, COFFEE_FEED),
     yield: Object.assign({ file: 'data/p/yield.json' }, COFFEE_FEED),
     sura: Object.assign({ file: 'data/p/sura.json' }, COFFEE_FEED),
+    fooh: Object.assign({ file: 'data/p/fooh.json' }, COFFEE_FEED),
+    mahaseel: Object.assign({ file: 'data/p/mahaseel.json' }, COFFEE_FEED),
+    muthalath: Object.assign({ file: 'data/p/muthalath.json' }, COFFEE_FEED),
   };
   const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
   // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
@@ -2750,6 +2760,9 @@ table.dt { min-width: 0; font-size: .76rem; }
     rawasi: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
     yield: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
     sura: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
+    fooh: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    mahaseel: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    muthalath: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
   };
 
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;

@@ -1,6 +1,12 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"مثلث": ["Muthalath", "Muthalath", "Muthalath", "Muthalath", "Muthalath", "مثلث", "Muthalath", "Muthalath", "Muthalath"],
+"متجر قهوة عماني: محاصيل وأدوات": ["Omani coffee store: beans & gear", "Boutique de café omanaise : grains et matériel", "Tienda de café omaní: granos y equipo", "阿曼咖啡店：咖啡豆和器具", "ओमानी कॉफ़ी स्टोर: बीन्स और उपकरण", "عمانی کافی اسٹور: بینز اور آلات", "Оманский магазин кофе: зерно и инвентарь", "Ummanlı kahve mağazası: çekirdek ve ekipman", "Toko kopi Oman: biji & alat"],
+"فوح": ["Fooh", "Fooh", "Fooh", "Fooh", "Fooh", "فوح", "Fooh", "Fooh", "Fooh"],
+"محاصيل البن": ["Mahaseel Al Bon", "Mahaseel Al Bon", "Mahaseel Al Bon", "Mahaseel Al Bon", "Mahaseel Al Bon", "محاصیل البن", "Mahaseel Al Bon", "Mahaseel Al Bon", "Mahaseel Al Bon"],
+"سوق محامص عمانية وسعودية": ["Marketplace of Omani & Saudi roasters", "Place de marché de torréfacteurs omanais et saoudiens", "Mercado de tostadores omaníes y saudíes", "阿曼和沙特烘焙商市场", "ओमानी और सऊदी रोस्टर्स का बाज़ार", "عمانی اور سعودی روسٹرز کا بازار", "Маркетплейс оманских и саудовских обжарщиков", "Ummanlı ve Suudi kavurucuların pazarı", "Marketplace roastery Oman & Saudi"],
+"متجر قهوة عماني: محاصيل من محامص كثيرة": ["Omani coffee store: beans from many roasters", "Boutique de café omanaise : grains de nombreux torréfacteurs", "Tienda de café omaní: granos de muchos tostadores", "阿曼咖啡店：多家烘焙商的咖啡豆", "ओमानी कॉफ़ी स्टोर: कई रोस्टर्स की बीन्स", "عمانی کافی اسٹور: کئی روسٹرز کی بینز", "Оманский магазин кофе: зерно многих обжарщиков", "Ummanlı kahve mağazası: birçok kavurucudan çekirdek", "Toko kopi Oman: biji dari banyak roastery"],
 "سورا": ["Sura", "Sura", "Sura", "Sura", "Sura", "سورا", "Sura", "Sura", "Sura"],
 "☕ متاجر القهوة العمانية": ["☕ Omani coffee stores", "☕ Boutiques de café omanaises", "☕ Tiendas de café omaníes", "☕ 阿曼咖啡店", "☕ ओमानी कॉफ़ी स्टोर", "☕ عمانی کافی اسٹورز", "☕ Оманские магазины кофе", "☕ Ummanlı kahve mağazaları", "☕ Toko kopi Oman"],
 "رواسي": ["Rawasi", "Rawasi", "Rawasi", "Rawasi", "Rawasi", "رواسی", "Rawasi", "Rawasi", "Rawasi"],
