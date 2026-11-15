@@ -1026,7 +1026,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
                    url: () => 'https://www.spirithubcafe.com/om/shop' },
     souqalbon:   { name: 'سوق البن', color: '#5B3A29', text: '#FFFFFF', bar: '#5B3A29', tagline: 'متجر قهوة عماني: محاصيل محامص وأدوات',
                    url: q => 'https://souqalbon.com/?post_type=product&s=' + qp(q) },
-    epanda:      { name: 'ePanda', color: '#2B2B2B', text: '#FFFFFF', bar: '#2B2B2B', tagline: 'متجر قهوة عماني: أدوات ومكاين ومحاصيل',
+    epanda:      { name: 'ePanda', color: '#2B2B2B', text: '#FFFFFF', bar: '#2B2B2B', tagline: 'متجر قهوة عماني: أدوات ومكائن ومحاصيل',
                    url: q => 'https://www.epandaom.com/ar/shop?search=' + qp(q) },
     rawasi:      { name: 'رواسي', color: '#8C5A3C', text: '#FFFFFF', bar: '#8C5A3C', tagline: 'محمصة عمانية: قهوة مختصة',
                    url: q => 'https://www.rawasiom.com/shop?search=' + qp(q) },
@@ -3333,7 +3333,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
   // «النوع»: القهوة نفسها، بعدين الأدوات، و«أخرى» للي ما له صنف (بوكسات، سيروب، أكواب…)
   const CF_KIND = [['beans', 'محاصيل'], ['omani', 'قهوة عمانية وعربية'], ['turkish', 'قهوة تركية'], ['capsule', 'كبسولات'], ['drip', 'دريب'],
-    ['dripper', 'أقماع'], ['grinder', 'مطاحن'], ['kettle', 'غلايات'], ['scale', 'موازين'], ['machine', 'مكاين'], ['brewer', 'أدوات تحضير'], ['filter', 'فلاتر'], ['other', 'أخرى']];
+    ['dripper', 'أقماع'], ['grinder', 'مطاحن'], ['kettle', 'غلايات'], ['scale', 'موازين'], ['machine', 'مكائن'], ['brewer', 'أدوات تحضير'], ['filter', 'فلاتر'], ['other', 'أخرى']];
   // لو الصنف مو في النتائج الحالية: نبحث عنه في قسم القهوة
   const CF_KIND_Q = { beans: 'محاصيل القهوة', omani: 'قهوة عمانية', turkish: 'قهوة تركية', capsule: 'كبسولات', drip: 'دريب', dripper: 'قمع تقطير', grinder: 'مطحنة قهوة', kettle: 'ابريق تقطير', scale: 'ميزان قهوة', machine: 'مكينة قهوة', brewer: 'أدوات تحضير القهوة', filter: 'فلاتر ورق' };
   const cfKindIs = (c, k) => !!c && (c.kind === k || k === 'other' && c.kind === 'box');
