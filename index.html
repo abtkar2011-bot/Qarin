@@ -1964,7 +1964,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
 
   // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
   // محامص القهوة: نفس طريقة البحث، مع معنى خاص لكلمة «قهوة» (القهوة نفسها مو المكاين والأدوات)
-  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe|canister|mirror|screen|empty|travel|packaging|gift card|تغليف|بطاقة|tools?|server|press\\b|needle|distribut|basket|level+er|scoop|brush|clean|holder|\\bmats?\\b|stand\\b|suitcase|\\bcase\\b|thermometer|decanter|spoon|rinser|dosing|portafilter|milk|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين';
+  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe|canister|mirror|screen|empty|travel|packaging|gift card|refill\\w*|reusable|تغليف|بطاقة|اعاده التعبئه|إعادة التعبئة|tools?|server|press\\b|needle|distribut|basket|level+er|scoop|brush|clean|holder|\\bmats?\\b|stand\\b|suitcase|\\bcase\\b|thermometer|decanter|spoon|rinser|dosing|portafilter|milk|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين';
   const COFFEE_FEED = { perUsd: () => OMR_PER_USD, aff: '', generic: /^(products?|original)$/,
     gate: /(قهو|(^|\s)(ال)?بن(\s|$)|اسبريسو|اسبرسو|كابتشينو|لاتيه|كبسول|في ?60|كيمكس|ايروبرس|مطحن|طاحون|دريب|تقطير|دله|محمص|سيروب|سيرب|coffee|espresso|capsule|\bbeans?\b|grinder|chemex|aeropress|\bv60\b|\bdrip|kettle|tamper|barista|latte|cappuccino|moka|french press|cold brew|syrup|dallah|copper roastery|bun al qassab|spirit hub)/i,
     // «محمصة X» في عنوان المنتج = محصول قهوة (عناوين محاصيل البن وسوق البن عربية)
@@ -1977,7 +1977,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     dropWith: { coffee: /^(machines?|maker|brewer|grinders?|kettles?|drippers?|v60|chemex|aeropress|press|moka|scales?|tampers?|filters?|paper|syrups?|cups?|mugs?|jars?|thermos|flask|dallah|pot|gift|set)$/,
       espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/ },
     titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/, hard: /^(arabic|turkish|omani|saudi)$/,
-    accessory: /\b(clean\w*|brush|case|cover|holder|mats?|stand|sleeve|spare|replacement|parts?|protective|pouch|bags?(?! of)|paper|filters?|gasket|burrs?|seal|cap|lid|tool)\b|فرشا|غطاء|حافظ|فلتر|فلاتر|ورقي/i };
+    accessory: /\b(clean\w*|brush|case|cover|holder|mats?|stand|sleeve|spare|replacement|parts?|protective|pouch|bags?(?! of)|paper|filters?|gasket|burrs?|seal|cap|lid|tool|refill\w*|reusable)\b|فرشا|غطاء|حافظ|فلتر|فلاتر|ورقي|إعادة التعبئة|اعادة التعبئة/i };
   const PARTNER_FEEDS = {
     vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
       gate: /(عطر|عطور|(^|\s)(ال)?عود|دهن|بخور|دخون|مبخر|(^|\s)(ال)?مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
