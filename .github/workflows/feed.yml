@@ -96,7 +96,7 @@ jobs:
       - name: Partner stores
         id: partners
         continue-on-error: true
-        timeout-minutes: 25
+        timeout-minutes: 45
         run: |
           want=$(sha256sum tools/partners/build.js | cut -c1-16)
           have=$(cat partners/.builder 2>/dev/null || true)

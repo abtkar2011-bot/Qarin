@@ -527,6 +527,8 @@ table.dt { min-width: 0; font-size: .76rem; }
   .tools-row .tool-btn svg { width: 38px; height: 38px; margin-bottom: 8px; }
   .tools-row .tool-btn span { font-size: 1.25rem; }
   .tools-row .tool-btn small { font-size: 0.95rem; }
+  .tools-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tools-row .tool-coffee { grid-column: auto; }
   .follow { border-radius: 22px; }
   .follow-list a { padding: 20px 22px; font-size: 1.1rem; gap: 14px; }
   .follow-list a svg { width: 28px; height: 28px; }
@@ -584,6 +586,24 @@ table.dt { min-width: 0; font-size: .76rem; }
 .mic-btn.on { background: transparent; color: var(--bad); animation: micPulse 1.1s ease-in-out infinite; }
 @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 .tools-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tools-row .tool-coffee { grid-column: 1 / -1; }
+.cb { font-size: 0.76rem; color: var(--muted); }
+.cb.good, .cb.store { color: #0A7EA4; }
+.cb small { color: var(--muted); font-size: 0.7rem; }
+.cb .why { color: var(--muted); }
+.cf-bar { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 14px 10px; display: grid; gap: 10px; min-width: 0; }
+.cf-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.cf-head b { font-size: 1rem; }
+.cf-head span { color: var(--muted); font-size: 0.8rem; }
+.cf-row { display: grid; gap: 6px; min-width: 0; }
+.cf-k { font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+.cf-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; min-width: 0; }
+.cf-chips::-webkit-scrollbar { display: none; }
+.cf-chip { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.cf-chip i { font-style: normal; color: var(--muted); font-size: 0.72rem; }
+.cf-chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cf-chip.on i { color: rgba(255,255,255,.8); }
+.cf-note { margin: 0; font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
 .tools-row .tool-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; border-radius: 18px; text-align: start; min-width: 0; }
 .tools-row .tool-btn svg { width: 24px; height: 24px; margin-bottom: 4px; }
 .tools-row .tool-btn span { font-size: 0.98rem; font-weight: 700; }
@@ -819,6 +839,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     <div class="tools-row">
       <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18l-1.6 9.2a1 1 0 0 1-1 .8H5.6a1 1 0 0 1-1-.8L3 10Z"/><path d="m8 10 3-6M16 10l-3-6M9 14v3M15 14v3"/></svg><span>أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
       <a class="tool-btn" href="coupons.html" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3a2 2 0 0 0 0 4v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a2 2 0 0 0 0-4V7Z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg><span>كوبونات اليوم</span><small>أكواد خصم رسمية</small></a>
+      <button type="button" class="tool-btn tool-coffee" id="coffeeTile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg><span>قسم القهوة</span><small>محاصيل وأدوات من متاجر عمانية، مع فلاتر المعالجة والارتفاع</small></button>
     </div>
     <section class="basket-box" id="basketBox" hidden>
       <div class="bb-head"><b>أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
@@ -1232,7 +1253,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   function normalize(t) {
     return t.trim().toLowerCase().replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632)).replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/[ً-ْـ]/g, '').replace(/[إأآ]/g, 'ا')
-      .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+      .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي').replace(/\s+/g, ' ');
   }
   function detectCategory(query) {
     const q = normalize(query);
@@ -1997,6 +2018,56 @@ table.dt { min-width: 0; font-size: .76rem; }
   // «eau de parfum» ← edp، «100 ml» ← 100ml (نفس كتابة عناوين المتجر)
   const pPhrase = en => en.replace(/eau de parfum/g, 'edp').replace(/eau de toilette/g, 'edt').replace(/eau de cologne/g, 'cologne').replace(/extrait de parfum/g, 'extrait')
     .replace(/(\d+(?:\.\d+)?)\s*ml\b/g, '$1ml').replace(/\bperfume oil\b/g, 'oil').replace(/\b(perfumes|fragrances?|parfums)\b/g, 'perfume').replace(/\bvitamin ([acde])\b/g, 'vitamin$1');
+  // ================= القهوة: البلدان، المعالجة، الأصناف وأسماء المحاصيل (عربي وإنجليزي) =================
+  const cfRe = alts => new RegExp('(^|[^a-z0-9\\u0600-\\u06ff])(ال|وال|بال)?(' + alts + ')', 'i');
+  const CF_ORIGINS = [
+    ['ethiopia', '🇪🇹', 'إثيوبيا', 'ethiopia|اثيوبيا|اثيوبي|guji|قوجي|جوجي|yirga\\w*|يرقا\\w*|يرجا\\w*|sidam\\w*|سيدام\\w*|harr?ar|هرر|limu|ليمو|bensa|بينسا|shakiso|شاكيسو|hambela|همبيلا|nensebo|نينسيبو|idido|اديدو|wubanchi|وبانشي|chelchel\\w*|شيلشيل\\w*|تشيلشيل\\w*|gedeb|bombe|بومبي|kochere|كوتشيري|worka|وركا|banko|بانكو|uraga|اوراقا'],
+    ['colombia', '🇨🇴', 'كولومبيا', 'colombia\\w*|كولومبيا|كولومبي|huila|هويلا|narino|nariño|نارينو|cauca|كاوكا|tolima|توليما|tulima|antioquia'],
+    ['brazil', '🇧🇷', 'البرازيل', 'brazil\\w*|برازيل\\w*|cerrado|سيرادو|mogiana|minas'],
+    ['kenya', '🇰🇪', 'كينيا', 'kenya|كينيا|nyeri|نيري|kirinyaga|kiambu'],
+    ['yemen', '🇾🇪', 'اليمن', 'yemen\\w*|يمن|يمني|haraz|حراز|matari|مطري|yafei|يافعي|عمقه'],
+    ['saudi', '🇸🇦', 'السعودية', 'saudi|jazan|jizan|جازان|جيزان|الداير|فيفا|خولاني'],
+    ['costarica', '🇨🇷', 'كوستاريكا', 'costa ?rica|كوستاريكا|كوستريكا|tarrazu|تارازو'],
+    ['panama', '🇵🇦', 'بنما', 'panama|بنما|boquete|بوكيتي'],
+    ['guatemala', '🇬🇹', 'غواتيمالا', 'guatemala|غواتيمالا|جواتيمالا|huehue\\w*'],
+    ['honduras', '🇭🇳', 'هندوراس', 'honduras|هندوراس'],
+    ['salvador', '🇸🇻', 'السلفادور', 'salvador|سلفادور'],
+    ['nicaragua', '🇳🇮', 'نيكاراغوا', 'nicaragua|نيكاراغوا|نيكاراجوا'],
+    ['mexico', '🇲🇽', 'المكسيك', 'mexico|مكسيك'],
+    ['peru', '🇵🇪', 'بيرو', 'peru|بيرو'],
+    ['bolivia', '🇧🇴', 'بوليفيا', 'bolivia|بوليفيا'],
+    ['ecuador', '🇪🇨', 'الإكوادور', 'ecuador|اكوادور'],
+    ['rwanda', '🇷🇼', 'رواندا', 'rwanda|رواندا'],
+    ['burundi', '🇧🇮', 'بوروندي', 'burundi|بوروندي'],
+    ['uganda', '🇺🇬', 'أوغندا', 'uganda|اوغندا'],
+    ['tanzania', '🇹🇿', 'تنزانيا', 'tanzania|تنزانيا'],
+    ['indonesia', '🇮🇩', 'إندونيسيا', 'indonesia|اندونيسيا|sumatra|سومطره|bali|بالي'],
+    ['png', '🇵🇬', 'بابوا غينيا', 'papua|بابوا'],
+    ['india', '🇮🇳', 'الهند', 'india|هند|هندي'],
+    ['china', '🇨🇳', 'الصين', 'china|yunnan|يونان|صين|صيني'],
+    ['thailand', '🇹🇭', 'تايلاند', 'thailand|تايلاند'],
+    ['vietnam', '🇻🇳', 'فيتنام', 'vietnam|فيتنام'],
+    ['congo', '🇨🇩', 'الكونغو', 'congo|كونغو'],
+  ].map(([k, flag, name, alts]) => ({ k, flag, name, re: cfRe(alts) }));
+  const CF_PROC = [
+    ['anaerobic', 'تخمير لاهوائي', 'anaerobic|لاهوائي|لا هوائي|انيروبيك|اناروبيك|carbonic|كاربونيك|ferment\\w*|تخمير|مخمر|infus\\w*|انفيوجن|thermal shock|yeast'],
+    ['honey', 'عسلي', 'honey process\\w*|(?:black|red|yellow|white|golden) honey|عسلي|عسليه|العسل الاسود'],
+    ['natural', 'طبيعي', 'natural|طبيعي|طبيعيه|مجفف|dry process\\w*|ناتشورال|ناتشرال|تجفيف'],
+    ['washed', 'مغسول', 'washed|مغسول|مغسوله|wet process\\w*'],
+    ['wethulled', 'شبه مغسول', 'wet hulled|giling|semi-?washed|شبه مغسول'],
+  ].map(([k, name, alts]) => ({ k, name, re: cfRe(alts) }));
+  // أصناف ومناطق مشهورة (للبحث فقط): «جيشا» تلقى «Geisha» و«قوجي» تلقى «Guji»
+  const CF_NAMES = ['g[ea]isha|gesha|جيشا|قيشا|غيشا|جيشه|قيشه', 'pink bourbon|بينك بوربون', 'bourbon|بوربون', 'typica|تيبيكا', 'caturra|كاتورا', 'castillo|كاستيو|كاستيلو',
+    'pacamara|باكامارا', 'sl ?28|sl ?34', 'wush ?wush|ووش', 'java|جافا', 'heirloom|هيرلوم', 'catuai|كاتواي', 'maragogype|ماراجوجيب', 'sidra|سيدرا', 'eugenioides|يوجينويدس',
+    'guji|قوجي|جوجي|غوجي', 'yirga\\w*|يرقا\\w*|يرجا\\w*|يرغا\\w*', 'sidam\\w*|سيدام\\w*', 'harr?ar|هرر|هرار', 'bensa|بينسا|بنسا', 'shakiso|شاكيسو|شكيسو', 'hambela|همبيلا|هامبيلا',
+    'uraga|اوراقا|اوراجا', 'chelchel\\w*|شيلشيل\\w*|تشيلشيل\\w*', 'halo|هالو', 'bombe|بومبي', 'kochere|كوتشيري|كوشيري', 'worka|وركا', 'banko|بانكو', 'gedeb|قديب|جديب',
+    'nensebo|نينسيبو|ننسيبو', 'idido|اديدو', 'huila|هويلا', 'nari[nñ]o|نارينو', 'cauca|كاوكا', 'tolima|tulima|توليما', 'cerrado|سيرادو', 'tarraz[uú]|تارازو', 'antigua|انتيغوا|انتيجوا',
+    'huehue\\w*|هويهويتنانغو', 'haraz|حراز', 'matari|مطري', 'yafe?i|يافعي', 'jazan|jizan|جازان|جيزان', 'nyeri|نييري|نيري', 'kirinyaga|كيرينياغا', 'boquete|بوكيتي'].map(cfRe);
+  const CF_GROUPS = [...CF_ORIGINS.map(o => o.re), ...CF_PROC.map(x => x.re), ...CF_NAMES];
+  // كلمات عامة في القهوة (ما نشترطها حرفيًا في العنوان)
+  const CF_COMMON_EN = /^(black|white|glass|steel|electric|small|large|brown|green|silver|stainless|bottle|holder|cover|water|light|medium|classic|premium|original|special|edition|limited|pro|plus|smart|digital|manual|double|single)$/;
+  const CF_GENERIC = new Set(['قهوه', 'قهوة', 'بن', 'حبوب', 'محصول', 'محاصيل', 'مختصه', 'مختص', 'محمصه', 'محمصة', 'قهوتي', 'كوفي']);
+
   const P_VIT = { a: 'ا|اي', c: 'سي', d: 'د|دي', e: 'اي|e' };
   const pTok = (w, F) => {
     if (F && F.syn && F.syn[w]) {
@@ -2022,14 +2093,40 @@ table.dt { min-width: 0; font-size: .76rem; }
     await partnerIndexP;
     const brands = partnerIndex && partnerIndex[k] && partnerIndex[k].brands || [];
     const brandHit = en.split(/[^a-z0-9]+/).some(w => w.length > 3 && brands.some(b => b.split(/[^a-z0-9]+/).includes(w)));
-    if (!F.gate.test(query) && !F.gate.test(en) && !brandHit) return [];
+    // متاجر القهوة: أسماء المحاصيل والمحامص («أدهم»، «دبليو»، «قوجي») توصل للمتجر حتى بدون كلمة «قهوة»
+    const qWords = ar.split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3);
+    const names = F.syn && partnerIndex && partnerIndex[k] && partnerIndex[k].names;
+    const nameHit = !!F.syn && (CF_NAMES.some(re => re.test(ar) || re.test(en)) ||
+      (!!names && qWords.some(w => (/[\u0600-\u06ff]/.test(w) || (w.length >= 5 && !CF_COMMON_EN.test(w))) && names.includes(w))));
+    if (!F.gate.test(query) && !F.gate.test(en) && !brandHit && !nameHit) return [];
+    // «عطر قوجي» = عطر، فمتاجر القهوة ما تطلع (حتى لو «قوجي» اسم محصول)
+    if (F.syn && /(عطر|عطور|بارفان|perfume|parfum|cologne|كريم|سيروم|مرطب|serum|cream)/i.test(ar + ' ' + en)) return [];
+    // «دبليو قوجي» = محصول قهوة (دبليو محمصة)، مو عطر Gucci: إذا فيه اسم يخص القهوة بس، العطور والعناية تطلع منها
+    if (!F.syn && !F.gate.test(query) && partnerIndex) {
+      const coffeeNames = Object.keys(PARTNER_FEEDS).filter(x => PARTNER_FEEDS[x].syn).flatMap(x => (partnerIndex[x] && partnerIndex[x].names) || []);
+      const own = w => { const e = (toEnglish(w) || '').toLowerCase(); return e && (F.gate.test(e) || brands.some(b => e.includes(b))); };
+      if (qWords.some(w => /[\u0600-\u06ff]/.test(w) && coffeeNames.includes(w) && !own(w) && !CF_GROUPS.some(re => re.test(w)))) return [];
+    }
     const d = await loadPartner(k);
     if (!d || !Array.isArray(d.items)) return [];
     let toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
     // «مكينة قهوة» ← المكينة هي المطلوبة، فكلمة «قهوة» ما تشترط إن المنتج قهوة
     if (F.dropWith) toks = toks.filter(w => !(F.dropWith[w] && toks.some(o => o !== w && F.dropWith[w].test(o))));
     const isSoft = w => P_SOFT.has(w) && !(F.hard && F.hard.test(w));  // «قهوة عربية» في متاجر القهوة لازم تكون عربية فعلًا
-    const hard = toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), soft = toks.filter(isSoft).map(w => pTok(w, F));
+    // القهوة: البلد والمعالجة والصنف تتطابق بالعربي والإنجليزي، والكلمات اللي ما لها ترجمة (أسماء محاصيل) تتطابق حرفيًا
+    let cfTests = [];
+    if (F.syn) {
+      const groups = CF_GROUPS.filter(re => re.test(ar) || re.test(en));
+      // نترجم بس الكلمات اللي مو أسماء قهوة («قوجي» هنا محصول Guji مو ماركة Gucci، و«عسلي» معالجة مو لون)
+      const rest = ar.split(' ').filter(w => !groups.some(re => re.test(w))).join(' ').trim();
+      const en2 = rest ? pPhrase((toEnglish(rest) || rest).toLowerCase()) : '';
+      toks = [...new Set(en2.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
+      if (F.dropWith) toks = toks.filter(w => !(F.dropWith[w] && toks.some(o => o !== w && F.dropWith[w].test(o))));
+      toks = toks.filter(w => !groups.some(re => re.test(w)) && !/^(ethiopian|colombian|brazilian|kenyan|yemeni|saudi)$/.test(w));
+      const extra = qWords.filter(w => !CF_GENERIC.has(w) && !AR_IGNORE.has(w) && /[\u0600-\u06ff]/.test(w) && !groups.some(re => re.test(w)) && !toEnglish(w));
+      cfTests = [...groups.map(re => (t, tn) => re.test(t) || re.test(tn)), ...extra.map(w => { const re = cfRe(pEsc(w)); return (t, tn) => re.test(tn); })];
+    }
+    const hard = [...toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), ...cfTests], soft = toks.filter(isSoft).map(w => pTok(w, F));
     // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
     const arToks = /[؀-ۿ]/.test(ar) ? ar.split(' ').map(w => w.replace(/^(ال|لل|بال|وال)(?=..)/, '')).filter(w => w.length > 1 && !AR_IGNORE.has(w)) : [];
     const arRes = arToks.map(w => new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?' + pEsc(w)));
@@ -2053,6 +2150,7 @@ table.dt { min-width: 0; font-size: .76rem; }
         shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
       const full = F.titleOnly ? t + ' | ' + tags : text, fulln = F.titleOnly ? normalize(full) : tn;
       p._soft = soft.filter(f => f(full, fulln, t)).length;
+      if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
       hit.push(p);
     }
     // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
@@ -2769,6 +2867,91 @@ table.dt { min-width: 0; font-size: .76rem; }
     barista: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
   };
 
+  // ================= قسم القهوة: معلومات المحصول وفلاتره والكولد برو =================
+  const CF_TOOLS_RE = new RegExp(COFFEE_TOOLS, 'i');
+  const CF_BEAN_RE = /(coffee|قهو|\bbeans?\b|espresso|single origin|arabica|blend|roast|محمص|محصول|محاصيل|\d+\s*(?:g|gm|gr|gram|grams|kg|جرام|غرام|كيلو|كجم)\b)/i;
+  const CF_GOOD_NOTES = /chocolat|cocoa|cacao|\bnut|hazelnut|almond|caramel|toffee|brown sugar|molasses|شوكولا|كاكاو|مكسرات|بندق|لوز|كراميل|توفي|سكر بني|دبس/i;
+  const CF_LIGHT_NOTES = /floral|jasmine|bergamot|tea-like|black tea|lemongrass|زهري|ياسمين|برغموت|شاي/i;
+  const CF_BODY = ['brazil', 'colombia', 'guatemala', 'honduras', 'mexico', 'peru', 'uganda', 'indonesia', 'india', 'png', 'salvador', 'nicaragua'];
+  function coffeeOf(p) {
+    if (p._cf !== undefined) return p._cf;
+    if (!p.ctext) return (p._cf = null);
+    const t = String(p.title), x = p.ctext, tn = normalize(t), xn = normalize(x);
+    if (CF_TOOLS_RE.test(t) || !CF_BEAN_RE.test(x)) return (p._cf = null);
+    const kind = /capsule|كبسول/i.test(t) ? 'capsule' : /drip|دريب|ufo/i.test(t) ? 'drip' : /gift card|بطاقه|box|بوكس|صندوق/i.test(t) && !CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn)) ? 'box' : 'beans';
+    const o = CF_ORIGINS.find(c => c.re.test(t) || c.re.test(tn)) || null;  // البلد من العنوان بس («المحاصيل السعودية» في سوق البن = محامص سعودية)
+    const pr = CF_PROC.find(c => c.re.test(x) || c.re.test(xn)) || null;
+    let alt = null;
+    const m = xn.replace(/(\d),(\d{3})/g, '$1$2').match(/(\d{3,4})\s*(?:(?:-|–|—|to|الى|~|\/)\s*(\d{3,4}))?\s*(?:m\b|masl|m\.a\.s\.l|متر|م(?![؀-ۿ]))|(?:altitude|elevation|ارتفاع|الارتفاع)\s*[:：]?\s*(\d{3,4})(?:\s*(?:-|–|to|الى)\s*(\d{3,4}))?/i);
+    if (m) { const a = +(m[1] || m[3]), b = +(m[2] || m[4] || 0); if (a >= 600 && a <= 3000) alt = b > a && b <= 3200 ? [a, b] : [a, a]; }
+    const roast = /dark roast|\bdark\b|غامق|داكن/i.test(xn) ? 'dark' : /medium roast|تحميص متوسط/i.test(xn) ? 'medium' : /light roast|تحميص فاتح|\blight\b|فاتح/i.test(xn) ? 'light' : '';
+    const esp = /espresso|اسبريسو/i.test(xn), fil = /filter|فلتر|v60|pour ?over|مقطر|تقطير|\bdrip\b|brewing/i.test(xn);
+    // الكولد برو: إذا المتجر كاتبها نقول، وإلا تقدير من المعالجة والنكهات والتحميص والبلد
+    const store = /cold ?brew|كولد ?برو|قهوه بارده|\bبارد|iced|ايسد/i.test(xn);
+    let sc = 0; const why = [];
+    if (pr && ['natural', 'honey', 'anaerobic'].includes(pr.k)) { sc++; why.push(pr.k === 'natural' ? 'معالجة طبيعية' : pr.k === 'honey' ? 'معالجة عسلية' : 'تخمير'); }
+    if (pr && pr.k === 'washed') { sc--; why.push('مغسول'); }
+    if (CF_GOOD_NOTES.test(x)) { sc++; why.push('نكهات شوكولاتة ومكسرات'); }
+    if (CF_LIGHT_NOTES.test(x)) { sc--; why.push('نكهات زهرية خفيفة'); }
+    if (roast === 'dark' || roast === 'medium') { sc++; why.push('تحميص متوسط أو غامق'); } else if (roast === 'light') { sc--; why.push('تحميص فاتح'); }
+    if (o && CF_BODY.includes(o.k)) sc++;
+    if (o && o.k === 'kenya') sc--;
+    if (/g[ea]isha|gesha|جيشا|قيشا/i.test(xn)) sc--;
+    const cb = kind !== 'beans' && kind !== 'drip' ? '' : store ? 'store' : sc >= 1 ? 'good' : sc <= -1 ? 'less' : 'ok';
+    return (p._cf = { kind, o, pr, alt, roast, esp, fil, cb, why });
+  }
+  const CF_ROAST = { light: 'تحميص فاتح', medium: 'تحميص متوسط', dark: 'تحميص غامق' };
+  const CB_TXT = { store: '❄️ يناسب الكولد برو', good: '❄️ يناسب الكولد برو', ok: '❄️ يصلح للكولد برو', less: '❄️ أقل مناسبة للكولد برو' };
+  const CB_SHORT = { store: '❄️ للكولد برو ✓', good: '❄️ للكولد برو ✓', ok: '❄️ يصلح كولد برو', less: '❄️ أقل للكولد برو' };
+  const altTxt = a => `<bdi>${a[0]}${a[1] !== a[0] ? '–' + a[1] : ''}</bdi> م`;
+  function coffeeHtml(p, full) {
+    const c = coffeeOf(p);
+    if (!c) return '';
+    const bits = [];
+    if (c.o) bits.push(`<span class="c"><span aria-hidden="true">${c.o.flag}</span> ${c.o.name}</span>`);
+    if (c.pr) bits.push(`<span>${c.pr.name}</span>`);
+    if (c.alt) bits.push(`<span>${altTxt(c.alt)}</span>`);
+    if (full && c.roast) bits.push(`<span>${CF_ROAST[c.roast]}</span>`);
+    if (full && c.esp) bits.push('<span>إسبريسو</span>');
+    if (full && c.fil) bits.push('<span>فلتر</span>');
+    const cb = !c.cb ? '' : full
+      ? `<div class="cb ${c.cb}">${CB_TXT[c.cb]}${c.cb !== 'store' && c.why.length ? `<span class="why"> · ${c.why.slice(0, 2).map(w => `<span>${w}</span>`).join('، ')}</span>` : ''} <small>${c.cb === 'store' ? 'حسب المتجر' : 'تقدير قارن'}</small></div>`
+      : `<div class="cb ${c.cb}">${CB_SHORT[c.cb]}</div>`;
+    return (bits.length ? `<div class="pf cf">${bits.join('')}</div>` : '') + cb;
+  }
+  const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
+  const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
+  function passCoffee(p) {
+    const f = state.cf || {};
+    if (!f.pr && !f.alt && !f.o && !f.use) return true;
+    const c = coffeeOf(p);
+    if (!c || c.kind === 'box') return false;
+    if (f.pr && (!c.pr || c.pr.k !== f.pr)) return false;
+    if (f.o && (!c.o || c.o.k !== f.o)) return false;
+    if (f.alt) { const b = CF_ALT.find(x => x[0] === f.alt); if (!c.alt || !b[1](c.alt)) return false; }
+    if (f.use) { const u = CF_USE.find(x => x[0] === f.use); if (!u[1](c)) return false; }
+    return true;
+  }
+  function cfBarHtml(base) {
+    const beans = base.filter(p => { const c = coffeeOf(p); return c && c.kind !== 'box'; });
+    const on = Object.values(state.cf || {}).some(Boolean);
+    if (beans.length < 4 && !on) return '';
+    const f = state.cf || {};
+    const chip = (k, v, label, n) => `<button type="button" class="cf-chip${(f[k] || '') === v ? ' on' : ''}" data-cf="${k}" data-v="${v}" aria-pressed="${(f[k] || '') === v}">${label}${n != null ? ` <i class="num">${n}</i>` : ''}</button>`;
+    const row = (title, k, items) => items.length >= 1 ? `<div class="cf-row"><span class="cf-k">${title}</span><div class="cf-chips">${chip(k, '', 'الكل')}${items.join('')}</div></div>` : '';
+    const n = fn => beans.filter(p => fn(coffeeOf(p))).length;
+    const procs = CF_PROC.map(x => [x, n(c => c.pr && c.pr.k === x.k)]).filter(([, c]) => c).map(([x, c]) => chip('pr', x.k, x.name, c));
+    const alts = beans.filter(p => coffeeOf(p).alt).length >= 2 ? CF_ALT.map(([k, fn, l]) => [k, l, n(c => c.alt && fn(c.alt))]).filter(x => x[2]).map(([k, l, c]) => chip('alt', k, l, c)) : [];
+    const origins = CF_ORIGINS.map(o => [o, n(c => c.o && c.o.k === o.k)]).filter(([, c]) => c).sort((a, b) => b[1] - a[1]).slice(0, 12)
+      .map(([o, c]) => chip('o', o.k, `<span aria-hidden="true">${o.flag}</span> ${o.name}`, c));
+    const uses = CF_USE.map(([k, fn, l]) => [k, l, n(fn)]).filter(x => x[2]).map(([k, l, c]) => chip('use', k, l, c));
+    return `<section class="cf-bar" aria-label="قسم القهوة">
+      <div class="cf-head"><b>☕ قسم القهوة</b><span><bdi class="num">${beans.length}</bdi> محصول من متاجر قهوة عمانية</span></div>
+      ${row('المعالجة', 'pr', procs)}${row('البلد', 'o', origins)}${row('الارتفاع', 'alt', alts)}${row('التحضير', 'use', uses)}
+      <p class="cf-note">❄️ الكولد برو: المعالجة الطبيعية والنكهات الشوكولاتية تطلع أحلى بارد، والمغسول الزهري الفاتح يضيع طعمه. هذا تقدير من قارن، وإذا المتجر كاتبها نقول.</p>
+    </section>`;
+  }
+
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;
   const bayes = (r, n) => (n * r + PRIOR_WEIGHT * PRIOR_RATING) / (n + PRIOR_WEIGHT);
 
@@ -2888,7 +3071,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   const state = {
     query: '', products: [], loading: false, limit: 8, currency: 'OMR', platforms: new Set(KEYS),
-    sort: 'best', minRating: 0, freeOnly: false, priceMin: null, priceMax: null, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 },
+    sort: 'best', minRating: 0, freeOnly: false, priceMin: null, priceMax: null, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 }, cf: {},
   };
   const cache = new Map();
   const FETCH_N = 30;  // نجيب أكثر من المعروض عشان الترتيب يتغيّر فوري لما تغيّر الأولوية
@@ -2906,7 +3089,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     const v = tot(p);
     return (lo == null || v >= lo - 1e-9) && (hi == null || v <= hi + 1e-9);
   }
-  const passFilters = p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly) && inPrice(p);
+  const passBase = p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly) && inPrice(p);
+  const passFilters = p => passBase(p) && passCoffee(p);
   function parsePrice(s) {
     const t = String(s || '').trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٫,]/g, '.').replace(/[^0-9.]/g, '');
     const v = parseFloat(t);
@@ -3044,7 +3228,7 @@ table.dt { min-width: 0; font-size: .76rem; }
         <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${PARTNER_INFO[p.platform] && p.unrated ? `<span class="ok">✓ ${PARTNER_INFO[p.platform].short}</span>` : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
-        ${perfHtml(p, false)}
+        ${perfHtml(p, false)}${coffeeHtml(p, false)}
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
@@ -3062,7 +3246,7 @@ table.dt { min-width: 0; font-size: .76rem; }
         <span class="ribbon">الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
-        ${perfHtml(p, true)}
+        ${perfHtml(p, true)}${coffeeHtml(p, true)}
         <div class="reason">${reasonHtml(p, list)}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
@@ -3203,6 +3387,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (state.mode === 'basket' && state.basket && state.basket.data) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
     const list = state.products.filter(passFilters);
+    const cfBar = cfBarHtml(state.products.filter(passBase));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
     const sorters = {
       best: (a, b) => (b.score - a.score), price_asc: (a, b) => tot(a) - tot(b), price_desc: (a, b) => tot(b) - tot(a),
@@ -3216,6 +3401,10 @@ table.dt { min-width: 0; font-size: .76rem; }
       <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`;
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
+      return;
+    }
+    if (!list.length && Object.values(state.cf || {}).some(Boolean)) {
+      box.innerHTML = html + cfBar + '<div class="empty">ما في محاصيل بهالفلاتر. جرّب تختار الكل في واحد منها.</div>';
       return;
     }
     if (!list.length) {
@@ -3233,7 +3422,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     let favChanged = false;
     list.forEach(p => { const f = favs[pkey(p)]; if (f && f.last !== p.price) { f.last = p.price; favChanged = true; } });
     if (favChanged) store.set('qarin.favs', favs);
-    html += (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
+    html += cfBar + (best ? bestCard(best, list) : '') + kpisHtml(realList.length ? realList : list) +
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
         <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div></div>
         <div class="panel${state.tab === 'compare' ? ' on' : ''}" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">${platformsHtml(sum)}${barsHtml(sum)}</div>
@@ -3324,6 +3513,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     }
     const id = ++searchId;
     state.mode = 'search';
+    if (state.query !== query) state.cf = {};  // فلاتر القهوة تبدأ من جديد مع كل بحث
     state.query = query;
     { const tq = trText(query); $('q').value = tq != null ? tq.trim() : query; }
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
@@ -3844,7 +4034,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     initVoice();
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
-    $('heroChips').innerHTML = KEYS.map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('');
+    // متاجر القهوة في سطر واحد مختصر (عشان الصفحة الرئيسية تبقى بسيطة)
+    { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
+      $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
+        (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> متجر قهوة عماني</span>` : ''); }
     // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
     const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`;
@@ -3867,6 +4060,13 @@ table.dt { min-width: 0; font-size: .76rem; }
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
     $('imgBtn').addEventListener('click', () => $('imgIn').click());
     $('imgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; imageSearch(f); });
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-cf]');
+      if (!b) return;
+      state.cf = Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
+      render();
+    });
+    $('coffeeTile').addEventListener('click', () => search('قهوة مختصة'));
     $('basketToggle').addEventListener('click', () => {
       const box = $('basketBox'), open = box.hidden;
       box.hidden = !open; $('basketToggle').setAttribute('aria-expanded', String(open));

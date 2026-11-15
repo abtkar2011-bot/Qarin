@@ -118,7 +118,7 @@ function parseWoo(list, store = 'copper roastery', skip = /cafe beverages/i) {
     const img = p.images && p.images[0] ? (p.images[0].thumbnail || p.images[0].src) : '';
     out.push({ t: ent(p.name), p: Math.round(price * 1000) / 1000, o: reg > price * 1.02 ? Math.round(reg * 1000) / 1000 : 0, i: img, u: p.permalink,
       r: +p.average_rating > 0 && p.review_count > 0 ? +p.average_rating : 0, n: p.review_count || 0,
-      tags: [store, ...cats, ...(p.tags || []).map(t => ent(t.name))].join(' | ') });
+      tags: [store, ...cats, ...(p.tags || []).map(t => ent(t.name)), ent(p.short_description || p.description || '').slice(0, 400)].filter(Boolean).join(' | ') });
   }
   return out;
 }
@@ -282,7 +282,7 @@ function parseLdProduct(html, url, store = 'spirit hub') {
       if (!(price > 0) || (of.availability && !/InStock|LimitedAvailability|PreOrder/i.test(of.availability))) return null;
       const ar = x.aggregateRating || {};
       return { t: ent(x.name), p: price, o: 0, i: [].concat(x.image || [])[0] || '', u: url, r: +ar.ratingValue || 0, n: +ar.reviewCount || +ar.ratingCount || 0,
-        tags: [store, ent(x.description || '').slice(0, 220), x.category ? ent(x.category) : ''].filter(Boolean).join(' | ') };
+        tags: [store, ent(x.description || '').slice(0, 400), x.category ? ent(x.category) : ''].filter(Boolean).join(' | ') };
     }
   }
   return null;
@@ -305,15 +305,23 @@ module.exports = { parseVListing, parseShopify, parseWoo, parseOdoo, parseLdProd
 if (require.main === module) (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = {};
+  // كلمات أسماء المحاصيل والمحامص في كل متجر قهوة (عشان بحث «أدهم» أو «دبليو» يوصل للمتجر الصحيح)
+  const COFFEE = new Set(['copper', 'bunalqassab', 'spirithub', 'souqalbon', 'epanda', 'rawasi', 'yield', 'sura', 'fooh', 'mahaseel', 'muthalath', 'barista']);
+  const STOP = new Set(['coffee', 'قهوه', 'جرام', 'غرام', 'gram', 'grams', 'محمصه', 'roastery', 'roasters', 'with', 'and', 'the', 'for', 'من', 'مع', 'حصري', 'لمحاصيل', 'البن', 'الحجم', 'حبه', 'pcs', 'box', 'بوكس']);
+  const nrm = t => String(t).toLowerCase().replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632)).replace(/[\u064B-\u0652\u0640]/g, '').replace(/[إأآ]/g, 'ا')
+    .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي');
+  const namesOf = items => [...new Set(items.flatMap(x => nrm(x[0] + ' ' + String(x[4]).split(' | ').filter(t => /محمص|roaster/i.test(t)).join(' '))
+    .split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP.has(w))))].slice(0, 3000);
   const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5 };
   for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista]]) {
     try {
       const data = await fn();
+      if (COFFEE.has(name)) data.names = namesOf(data.items);
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
       fs.writeFileSync(path.join(OUT, name + '.json'), JSON.stringify(data));
       console.log(name, 'items', data.items.length, 'size', fs.statSync(path.join(OUT, name + '.json')).size);
     } catch (e) { console.log(name, 'FAILED', e.message, '(keeping the previous file if any)'); }
-    try { const d = JSON.parse(fs.readFileSync(path.join(OUT, name + '.json'), 'utf8')); index[name] = { updated: d.updated, n: d.items.length, brands: d.brands }; } catch (e) { /* ما في ملف */ }
+    try { const d = JSON.parse(fs.readFileSync(path.join(OUT, name + '.json'), 'utf8')); index[name] = { updated: d.updated, n: d.items.length, brands: d.brands, ...(d.names ? { names: d.names } : {}) }; } catch (e) { /* ما في ملف */ }
   }
   fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(index));
 })();
