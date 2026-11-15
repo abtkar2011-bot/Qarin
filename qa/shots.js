@@ -1,26 +1,23 @@
-// temp: search the coffee stores for Arabic/Omani/Turkish coffee to compare with our feeds
+// temp: live check — all coffee shown, priorities change best pick, perfume ok
+const { chromium, devices } = require('playwright');
 const fs = require('fs');
-const { parseOdoo, parseWoo } = require('../tools/partners/build.js');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36';
-const get = async u => { try { const r = await fetch(u, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(30000) }); return await r.text(); } catch (e) { return ''; } };
-const log = [];
 (async () => {
-  const words = ['عمانية', 'عربية', 'تركية', 'omani', 'arabic', 'turkish', 'هيل', 'سعودية'];
-  const odoo = [['bunalqassab', 'https://bunalqassab.com'], ['mahaseel', 'https://mahaseelalbon.com'], ['muthalath', 'https://www.muthalathstore.com'], ['epanda', 'https://www.epandaom.com'], ['rawasi', 'https://www.rawasiom.com'], ['sura', 'https://www.suraroastery.om']];
-  for (const [k, B] of odoo) for (const w of words) {
-    const items = parseOdoo(await get(`${B}/shop?search=${encodeURIComponent(w)}&ppg=200`), B, k);
-    if (items.length) log.push(`${k} [${w}] ${items.length}: ` + items.map(x => x.t + ' ' + x.p).join(' ‖ ').slice(0, 600));
-  }
-  for (const [k, B] of [['souqalbon', 'https://souqalbon.com'], ['copper', 'https://copperroastery.com']]) for (const w of words) {
-    let d = []; try { d = JSON.parse(await get(`${B}/wp-json/wc/store/v1/products?per_page=100&search=${encodeURIComponent(w)}`)); } catch (e) { }
-    const items = parseWoo(Array.isArray(d) ? d : [], k, /^$/);
-    if (Array.isArray(d) && d.length) log.push(`${k} [${w}] ${d.length} (in stock ${items.length}): ` + d.map(x => x.name + (x.is_in_stock ? '' : ' (نفد)')).join(' ‖ ').slice(0, 600));
-  }
-  for (const w of words) {
-    let d = {}; try { d = JSON.parse(await get(`https://fooh.store/search/suggest.json?q=${encodeURIComponent(w)}&resources[type]=product&resources[limit]=10`)); } catch (e) { }
-    const ps = (((d.resources || {}).results || {}).products || []);
-    if (ps.length) log.push(`fooh [${w}] ${ps.length}: ` + ps.map(x => x.title).join(' ‖ '));
-  }
+  const b = await chromium.launch(); const ctx = await b.newContext({ ...devices['iPad (gen 7)'] });
+  await ctx.addInitScript(() => { localStorage.setItem('qarin.lang', 'ar'); localStorage.setItem('qarin.instHide', String(Date.now())); localStorage.setItem('qarin.rated', '1'); });
+  const p = await ctx.newPage(); const log = []; const errs = []; p.on('pageerror', e => errs.push(e.message));
+  const done = async () => { await p.waitForTimeout(400); await p.waitForFunction(() => document.querySelector('.status.done') || document.querySelector('.status.warn'), null, { timeout: 60000 }).catch(() => {}); await p.waitForTimeout(900); };
+  const best = () => p.evaluate(() => ((document.querySelector('.best-card') || {}).innerText || '-').replace(/\s+/g, ' ').slice(0, 130));
+  const info = () => p.evaluate(() => ({ head: ((document.querySelector('.cf-head') || {}).innerText || '').replace(/\s+/g, ' '), kinds: ((document.querySelector('.cf-bar .cf-row') || {}).innerText || '').replace(/\s+/g, ' '), more: ((document.querySelector('[data-more]') || {}).innerText || '-').replace(/\s+/g, ' ') }));
+  await p.goto('https://abtkar2011-bot.github.io/Qarin/?v=' + Date.now() + '#coffee'); await done();
+  log.push('## coffee', JSON.stringify(await info()));
+  for (const i of [0, 4]) { await p.click(`[data-prio="${i}"]`); await p.waitForTimeout(900); log.push(' prio ' + i + ': ' + await best()); }
+  await p.fill('#cfQ', 'بن القصاب'); await p.press('#cfQ', 'Enter'); await done();
+  log.push(' bq: ' + JSON.stringify(await info()));
+  await p.goto('https://abtkar2011-bot.github.io/Qarin/?v=' + Date.now() + '#perfume'); await done();
+  log.push('## perfume', JSON.stringify(await info()));
+  for (const i of [0, 4]) { await p.click(`[data-prio="${i}"]`); await p.waitForTimeout(900); log.push(' prio ' + i + ': ' + await best()); }
+  log.push('errors: ' + JSON.stringify(errs));
   fs.writeFileSync(OUT + '/report.txt', log.join('\n')); console.log(log.join('\n'));
+  await b.close();
 })();
