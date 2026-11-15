@@ -79,11 +79,13 @@ function parseShopify(json, base) {
     const vs = (p.variants || []).filter(v => v.available !== false);
     if (!vs.length) return null;
     const price = Math.min(...vs.map(v => +v.price).filter(x => x > 0));
+    const cheap = vs.find(v => +v.price === price) || {};
+    const size = /\d\s*(ml|مل|g|gm|gr|جرام|غرام|tola|توله|تولة|kg|كيلو)\b/i.test(cheap.title || '') && !/\d\s*(ml|مل|g|gm|tola|توله)\b/i.test(p.title || '') ? ' ' + String(cheap.title).trim() : '';
     const img = (p.images && p.images[0] && p.images[0].src) || '';
     if (!(price > 0) || !img) return null;
     const tags = Array.isArray(p.tags) ? p.tags.join(' ') : String(p.tags || '');
     const cmp = Math.max(0, ...vs.map(v => +v.compare_at_price || 0));
-    return { t: String(p.title || '').trim(), p: price, o: cmp > price * 1.02 ? cmp : 0, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
+    return { t: (String(p.title || '').trim() + size).trim(), p: price, o: cmp > price * 1.02 ? cmp : 0, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
   }).filter(Boolean);
   out.raw = (d.products || []).length;  // عدد المنتجات في الصفحة قبل حذف غير المتوفر
   return out;
@@ -204,6 +206,29 @@ async function fooh() {
   return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
 }
 
+// ---------- متاجر العطور العمانية ----------
+// شوبيفاي: أمواج (دار عطور عمانية، أسعار موقعها العالمي بالدولار)، سويس أرابيان عمان، أصغر علي عمان، عمان لكشري، الحاجّي، بنك العود
+async function shopifyStore(B, name, tags, cur = 'OMR') {
+  const all = [];
+  for (let page = 1; page <= 20; page++) {
+    const items = parseShopify(await get(`${B}/products.json?limit=250&page=${page}`), B);
+    if (!items.raw) break;
+    all.push(...items.map(x => Object.assign(x, { tags: [tags, x.b, x.ty, x.tags].filter(Boolean).join(' | ') })));
+    console.log(name, 'page', page, all.length);
+    await sleep(700);
+  }
+  return { updated: new Date().toISOString(), cur, store: B, brands: [], items: all.map(pack) };
+}
+const amouage = () => shopifyStore('https://amouage.com', 'amouage', 'amouage | أمواج', 'USD');
+const swissarabian = () => shopifyStore('https://om.swissarabian.com', 'swissarabian', 'swiss arabian | سويس أرابيان');
+const asgharali = () => shopifyStore('https://om.asgharali.com', 'asgharali', 'asgharali | أصغر علي');
+const omanluxury = () => shopifyStore('https://omanluxury.store', 'omanluxury', 'oman luxury | عمان لكشري');
+const alhajis = () => shopifyStore('https://alhajisoman.com', 'alhajis', 'al hajis | الحاجي');
+const oudbank = () => shopifyStore('https://oudbank.com', 'oudbank', 'the oud bank | بنك العود');
+// ووكومرس: بوليفارد للعطور، عالم العود
+const boulevard = () => wooStore('https://boulevardperfumes.com', 'boulevard perfumes | بوليفارد', /^$/);
+const oudworlds = () => wooStore('https://oudworlds.com', 'oud worlds | عالم العود', /^$/);
+
 // متاجر أودو كبيرة بصفحات (محاصيل البن، مثلث): كل الصفحات، والأقسام من خريطة الموقع
 // (اسم القسم مكتوب في رابطه: «ادوات-القهوة-المقطرة-المطاحن-23») فيصير وسم للمنتج
 async function odooPaged(B, name, tags, maxPages = 40) {
@@ -306,14 +331,16 @@ if (require.main === module) (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = {};
   // كلمات أسماء المحاصيل والمحامص في كل متجر قهوة (عشان بحث «أدهم» أو «دبليو» يوصل للمتجر الصحيح)
-  const COFFEE = new Set(['copper', 'bunalqassab', 'spirithub', 'souqalbon', 'epanda', 'rawasi', 'yield', 'sura', 'fooh', 'mahaseel', 'muthalath', 'barista']);
+  const COFFEE = new Set(['copper', 'bunalqassab', 'spirithub', 'souqalbon', 'epanda', 'rawasi', 'yield', 'sura', 'fooh', 'mahaseel', 'muthalath', 'barista',
+    'amouage', 'swissarabian', 'asgharali', 'omanluxury', 'alhajis', 'oudbank', 'boulevard', 'oudworlds']);
   const STOP = new Set(['coffee', 'قهوه', 'جرام', 'غرام', 'gram', 'grams', 'محمصه', 'roastery', 'roasters', 'with', 'and', 'the', 'for', 'من', 'مع', 'حصري', 'لمحاصيل', 'البن', 'الحجم', 'حبه', 'pcs', 'box', 'بوكس']);
   const nrm = t => String(t).toLowerCase().replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632)).replace(/[\u064B-\u0652\u0640]/g, '').replace(/[إأآ]/g, 'ا')
     .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي');
   const namesOf = items => [...new Set(items.flatMap(x => nrm(x[0] + ' ' + String(x[4]).split(' | ').filter(t => /محمص|roaster/i.test(t)).join(' '))
     .split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP.has(w))))].slice(0, 3000);
-  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5 };
-  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista]]) {
+  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10 };
+  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista],
+    ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds]]) {
     try {
       const data = await fn();
       if (COFFEE.has(name)) data.names = namesOf(data.items);
