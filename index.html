@@ -624,6 +624,15 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
 .vs-head h2 { font-size: 17px; margin: 0; }
 .vs-head span { color: var(--muted); font-size: 13px; }
 .vs-note { margin: 0; color: var(--muted); font-size: 13px; }
+.vs-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 44%); gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+@media (min-width: 760px) { .vs-row { grid-auto-columns: 190px; } }
+.vs-card { scroll-snap-align: start; display: flex; flex-direction: column; gap: 6px; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 8px; min-width: 0; }
+.vs-img { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #fff; }
+.vs-img img { width: 100%; height: 100%; object-fit: contain; }
+.vs-card .vs-t { font-size: 13px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.7em; }
+.vs-card .pstore { font-size: 12px; }
+.vs-card .price { font-size: 15px; }
+.vs-card .shop-btn { margin-top: auto; padding: 8px 10px; font-size: 13px; text-align: center; }
 .pf .q { background: color-mix(in srgb, #eab308 16%, transparent); }
 .pf .dupe { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; font-weight: 700; }
 .notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -4503,12 +4512,21 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (!named) $('status').innerHTML = '<div class="status done">📷 هذي المنتجات اللي شكلها أقرب لصورتك</div>';
     render();
   }
+  // بطاقة صغيرة للصف الأفقي (صورة، المتجر، الاسم، السعر، زر المتجر)
+  function lookCard(p) {
+    const d = discountPct(p);
+    return `<article class="vs-card"><div class="vs-img"><img referrerpolicy="no-referrer" src="${p.image}" alt="" loading="lazy">${d >= 5 ? `<span class="disc">-${d}%</span>` : ''}</div>
+      <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
+      <div class="vs-t" title="${esc(p.title)}">${esc(p.title)}</div>
+      <div class="prices"><span class="price">${money(p.price)}</span></div>
+      ${shopBtn(p, 'تسوّق ↗')}</article>`;
+  }
   function visualHtml() {
     const v = state.visual;
     if (!v || (v.q != null && v.q !== state.query)) return '';
     if (v.loading) return '<section class="vs-box"><div class="vs-head"><h2>📷 ندوّر على نفس الشكل في المتاجر العمانية…</h2><span class="spinner"></span></div><p class="vs-note">أول مرة ياخذ ثواني (نحمّل أداة الصور مرة وحدة بس)</p></section>';
     return `<section class="vs-box"><div class="vs-head"><h2>📷 ${v.same ? 'نفس الشكل في المتاجر العمانية' : 'أقرب شكل لصورتك في المتاجر العمانية'}</h2><span>${v.items.length} منتج</span></div>
-      <div class="grid">${v.items.map(x => productCard(x.p)).join('')}</div></section>`;
+      <div class="vs-row">${v.items.map(x => lookCard(x.p)).join('')}</div></section>`;
   }
 
   // ================= الإعدادات والأحداث =================

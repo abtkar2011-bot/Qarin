@@ -43,10 +43,10 @@ async function camera(url, i) {
     await p.goto('http://127.0.0.1:8080/?t=' + Date.now() + hash); await p.waitForTimeout(c.sec === 'main' ? 1200 : 2500);
     const input = { perfume: '#pfImgIn', coffee: '#cfImgIn', main: '#imgIn' }[c.sec];
     const t0 = Date.now(); await p.setInputFiles(input, f);
-    const ok = await p.waitForSelector('.vs-box .pcard', { timeout: first ? 180000 : 60000 }).then(() => true).catch(() => false);
+    const ok = await p.waitForSelector('.vs-box .vs-card', { timeout: first ? 180000 : 60000 }).then(() => true).catch(() => false);
     const ms = Date.now() - t0; first = false;
     if (!ok) { L('FAIL no box', c.sec, c.k, c.t, ms + 'ms', (await p.locator('.vs-box').innerText().catch(() => '')).slice(0, 120), '|', (await p.locator('#status').innerText().catch(() => '')).slice(0, 100)); await p.screenshot({ path: `${OUT}/fail_${i}.jpg`, type: 'jpeg', quality: 60 }); continue; }
-    const titles = await p.$$eval('.vs-box .ptitle', e => e.map(x => x.textContent.trim()));
+    const titles = await p.$$eval('.vs-box .vs-t', e => e.map(x => x.textContent.trim()));
     const head = await p.locator('.vs-box h2').innerText();
     const r = titles.findIndex(t => t === c.t.trim()); n++; if (r === 0) top1++; if (r >= 0 && r < 3) top3++;
     L(r === 0 ? 'TOP1' : r > 0 && r < 3 ? 'TOP3' : 'MISS', c.sec, c.k, '|', c.t.slice(0, 50), '| got:', titles.slice(0, 2).map(t => t.slice(0, 40)).join(' / '), '|', head, '|', ms + 'ms');

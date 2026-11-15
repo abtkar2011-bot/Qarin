@@ -61,7 +61,7 @@ const log = (...a) => console.log(`[${Math.round((Date.now() - t0) / 1000)}s]`, 
       for (let a = 0; a < 4; a++) {
         const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
         try {
-          const r = await fetch(small(url), { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)', Accept: 'image/webp,image/jpeg,image/png,image/*;q=0.8' } });
+          const r = await fetch(small(url), { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)', Accept: host === 'cdn.shopify.com' ? 'image/webp,image/jpeg,image/png,image/*;q=0.8' : 'image/*' } });
           if (r.status === 429 || r.status >= 500) { await sleep([2000, 6000, 15000, 0][a]); continue; }
           if (!r.ok) { note(host, r.status); return null; }
           const b = Buffer.from(await r.arrayBuffer());
