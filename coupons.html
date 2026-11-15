@@ -47,6 +47,17 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
 .chip { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font: inherit; font-weight: 700; font-size: .88rem; cursor: pointer; }
 .chip.on { background: var(--fg); border-color: var(--fg); color: var(--surface); }
 .count { color: var(--muted); font-size: .9rem; }
+.frow { display: flex; gap: 6px; align-items: center; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.frow::-webkit-scrollbar { display: none; }
+.frow .k { flex: none; color: var(--muted); font-size: .82rem; font-weight: 700; min-width: 4.5em; }
+.frow .chip { flex: none; }
+.chip i { font-style: normal; color: var(--muted); font-weight: 400; margin-inline-start: 2px; }
+.chip.on i { color: inherit; opacity: .8; }
+.cp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.cp-tags span { font-size: .76rem; font-weight: 700; border-radius: 8px; padding: 2px 8px; background: var(--surface-2); color: var(--fg); }
+.cp-tags .min { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+.cp-tags .new { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent-strong); }
+.cp-tags .ok { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .cp { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .cp-top { display: flex; align-items: center; gap: 10px; }
@@ -83,6 +94,9 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
     <span class="count" id="count"></span>
   </div>
   <div class="chips" id="stores"></div>
+  <div class="frow" id="fReg" aria-label="الدولة"></div>
+  <div class="frow" id="fMin" aria-label="الحد الأدنى للطلب"></div>
+  <div class="frow" id="fType" aria-label="نوع الكوبون"></div>
   <div class="grid" id="list"><div class="empty">جارِ تحميل الكوبونات...</div></div>
   <p class="note">الكوبونات من برامج التسويق الرسمية للمتاجر، وقد يحصل قارِن على عمولة صغيرة لما تشتري منها بدون أي زيادة عليك. الشروط النهائية حسب صفحة المتجر. · <a href="./">الصفحة الرئيسية</a> · <a href="privacy.html">الخصوصية</a></p>
 </div>
@@ -92,7 +106,92 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
   const $ = id => document.getElementById(id);
   const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const safe = u => /^https:\/\//.test(u || '') ? u.replace(/"/g, '%22') : '';
-  let all = [], store = '';
+  let all = [], store = '', fMin = '', fType = '', fReg = 'om';
+  // ===== الدولة: أكواد علي إكسبريس كثير منها لدولة وحدة («Sale ES codes» لإسبانيا بس) =====
+  const CC_AR = { EU: 'دول أوروبية', WW: 'كل الدول', US: 'أمريكا', UK: 'بريطانيا', ES: 'إسبانيا', FR: 'فرنسا', IT: 'إيطاليا', DE: 'ألمانيا', NL: 'هولندا', PL: 'بولندا', PT: 'البرتغال', UA: 'أوكرانيا', CZ: 'التشيك', HU: 'المجر',
+    MX: 'المكسيك', CA: 'كندا', CL: 'تشيلي', IL: 'إسرائيل', AU: 'أستراليا', KR: 'كوريا', JP: 'اليابان', BR: 'البرازيل', RU: 'روسيا', TR: 'تركيا', SA: 'السعودية', AE: 'الإمارات', GCC: 'الخليج' };
+  function regionOf(c) {
+    const t = c.t + ' ' + (c.d || '') + ' ' + (c.s || '');
+    const ex = (t.match(/exclud\w*\s+ship\s+to\s*[:：]\s*([A-Z, ]+)/i) || [])[1];
+    if (ex) return /\bOM\b/.test(ex) ? { ok: false, cc: '' } : { ok: true, cc: 'WW' };
+    if (/\b(GCC|gulf|oman|عمان|الخليج)\b/i.test(t)) return { ok: true, cc: 'GCC' };
+    // وصف فيه قائمة دول («AT, BE, DK, FI, IE, SE codes»): الكوبون لهذي الدول بس
+    const list = (c.d || '').match(/^\s*((?:[A-Z]{2}\s*,\s*)+[A-Z]{2})\s*(?:codes?|ocdes?)?\s*$/);
+    if (list) { const ccs = list[1].split(/\s*,\s*/); return ccs.includes('OM') ? { ok: true, cc: 'OM' } : { ok: false, cc: ccs.length > 2 ? 'EU' : ccs[0] }; }
+    const m = c.t.match(/\bSale\s+([A-Z]{2}(?:\s*,\s*[A-Z]{2})*)\s+codes?\b/) || c.t.match(/^(US|UK|BR|DE|FR|ES|IT|PL|MX|CA|AU|JP|KR)\b/) || (/DO BRASIL/i.test(c.t) && [0, 'BR']);
+    if (m) { const ccs = m[1].split(/\s*,\s*/); return ccs.includes('WW') ? { ok: true, cc: 'WW' } : { ok: false, cc: ccs[0] }; }
+    const tt = c.t + ' ' + (c.d || '');
+    const inC = tt.match(/\b(?:in|for)\s+(poland|spain|italy|france|germany|the uk|uk|usa|the us|brazil|mexico|canada|chile|israel|australia|korea|japan|portugal|netherlands|ukraine|turkey|russia)\b/i);
+    if (inC) return { ok: false, cc: { poland: 'PL', spain: 'ES', italy: 'IT', france: 'FR', germany: 'DE', 'the uk': 'UK', uk: 'UK', usa: 'US', 'the us': 'US', brazil: 'BR', mexico: 'MX', canada: 'CA', chile: 'CL', israel: 'IL', australia: 'AU', korea: 'KR', japan: 'JP', portugal: 'PT', netherlands: 'NL', ukraine: 'UA', turkey: 'TR', russia: 'RU' }[inC[1].toLowerCase()] };
+    if (/\bWW\b|worldwide|global/i.test(tt)) return { ok: true, cc: 'WW' };
+    // عنوان بلغة دولة ثانية (عروض محلية لإسبانيا وإيطاليا وفرنسا…)
+    if (/artículos|descuento|envío|nuevos usuarios|compras|ofertas|página|promocionar|destino/i.test(c.t)) return { ok: false, cc: 'ES' };
+    if (/articoli|sconti|spedizione|nuovi utenti/i.test(c.t)) return { ok: false, cc: 'IT' };
+    if (/remise|achat|dernières|tendances|livraison/i.test(c.t)) return { ok: false, cc: 'FR' };
+    if (/vendedores|brasil/i.test(c.t)) return { ok: false, cc: 'BR' };
+    if (/indirim|süper/i.test(c.t)) return { ok: false, cc: 'TR' };
+    if (/[\u0400-\u04ff]/.test(c.t)) return { ok: false, cc: 'RU' };
+    return { ok: true, cc: '' };
+  }
+  // ===== شروط الكوبون من عنوانه ووصفه: الحد الأدنى للطلب (نحوّله لريال عماني)، للعملاء الجدد، منتجات مختارة… =====
+  const CUR = [[/us\s*\$|usd|\$|دولار/i, 0.3845], [/€|eur|يورو/i, 0.42], [/£|gbp/i, 0.49], [/aed|درهم/i, 0.1047], [/sar|ريال سعودي|ر\.?\s?س/i, 0.1025], [/qar|ريال قطري/i, 0.1056],
+    [/kwd|دينار كويتي/i, 1.25], [/bhd|دينار بحريني/i, 1.02], [/omr|ر\.?\s?ع|ريال عماني/i, 1], [/egp|جنيه/i, 0.0079], [/inr|₹|rs\.?/i, 0.0046], [/try|₺|ليره/i, 0.0094], [/rub|₽|руб/i, 0.0042]];
+  const CURS = '(us\\s*\\$|usd|\\$|€|£|eur|gbp|aed|sar|qar|kwd|bhd|omr|egp|inr|₹|try|₺|rub|₽|ر\\.?\\s?ع\\.?|ر\\.?\\s?س\\.?|ريال(?:\\s+(?:عماني|سعودي|قطري))?|درهم|دينار(?:\\s+(?:كويتي|بحريني))?|دولار|يورو|جنيه)';
+  const NUM = '(\\d[\\d,]*(?:\\.\\d+)?)';
+  const MIN_EN = new RegExp('(?:min(?:imum)?\\.?\\s*(?:order|purchase|spend|basket|cart|check-?out)?\\s*(?:value|amount|of|:)?|orders?\\s+(?:over|above|from|of|more than|starting at|worth)|spend(?:ing)?\\s*(?:over|above|of|min\\.?|at least)?|purchases?\\s+(?:over|above|of|from|worth)|cart\\s+(?:value\\s+)?(?:over|above)|(?:off|discount)\\s+(?:on|for|with)\\s+(?:orders?\\s+)?(?:over|above|of)?|when you (?:spend|buy))\\s*' + CURS + '?\\s*' + NUM + '\\s*' + CURS + '?\\s*(\\+)?', 'i');
+  const MIN_EU = new RegExp('(?:compras mínimas de|pedidos superiores a|dès|a partire da|ab)\\s*' + CURS + '?\\s*' + NUM + '\\s*' + CURS + '?', 'i');
+  const MIN_PLUS = new RegExp(CURS + '\\s*' + NUM + '\\s*\\+|' + NUM + '\\s*' + CURS + '\\s*\\+', 'i');  // «off $25+»
+  const MIN_AR = new RegExp('(?:الحد الأدنى(?:\\s+(?:للطلب|للشراء|للسلة))?|بحد أدنى|حد أدنى|عند (?:الشراء|التسوق|الطلب|انفاق|إنفاق)\\s*(?:ب|بمبلغ|بقيمة)?|للطلبات (?:فوق|بقيمة|اكثر من|أكثر من|من)|على الطلبات (?:فوق|بقيمة|اكثر من|أكثر من)|للمشتريات (?:فوق|بقيمة)|فوق|اكثر من|أكثر من)\\s*' + CURS + '?\\s*' + NUM + '\\s*' + CURS + '?', 'i');
+  const T_NEW = /new\s+(?:users?|customers?|buyers?|members?|shoppers?|accounts?)|first\s+(?:order|purchase|app order|time)|new to |للمستخدمين الجدد|للعملاء الجدد|لعملاء جدد|اول طلب|أول طلب|عملاء جدد|مستخدم جديد|للمشتركين الجدد/i;
+  const T_APP = /app[- ]only|in[- ]app|via (?:the )?app|on (?:the )?app|app exclusive|mobile app|عبر التطبيق|في التطبيق|من التطبيق|بالتطبيق/i;
+  const T_SEL = /selected|select (?:items|products|categories|brands)|specific|certain (?:items|products)|on (?:the )?(?:category|collection)|limited (?:items|products)|منتجات مختارة|منتجات محددة|ماركات مختارة|اقسام مختارة|أقسام مختارة|على قسم|فئات مختارة|مختارة/i;
+  const T_SHIP = /free\s+(?:shipping|delivery)|شحن مجاني|توصيل مجاني/i;
+  const T_ALL = /sitewide|site-wide|storewide|all (?:products|orders|items|categories)|everything|على كل|جميع المنتجات|كل المنتجات|كل الطلبات|جميع الطلبات/i;
+  function curRate(s, c) { for (const [re, r] of CUR) if (re.test(s)) return r; if (/ريال/.test(s)) return /oman|عمان/i.test(c.r || '') ? 1 : 0.1025; return 0.3845; }
+  function condOf(c) {
+    if (c._k) return c._k;
+    const text = (c.t + ' · ' + (c.d || '')).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    let min = 0, raw = '';
+    const m = text.match(MIN_EN) || text.match(MIN_AR) || text.match(MIN_EU);
+    const m2 = !m && text.match(MIN_PLUS);
+    if (m || m2) {
+      const g = m ? [m[1], m[2], m[3]] : [m2[1] || m2[4], m2[2] || m2[3], ''];
+      const v = parseFloat(String(g[1]).replace(/,/g, ''));
+      const cur = (g[0] || g[2] || '');
+      if (v > 0 && v < 100000) { min = Math.round(v * curRate(cur || text, c) * 10) / 10; raw = (cur && /[a-z$€£₹₺₽]/i.test(cur) ? cur.trim().replace(/^us\s*\$$/i, '$') + ' ' : '') + g[1] + (cur && !/[a-z$€£₹₺₽]/i.test(cur) ? ' ' + cur.trim() : ''); }
+    }
+    const x = (c.x || '') + ' ' + c.t;
+    const reg = regionOf(c);
+    return (c._k = { min, raw, reg, isNew: T_NEW.test(text) || /nuevos usuarios|nuovi utenti|new user/i.test(text), app: T_APP.test(text), sel: T_SEL.test(text) && !T_ALL.test(text), ship: T_SHIP.test(text), all: T_ALL.test(text),
+      // «Get US $3 off» خصم بمبلغ، «Up to 80% off» نسبة (رقم Admitad في الخانة مو دقيق)
+      pct: /\d\s*%|٪/.test(c.t) && !/(\$|€|£|aed|sar|omr)\s*\d+\s*(off|de descuento|de remise)|\d+\s*(€|\$)\s*(off|de remise)/i.test(c.t), soon: (daysLeft(c.e) ?? 99) <= 3, code: !!c.c });
+  }
+  const MIN_F = [['none', 'بدون حد أدنى', k => !k.min], ['10', 'الحد الأدنى حتى 10 ر.ع', k => k.min <= 10], ['30', 'حتى 30 ر.ع', k => k.min <= 30], ['80', 'حتى 80 ر.ع', k => k.min <= 80], ['80+', 'فوق 80 ر.ع', k => k.min > 80]];
+  const TYPE_F = [['notnew', 'للكل (مو للجدد بس)', k => !k.isNew], ['new', 'للعملاء الجدد', k => k.isNew], ['all', 'على كل المنتجات', k => k.all], ['sel', 'منتجات أو أقسام مختارة', k => k.sel],
+    ['ship', 'شحن مجاني', k => k.ship], ['app', 'من التطبيق بس', k => k.app], ['pct', 'خصم بالنسبة %', k => k.pct], ['code', 'بكود', k => k.code], ['nocode', 'بدون كود', k => !k.code], ['soon', 'ينتهي قريب', k => k.soon]];
+  const passF = c => { const k = condOf(c); const a = MIN_F.find(f => f[0] === fMin), b = TYPE_F.find(f => f[0] === fType); return (!a || a[2](k)) && (!b || b[2](k)) && (fReg !== 'om' || k.reg.ok); };
+  function renderFilters(base) {
+    const row = (id, title, defs, cur, key, bs) => {
+      const items = defs.map(([v, l, fn]) => [v, l, bs.filter(c => fn(condOf(c))).length]).filter(x => x[2] && x[2] < bs.length || x[0] === cur);
+      $(id).innerHTML = items.length ? `<span class="k">${title}</span><button type="button" class="chip${cur ? '' : ' on'}" data-${key}="">الكل</button>` + items.map(([v, l, n]) => `<button type="button" class="chip${cur === v ? ' on' : ''}" data-${key}="${v}">${l} <i>${n}</i></button>`).join('') : '';
+    };
+    // الدولة أول: افتراضيًا اللي تصلح لعمان بس
+    const om = base.filter(c => condOf(c).reg.ok).length;
+    $('fReg').innerHTML = `<span class="k">الدولة</span><button type="button" class="chip${fReg === 'om' ? ' on' : ''}" data-r="om">🇴🇲 تصلح لعمان <i>${om}</i></button><button type="button" class="chip${fReg ? '' : ' on'}" data-r="">🌍 كل الدول <i>${base.length}</i></button>`;
+    const b2 = fReg === 'om' ? base.filter(c => condOf(c).reg.ok) : base;
+    const row2 = (id, title, defs, cur, key) => row(id, title, defs, cur, key, b2);
+    row2('fMin', 'الحد الأدنى', MIN_F, fMin, 'm'); row2('fType', 'النوع', TYPE_F, fType, 'y');
+  }
+  function tagsOf(c) {
+    const k = condOf(c), t = [];
+    t.push(k.min ? `<span class="min">🧾 الحد الأدنى ${esc(k.raw)}${/ر\.?\s?ع|omr|عماني/i.test(k.raw) ? '' : ` (≈ ${k.min} ر.ع)`}</span>` : '<span class="ok">✓ بدون حد أدنى مكتوب</span>');
+    if (!k.reg.ok) t.push(`<span class="min">🌍 ${k.reg.cc && CC_AR[k.reg.cc] ? 'لـ' + CC_AR[k.reg.cc] + ' بس' : 'مو لعمان'}</span>`);
+    if (k.isNew) t.push('<span class="new">🆕 للعملاء الجدد</span>');
+    if (k.app) t.push('<span>📱 من التطبيق</span>');
+    if (k.sel) t.push('<span>🏷️ منتجات مختارة</span>');
+    if (k.ship) t.push('<span>🚚 شحن مجاني</span>');
+    return `<div class="cp-tags">${t.join('')}</div>`;
+  }
   function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2200); }
   function daysLeft(e) { if (!e) return null; const d = Math.ceil((new Date(e + 'T23:59:59Z') - Date.now()) / 864e5); return d; }
   function card(c, i) {
@@ -101,6 +200,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
     return `<article class="cp">
       <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
       <div class="cp-t">${esc(c.t)}</div>
+      ${tagsOf(c)}
       ${c.d && c.d !== c.t ? `<div class="cp-d">${esc(c.d)}</div>` : ''}
       <div class="cp-acts">${c.c ? `<button type="button" class="code" data-i="${i}"><b>${esc(c.c)}</b><span>📋 انسخ</span></button>` : '<div class="nocode">✅ ما يحتاج كود، الخصم يطبّق تلقائي</div>'}
         <a class="go" href="${safe(c.u)}" target="_blank" rel="sponsored noopener noreferrer">اذهب للعرض ↗</a></div>
@@ -108,7 +208,9 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
   }
   function render() {
     const q = $('q').value.trim().toLowerCase();
-    const list = all.map((c, i) => [c, i]).filter(([c]) => (!store || c.s === store) && (!q || (c.t + ' ' + c.d + ' ' + c.s + ' ' + c.c).toLowerCase().includes(q)));
+    const base = all.filter(c => (!store || c.s === store) && (!q || (c.t + ' ' + c.d + ' ' + c.s + ' ' + c.c).toLowerCase().includes(q)));
+    renderFilters(base);
+    const list = all.map((c, i) => [c, i]).filter(([c]) => base.includes(c) && passF(c));
     $('count').textContent = `${list.length} كوبون`;
     $('list').innerHTML = list.length ? list.map(([c, i]) => card(c, i)).join('') : '<div class="empty">ما فيه كوبونات تطابق بحثك.</div>';
   }
@@ -125,6 +227,9 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
   });
   $('stores').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; store = b.dataset.s; [...$('stores').children].forEach(x => x.classList.toggle('on', x === b)); render(); });
   $('q').addEventListener('input', render);
+  $('fReg').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b) return; fReg = b.dataset.r; render(); });
+  $('fMin').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; fMin = b.dataset.m; render(); });
+  $('fType').addEventListener('click', e => { const b = e.target.closest('[data-y]'); if (!b) return; fType = b.dataset.y; render(); });
   fetch('coupons.json?v=' + new Date().toISOString().slice(0, 13), { cache: 'no-cache' }).then(r => r.json()).then(d => {
     all = (d && d.coupons) || [];
     if (!all.length) { $('list').innerHTML = '<div class="empty">🎟️ الكوبونات توصل قريب. ارجع لنا بكرة!</div>'; $('count').textContent = ''; return; }
