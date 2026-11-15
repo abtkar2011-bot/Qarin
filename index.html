@@ -139,6 +139,14 @@ a { color: inherit; }
 .check:has(input:not(:checked)) { color: var(--muted); background: var(--surface-2); text-decoration: line-through; }
 .check:has(input:not(:checked)) .dot { opacity: .35; }
 .check:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check-group { flex-basis: 100%; }
+.check-group > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: var(--surface); }
+.check-group > summary::-webkit-details-marker { display: none; }
+.check-group > summary::after { content: '▾'; color: var(--muted); font-size: 0.7rem; }
+.check-group[open] > summary::after { content: '▴'; }
+.check-group > summary b { background: var(--surface-2); color: var(--muted); border-radius: 999px; padding: 0 6px; font-size: 0.72rem; }
+.check-group:has(input:not(:checked)) > summary b { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+.check-group > .checks { margin-top: 6px; }
 .check .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 select {
   width: 100%; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2);
@@ -949,6 +957,16 @@ table.dt { min-width: 0; font-size: .76rem; }
                    url: q => 'https://bunalqassab.com/shop?search=' + qp(q) },
     spirithub:   { name: 'Spirit Hub', color: '#3A6B5A', text: '#FFFFFF', bar: '#3A6B5A', tagline: 'محمصة عمانية: قهوة مختصة ودريب',
                    url: () => 'https://www.spirithubcafe.com/om/shop' },
+    souqalbon:   { name: 'سوق البن', color: '#5B3A29', text: '#FFFFFF', bar: '#5B3A29', tagline: 'متجر قهوة عماني: محاصيل محامص وأدوات',
+                   url: q => 'https://souqalbon.com/?post_type=product&s=' + qp(q) },
+    epanda:      { name: 'ePanda', color: '#2B2B2B', text: '#FFFFFF', bar: '#2B2B2B', tagline: 'متجر قهوة عماني: أدوات ومكاين ومحاصيل',
+                   url: q => 'https://www.epandaom.com/ar/shop?search=' + qp(q) },
+    rawasi:      { name: 'رواسي', color: '#8C5A3C', text: '#FFFFFF', bar: '#8C5A3C', tagline: 'محمصة عمانية: قهوة مختصة',
+                   url: q => 'https://www.rawasiom.com/shop?search=' + qp(q) },
+    yield:       { name: 'Yield', color: '#3F5E4A', text: '#FFFFFF', bar: '#3F5E4A', tagline: 'محمصة عمانية: قهوة مختصة',
+                   url: () => 'https://yield-oman.kyte.site/en' },
+    sura:        { name: 'سورا', color: '#A0522D', text: '#FFFFFF', bar: '#A0522D', tagline: 'محمصة عمانية: قهوة مختصة',
+                   url: q => 'https://www.suraroastery.om/shop?search=' + qp(q) },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1690,6 +1708,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     "فيشي": "vichy", "يوسيرين": "eucerin", "سيتافيل": "cetaphil", "نيفيا": "nivea", "فازلين": "vaseline", "كيلز": "kiehls", "لوريال": "loreal", "مايبيلين": "maybelline",
     "هدى بيوتي": "huda beauty",
     // القهوة: عمانية، مختصة، دريب، بلدان المنشأ، والتحميص
+    "قهوه سعوديه": "saudi coffee", "قهوه سعودي": "saudi coffee", "بن سعودي": "saudi coffee", "قهوه جازان": "saudi coffee", "بن جازاني": "saudi coffee", "فلتر في 60": "v60 filter paper", "فلاتر في 60": "v60 filter paper", "ورق في 60": "v60 filter paper",
     "قهوه عمانيه": "omani coffee", "قهوه عماني": "omani coffee", "بن عماني": "omani coffee", "اسبرسو": "espresso machine", "طاحونه قهوه": "coffee grinder", "طاحونه بن": "coffee grinder",
     "دريب": "drip coffee bags", "قهوه دريب": "drip coffee bags", "اكياس دريب": "drip coffee bags", "دريب باق": "drip coffee bags", "غلايه قهوه": "gooseneck kettle", "سيروب": "coffee syrup",
     "سيرب": "coffee syrup", "سيروب قهوه": "coffee syrup", "نكهات قهوه": "coffee syrup", "قهوه اثيوبيه": "ethiopia coffee beans", "قهوه اثيوبي": "ethiopia coffee beans",
@@ -1897,21 +1916,22 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   // ================= المتاجر الشريكة (V Perfumes و DermaZone) =================
   // محامص القهوة: نفس طريقة البحث، مع معنى خاص لكلمة «قهوة» (القهوة نفسها مو المكاين والأدوات)
-  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe';
+  const COFFEE_TOOLS = 'machines?|maker|brewer|boiler|grinders?|gadgets|accessor|syrups?|powders?|puree|sauce|kettles?|tampers?|filters? paper|drippers?|scales?|jugs?|pitchers?|\\bcups?\\b|mugs?|knock|thermos|jars?|carafe|canister|mirror|screen|empty|travel|tools?|server|press\\b|needle|distribut|basket|level+er|scoop|brush|clean|holder|\\bmats?\\b|stand\\b|suitcase|\\bcase\\b|thermometer|decanter|spoon|rinser|dosing|portafilter|milk|ادوات|أدوات|اكواب|أكواب|مطحن|مطاحن|غلاي|ميزان|موازين|قمع|فلاتر|ملاعق|مكين|ماكين';
   const COFFEE_FEED = { perUsd: () => OMR_PER_USD, aff: '', generic: /^(products?|original)$/,
     gate: /(قهو|(^|\s)(ال)?بن(\s|$)|اسبريسو|اسبرسو|كابتشينو|لاتيه|كبسول|في ?60|كيمكس|ايروبرس|مطحن|طاحون|دريب|تقطير|دله|محمص|سيروب|سيرب|coffee|espresso|capsule|\bbeans?\b|grinder|chemex|aeropress|\bv60\b|\bdrip|kettle|tamper|barista|latte|cappuccino|moka|french press|cold brew|syrup|dallah|copper roastery|bun al qassab|spirit hub)/i,
     syn: { coffee: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|capsule|single origin|arabica|\\bdrip|blend|roast)',
       beans: '^(?!.*(' + COFFEE_TOOLS + ')).*(coffee|قهو|\\bbeans?\\b|espresso|single origin|arabica|blend|roast)', specialty: '(specialty|single origin|arabica|microlot|90\\+|geisha|natural|washed|anaerobic|honey)',
-      capsules: '(capsule|كبسول)', drip: '(\\bdrip|دريب|مقطر)', ground: '(ground|grind|مطحون)', omani: '(omani|عماني)', turkish: '(turkish|تركي)', decaf: '(decaf)',
+      arabic: '(arabic coffee|قهوة عربية|قهوه عربيه|omani coffee|قهوة عمانية|al balad|cardamom|هيل)', capsules: '(capsule|كبسول)', drip: '(\\bdrip|دريب|مقطر)', ground: '(ground|grind|مطحون)', omani: '(omani|عماني)', turkish: '(turkish|تركي)', decaf: '(decaf)',
       machine: '(machine|maker|brewer|boiler|automatic|espresso machine)', maker: '(machine|maker|brewer|boiler|automatic)', grinder: '(grinder|مطحن|طاحون)', kettle: '(kettle|غلاي|ابريق)', gooseneck: '(gooseneck|kettle)',
       dripper: '(dripper|v60|kalita|chemex|origami)', v60: '(v60)', paper: '(paper|filters?)', filter: '(filter|فلتر)', syrup: '(syrup|سيروب)', thermos: '(thermos|flask|vacuum)', flask: '(thermos|flask|vacuum)',
       ethiopia: '(ethiopia|اثيوبيا|yirgacheffe|guji|sidamo)', colombia: '(colombia|كولومبيا)', brazil: '(brazil|برازيل)', kenya: '(kenya|كينيا)', yemen: '(yemen|يمن)', indonesia: '(indonesia|sumatra|java)' },
     dropWith: { coffee: /^(machines?|maker|brewer|grinders?|kettles?|drippers?|v60|chemex|aeropress|press|moka|scales?|tampers?|filters?|paper|syrups?|cups?|mugs?|jars?|thermos|flask|dallah|pot|gift|set)$/,
       espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/ },
-    titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/ };
+    titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/, hard: /^(arabic|turkish|omani|saudi)$/,
+    accessory: /\b(clean\w*|brush|case|cover|holder|mats?|stand|sleeve|spare|replacement|parts?|protective|pouch|bags?(?! of)|paper|filters?|gasket|burrs?|seal|cap|lid|tool)\b|فرشا|غطاء|حافظ|فلتر|فلاتر|ورقي/i };
   const PARTNER_FEEDS = {
     vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
-      gate: /(عطر|عطور|عود|دهن|بخور|دخون|مبخر|مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
+      gate: /(عطر|عطور|(^|\s)(ال)?عود|دهن|بخور|دخون|مبخر|(^|\s)(ال)?مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
       generic: /^(scents?|smell)$/ },
     dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
       gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|ريتينول|هيالورونيك|نياسيناميد|حلزون|امبول|مستحلب|لوشن|تقشير|ليفه|لصقات|شامبو|تساقط|بيوتين|بايوتين|جاميز|اوميغا|اوميجا|زنك|مغنيسيوم|ميلاتونين|مكياج|شفاه|شفايف|بلاشر|كوري|شعر|\bhair\b|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|retinol|hyaluronic|niacinamide|snail|ampoule|gumm|biotin|omega|makeup|\blip|shampoo|hair loss|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
@@ -1919,6 +1939,11 @@ table.dt { min-width: 0; font-size: .76rem; }
     copper: Object.assign({ file: 'data/p/copper.json' }, COFFEE_FEED),
     bunalqassab: Object.assign({ file: 'data/p/bunalqassab.json' }, COFFEE_FEED),
     spirithub: Object.assign({ file: 'data/p/spirithub.json' }, COFFEE_FEED),
+    souqalbon: Object.assign({ file: 'data/p/souqalbon.json' }, COFFEE_FEED),
+    epanda: Object.assign({ file: 'data/p/epanda.json' }, COFFEE_FEED),
+    rawasi: Object.assign({ file: 'data/p/rawasi.json' }, COFFEE_FEED),
+    yield: Object.assign({ file: 'data/p/yield.json' }, COFFEE_FEED),
+    sura: Object.assign({ file: 'data/p/sura.json' }, COFFEE_FEED),
   };
   const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
   // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
@@ -1946,6 +1971,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     acne: 'حب الشباب|بثور|حبوب', pimple: 'بثور|حب الشباب', patches: 'لصقات', dark: 'داكن|تصبغ', spot: 'بقع|عيوب', pore: 'مسام', wrinkle: 'تجاعيد|شد', aging: 'شيخوخه|شباب', tightening: 'شد',
     gummies: 'جاميز|جامي', biotin: 'بيوتين|بايوتين', omega: 'اوميغا|اوميجا|اوميقا', magnesium: 'مغنيسيوم', zinc: 'زنك', melatonin: 'ميلاتونين', creatine: 'كرياتين', turmeric: 'كركم|كوركومين', probiotic: 'بروبيوتك|بروبيوتيك',
     supplement: 'مكمل|فيتامين|كبسول|جاميز', dietary: 'مكمل|غذائي', glutathione: 'جلوتاثيون', iron: 'حديد', vinegar: 'خل', cider: 'خل', apple: 'تفاح', ginseng: 'جنسنج', pomegranate: 'رمان',
+    // بلدان القهوة (عناوين سوق البن عربية: «أثيوبيا حليمة 250 جرام»)
+    ethiopia: 'اثيوبيا|اثيوبي|قوجي|جوجي|سيدامو|يرقاتشيف|يرجاتشيف', colombia: 'كولومبيا|كولومبي', brazil: 'برازيل', kenya: 'كينيا|كيني', yemen: 'يمن|يمني|حراز', saudi: 'سعودي|السعوديه|جازان',
+    uganda: 'اوغندا', rwanda: 'رواندا', costa: 'كوستاريكا|كوستريكا', panama: 'بنما', honduras: 'هندوراس', guatemala: 'غواتيمالا|جواتيمالا', indonesia: 'اندونيسيا', peru: 'بيرو', burundi: 'بوروندي', mexico: 'مكسيك',
+    decaf: 'ديكاف|منزوع', drip: 'دريب|مقطر', espresso: 'اسبريسو|إسبريسو', specialty: 'مختص|محاصيل',
     hair: 'شعر', shampoo: 'شامبو', conditioner: 'بلسم', loss: 'تساقط', growth: 'انبات|نمو|تكثيف', korean: 'كوري|korea', skin: 'بشر', skincare: 'بشر|سيروم|كريم|تونر|ماسك|مستحلب|امبول', makeup: 'مكياج|شفاه|عيون|خدود|كوشن', test: 'اختبار|فحص',
   };
   // كلمات وصف (ثابت، صيفي…): نفضّل اللي يطابقها، وإذا ما فيه نرجع لكل المطابق
@@ -1986,7 +2015,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     let toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
     // «مكينة قهوة» ← المكينة هي المطلوبة، فكلمة «قهوة» ما تشترط إن المنتج قهوة
     if (F.dropWith) toks = toks.filter(w => !(F.dropWith[w] && toks.some(o => o !== w && F.dropWith[w].test(o))));
-    const hard = toks.filter(w => !P_SOFT.has(w)).map(w => pTok(w, F)), soft = toks.filter(w => P_SOFT.has(w)).map(w => pTok(w, F));
+    const isSoft = w => P_SOFT.has(w) && !(F.hard && F.hard.test(w));  // «قهوة عربية» في متاجر القهوة لازم تكون عربية فعلًا
+    const hard = toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), soft = toks.filter(isSoft).map(w => pTok(w, F));
     // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
     const arToks = /[؀-ۿ]/.test(ar) ? ar.split(' ').map(w => w.replace(/^(ال|لل|بال|وال)(?=..)/, '')).filter(w => w.length > 1 && !AR_IGNORE.has(w)) : [];
     const arRes = arToks.map(w => new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?' + pEsc(w)));
@@ -2013,6 +2043,11 @@ table.dt { min-width: 0; font-size: .76rem; }
       hit.push(p);
     }
     // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
+    // «مطحنة» تبي مطحنة مو فرشاة تنظيف المطحنة: الإكسسوارات تطلع بس إذا ما فيه غيرها أو طلبتها
+    if (F.accessory && !toks.some(w => F.accessory.test(w))) {
+      const core = hit.filter(x => !F.accessory.test(x.title));
+      if (core.length >= 2) hit.splice(0, hit.length, ...core);
+    }
     hit.sort((a, b) => b._soft - a._soft);
     const withSoft = hit.filter(x => x._soft > 0);
     return (withSoft.length >= 3 ? withSoft : hit).slice(0, Math.max(limit, 40));
@@ -2710,6 +2745,11 @@ table.dt { min-width: 0; font-size: .76rem; }
     copper: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
     bunalqassab: { trust: 'محمصة عمانية', short: 'محمصة عمانية', ship: 'يوصل داخل عمان خلال 2 إلى 3 أيام عمل' },
     spirithub: { trust: 'محمصة عمانية', short: 'محمصة عمانية', ship: 'يوصل داخل عمان خلال 1 إلى 5 أيام' },
+    souqalbon: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    epanda: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    rawasi: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
+    yield: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
+    sura: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
   };
 
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;
@@ -3788,8 +3828,12 @@ table.dt { min-width: 0; font-size: .76rem; }
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
     $('heroChips').innerHTML = KEYS.map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('');
-    $('platformChecks').innerHTML = KEYS.map(k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
-      <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`).join('');
+    // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
+    const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
+      <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`;
+    const coffeeKeys = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
+    $('platformChecks').innerHTML = KEYS.filter(k => !coffeeKeys.includes(k)).map(pill).join('') +
+      (coffeeKeys.length ? `<details class="check-group"><summary><span>☕ متاجر القهوة العمانية</span> <b>${coffeeKeys.length}</b></summary><div class="checks">${coffeeKeys.map(pill).join('')}</div></details>` : '');
     $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l.replace(EMO_LEAD, '')}</option>`).join('');
     const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
     const renderSources = () => { if (!$('sources')) return; $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
