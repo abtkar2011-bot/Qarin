@@ -38,6 +38,12 @@ const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true 
     log.push('parfumo rows ' + rows.length + ' kept ' + kept + ' brands ' + Object.keys(out).length + ' maxRating ' + maxR + ' bytes ' + JSON.stringify(out).length + ' header ' + H.join(','));
     for (const [b, n] of [['amouage', 'interlude'], ['creed', 'aventus'], ['dior', 'sauvage'], ['lattafa', 'khamrah']]) log.push(' ' + b + ': ' + JSON.stringify((out[b] || []).filter(x => x[0].includes(n)).slice(0, 4)));
   } catch (e) { log.push('parfumo ERR ' + e.message); }
+
+  // علي إكسبريس: هل البحث العربي يرجّع نتائج؟
+  for (const q of ['wireless earbuds', 'سماعات لاسلكية', 'عباية سوداء', 'مبخرة كهربائية', 'abaya black']) {
+    try { const d = await (await fetch('https://qarin-ebay.abtkar2011.workers.dev/ali?q=' + encodeURIComponent(q))).json(); const it = d.items || []; log.push('ali [' + q + '] ' + it.length + ': ' + it.slice(0, 4).map(x => x.title).join(' ‖ ').slice(0, 300)); }
+    catch (e) { log.push('ali [' + q + '] ERR ' + e.message); }
+  }
   log.push('errors: ' + JSON.stringify(errs));
   fs.writeFileSync(OUT + '/report.txt', log.join('\n')); console.log(log.join('\n'));
   await b.close();
