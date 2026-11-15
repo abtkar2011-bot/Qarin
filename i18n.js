@@ -1,6 +1,7 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"↺ ابدأ من جديد": ["↺ Start over", "↺ Recommencer", "↺ Empezar de nuevo", "↺ 重新开始", "↺ फिर से शुरू", "↺ دوبارہ شروع", "↺ Начать заново", "↺ Baştan başla", "↺ Mulai lagi"],
 "⭐ التقييم العالمي من مجتمع Parfumo للعطور (بيانات {n})، ونستخدمه في «{q}».": ["⭐ Global ratings come from the Parfumo fragrance community ({n} data), and we use them for «{q}».", "⭐ Les notes mondiales viennent de la communauté Parfumo (données {n}) et servent pour « {q} ».", "⭐ Las valoraciones globales vienen de la comunidad Parfumo (datos de {n}) y las usamos para «{q}».", "⭐ 全球评分来自 Parfumo 香水社区（{n} 年数据），用于“{q}”。", "⭐ ग्लोबल रेटिंग Parfumo कम्युनिटी से ({n} का डेटा), «{q}» में इस्तेमाल होती है।", "⭐ عالمی ریٹنگ Parfumo کمیونٹی سے ({n} کا ڈیٹا)، «{q}» میں استعمال ہوتی ہے۔", "⭐ Мировые оценки — из сообщества Parfumo (данные {n}), используются для «{q}».", "⭐ Küresel puanlar Parfumo topluluğundan ({n} verisi), «{q}» için kullanılır.", "⭐ Rating global dari komunitas Parfumo (data {n}), dipakai untuk «{q}»."],
 "المحمصة": ["Roastery", "Torréfacteur", "Tostador", "烘焙商", "रोस्टरी", "روسٹری", "Обжарщик", "Kavurucu", "Roastery"],
 "الماركة": ["Brand", "Marque", "Marca", "品牌", "ब्रांड", "برانڈ", "Бренд", "Marka", "Merek"],
