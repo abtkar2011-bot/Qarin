@@ -1,4 +1,4 @@
-// temp: screenshots v2 of the live site (light theme) for the explainer video
+// temp: screenshots v3 of the live site (light theme) for the explainer video
 const { chromium, devices } = require('playwright');
 const fs = require('fs');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
