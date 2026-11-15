@@ -1,9 +1,8 @@
-// فحص فوح: المنصة، robots، وعينة منتجات
+// فحص محاصيل البن: المنصة، robots، وعينة منتجات
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
-const urls = ['https://fooh.store/robots.txt', 'https://fooh.store/ar', 'https://fooh.store/shop?ppg=200', 'https://fooh.store/shop/page/2?ppg=200', 'https://fooh.store/products.json?limit=3', 'https://fooh.store/wp-json/wc/store/v1/products?per_page=3', 'https://fooh.store/sitemap.xml',
-];
+const urls = ['https://mahaseelalbon.com/robots.txt', 'https://mahaseelalbon.com/', 'https://mahaseelalbon.com/products.json?limit=3', 'https://mahaseelalbon.com/wp-json/wc/store/v1/products?per_page=100&page=1', 'https://mahaseelalbon.com/shop?ppg=200', 'https://mahaseelalbon.com/sitemap.xml', 'https://fooh.store/en/shop?ppg=200'];
 const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'woocommerce', 'wp-content', 'wix', 'odoo', 'Odoo', '__NEXT_DATA__', 'kyte', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart'].filter(m => t.includes(m));
 (async () => {
   const log = [];
