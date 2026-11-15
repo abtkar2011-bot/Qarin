@@ -1208,6 +1208,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
                     ['#DDD6FE', '#8B5CF6'], ['#FED7AA', '#F97316'], ['#A5F3FC', '#06B6D4'], ['#FECACA', '#EF4444']];
 
   // ================= أدوات =================
+  // إتسي يرسل العناوين فيها &quot; و&#39; — نرجعها حروف عادية
+  const unEnt = s => String(s || '').replace(/&(quot|#39|apos|amp|lt|gt|nbsp|#(\d+)|#x([0-9a-f]+));/gi, (m, n, d, h) => d ? String.fromCodePoint(+d) : h ? String.fromCodePoint(parseInt(h, 16)) : ({ quot: '"', '#39': "'", apos: "'", amp: '&', lt: '<', gt: '>', nbsp: ' ' })[n.toLowerCase()]);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const $ = id => document.getElementById(id);
 
@@ -2009,7 +2011,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (!items.length) throw new Error('etsy empty');
     etsyLive = true;
     return items.slice(0, Math.max(limit, 50)).map(it => ({
-      platform: 'etsy', title: it.title, price: it.price, unrated: true, rating: PRIOR_RATING,
+      platform: 'etsy', title: unEnt(it.title), price: it.price, unrated: true, rating: PRIOR_RATING,
       reviews: it.favorites || 0, url: safeUrl(it.url), image: safeUrl(it.image) || placeholder('🎁', rng),
       original: null, orders: null, shipping: '', freeShip: false, nativePrice: null, real: true, favs: it.favorites || 0,
       shipCost: null, total: it.price,
