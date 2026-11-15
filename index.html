@@ -973,6 +973,8 @@ table.dt { min-width: 0; font-size: .76rem; }
                    url: q => 'https://mahaseelalbon.com/shop?search=' + qp(q) },
     muthalath:   { name: 'مثلث', color: '#1F2937', text: '#FFFFFF', bar: '#1F2937', tagline: 'متجر قهوة عماني: محاصيل وأدوات',
                    url: q => 'https://www.muthalathstore.com/shop?search=' + qp(q) },
+    barista:     { name: 'Barista Oman', color: '#7C3F00', text: '#FFFFFF', bar: '#7C3F00', tagline: 'متجر قهوة عماني: محاصيل وأدوات',
+                   url: q => 'https://barista-oman.kushk.om/search?q=' + qp(q) },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1954,6 +1956,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     fooh: Object.assign({ file: 'data/p/fooh.json' }, COFFEE_FEED),
     mahaseel: Object.assign({ file: 'data/p/mahaseel.json' }, COFFEE_FEED),
     muthalath: Object.assign({ file: 'data/p/muthalath.json' }, COFFEE_FEED),
+    barista: Object.assign({ file: 'data/p/barista.json' }, COFFEE_FEED),
   };
   const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
   // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
@@ -2763,6 +2766,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     fooh: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
     mahaseel: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
     muthalath: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    barista: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
   };
 
   const PRIOR_RATING = 4.2, PRIOR_WEIGHT = 40;

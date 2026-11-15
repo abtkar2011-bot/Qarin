@@ -233,6 +233,16 @@ async function odooPaged(B, name, tags, maxPages = 40) {
 const mahaseel = () => odooPaged('https://mahaseelalbon.com', 'mahaseel', 'mahaseel albon');
 const muthalath = () => odooPaged('https://www.muthalathstore.com', 'muthalath', 'muthalath | مثلث');
 
+// Barista Oman (منصة كشك): خريطة المنتجات، وكل صفحة منتج فيها JSON-LD بالسعر والتوفر
+async function barista() {
+  const B = 'https://barista-oman.kushk.om';
+  const urls = [...new Set(locs(await get(B + '/sitemap-products.xml')).filter(u => /\/products\/[^/]+$/.test(u)))].slice(0, 400);
+  const all = [];
+  for (const u of urls) { const it = parseLdProduct(await get(u), u, 'barista oman | باريستا عمان'); if (it) all.push(it); await sleep(300); }
+  console.log('barista', urls.length, all.length);
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+}
+
 // محامص أودو صغيرة (صفحة متجر وحدة): رواسي و سورا
 async function odooShop(B, name, tags) {
   const items = parseOdoo(await get(B + '/shop?ppg=200'), B, tags);
@@ -262,7 +272,7 @@ async function yieldOm() {
 }
 
 // Spirit Hub Cafe (مسقط): صفحات المنتجات فيها JSON-LD (الاسم، السعر، التوفر، والتقييم الحقيقي)
-function parseLdProduct(html, url) {
+function parseLdProduct(html, url, store = 'spirit hub') {
   for (const m of String(html || '').matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)) {
     let d; try { d = JSON.parse(m[1]); } catch (e) { continue; }
     for (const x of [].concat(d, d && d['@graph'] || [])) {
@@ -272,7 +282,7 @@ function parseLdProduct(html, url) {
       if (!(price > 0) || (of.availability && !/InStock|LimitedAvailability|PreOrder/i.test(of.availability))) return null;
       const ar = x.aggregateRating || {};
       return { t: ent(x.name), p: price, o: 0, i: [].concat(x.image || [])[0] || '', u: url, r: +ar.ratingValue || 0, n: +ar.reviewCount || +ar.ratingCount || 0,
-        tags: ['spirit hub', ent(x.description || '').slice(0, 220), x.category ? ent(x.category) : ''].filter(Boolean).join(' | ') };
+        tags: [store, ent(x.description || '').slice(0, 220), x.category ? ent(x.category) : ''].filter(Boolean).join(' | ') };
     }
   }
   return null;
@@ -296,7 +306,7 @@ if (require.main === module) (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const index = {};
   const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5 };
-  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath]]) {
+  for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista]]) {
     try {
       const data = await fn();
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
