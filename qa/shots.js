@@ -15,14 +15,14 @@ async function get(u, save) {
   } catch (e) { log.push('ERR ' + u + ' ' + e.message); return ''; }
 }
 (async () => {
-  for (const [B, tag] of [['https://alwidadperfumes.com', 'w'], ['https://artalofficial.com', 'a']]) {
-    await get(B + '/', tag + '_home.txt');
+  for (const [B, tag] of [['https://nwaderoud.com', 'n'], ['https://www.alkhanjar.om', 'k']]) {
+    await get(B + '/ar', tag + '_home.txt');
     await get(B + '/products.json?limit=3', tag + '_pj.txt');
     await get(B + '/wp-json/wc/store/v1/products?per_page=3', tag + '_woo.txt');
     await get(B + '/sitemap.xml', tag + '_sm.txt');
     await get(B + '/robots.txt', tag + '_robots.txt');
   }
   fs.writeFileSync(OUT + '/probe.txt', log.join('\n')); console.log(log.join('\n'));
-  const r = spawnSync('node', ['tools/partners/build.js', OUT], { stdio: 'inherit', env: Object.assign({}, process.env, { ONLY: 'raydan,ibraq,almajed,amouage,omanluxury' }), timeout: 20 * 60 * 1000 });
+  const r = spawnSync('node', ['tools/partners/build.js', OUT], { stdio: 'inherit', env: Object.assign({}, process.env, { ONLY: 'artal' }), timeout: 20 * 60 * 1000 });
   console.log('exit', r.status);
 })();
