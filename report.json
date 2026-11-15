@@ -1,0 +1,758 @@
+[
+ {
+  "ok": true,
+  "step": "home",
+  "name": "load time",
+  "info": "1165ms"
+ },
+ {
+  "ok": true,
+  "step": "home",
+  "name": "search box visible",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "home",
+  "name": "mic + camera buttons",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "home",
+  "name": "hero chips",
+  "info": "علي إكسبريس إتسي إيباي DermaZone 🌸 15 متجر عطور ☕ 12 متجر قهوة عماني"
+ },
+ {
+  "ok": true,
+  "step": "home",
+  "name": "no horizontal overflow (iPhone)",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "home",
+  "name": "home: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "search finished",
+  "info": "4027ms"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "status",
+  "info": "✓\nاكتمل البحث: 53 منتج من 31 منصة"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "product cards",
+  "info": "22"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "best card shown",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "link hosts",
+  "info": "ebay.com, s.click.aliexpress.com, rzekl.com, etsy.com"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "all product links https",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "broken product images",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "no overflow on results",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "search AR",
+  "name": "search: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "priorities",
+  "name": "best per priority",
+  "info": "Portable Wireless In-ear Mini  | Portable Wireless In-ear Mini  | Portable Wireless In-ear Mini  | JBL Live Beam 3 True Wireless  | JBL Live Beam 3 True Wireless "
+ },
+ {
+  "ok": true,
+  "step": "priorities",
+  "name": "priority changes the best pick",
+  "info": "2"
+ },
+ {
+  "ok": true,
+  "step": "priorities",
+  "name": "prio: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "filters panel opens",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "free shipping only",
+  "info": "22 → 3"
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "price max 5",
+  "info": "22 → 1"
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "store checkboxes",
+  "info": "31"
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "sort option",
+  "info": "الأقل سعرًا"
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "filters panel closes",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "filters + sort",
+  "name": "filters: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "favourite added",
+  "info": "1"
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "favourites window opens",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "compare bar shows",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "compare window opens",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "compare rows",
+  "info": "10"
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "cart added",
+  "info": "1"
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "cart window opens",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "fav / compare / cart",
+  "name": "fav: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "search EN + link",
+  "name": "english search",
+  "info": "3988ms ✓\nاكتمل البحث: 108 منتج من 31 منصة"
+ },
+ {
+  "ok": true,
+  "step": "search EN + link",
+  "name": "english cards",
+  "info": "24"
+ },
+ {
+  "ok": true,
+  "step": "search EN + link",
+  "name": "paste product link",
+  "info": "✓\nاكتمل البحث: 63 منتج من 31 منصة"
+ },
+ {
+  "ok": true,
+  "step": "search EN + link",
+  "name": "en: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "image search (main)",
+  "name": "same-look box (main)",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "image search (main)",
+  "name": "image → results",
+  "info": "📷 watch | ✓\nاكتمل البحث: 36 منتج من 31 منصة"
+ },
+ {
+  "ok": true,
+  "step": "image search (main)",
+  "name": "img: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "basket",
+  "name": "basket finished",
+  "info": "3467ms ✓\nاكتملت السلة: 3 منتجات من 31 متجر"
+ },
+ {
+  "ok": true,
+  "step": "basket",
+  "name": "basket per store",
+  "info": "3"
+ },
+ {
+  "ok": true,
+  "step": "basket",
+  "name": "swap window opens",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "basket",
+  "name": "basket → cart",
+  "info": "4"
+ },
+ {
+  "ok": true,
+  "step": "basket",
+  "name": "basket: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": "warn",
+  "step": "basket",
+  "name": "basket: failed requests",
+  "info": "FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/940/image_1024/%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D8%B2%D9%8A%D9%84%20-%20%D9%81%D8%A7%D8%B2 || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/3205/image_1024/%D8%A5%D8%AB%D9%8A%D9%88%D8%A8%D9%8A%D8%A7%20-%20%D8%AA%D8%B4%D9%8A%D9%8 || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/prod"
+ },
+ {
+  "ok": true,
+  "step": "currency + theme",
+  "name": "currencies",
+  "info": "OMR,AED,SAR,QAR,KWD,BHD,EUR,USD"
+ },
+ {
+  "ok": true,
+  "step": "currency + theme",
+  "name": "theme toggles",
+  "info": " → dark"
+ },
+ {
+  "ok": true,
+  "step": "currency + theme",
+  "name": "cur: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "languages",
+  "info": "ar,en,fr,es,zh,hi,ur,ru,tr,id"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ar dir rtl",
+  "info": "rtl"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ar no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "en dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "en no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "en no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "fr dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "fr no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "fr no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "es dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "es no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "es no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "zh dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "zh no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "zh no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "hi dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "hi no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "hi no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ur dir rtl",
+  "info": "rtl"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ur no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ru dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ru no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "ru no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "tr dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "tr no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "tr no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "id dir ltr",
+  "info": "ltr"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "id no leftover Arabic",
+  "info": "0 "
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "id no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "languages",
+  "name": "lang: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "coffee loads",
+  "info": "266ms ✓\nاكتمل البحث: 1308 منتج من 12 منصة"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "head",
+  "info": "☕ قسم القهوة 1276 محصول من متاجر قهوة عمانية"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "coffee cards",
+  "info": "264"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "every kind chip gives results (7)",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "filter rows",
+  "info": "7"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "roaster filter",
+  "info": "الفارس الأسود\n83"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "reset button",
+  "info": "264"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "show more",
+  "info": "264 → 381"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "same-look box (coffee)",
+  "info": "قهوة أثيوبية قوجي 250 جرام | Ethiopia Guji Coffee 250g"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "coffee image search",
+  "info": "📷 woods | ✓\nاكتمل البحث: 725 منتج من 12 منصة"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "coffee",
+  "name": "coffee: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": "warn",
+  "step": "coffee",
+  "name": "coffee: failed requests",
+  "info": "FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/3560/image_1024/%5B0173g%5D%20%D8%AC%D8%B1%D8%A7%D8%B3%D9%8A%D8%A7%D8%B3%20-%20%D8% || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/8819/image_1024/%D8%A7%D8%AB%D9%8A%D9%88%D8%A8%D9%8A%D8%A7%20-%20%D9%82%D9%88%D8%AC%D9%8 || FAILED net::ERR_ABORTED https://www.rawasiom.com/web/image/produ"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "perfume loads",
+  "info": "1486ms ✓\nاكتمل البحث: 4356 منتج من 15 منصة"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "perfume cards",
+  "info": "339"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "every perfume kind gives results (3)",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "filter chips give results (6 rows)",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "global ratings shown on cards",
+  "info": "1"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "quality pick",
+  "info": "Nishane Hacivat Extratit De Parfum Unisex 100ML"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "cheap pick",
+  "info": "Alchemist After The Rain EDP 100ML"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "same-look box (perfume)",
+  "info": "Alchemist After The Rain EDP 100ML"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "perfume image search",
+  "info": "📷 after the rain | ✓\nاكتمل البحث: 1 منتج من 15 منصة"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "perfume",
+  "name": "perfume: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": "warn",
+  "step": "perfume",
+  "name": "perfume: failed requests",
+  "info": "FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/1925/image_1024/%D8%B3%D9%88%D8%A8%D8%B1%20%D8%B3%D9%8A%D8%AF%D8%A7%D9%85%D9%88%20- || FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/2162/image_1024/%D8%A3%D8%B8%D8%B1%D9%81%20%D9%82%D9%87%D9%88%D8%A9%20%D9%84%D9%88% || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/prod"
+ },
+ {
+  "ok": true,
+  "step": "coupons",
+  "name": "coupon count",
+  "info": "5 كوبونات"
+ },
+ {
+  "ok": true,
+  "step": "coupons",
+  "name": "filter chips",
+  "info": "0"
+ },
+ {
+  "ok": "warn",
+  "step": "coupons",
+  "name": "filters leading to 0 coupons",
+  "info": "للعملاء الجدد 9"
+ },
+ {
+  "ok": true,
+  "step": "coupons",
+  "name": "no overflow",
+  "info": "0"
+ },
+ {
+  "ok": false,
+  "step": "coupons",
+  "name": "coupons: no JS errors",
+  "info": "console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed "
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "about.html 200",
+  "info": "200"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "about.html no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "privacy.html 200",
+  "info": "200"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "privacy.html no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "searches.html 200",
+  "info": "200"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "searches.html no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "stats.html 200",
+  "info": "200"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "stats.html no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "other pages",
+  "name": "pages: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "desktop home no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "desktop search",
+  "info": "2229ms"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "desktop results no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "desktop: no JS errors",
+  "info": ""
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "iPad home no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "iPad search",
+  "info": "2269ms"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "iPad results no overflow",
+  "info": "0"
+ },
+ {
+  "ok": true,
+  "step": "desktop + iPad",
+  "name": "iPad: no JS errors",
+  "info": ""
+ }
+]

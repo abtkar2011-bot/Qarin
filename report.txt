@@ -1,0 +1,138 @@
+PASS 121  FAIL 1  WARN 4
+
+PASS [home] load time :: 1165ms
+PASS [home] search box visible :: 
+PASS [home] mic + camera buttons :: 
+PASS [home] hero chips :: علي إكسبريس إتسي إيباي DermaZone 🌸 15 متجر عطور ☕ 12 متجر قهوة عماني
+PASS [home] no horizontal overflow (iPhone) :: 0
+PASS [home] home: no JS errors :: 
+PASS [search AR] search finished :: 4027ms
+PASS [search AR] status :: ✓
+اكتمل البحث: 53 منتج من 31 منصة
+PASS [search AR] product cards :: 22
+PASS [search AR] best card shown :: 
+PASS [search AR] link hosts :: ebay.com, s.click.aliexpress.com, rzekl.com, etsy.com
+PASS [search AR] all product links https :: 0
+PASS [search AR] broken product images :: 0
+PASS [search AR] no overflow on results :: 0
+PASS [search AR] search: no JS errors :: 
+PASS [priorities] best per priority :: Portable Wireless In-ear Mini  | Portable Wireless In-ear Mini  | Portable Wireless In-ear Mini  | JBL Live Beam 3 True Wireless  | JBL Live Beam 3 True Wireless 
+PASS [priorities] priority changes the best pick :: 2
+PASS [priorities] prio: no JS errors :: 
+PASS [filters + sort] filters panel opens :: 
+PASS [filters + sort] free shipping only :: 22 → 3
+PASS [filters + sort] price max 5 :: 22 → 1
+PASS [filters + sort] store checkboxes :: 31
+PASS [filters + sort] sort option :: الأقل سعرًا
+PASS [filters + sort] filters panel closes :: 
+PASS [filters + sort] filters: no JS errors :: 
+PASS [fav / compare / cart] favourite added :: 1
+PASS [fav / compare / cart] favourites window opens :: 
+PASS [fav / compare / cart] compare bar shows :: 
+PASS [fav / compare / cart] compare window opens :: 
+PASS [fav / compare / cart] compare rows :: 10
+PASS [fav / compare / cart] cart added :: 1
+PASS [fav / compare / cart] cart window opens :: 
+PASS [fav / compare / cart] fav: no JS errors :: 
+PASS [search EN + link] english search :: 3988ms ✓
+اكتمل البحث: 108 منتج من 31 منصة
+PASS [search EN + link] english cards :: 24
+PASS [search EN + link] paste product link :: ✓
+اكتمل البحث: 63 منتج من 31 منصة
+PASS [search EN + link] en: no JS errors :: 
+PASS [image search (main)] same-look box (main) :: 
+PASS [image search (main)] image → results :: 📷 watch | ✓
+اكتمل البحث: 36 منتج من 31 منصة
+PASS [image search (main)] img: no JS errors :: 
+PASS [basket] basket finished :: 3467ms ✓
+اكتملت السلة: 3 منتجات من 31 متجر
+PASS [basket] basket per store :: 3
+PASS [basket] swap window opens :: 
+PASS [basket] basket → cart :: 4
+PASS [basket] basket: no JS errors :: 
+WARN [basket] basket: failed requests :: FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/940/image_1024/%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D8%B2%D9%8A%D9%84%20-%20%D9%81%D8%A7%D8%B2 || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/3205/image_1024/%D8%A5%D8%AB%D9%8A%D9%88%D8%A8%D9%8A%D8%A7%20-%20%D8%AA%D8%B4%D9%8A%D9%8 || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/prod
+PASS [currency + theme] currencies :: OMR,AED,SAR,QAR,KWD,BHD,EUR,USD
+PASS [currency + theme] theme toggles ::  → dark
+PASS [currency + theme] cur: no JS errors :: 
+PASS [languages] languages :: ar,en,fr,es,zh,hi,ur,ru,tr,id
+PASS [languages] ar dir rtl :: rtl
+PASS [languages] ar no overflow :: 0
+PASS [languages] en dir ltr :: ltr
+PASS [languages] en no leftover Arabic :: 0 
+PASS [languages] en no overflow :: 0
+PASS [languages] fr dir ltr :: ltr
+PASS [languages] fr no leftover Arabic :: 0 
+PASS [languages] fr no overflow :: 0
+PASS [languages] es dir ltr :: ltr
+PASS [languages] es no leftover Arabic :: 0 
+PASS [languages] es no overflow :: 0
+PASS [languages] zh dir ltr :: ltr
+PASS [languages] zh no leftover Arabic :: 0 
+PASS [languages] zh no overflow :: 0
+PASS [languages] hi dir ltr :: ltr
+PASS [languages] hi no leftover Arabic :: 0 
+PASS [languages] hi no overflow :: 0
+PASS [languages] ur dir rtl :: rtl
+PASS [languages] ur no overflow :: 0
+PASS [languages] ru dir ltr :: ltr
+PASS [languages] ru no leftover Arabic :: 0 
+PASS [languages] ru no overflow :: 0
+PASS [languages] tr dir ltr :: ltr
+PASS [languages] tr no leftover Arabic :: 0 
+PASS [languages] tr no overflow :: 0
+PASS [languages] id dir ltr :: ltr
+PASS [languages] id no leftover Arabic :: 0 
+PASS [languages] id no overflow :: 0
+PASS [languages] lang: no JS errors :: 
+PASS [coffee] coffee loads :: 266ms ✓
+اكتمل البحث: 1308 منتج من 12 منصة
+PASS [coffee] head :: ☕ قسم القهوة 1276 محصول من متاجر قهوة عمانية
+PASS [coffee] coffee cards :: 264
+PASS [coffee] every kind chip gives results (7) :: 
+PASS [coffee] filter rows :: 7
+PASS [coffee] roaster filter :: الفارس الأسود
+83
+PASS [coffee] reset button :: 264
+PASS [coffee] show more :: 264 → 381
+PASS [coffee] same-look box (coffee) :: قهوة أثيوبية قوجي 250 جرام | Ethiopia Guji Coffee 250g
+PASS [coffee] coffee image search :: 📷 woods | ✓
+اكتمل البحث: 725 منتج من 12 منصة
+PASS [coffee] no overflow :: 0
+PASS [coffee] coffee: no JS errors :: 
+WARN [coffee] coffee: failed requests :: FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/3560/image_1024/%5B0173g%5D%20%D8%AC%D8%B1%D8%A7%D8%B3%D9%8A%D8%A7%D8%B3%20-%20%D8% || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/product.product/8819/image_1024/%D8%A7%D8%AB%D9%8A%D9%88%D8%A8%D9%8A%D8%A7%20-%20%D9%82%D9%88%D8%AC%D9%8 || FAILED net::ERR_ABORTED https://www.rawasiom.com/web/image/produ
+PASS [perfume] perfume loads :: 1486ms ✓
+اكتمل البحث: 4356 منتج من 15 منصة
+PASS [perfume] perfume cards :: 339
+PASS [perfume] every perfume kind gives results (3) :: 
+PASS [perfume] filter chips give results (6 rows) :: 
+PASS [perfume] global ratings shown on cards :: 1
+PASS [perfume] quality pick :: Nishane Hacivat Extratit De Parfum Unisex 100ML
+PASS [perfume] cheap pick :: Alchemist After The Rain EDP 100ML
+PASS [perfume] same-look box (perfume) :: Alchemist After The Rain EDP 100ML
+PASS [perfume] perfume image search :: 📷 after the rain | ✓
+اكتمل البحث: 1 منتج من 15 منصة
+PASS [perfume] no overflow :: 0
+PASS [perfume] perfume: no JS errors :: 
+WARN [perfume] perfume: failed requests :: FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/1925/image_1024/%D8%B3%D9%88%D8%A8%D8%B1%20%D8%B3%D9%8A%D8%AF%D8%A7%D9%85%D9%88%20- || FAILED net::ERR_ABORTED https://www.muthalathstore.com/web/image/product.product/2162/image_1024/%D8%A3%D8%B8%D8%B1%D9%81%20%D9%82%D9%87%D9%88%D8%A9%20%D9%84%D9%88% || FAILED net::ERR_ABORTED https://mahaseelalbon.com/web/image/prod
+PASS [coupons] coupon count :: 5 كوبونات
+PASS [coupons] filter chips :: 0
+WARN [coupons] filters leading to 0 coupons :: للعملاء الجدد 9
+PASS [coupons] no overflow :: 0
+FAIL [coupons] coupons: no JS errors :: console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED || console: Failed 
+PASS [other pages] about.html 200 :: 200
+PASS [other pages] about.html no overflow :: 0
+PASS [other pages] privacy.html 200 :: 200
+PASS [other pages] privacy.html no overflow :: 0
+PASS [other pages] searches.html 200 :: 200
+PASS [other pages] searches.html no overflow :: 0
+PASS [other pages] stats.html 200 :: 200
+PASS [other pages] stats.html no overflow :: 0
+PASS [other pages] pages: no JS errors :: 
+PASS [desktop + iPad] desktop home no overflow :: 0
+PASS [desktop + iPad] desktop search :: 2229ms
+PASS [desktop + iPad] desktop results no overflow :: 0
+PASS [desktop + iPad] desktop: no JS errors :: 
+PASS [desktop + iPad] iPad home no overflow :: 0
+PASS [desktop + iPad] iPad search :: 2269ms
+PASS [desktop + iPad] iPad results no overflow :: 0
+PASS [desktop + iPad] iPad: no JS errors :: 
