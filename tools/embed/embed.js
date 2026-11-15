@@ -47,14 +47,30 @@ const log = (...a) => console.log(`[${Math.round((Date.now() - t0) / 1000)}s]`, 
 
   const q8 = v => { let m = 0; for (const x of v) m = Math.max(m, Math.abs(x)); const s = m ? 127 / m : 0; return Int8Array.from(v, x => Math.round(x * s)); };
   const key = u => crypto.createHash('sha1').update(String(u)).digest('base64').slice(0, 16);
+  // Shopify: نطلب نسخة صغيرة من الصورة (أخف)، وكل موقع صور له حد للطلبات مع بعض
+  const small = u => /cdn\.shopify\.com/.test(u) ? u + (u.includes('?') ? '&' : '?') + 'width=480' : u;
+  const busy = {}, LIMIT = { 'cdn.shopify.com': 3 }, why = {};
+  const note = (h, w) => { why[h + ' ' + w] = (why[h + ' ' + w] || 0) + 1; };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
   async function prep(url) {
-    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
+    let host = ''; try { host = new URL(url).hostname; } catch (e) { return null; }
+    while ((busy[host] || 0) >= (LIMIT[host] || 6)) await sleep(50);
+    busy[host] = (busy[host] || 0) + 1;
     try {
-      const r = await fetch(url, { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (Qarin image prints)', Accept: 'image/*' } });
-      if (!r.ok) return null;
-      const b = Buffer.from(await r.arrayBuffer());
-      return await sharp(b).flatten({ background: '#ffffff' }).resize(SIDE, SIDE, { fit: 'inside' }).jpeg({ quality: 90 }).toBuffer();
-    } catch (e) { return null; } finally { clearTimeout(tm); }
+      // إذا الموقع قال «كثير طلبات» (429) أو تعطّل، ننتظر ونعيد (٣ مرات)
+      for (let a = 0; a < 4; a++) {
+        const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
+        try {
+          const r = await fetch(small(url), { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)', Accept: 'image/webp,image/jpeg,image/png,image/*;q=0.8' } });
+          if (r.status === 429 || r.status >= 500) { await sleep([2000, 6000, 15000, 0][a]); continue; }
+          if (!r.ok) { note(host, r.status); return null; }
+          const b = Buffer.from(await r.arrayBuffer());
+          return await sharp(b).flatten({ background: '#ffffff' }).resize(SIDE, SIDE, { fit: 'inside' }).jpeg({ quality: 90 }).toBuffer();
+        } catch (e) { if (a === 3) note(host, String(e.name || e.message).slice(0, 30)); if (a < 3) await sleep(2000); } finally { clearTimeout(tm); }
+      }
+      note(host, 'gave up');
+      return null;
+    } finally { busy[host]--; }
   }
   async function embed(buf) { const im = await T.RawImage.fromBlob(new Blob([buf])); return q8(await embedRaw(im)); }
   // النموذج يشتغل على صورة وحدة كل مرة (التحميل بس هو اللي يمشي مع بعض)
@@ -102,5 +118,6 @@ const log = (...a) => console.log(`[${Math.round((Date.now() - t0) / 1000)}s]`, 
   if (fs.existsSync(src)) { fs.mkdirSync(path.dirname(dst), { recursive: true }); fs.cpSync(src, dst, { recursive: true }); }
   const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
   if (fs.existsSync(dst)) walk(dst).forEach(f => log('model file', path.relative(OUT, f), Math.round(fs.statSync(f).size / 1e5) / 10 + 'MB'));
+  log('why failed:', JSON.stringify(why));
   log('done: new', made, 'failed', failed, stopped ? '(time limit, will continue next run)' : '', 'total stores', Object.keys(index.stores).length);
 })().catch(e => { console.error(e); process.exit(1); });

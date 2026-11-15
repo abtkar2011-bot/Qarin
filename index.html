@@ -4475,6 +4475,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     }
     return out;
   }
+  // نبدأ نحمّل أداة الصور أول ما يضغط زر الكاميرا (وهو يصوّر)، عشان النتيجة تطلع أسرع
+  const lookWarm = () => { vsIndex().then(m => m && m.dim && vsModel(m)).catch(() => {}); };
   const VS_SAME = 0.70;  // فوق هذا = نفس المنتج تقريبًا (اختبار: نفس المنتج ≈ 0.81، اللي بعده ≈ 0.66)
   // يشغّل البحث بنفس الشكل مع البحث بالاسم، ويحط النتيجة فوق النتائج
   async function withLook(file, keys, byName) {
@@ -4840,7 +4842,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     });
 
     $('searchForm').addEventListener('submit', e => { e.preventDefault(); search($('q').value, false); });
-    $('imgBtn').addEventListener('click', () => $('imgIn').click());
+    $('imgBtn').addEventListener('click', () => { lookWarm(); $('imgIn').click(); });
     $('imgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; imageSearch(f); });
     document.addEventListener('click', e => {
       const k = e.target.closest('[data-cfk]');
@@ -4893,7 +4895,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     async function cfImageSearch(file) {
       if (!file) return;
       $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
-      await withLook(file, coffeeKeys(), async () => {
+      await withLook(file, KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), async () => {
         let q; try { q = await imageToQuery(file); } catch (e) { return false; }
         toast('📷 ' + q);
         const m = cfImageQuery(q);
@@ -4907,7 +4909,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
         return true;
       });
     }
-    $('cfImgBtn').addEventListener('click', () => $('cfImgIn').click());
+    $('cfImgBtn').addEventListener('click', () => { lookWarm(); $('cfImgIn').click(); });
     $('cfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; cfImageSearch(f); });
     window.addEventListener('popstate', () => {
       if (location.hash === '#coffee') { closePerf(true); if (!state.coffeeMode) openCoffee(); }
@@ -4979,7 +4981,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       search(cf ? 'قهوة' : 'عطور');
       window.scrollTo(0, 0);
     });
-    $('pfImgBtn').addEventListener('click', () => $('pfImgIn').click());
+    $('pfImgBtn').addEventListener('click', () => { lookWarm(); $('pfImgIn').click(); });
     $('pfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; pfImageSearch(f); });
     if (location.hash === '#perfume') setTimeout(() => openPerf(), 0);
     document.addEventListener('click', e => {
