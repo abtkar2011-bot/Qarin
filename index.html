@@ -603,6 +603,15 @@ table.dt { min-width: 0; font-size: .76rem; }
 .cf-chip i { font-style: normal; color: var(--muted); font-size: 0.72rem; }
 .cf-chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .cf-chip.on i { color: rgba(255,255,255,.8); }
+.coffee-head { display: grid; gap: 10px; }
+.coffee-head h1 { margin: 0; font-size: 1.7rem; font-weight: 800; }
+.coffee-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.cf-back { justify-self: start; border: 0; background: none; color: var(--accent); font: inherit; font-size: 0.9rem; font-weight: 700; padding: 4px 0; cursor: pointer; }
+.cf-quick { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; padding-bottom: 2px; }
+.cf-quick::-webkit-scrollbar { display: none; }
+body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line, body.coffee-view .tools-row, body.coffee-view .basket-box, body.coffee-view .follow { display: none !important; }
+.notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.cf-exit { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .cf-note { margin: 0; font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
 .tools-row .tool-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 16px; border-radius: 18px; text-align: start; min-width: 0; }
 .tools-row .tool-btn svg { width: 24px; height: 24px; margin-bottom: 4px; }
@@ -820,6 +829,16 @@ table.dt { min-width: 0; font-size: .76rem; }
       </div>
       <button type="button" class="theme-btn" id="themeBtn" aria-label="الوضع الداكن" title="الوضع الداكن"></button>
     </div>
+    <section class="coffee-head" id="coffeeHead" hidden aria-label="قسم القهوة">
+      <button type="button" class="cf-back" id="cfBack">→ رجوع لقارِن</button>
+      <h1>☕ قسم القهوة</h1>
+      <p>محاصيل وأدوات من متاجر القهوة العمانية بس، مع فلاتر المعالجة والارتفاع والبلد والكولد برو</p>
+      <form class="search" id="cfForm" role="search">
+        <input type="search" id="cfQ" autocomplete="off" aria-label="ابحث في قسم القهوة" placeholder="ابحث عن محصول، محمصة أو أداة: قوجي، أدهم، V60">
+        <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
+      </form>
+      <div class="cf-quick" id="cfQuick"></div>
+    </section>
     <header class="hero">
       <h1>قارِن <img class="h1-mark" src="icons/logo-mark.png" alt=""></h1>
       <p>قارن الأسعار والجودة في أشهر المتاجر بضغطة</p>
@@ -2050,7 +2069,8 @@ table.dt { min-width: 0; font-size: .76rem; }
     ['congo', '🇨🇩', 'الكونغو', 'congo|كونغو'],
   ].map(([k, flag, name, alts]) => ({ k, flag, name, re: cfRe(alts) }));
   const CF_PROC = [
-    ['anaerobic', 'تخمير لاهوائي', 'anaerobic|لاهوائي|لا هوائي|انيروبيك|اناروبيك|carbonic|كاربونيك|ferment\\w*|تخمير|مخمر|infus\\w*|انفيوجن|thermal shock|yeast'],
+    ['infused', 'انفيوزد', 'infus\\w*|انفيوزد|انفيوز|انفيوجن|انفيوزن|co-?ferment\\w*|منكه|مع نكهه|مع نكهة'],
+    ['anaerobic', 'تخمير لاهوائي', 'anaerobic|لاهوائي|لا هوائي|انيروبيك|اناروبيك|carbonic|كاربونيك|ferment\\w*|تخمير|مخمر|thermal shock|yeast'],
     ['honey', 'عسلي', 'honey process\\w*|(?:black|red|yellow|white|golden) honey|عسلي|عسليه|العسل الاسود'],
     ['natural', 'طبيعي', 'natural|طبيعي|طبيعيه|مجفف|dry process\\w*|ناتشورال|ناتشرال|تجفيف'],
     ['washed', 'مغسول', 'washed|مغسول|مغسوله|wet process\\w*'],
@@ -2088,6 +2108,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   let partnerIndex = null;
   const partnerIndexP = fetch('data/p/index.json').then(r => r.ok ? r.json() : null).then(d => (partnerIndex = d)).catch(() => null);
   const loadPartner = k => partnerData[k] || (partnerData[k] = fetch(PARTNER_FEEDS[k].file).then(r => r.ok ? r.json() : null).catch(() => null));
+  const coffeeKeys = () => KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
   // ترجمة من القاموس بس (بدون ترجمات خدمة الترجمة المحفوظة)
   function dictEn(w) {
     const n = normalize(w), saved = TR.get(n);
@@ -2102,7 +2123,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     // متاجر القهوة: أسماء المحاصيل والمحامص («أدهم»، «دبليو»، «قوجي») توصل للمتجر حتى بدون كلمة «قهوة»
     const qWords = ar.split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3);
     const names = F.syn && partnerIndex && partnerIndex[k] && partnerIndex[k].names;
-    const nameHit = !!F.syn && (CF_NAMES.some(re => re.test(ar) || re.test(en)) ||
+    const nameHit = !!F.syn && (state.coffeeMode || CF_NAMES.some(re => re.test(ar) || re.test(en)) ||
       (!!names && qWords.some(w => (/[\u0600-\u06ff]/.test(w) || (w.length >= 5 && !CF_COMMON_EN.test(w))) && names.includes(w))));
     if (!F.gate.test(query) && !F.gate.test(en) && !brandHit && !nameHit) return [];
     // «عطر قوجي» = عطر، فمتاجر القهوة ما تطلع (حتى لو «قوجي» اسم محصول)
@@ -2126,7 +2147,15 @@ table.dt { min-width: 0; font-size: .76rem; }
       // نترجم بس الكلمات اللي مو أسماء قهوة («قوجي» هنا محصول Guji مو ماركة Gucci، و«عسلي» معالجة مو لون)
       // كلمات ما يعرفها قاموسنا («أدهم»، «دبليو») = أسماء محاصيل ومحامص: تبقى عربية وتتطابق حرفيًا
       // (ترجمة خدمة الترجمة لها مثل «Adham» ما تفيد، لأن عناوين المتاجر عربية)
-      const nameWord = w => /[\u0600-\u06ff]/.test(w) && !CF_GENERIC.has(w) && !AR_IGNORE.has(w) && !dictEn(w);
+      // اسم محصول يصير كلمة عادية في القاموس («عِقد» = necklace، «ليل»…): في قسم القهوة أو مع كلمة «قهوة» يبقى اسم محصول
+      // إلا إذا ترجمته أداة أو شي قهوة («مطحنة» = grinder)
+      const coffeeCtx = state.coffeeMode || COFFEE_FEED.gate.test(query) || COFFEE_FEED.gate.test(en);
+      const inNames = w => !!names && names.includes(w);
+      const nameWord = w => {
+        if (!/[\u0600-\u06ff]/.test(w) || CF_GENERIC.has(w) || AR_IGNORE.has(w)) return false;
+        const d = dictEn(w);
+        return !d || (coffeeCtx && inNames(w) && !COFFEE_FEED.gate.test(d) && !CF_TOOLS_RE.test(d));
+      };
       const rest = ar.split(' ').filter(w => !groups.some(re => re.test(w)) && !nameWord(w.replace(/^(ال|لل|بال|وال)(?=...)/, ''))).join(' ').trim();
       const en2 = rest ? pPhrase((toEnglish(rest) || rest).toLowerCase()) : '';
       toks = [...new Set(en2.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
@@ -2898,7 +2927,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     // الكولد برو: إذا المتجر كاتبها نقول، وإلا تقدير من المعالجة والنكهات والتحميص والبلد
     const store = /cold ?brew|كولد ?برو|قهوه بارده|\bبارد|iced|ايسد/i.test(xn);
     let sc = 0; const why = [];
-    if (pr && ['natural', 'honey', 'anaerobic'].includes(pr.k)) { sc++; why.push(pr.k === 'natural' ? 'معالجة طبيعية' : pr.k === 'honey' ? 'معالجة عسلية' : 'تخمير'); }
+    if (pr && ['natural', 'honey', 'anaerobic', 'infused'].includes(pr.k)) { sc++; why.push(pr.k === 'natural' ? 'معالجة طبيعية' : pr.k === 'honey' ? 'معالجة عسلية' : pr.k === 'infused' ? 'معالجة انفيوزد' : 'تخمير'); }
     if (pr && pr.k === 'washed') { sc--; why.push('مغسول'); }
     if (CF_GOOD_NOTES.test(x)) { sc++; why.push('نكهات شوكولاتة ومكسرات'); }
     if (CF_LIGHT_NOTES.test(x)) { sc--; why.push('نكهات زهرية خفيفة'); }
@@ -2917,6 +2946,7 @@ table.dt { min-width: 0; font-size: .76rem; }
     const c = coffeeOf(p);
     if (!c) return '';
     const bits = [];
+    if (c.kind === 'capsule' || c.kind === 'drip') bits.push(`<span>${c.kind === 'capsule' ? 'كبسولات' : 'دريب'}</span>`);
     if (c.o) bits.push(`<span class="c"><span aria-hidden="true">${c.o.flag}</span> ${c.o.name}</span>`);
     if (c.pr) bits.push(`<span>${c.pr.name}</span>`);
     if (c.alt) bits.push(`<span>${altTxt(c.alt)}</span>`);
@@ -2929,12 +2959,14 @@ table.dt { min-width: 0; font-size: .76rem; }
     return (bits.length ? `<div class="pf cf">${bits.join('')}</div>` : '') + cb;
   }
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
+  const CF_KIND = [['beans', 'بُن'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
   const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
   function passCoffee(p) {
     const f = state.cf || {};
-    if (!f.pr && !f.alt && !f.o && !f.use) return true;
+    if (!f.pr && !f.alt && !f.o && !f.use && !f.kind) return true;
     const c = coffeeOf(p);
     if (!c || c.kind === 'box') return false;
+    if (f.kind && c.kind !== f.kind) return false;
     if (f.pr && (!c.pr || c.pr.k !== f.pr)) return false;
     if (f.o && (!c.o || c.o.k !== f.o)) return false;
     if (f.alt) { const b = CF_ALT.find(x => x[0] === f.alt); if (!c.alt || !b[1](c.alt)) return false; }
@@ -2944,7 +2976,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   function cfBarHtml(base) {
     const beans = base.filter(p => { const c = coffeeOf(p); return c && c.kind !== 'box'; });
     const on = Object.values(state.cf || {}).some(Boolean);
-    if (beans.length < 4 && !on) return '';
+    if (beans.length < 4 && !on && !state.coffeeMode) return '';
     const f = state.cf || {};
     const chip = (k, v, label, n) => `<button type="button" class="cf-chip${(f[k] || '') === v ? ' on' : ''}" data-cf="${k}" data-v="${v}" aria-pressed="${(f[k] || '') === v}">${label}${n != null ? ` <i class="num">${n}</i>` : ''}</button>`;
     const row = (title, k, items) => items.length >= 1 ? `<div class="cf-row"><span class="cf-k">${title}</span><div class="cf-chips">${chip(k, '', 'الكل')}${items.join('')}</div></div>` : '';
@@ -2954,9 +2986,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     const origins = CF_ORIGINS.map(o => [o, n(c => c.o && c.o.k === o.k)]).filter(([, c]) => c).sort((a, b) => b[1] - a[1]).slice(0, 12)
       .map(([o, c]) => chip('o', o.k, `<span aria-hidden="true">${o.flag}</span> ${o.name}`, c));
     const uses = CF_USE.map(([k, fn, l]) => [k, l, n(fn)]).filter(x => x[2]).map(([k, l, c]) => chip('use', k, l, c));
+    const kinds = CF_KIND.map(([k, l]) => [k, l, n(c => c.kind === k)]).filter(x => x[2]).map(([k, l, c]) => chip('kind', k, l, c));
     return `<section class="cf-bar" aria-label="قسم القهوة">
       <div class="cf-head"><b>☕ قسم القهوة</b><span><bdi class="num">${beans.length}</bdi> محصول من متاجر قهوة عمانية</span></div>
-      ${row('المعالجة', 'pr', procs)}${row('البلد', 'o', origins)}${row('الارتفاع', 'alt', alts)}${row('التحضير', 'use', uses)}
+      ${row('النوع', 'kind', kinds)}${row('المعالجة', 'pr', procs)}${row('البلد', 'o', origins)}${row('الارتفاع', 'alt', alts)}${row('التحضير', 'use', uses)}
       <p class="cf-note">❄️ الكولد برو: المعالجة الطبيعية والنكهات الشوكولاتية تطلع أحلى بارد، والمغسول الزهري الفاتح يضيع طعمه. هذا تقدير من قارن، وإذا المتجر كاتبها نقول.</p>
     </section>`;
   }
@@ -3080,7 +3113,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 
   const state = {
     query: '', products: [], loading: false, limit: 8, currency: 'OMR', platforms: new Set(KEYS),
-    sort: 'best', minRating: 0, freeOnly: false, priceMin: null, priceMax: null, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 }, cf: {},
+    sort: 'best', minRating: 0, freeOnly: false, priceMin: null, priceMax: null, priority: 2, tab: 'cards', tableSort: { key: 'score', dir: -1 }, cf: {}, coffeeMode: false,
   };
   const cache = new Map();
   const FETCH_N = 30;  // نجيب أكثر من المعروض عشان الترتيب يتغيّر فوري لما تغيّر الأولوية
@@ -3406,8 +3439,10 @@ table.dt { min-width: 0; font-size: .76rem; }
     // من كل متجر نعرض أفضل N حسب الأولوية الحالية (تتغيّر فوري)
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
-    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${state.platforms.size} متاجر</span></div>${linkHtml()}
-      <div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`;
+    const cfKeys = state.coffeeMode ? coffeeKeys().filter(k => state.platforms.has(k)) : null;
+    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${cfKeys ? cfKeys.length : state.platforms.size} متاجر</span></div>${linkHtml()}` + (cfKeys
+      ? ''  // قسم القهوة: عنوانه فوق يشرح، فما نكرر ملاحظة المتاجر
+      : `<div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`);
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
       return;
@@ -3522,29 +3557,31 @@ table.dt { min-width: 0; font-size: .76rem; }
     }
     const id = ++searchId;
     state.mode = 'search';
+    // قسم القهوة له بحثه الخاص: متاجر القهوة العمانية بس
+    const keys = state.coffeeMode ? coffeeKeys() : KEYS;
     if (state.query !== query) state.cf = {};  // فلاتر القهوة تبدأ من جديد مع كل بحث
     state.query = query;
-    { const tq = trText(query); $('q').value = tq != null ? tq.trim() : query; }
+    { const tq = trText(query); $(state.coffeeMode ? 'cfQ' : 'q').value = tq != null ? tq.trim() : query; }
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
-    const key = normalize(query);
+    const key = (state.coffeeMode ? 'cf:' : '') + normalize(query);
     const cached = cache.get(key);
     if (cached) {
       if (!instant) { userSearches++; track('search', query); }
       state.products = cached.map(p => ({ ...p }));
-      status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${cached.length} منتج من ${KEYS.length} منصات</div>`;
+      status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${cached.length} منتج من ${keys.length} منصات</div>`;
       state.loading = false;
       render();
       return;
     }
     state.loading = true;
     if (!instant) { userSearches++; track('search', query); }
-    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن «${esc(query)}» في ${KEYS.length} منصات...</b>${KEYS.map(k =>
+    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن «${esc(query)}» في ${keys.length} منصات...</b>${keys.map(k =>
       `<div class="row" id="st-${k}"><span class="spinner"></span>${PLATFORMS[k].name}</div>`).join('')}</div>`;
     $('results').innerHTML = skeletonHtml(8);
     await resolveEnglish(query);
     if (id !== searchId) return;
     const results = {};
-    await Promise.all(KEYS.map(async k => {
+    await Promise.all(keys.map(async k => {
       if (k === 'aliexpress') {
         try { results[k] = await fetchAli(query, FETCH_N); }
         catch (e) { results[k] = []; }  // ما نعرض منتجات مزيّفة باسم علي إكسبرس
@@ -3562,11 +3599,11 @@ table.dt { min-width: 0; font-size: .76rem; }
       if (row && id === searchId) row.innerHTML = `<span class="ok">✓</span>${PLATFORMS[k].name}: ${results[k].length} منتج`;
     }));
     if (id !== searchId) return;  // بدأ بحث أحدث
-    const all = KEYS.flatMap(k => results[k]);
+    const all = keys.flatMap(k => results[k]);
     cache.set(key, all);
     state.products = all.map(p => ({ ...p }));
     state.loading = false;
-    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${all.length} منتج من ${KEYS.length} منصات</div>`;
+    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${all.length} منتج من ${keys.length} منصات</div>`;
     render();
   }
 
@@ -4075,7 +4112,37 @@ table.dt { min-width: 0; font-size: .76rem; }
       state.cf = Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
       render();
     });
-    $('coffeeTile').addEventListener('click', () => search('قهوة مختصة'));
+    // ☕ قسم القهوة: صفحة لها بحثها الخاص (#coffee)، ما تخلط علي إكسبريس وإيباي وإتسي
+    const CF_QUICK = ['قهوة مختصة', 'قهوة عمانية', 'قهوة اثيوبية', 'كولومبيا', 'جيشا', 'كبسولات', 'دريب', 'مطحنة قهوة', 'في 60', 'ميزان قهوة', 'ابريق تقطير'];
+    $('cfQuick').innerHTML = CF_QUICK.map(q => `<button type="button" class="cf-chip" data-cfq="${esc(q)}">${esc(q)}</button>`).join('');
+    function openCoffee(q) {
+      state.coffeeMode = true;
+      document.body.classList.add('coffee-view');
+      $('coffeeHead').hidden = false;
+      if (location.hash !== '#coffee') history.pushState(null, '', '#coffee');
+      search(q || $('cfQ').value || 'قهوة مختصة');
+      window.scrollTo(0, 0);
+    }
+    function closeCoffee(fromHistory) {
+      if (!state.coffeeMode) return;
+      state.coffeeMode = false; state.cf = {}; state.query = ''; state.products = [];
+      document.body.classList.remove('coffee-view'); document.body.classList.add('pre-search');
+      $('coffeeHead').hidden = true; $('status').innerHTML = ''; $('cfQ').value = '';
+      if (!fromHistory && location.hash === '#coffee') history.pushState(null, '', location.pathname + location.search);
+      render(); window.scrollTo(0, 0);
+    }
+    $('coffeeTile').addEventListener('click', () => openCoffee('قهوة مختصة'));
+    $('cfBack').addEventListener('click', () => closeCoffee(false));
+    $('cfForm').addEventListener('submit', e => { e.preventDefault(); const q = $('cfQ').value.trim(); if (q) search(q); });
+    $('cfQuick').addEventListener('click', e => { const b = e.target.closest('[data-cfq]'); if (b) search(b.dataset.cfq); });
+    window.addEventListener('popstate', () => { if (location.hash === '#coffee') { if (!state.coffeeMode) openCoffee(); } else closeCoffee(true); });
+    if (location.hash === '#coffee') setTimeout(() => openCoffee(), 0);
+    document.addEventListener('click', e => {
+      if (!e.target.closest('[data-cf-exit]')) return;
+      const q = state.query;
+      closeCoffee(false);
+      if (q) search(q);
+    });
     $('basketToggle').addEventListener('click', () => {
       const box = $('basketBox'), open = box.hidden;
       box.hidden = !open; $('basketToggle').setAttribute('aria-expanded', String(open));
