@@ -1,4 +1,4 @@
-// temp: screenshots of the live site (light theme) for the explainer video
+// temp: screenshots v2 of the live site (light theme) for the explainer video
 const { chromium, devices } = require('playwright');
 const fs = require('fs');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
@@ -22,11 +22,11 @@ const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
   await step('results', async () => {
     await p.fill('#q', 'سماعات بلوتوث'); await p.press('#q', 'Enter'); await done(2500);
     await p.evaluate(() => scrollTo(0, 0)); await shot('res_top'); await shot('res_full', true);
-    for (const [n, s] of [['best', '.best-card'], ['prio', '.prio-seg button'], ['status', '#status'], ['groups', '#results > *']]) await box('res_' + n, s);
+    for (const [n, s] of [['best', '.best-card'], ['prio', '.prio-seg button'], ['status', '#status'], ['groups', '#results > *'], ['ribbon', '.best-card .ribbon'], ['reason', '.best-card .reason'], ['price', '.best-card .big-price'], ['img', '.best-card .img'], ['h3', '.best-card h3'], ['shop', '.best-card .shop-btn'], ['kpi', '.kpi']]) await box('res_' + n, s);
     await p.click('.prio-seg [data-prio="4"]'); await p.waitForTimeout(2500); await p.evaluate(() => scrollTo(0, 0));
-    await shot('res_quality'); await shot('res_quality_full', true); await box('resq_best', '.best-card');
+    await shot('res_quality'); await shot('res_quality_full', true); await box('resq_best', '.best-card'); await box('resq_reason', '.best-card .reason');
     await p.click('.prio-seg [data-prio="0"]'); await p.waitForTimeout(2500); await p.evaluate(() => scrollTo(0, 0));
-    await shot('res_cheap'); await shot('res_cheap_full', true); await box('resc_best', '.best-card');
+    await shot('res_cheap'); await shot('res_cheap_full', true); await box('resc_best', '.best-card'); await box('resc_reason', '.best-card .reason');
   });
   await step('basket', async () => {
     await p.goto(SITE + '?v=' + Date.now()); await p.waitForTimeout(2000);
@@ -35,13 +35,13 @@ const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
     const n = await ins.count(); log.push('basket inputs ' + n);
     if (n > 0) await ins.nth(0).fill('شاحن ايفون');
     if (n > 1) await ins.nth(1).fill('كفر ايفون');
-    await shot('basket_box', true); await box('basket', '#basketBox');
+    await shot('basket_box', true); await box('basket', '#basketBox'); await box('basket_go', '#basketGo'); await box('basket_in', '#basketInputs input');
     await p.click('#basketGo'); await done(3000); await p.evaluate(() => scrollTo(0, 0));
-    await shot('basket_res', true);
+    await shot('basket_res', true); await box('bres_title', '.section-title'); await box('bres_kids', '#results > *'); await box('bres_status', '#status');
   });
   await step('coffee', async () => {
     await p.goto(SITE + '?v=' + Date.now() + '#coffee'); await done(2500);
-    await shot('cf_top'); await shot('cf_full', true);
+    await shot('cf_top'); await shot('cf_full', true); await box('cf_best', '.best-card'); await box('cf_status', '#status');
     await box('cf_rows', '.cf-bar .cf-row'); await box('cf_head', '.cf-head');
     await p.locator('.cf-bar .cf-row').nth(1).locator('.cf-chip').nth(1).click(); await done(2500);
     await p.evaluate(() => scrollTo(0, 0)); await shot('cf_tool'); await shot('cf_tool_full', true); await box('cft_rows', '.cf-bar .cf-row');
@@ -49,11 +49,11 @@ const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
   await step('perfume', async () => {
     await p.goto(SITE + '?v=' + Date.now() + '#perfume'); await done(3000);
     await shot('pf_top'); await shot('pf_full', true);
-    await box('pf_rows', '.cf-bar .cf-row'); await box('pf_q', '.pf .q'); await box('pf_dupe', '.pf .dupe');
+    await box('pf_rows', '.cf-bar .cf-row'); await box('pf_head', '.cf-head'); await box('pf_q', '.pf .q'); await box('pf_dupe', '.pf .dupe'); await box('pf_note', '.cf-bar .cf-note, .cf-bar p'); await box('pf_best', '.best-card'); await box('pf_status', '#status');
   });
   await step('coupons', async () => {
     await p.goto(SITE + 'coupons.html?v=' + Date.now()); await p.waitForTimeout(5000);
-    await shot('cp_top'); await shot('cp_full', true);
+    await shot('cp_top'); await shot('cp_full', true); await box('cp_chips', 'button, .chip, [data-reg], [data-f]'); await box('cp_cards', '.card, .cp, article'); await box('cp_count', '#count');
   });
   fs.writeFileSync(OUT + '/pos.json', JSON.stringify(POS));
   log.push('errors: ' + JSON.stringify(errs));
