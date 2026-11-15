@@ -62,7 +62,8 @@ const log = (...a) => console.log(`[${Math.round((Date.now() - t0) / 1000)}s]`, 
         const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
         try {
           const r = await fetch(small(url), { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)', Accept: host === 'cdn.shopify.com' ? 'image/webp,image/jpeg,image/png,image/*;q=0.8' : 'image/*' } });
-          if (r.status === 429 || r.status >= 500) { await sleep([2000, 6000, 15000, 0][a]); continue; }
+          // Shopify أحيانًا يرد 403 لما نطلب كثير: ننتظر ونعيد
+          if (r.status === 429 || r.status >= 500 || (r.status === 403 && host === 'cdn.shopify.com')) { if (a < 3) await sleep([3000, 10000, 25000][a]); continue; }
           if (!r.ok) { note(host, r.status); return null; }
           const b = Buffer.from(await r.arrayBuffer());
           return await sharp(b).flatten({ background: '#ffffff' }).resize(SIDE, SIDE, { fit: 'inside' }).jpeg({ quality: 90 }).toBuffer();
