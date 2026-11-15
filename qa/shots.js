@@ -2,8 +2,8 @@
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
-const urls = ['https://www.muthalathstore.com/robots.txt', 'https://www.muthalathstore.com/', 'https://www.muthalathstore.com/products.json?limit=3', 'https://www.muthalathstore.com/wp-json/wc/store/v1/products?per_page=100&page=1', 'https://www.muthalathstore.com/shop?ppg=200', 'https://www.muthalathstore.com/sitemap.xml', 'https://fooh.store/robots.txt', 'https://fooh.store/en/shop?ppg=200', 'https://mahaseelalbon.com/wp-json/wc/store/v1/products?per_page=100&page=1'];
-const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'woocommerce', 'wp-content', 'wix', 'odoo', 'Odoo', '__NEXT_DATA__', 'kyte', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart'].filter(m => t.includes(m));
+const urls = ['https://barista-oman.kushk.om/robots.txt', 'https://barista-oman.kushk.om/', 'https://barista-oman.kushk.om/sitemap.xml', 'https://barista-oman.kushk.om/products', 'https://barista-oman.kushk.om/products.json?limit=3', 'https://barista-oman.kushk.om/api/products'];
+const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'woocommerce', 'wp-content', 'wix', 'odoo', 'Odoo', '__NEXT_DATA__', 'kyte', 'kushk', '__NUXT__', 'window.__INITIAL', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart'].filter(m => t.includes(m));
 (async () => {
   const log = [];
   for (const u of urls) {
