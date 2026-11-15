@@ -2088,6 +2088,12 @@ table.dt { min-width: 0; font-size: .76rem; }
   let partnerIndex = null;
   const partnerIndexP = fetch('data/p/index.json').then(r => r.ok ? r.json() : null).then(d => (partnerIndex = d)).catch(() => null);
   const loadPartner = k => partnerData[k] || (partnerData[k] = fetch(PARTNER_FEEDS[k].file).then(r => r.ok ? r.json() : null).catch(() => null));
+  // ترجمة من القاموس بس (بدون ترجمات خدمة الترجمة المحفوظة)
+  function dictEn(w) {
+    const n = normalize(w), saved = TR.get(n);
+    if (saved !== undefined) TR.delete(n);
+    try { return toEnglish(w); } finally { if (saved !== undefined) TR.set(n, saved); }
+  }
   async function fetchPartner(k, query, limit) {
     const F = PARTNER_FEEDS[k], en = pPhrase((toEnglish(query) || query).toLowerCase()), ar = normalize(query);
     await partnerIndexP;
@@ -2118,12 +2124,15 @@ table.dt { min-width: 0; font-size: .76rem; }
     if (F.syn) {
       const groups = CF_GROUPS.filter(re => re.test(ar) || re.test(en));
       // نترجم بس الكلمات اللي مو أسماء قهوة («قوجي» هنا محصول Guji مو ماركة Gucci، و«عسلي» معالجة مو لون)
-      const rest = ar.split(' ').filter(w => !groups.some(re => re.test(w))).join(' ').trim();
+      // كلمات ما يعرفها قاموسنا («أدهم»، «دبليو») = أسماء محاصيل ومحامص: تبقى عربية وتتطابق حرفيًا
+      // (ترجمة خدمة الترجمة لها مثل «Adham» ما تفيد، لأن عناوين المتاجر عربية)
+      const nameWord = w => /[\u0600-\u06ff]/.test(w) && !CF_GENERIC.has(w) && !AR_IGNORE.has(w) && !dictEn(w);
+      const rest = ar.split(' ').filter(w => !groups.some(re => re.test(w)) && !nameWord(w.replace(/^(ال|لل|بال|وال)(?=...)/, ''))).join(' ').trim();
       const en2 = rest ? pPhrase((toEnglish(rest) || rest).toLowerCase()) : '';
       toks = [...new Set(en2.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
       if (F.dropWith) toks = toks.filter(w => !(F.dropWith[w] && toks.some(o => o !== w && F.dropWith[w].test(o))));
       toks = toks.filter(w => !groups.some(re => re.test(w)) && !/^(ethiopian|colombian|brazilian|kenyan|yemeni|saudi)$/.test(w));
-      const extra = qWords.filter(w => !CF_GENERIC.has(w) && !AR_IGNORE.has(w) && /[\u0600-\u06ff]/.test(w) && !groups.some(re => re.test(w)) && !toEnglish(w));
+      const extra = qWords.filter(w => !groups.some(re => re.test(w)) && nameWord(w));
       cfTests = [...groups.map(re => (t, tn) => re.test(t) || re.test(tn)), ...extra.map(w => { const re = cfRe(pEsc(w)); return (t, tn) => re.test(tn); })];
     }
     const hard = [...toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), ...cfTests], soft = toks.filter(isSoft).map(w => pTok(w, F));
