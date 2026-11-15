@@ -154,7 +154,7 @@ function parseOdoo(html, base, store = 'bun al qassab | بن القصاب | coff
     const href = c.match(/href="((?:\/[a-z]{2}(?:_[A-Z]{2})?)?\/shop\/[^"#?]+)[^"]*"/), img = c.match(/<img[^>]+src="([^"]+)"/);
     if (!name || !prices.length || !href) continue;
     const price = Math.min(...prices), orig = Math.max(...prices);
-    out.push({ t: ent(name[1]).replace(/^\[[^\]]*\]\s*/, ''), p: price, o: orig > price * 1.02 ? orig : 0, u: base + encodeURI(decodeURI(href[1])), i: img ? (img[1].startsWith('http') ? img[1] : base + img[1]) : '', tags: store });
+    out.push({ t: ent(name[1]).replace(/^\[[^\]]*\]\s*/, ''), p: price, o: orig > price * 1.02 ? orig : 0, u: base + encodeURI(decodeURI(href[1]).replace(/(\/shop\/)(?!category\/)[^/]+\/([^/]+-\d+)$/, '$1$2')), i: img ? (img[1].startsWith('http') ? img[1] : base + img[1]) : '', tags: store });
   }
   return out;
 }
@@ -250,8 +250,11 @@ async function sallaApi(storeId, B, name, tags) {
     url = d && d.cursor && d.cursor.next;
     await sleep(400);
   }
-  console.log(name, all.length);
-  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+  // أسعار وهمية (عبوة فاضية بـ1000 ريال): نشيل اللي سعره أكثر من 10 أضعاف وسيط المتجر
+  const ps = all.map(x => x.p).sort((a, b) => a - b), med = ps[ps.length >> 1] || 0;
+  const ok = all.filter(x => !med || x.p <= med * 10);
+  console.log(name, all.length, 'kept', ok.length);
+  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: ok.map(pack) };
 }
 const ibraq = () => sallaApi('618083196', 'https://oman.ibraqperfumes.com', 'ibraq', 'ibraq | إبراق');
 // الماجد للعود: متجر عمان جزء من متجر عالمي (الواجهة العامة ترجع دولار)، فنقرأ صفحات المنتجات العربية من خريطة الموقع
