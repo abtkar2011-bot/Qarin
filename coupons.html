@@ -211,7 +211,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
     const base = all.filter(c => (!store || c.s === store) && (!q || (c.t + ' ' + c.d + ' ' + c.s + ' ' + c.c).toLowerCase().includes(q)));
     renderFilters(base);
     const list = all.map((c, i) => [c, i]).filter(([c]) => base.includes(c) && passF(c));
-    $('count').textContent = `${list.length} كوبون`;
+    $('count').textContent = `${list.length} ${list.length >= 3 && list.length <= 10 ? 'كوبونات' : 'كوبون'}`;
     $('list').innerHTML = list.length ? list.map(([c, i]) => card(c, i)).join('') : '<div class="empty">ما فيه كوبونات تطابق بحثك.</div>';
   }
   async function copy(text) {
