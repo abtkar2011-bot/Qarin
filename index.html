@@ -3281,6 +3281,65 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   // لو الصنف مو في النتائج الحالية: نبحث عنه في قسم القهوة
   const CF_KIND_Q = { beans: 'قهوة مختصة', omani: 'قهوة عمانية', turkish: 'قهوة تركية', capsule: 'كبسولات', drip: 'دريب', dripper: 'قمع تقطير', grinder: 'مطحنة قهوة', kettle: 'ابريق تقطير', scale: 'ميزان قهوة', machine: 'مكينة قهوة', brewer: 'أدوات تحضير القهوة', filter: 'فلاتر ورق' };
   const cfKindIs = (c, k) => !!c && (c.kind === k || k === 'other' && c.kind === 'box');
+
+  // ---- خيارات كل أداة: تضغط «مطاحن» تطلع «يدوية/كهربائية، ترس مخروطي/مسطح، ستانلس/سيراميك» ----
+  // [المفتاح، العنوان، [[القيمة، الاسم، إنجليزي، عربي (بعد normalize)، أو دالة (نص، نص عربي، العنوان)]]]
+  const KET_ELEC = /electric|electrical|smart|\bekg\b|temperature|°|\d+\s*w\b|watt|cordless/i, KET_ELEC_AR = 'كهربائي|كهربائيه|ذكي|ذكيه';
+  const KET_ELEC_ARRE = pfW(KET_ELEC_AR);
+  const cfSize0 = t => (String(t).match(/(^|[\s\-–(]|حجم\s*|size\s*|v60-?)0([0-3])(?=$|[\s)\-–|,])/i) || [])[2];
+  const cfMl = t => { const m = normalize(String(t)).match(/(\d+(?:\.\d+)?)\s*(ml|مل|l|لتر)(?![a-z؀-ۿ])/i); return m ? +m[1] * (/^(l|لتر)$/i.test(m[2]) ? 1000 : 1) : 0; };
+  const CF_FACETS = {
+    grinder: [
+      ['op', 'التشغيل', [['manual', 'يدوية', /\b(manual|hand)\b|comandante|1zpresso|kingrinder|skerton|mini mill|blade r3|timemore (c\d|chestnut (c|x|s3|nano|g1))/i, 'يدوي|يدويه'],
+        ['electric', 'كهربائية', /electric|electronic|\bdf\d{2}\b|zf64|fellow (ode|opus)|niche|baratza|eureka|mazzer|sculptor|ox lite|balenare|\d+\s*w\b|watt|usb|rechargeable/i, 'كهربائي|كهربائيه|الكتروني|الكترونيه|شحن']]],
+      ['burr', 'شكل الترس', [['conical', 'ترس مخروطي', /conical|cone burr|comandante|1zpresso|kingrinder|niche zero|baratza|skerton|mini mill|fellow opus|timemore (c\d|chestnut (c|x|s3|nano|esp))/i, 'مخروطي'],
+        ['flat', 'ترس مسطح', /flat burr|\bflat\b|\bdf\d{2}\b|zf64|fellow ode|sculptor|eureka|mazzer|lagom|ek43/i, 'مسطح']]],
+      ['mat', 'خامة الترس', [['steel', 'ستانلس ستيل', /stainless|steel|comandante|1zpresso|kingrinder/i, 'ستانلس|ستانليس|ستيل|استيل|فولاذ'], ['ceramic', 'سيراميك', /ceramic|skerton|mini mill/i, 'سيراميك'], ['titanium', 'تيتانيوم', /titanium|\btic?n\b/i, 'تيتانيوم']]],
+    ],
+    dripper: [
+      ['shape', 'الشكل', [['cone', 'مخروطي (V60)', /v ?60|\bcone\b|conical|origami|mugen|switch|flower|crystal eye|tri-?up|cafec/i, 'مخروطي|في 60|اوريغامي|اوريجامي|موغن|فلاور|كافيك'],
+        ['flat', 'مسطح القاع', /kalita|\bwave\b|flat|april|\borea\b|\b(155|185)\b/i, 'مسطح|كاليتا|ويف'], ['chemex', 'كيمكس', /chem[ei]x/i, 'كيمكس|كيميكس'], ['immersion', 'تقطير وتغطيس', /clever|switch|immersion/i, 'كليفر|سويتش']]],
+      ['mat', 'الخامة', [['plastic', 'بلاستيك', /plastic|pctg|tritan|resin/i, 'بلاستيك|تريتان'], ['glass', 'زجاج', /glass/i, 'زجاج|زجاجي'], ['ceramic', 'سيراميك', /ceramic|porcelain/i, 'سيراميك|خزف'],
+        ['metal', 'معدن', /stainless|steel|metal|titanium|copper/i, 'ستانلس|معدن|معدني|نحاس'], ['wood', 'خشب', /\bwood/i, 'خشب|خشبي']]],
+      ['size', 'المقاس', ['0', '1', '2', '3'].map(n => ['0' + n, 'مقاس 0' + n, null, null, (tl, tn, t) => cfSize0(t) === n])],
+    ],
+    kettle: [
+      ['op', 'التشغيل', [['electric', 'كهربائية', KET_ELEC, KET_ELEC_AR], ['stove', 'عادية (على النار)', null, null, (tl, tn) => !KET_ELEC.test(tl) && !KET_ELEC_ARRE.test(tn)]]],
+      ['temp', 'الحرارة', [['tc', 'تحكم بالحرارة', /temperature|temp control|\bekg\b|°|degree|thermometer|smart/i, 'درجه الحراره|تحكم بالحراره|مقياس|ثرمومتر|حراره']]],
+      ['size', 'السعة', [['s', 'أقل من 600 مل', null, null, (tl, tn, t) => { const v = cfMl(t); return v > 0 && v < 600; }], ['m', '600–900 مل', null, null, (tl, tn, t) => { const v = cfMl(t); return v >= 600 && v <= 900; }],
+        ['l', 'لتر وأكثر', null, null, (tl, tn, t) => cfMl(t) > 900]]],
+    ],
+    scale: [
+      ['use', 'الاستخدام', [['esp', 'إسبريسو (صغير)', /espresso|\bmini\b|micro|nano/i, 'اسبريسو|صغير|ميني'], ['pour', 'تقطير', /pour ?over|\bdrip|v60|brew/i, 'تقطير']]],
+      ['feat', 'المميزات', [['timer', 'فيه مؤقت', /\btimer\b|auto[- ]?timer/i, 'مؤقت'], ['usb', 'شحن', /usb|recharg|type-?c|battery/i, 'شحن|بطاريه'], ['app', 'بلوتوث وتطبيق', /bluetooth|\bapp\b/i, 'بلوتوث|تطبيق']]],
+    ],
+    machine: [
+      ['type', 'نوع المكينة', [['espresso', 'إسبريسو', /espresso|e61|barista|portafilter/i, 'اسبريسو|اسبرسو'], ['auto', 'أوتوماتيك', /automatic|bean[- ]to[- ]cup|super[- ]?auto|oracle|dr\.? ?coffee|one[- ]touch/i, 'اوتوماتيك|اتوماتيك'],
+        ['capsule', 'كبسولات', /capsule|nespresso|\bpods?\b|dolce/i, 'كبسول|كبسولات'], ['drip', 'تقطير', /\bdrip|brewer|aiden|moccamaster|filter coffee|batch/i, 'تقطير|مقطر'],
+        ['manual', 'يدوية (ذراع)', /flair|lever|manual|cafelat|robot/i, 'يدوي|يدويه'], ['portable', 'محمولة', /portable|travel|picopresso|wacaco/i, 'محمول|محموله']]],
+    ],
+    filter: [
+      ['for', 'لأي أداة', [['cone', 'مخروطي (V60)', /v ?60|\bcone\b|conical|cafec|abaca|origami/i, 'مخروطي|في 60|للقمع'], ['flat', 'مسطح (ويف)', /\bwave\b|kalita|flat|\b(155|185)\b/i, 'مسطح|ويف|كاليتا'],
+        ['aero', 'إيروبرس', /aero ?press/i, 'ايروبرس|ايروبريس|ايريوبريس'], ['chemex', 'كيمكس', /chem[ei]x/i, 'كيمكس'], ['cold', 'كولد برو', /cold ?brew|toddy|\bos paper/i, 'كولد|تودي|البارده'],
+        ['espresso', 'للإسبريسو', /espresso|puck|portafilter|machine/i, 'اسبريسو|ماكينات|لماكينات']]],
+      ['mat', 'الخامة', [['paper', 'ورق', /paper/i, 'ورق|ورقي|ورقيه'], ['cloth', 'قماش أو لباد', /cloth|felt|fabric/i, 'قماش|لباد'], ['metal', 'معدن', /metal|stainless|steel|mesh/i, 'معدن|معدني|ستانلس']]],
+    ],
+    brewer: [
+      ['type', 'نوع الأداة', [['aero', 'إيروبرس', /aero ?press/i, 'ايروبرس|ايروبريس|ايريوبريس'], ['french', 'فرنش بريس', /french press/i, 'فرنش'], ['moka', 'موكا', /moka|bialetti/i, 'موكا'],
+        ['syphon', 'سايفون', /syphon|siphon/i, 'سيفون|سايفون'], ['cold', 'كولد برو', /cold ?brew|toddy/i, 'كولد|تودي|البارده'], ['arabic', 'دلة وركوة', /dallah|cezve|ibrik|turkish/i, 'دله|دلال|ركوه|تركي']]],
+    ],
+  };
+  Object.values(CF_FACETS).forEach(defs => defs.forEach(([, , vals]) => vals.forEach(v => { if (typeof v[3] === 'string') v[3] = pfW(v[3]); })));
+  function cfFacets(p) {
+    if (p._cff !== undefined) return p._cff;
+    const c = coffeeOf(p), defs = c && CF_FACETS[c.kind];
+    if (!defs) return (p._cff = null);
+    // العنوان والوصف (مو أقسام المتجر: «Manual brew equipment» يجمع كل شي)
+    const t = String(p.title), desc = String(p.ctext || '').split(' | ').filter(x => x.length > 60).join(' | ');
+    const tl = (t + ' | ' + desc).toLowerCase(), tn = normalize(t + ' | ' + desc), out = {};
+    for (const [fk, , vals] of defs) out[fk] = vals.filter(([, , en, ar, fn]) => fn ? fn(tl, tn, t) : (!!en && en.test(tl)) || (!!ar && ar.test(tn))).map(v => v[0]);
+    return (p._cff = out);
+  }
   const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
   function passCoffee(p) {
     const f = state.cf || {};
@@ -3288,6 +3347,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const c = coffeeOf(p);
     if (!c) return false;
     if (f.kind && !cfKindIs(c, f.kind)) return false;
+    for (const k in f) if (k.startsWith('t_') && f[k]) { const fc = cfFacets(p); if (!fc || !(fc[k.slice(2)] || []).includes(f[k])) return false; }
     if (!f.pr && !f.alt && !f.o && !f.use) return true;
     if (!CF_COFFEE.has(c.kind) || c.kind === 'box') return false;
     if (f.pr && (!c.pr || c.pr.k !== f.pr)) return false;
@@ -3317,10 +3377,15 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       .map(([k, l, c]) => [k, c ? chip('kind', k, l, c) : `<button type="button" class="cf-chip" data-cfk="${k}">${l}</button>`]);
     // صفّين: القهوة نفسها، وتحتها الأدوات (أقماع، مطاحن، غلايات…) عشان تبان كلها
     const kindsCf = kinds.filter(x => CF_COFFEE.has(x[0])).map(x => x[1]), kindsTool = kinds.filter(x => !CF_COFFEE.has(x[0])).map(x => x[1]);
+    // اخترت أداة: خياراتها تحت (التشغيل، شكل الترس، الخامة…)، وكل خيار معه عدده
+    const toolItems = toolOn ? all.filter(p => cfKindIs(coffeeOf(p), f.kind)) : [];
+    const facetRows = toolOn ? (CF_FACETS[f.kind] || []).map(([fk, title, vals]) => row(title, 't_' + fk, vals.map(([v, l]) => [v, l, toolItems.filter(p => ((cfFacets(p) || {})[fk] || []).includes(v)).length])
+      .filter(x => x[2]).map(([v, l, c]) => chip('t_' + fk, v, l, c)))).join('') : '';
+    const headN = toolOn ? toolItems.length : beans.length || all.length, headL = toolOn || !beans.length ? 'منتج من متاجر قهوة عمانية' : 'محصول من متاجر قهوة عمانية';
     const toolRow = kindsTool.length && kindsCf.length ? `<div class="cf-row"><span class="cf-k">الأدوات</span><div class="cf-chips">${kindsTool.join('')}</div></div>` : '';
     return `<section class="cf-bar" aria-label="قسم القهوة">
-      <div class="cf-head"><b>☕ قسم القهوة</b><span><bdi class="num">${beans.length}</bdi> محصول من متاجر قهوة عمانية</span></div>
-      ${row('النوع', 'kind', kindsCf.length ? kindsCf : kindsTool)}${toolRow}${toolOn ? '' : row('المعالجة', 'pr', procs) + row('البلد', 'o', origins) + row('الارتفاع', 'alt', alts) + row('التحضير', 'use', uses)}
+      <div class="cf-head"><b>☕ قسم القهوة</b><span><bdi class="num">${headN}</bdi> ${headL}</span></div>
+      ${row('النوع', 'kind', kindsCf.length ? kindsCf : kindsTool)}${toolRow}${toolOn ? facetRows : row('المعالجة', 'pr', procs) + row('البلد', 'o', origins) + row('الارتفاع', 'alt', alts) + row('التحضير', 'use', uses)}
       <p class="cf-note">❄️ الكولد برو: المعالجة الطبيعية والنكهات الشوكولاتية تطلع أحلى بارد، والمغسول الزهري الفاتح يضيع طعمه. هذا تقدير من قارن، وإذا المتجر كاتبها نقول.</p>
     </section>`;
   }
@@ -4473,9 +4538,11 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     $('imgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; imageSearch(f); });
     document.addEventListener('click', e => {
       const k = e.target.closest('[data-cfk]');
-      if (k) { state.cfPending = state.cfBrowseNext = k.dataset.cfk; search(CF_KIND_Q[k.dataset.cfk] || 'قهوة مختصة'); return; }
+      if (k) { if (!state.cfBrowse) state.cfPrevQ = state.query; state.cfPending = state.cfBrowseNext = k.dataset.cfk; search(CF_KIND_Q[k.dataset.cfk] || 'قهوة مختصة'); return; }
       const b = e.target.closest('[data-cf]');
       if (!b) return;
+      // كنت تتصفح «مطاحن» وضغطت «الكل»: نرجع لبحثك قبلها (مو نبقى على المطاحن)
+      if (b.dataset.cf === 'kind' && !b.dataset.v && state.cfBrowse) { search(state.cfPrevQ && state.cfPrevQ !== state.query ? state.cfPrevQ : 'قهوة مختصة'); return; }
       // صنف أداة («مطاحن»): نلغي فلاتر المعالجة والبلد
       state.cf = b.dataset.cf === 'kind' && b.dataset.v && !CF_COFFEE.has(b.dataset.v) ? { kind: b.dataset.v } : Object.assign({}, state.cf, { [b.dataset.cf]: b.dataset.v });
       render();
