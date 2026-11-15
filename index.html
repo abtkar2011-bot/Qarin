@@ -527,7 +527,7 @@ table.dt { min-width: 0; font-size: .76rem; }
   .tools-row .tool-btn svg { width: 38px; height: 38px; margin-bottom: 8px; }
   .tools-row .tool-btn span { font-size: 1.25rem; }
   .tools-row .tool-btn small { font-size: 0.95rem; }
-  .tools-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tools-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tools-row .tool-coffee { grid-column: auto; }
   .follow { border-radius: 22px; }
   .follow-list a { padding: 20px 22px; font-size: 1.1rem; gap: 14px; }
@@ -586,7 +586,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 .mic-btn.on { background: transparent; color: var(--bad); animation: micPulse 1.1s ease-in-out infinite; }
 @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 .tools-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.tools-row .tool-coffee { grid-column: 1 / -1; }
+.tools-row .tool-coffee { grid-column: auto; }
 .cb { font-size: 0.76rem; color: var(--muted); }
 .cb.good, .cb.store { color: #0A7EA4; }
 .cb small { color: var(--muted); font-size: 0.7rem; }
@@ -609,9 +609,14 @@ table.dt { min-width: 0; font-size: .76rem; }
 .cf-back { justify-self: start; border: 0; background: none; color: var(--accent); font: inherit; font-size: 0.9rem; font-weight: 700; padding: 4px 0; cursor: pointer; }
 .cf-quick { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; padding-bottom: 2px; }
 .cf-quick::-webkit-scrollbar { display: none; }
-body.coffee-view #platformChecks > .check, body.coffee-view .check-group > summary { display: none !important; }
+body.coffee-view #platformChecks > .check, body.coffee-view .check-group > summary, body.coffee-view .check-group.pf-group { display: none !important; }
 body.coffee-view .check-group > .checks { margin-top: 0; }
 body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line, body.coffee-view .tools-row, body.coffee-view .basket-box, body.coffee-view .follow { display: none !important; }
+/* 🌸 قسم العطور: نفس فكرة قسم القهوة (متاجر العطور بس) */
+body.perf-view #platformChecks > .check, body.perf-view .check-group > summary, body.perf-view .check-group.cf-group { display: none !important; }
+body.perf-view .check-group > .checks { margin-top: 0; }
+body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body.perf-view .tools-row, body.perf-view .basket-box, body.perf-view .follow { display: none !important; }
+.pf .dupe { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; font-weight: 700; }
 .notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .cf-exit { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .cf-note { margin: 0; font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
@@ -843,6 +848,18 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       </form>
       <div class="cf-quick" id="cfQuick"></div>
     </section>
+    <section class="coffee-head perf-head" id="perfHead" hidden aria-label="قسم العطور">
+      <button type="button" class="cf-back" id="pfBack">→ رجوع لقارِن</button>
+      <h1>🌸 قسم العطور</h1>
+      <p>عطور ودهن عود وبخور من متاجر العطور في عمان بس، مع فلاتر النوع ولمن والتركيز والعائلة العطرية والحجم</p>
+      <form class="search" id="pfForm" role="search">
+        <input type="search" id="pfQ" autocomplete="off" aria-label="ابحث في قسم العطور" placeholder="ابحث عن عطر، ماركة أو نوتة: إنترلود، عود، مسك">
+        <button type="button" class="img-btn" id="pfImgBtn" aria-label="ابحث بصورة" title="ابحث بصورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></button>
+        <input type="file" id="pfImgIn" accept="image/*" hidden>
+        <button type="submit" class="btn-primary" aria-label="بحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>بحث</span></button>
+      </form>
+      <div class="cf-quick" id="pfQuick"></div>
+    </section>
     <header class="hero">
       <h1>قارِن <img class="h1-mark" src="icons/logo-mark.png" alt=""></h1>
       <p>قارن الأسعار والجودة في أشهر المتاجر بضغطة</p>
@@ -863,6 +880,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       <button type="button" class="tool-btn" id="basketToggle" aria-expanded="false" aria-controls="basketBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18l-1.6 9.2a1 1 0 0 1-1 .8H5.6a1 1 0 0 1-1-.8L3 10Z"/><path d="m8 10 3-6M16 10l-3-6M9 14v3M15 14v3"/></svg><span>أفضل سلة</span><small>قارن سلة كاملة بين المتاجر</small></button>
       <a class="tool-btn" href="coupons.html" style="text-decoration:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3a2 2 0 0 0 0 4v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a2 2 0 0 0 0-4V7Z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg><span>كوبونات اليوم</span><small>أكواد خصم رسمية</small></a>
       <button type="button" class="tool-btn tool-coffee" id="coffeeTile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg><span>قسم القهوة</span><small>محاصيل وأدوات من متاجر عمانية، مع فلاتر المعالجة والارتفاع</small></button>
+      <button type="button" class="tool-btn tool-coffee tool-perf" id="perfTile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v3H9z"/><path d="M10 6v2.5M14 6v2.5"/><rect x="5.5" y="8.5" width="13" height="12.5" rx="3"/><path d="M9 14.5h6"/></svg><span>قسم العطور</span><small>عطور ودهن عود وبخور من متاجر في عمان، مع فلاتر التركيز والعائلة</small></button>
     </div>
     <section class="basket-box" id="basketBox" hidden>
       <div class="bb-head"><b>أفضل سلة</b><span>اكتب كل منتج في خانة، ونطلع لك أفضل سلة من كل متجر لحاله</span></div>
@@ -1019,6 +1037,35 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
                    url: q => 'https://www.muthalathstore.com/shop?search=' + qp(q) },
     barista:     { name: 'Barista Oman', color: '#7C3F00', text: '#FFFFFF', bar: '#7C3F00', tagline: 'متجر قهوة عماني: محاصيل وأدوات',
                    url: q => 'https://barista-oman.kushk.om/search?q=' + qp(q) },
+    // متاجر عطور في عمان (روابط مباشرة، منتجاتها من صفحاتها العامة كل يوم)
+    amouage:      { name: 'أمواج', color: '#8A6D3B', text: '#FFFFFF', bar: '#8A6D3B', tagline: 'دار عطور عمانية فاخرة',
+                    url: q => 'https://amouage.com/search?q=' + qp(q) },
+    swissarabian: { name: 'سويس أرابيان', color: '#A51C30', text: '#FFFFFF', bar: '#A51C30', tagline: 'عطور شرقية ودهن عود',
+                    url: q => 'https://om.swissarabian.com/search?q=' + qp(q) },
+    asgharali:    { name: 'أصغر علي', color: '#5A2D82', text: '#FFFFFF', bar: '#5A2D82', tagline: 'عطور ودهن عود وبخور',
+                    url: q => 'https://om.asgharali.com/search?q=' + qp(q) },
+    omanluxury:   { name: 'عمان لكشري', color: '#0F4C5C', text: '#FFFFFF', bar: '#0F4C5C', tagline: 'عطور عمانية فاخرة ولبان',
+                    url: q => 'https://omanluxury.store/search?q=' + qp(q) },
+    alhajis:      { name: 'الحاجي', color: '#C8102E', text: '#FFFFFF', bar: '#C8102E', tagline: 'عطور عالمية وعربية',
+                    url: q => 'https://alhajisoman.com/search?q=' + qp(q) },
+    oudbank:      { name: 'بنك العود', color: '#4A2C17', text: '#FFFFFF', bar: '#4A2C17', tagline: 'دهن عود وبخور ومسك',
+                    url: q => 'https://oudbank.com/search?q=' + qp(q) },
+    boulevard:    { name: 'بوليفارد', color: '#2F3E46', text: '#FFFFFF', bar: '#2F3E46', tagline: 'عطور عالمية ونيش',
+                    url: q => 'https://boulevardperfumes.com/?post_type=product&s=' + qp(q) },
+    oudworlds:    { name: 'عالم العود', color: '#7A4E2D', text: '#FFFFFF', bar: '#7A4E2D', tagline: 'عطور وعود بأسعار رخيصة',
+                    url: q => 'https://oudworlds.com/?post_type=product&s=' + qp(q) },
+    artal:        { name: 'أرتال', color: '#6D597A', text: '#FFFFFF', bar: '#6D597A', tagline: 'عطور عربية فاخرة',
+                    url: q => 'https://artalofficial.com/?post_type=product&s=' + qp(q) },
+    raydan:       { name: 'ريدان', color: '#9C6644', text: '#FFFFFF', bar: '#9C6644', tagline: 'عطور ولبان عماني ومنتجات للجسم',
+                    url: () => 'https://raydanuae.com/ar-om/' },
+    ibraq:        { name: 'إبراق', color: '#334E68', text: '#FFFFFF', bar: '#334E68', tagline: 'عطور وأطقم هدايا',
+                    url: () => 'https://oman.ibraqperfumes.com/ar' },
+    almajed:      { name: 'الماجد للعود', color: '#5C3D2E', text: '#FFFFFF', bar: '#5C3D2E', tagline: 'عطور ودهن عود ومعمول',
+                    url: () => 'https://om.almajed4oud.com/ar' },
+    nawader:      { name: 'نوادر العود', color: '#3D2B1F', text: '#FFFFFF', bar: '#3D2B1F', tagline: 'عود وبخور فاخر',
+                    url: q => 'https://nwaderoud.com/search?q=' + qp(q) },
+    alkhanjar:    { name: 'الخنجر للعطور', color: '#8B5E34', text: '#FFFFFF', bar: '#8B5E34', tagline: 'عطور وبخور ولبان عماني',
+                    url: q => 'https://www.alkhanjar.om/ar/shop?search=' + qp(q) },
   };
   const KEYS = Object.keys(PLATFORMS);
 
@@ -1984,10 +2031,14 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       espresso: /^(machines?|maker|grinders?|tampers?|cups?)$/, bag: /^(coffee|beans|drip)$/, bags: /^(coffee|beans|drip)$/, pack: /^(coffee|beans)$/ },
     titleToks: /^(grinders?|kettles?|gooseneck|drippers?|scales?|tampers?|syrups?|thermos|flask)$/, hard: /^(arabic|turkish|omani|saudi)$/,
     accessory: /\b(clean\w*|brush|case|cover|holder|mats?|stand|sleeve|spare|replacement|parts?|protective|pouch|bags?(?! of)|paper|filters?|gasket|burrs?|seal|cap|lid|tool|refill\w*|reusable)\b|فرشا|غطاء|حافظ|فلتر|فلاتر|ورقي|إعادة التعبئة|اعادة التعبئة/i };
+  // متاجر العطور (قسم العطور): نفس كلمات V Perfumes، والعناوين العربية («دهن العود تراد») تتطابق بالعربي
+  const PERF_GATE = /(عطر|عطور|(^|\s)(ال)?عود|دهن|بخور|دخون|مبخر|(^|\s)(ال)?مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i;
+  const PERF_FEED = { perUsd: () => OMR_PER_USD, aff: '', gate: PERF_GATE, generic: /^(scents?|smell)$/, perf: true, okAr: true,
+    // «عطر»: نوع المنتج (pfKind) مو كلمة «perfume» في العنوان (عناوين أمواج: «Interlude Man 100ml»)
+    pkinds: { perfume: new Set(['perfume', 'oil', 'mist', 'set']), perfumes: new Set(['perfume', 'oil', 'mist', 'set']), fragrance: new Set(['perfume', 'oil', 'mist', 'set']), fragrances: new Set(['perfume', 'oil', 'mist', 'set']),
+      incense: new Set(['bakhoor']), bakhoor: new Set(['bakhoor']) } };
   const PARTNER_FEEDS = {
-    vperfumes: { file: 'data/p/vperfumes.json', perUsd: () => OMR_PER_USD, aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/',
-      gate: /(عطر|عطور|(^|\s)(ال)?عود|دهن|بخور|دخون|مبخر|(^|\s)(ال)?مسك|عنبر|بارفان|برفان|تواليت|كولونيا|للجنسين|مخمري|مخلط|معطر جسم|بخاخ جسم|perfume|parfum|fragrance|cologne|\boud\b|bakhoor|attar|\bmusk|eau de|\bedp\b|\bedt\b|extrait|elixir|body mist|unisex)/i,
-      generic: /^(scents?|smell)$/ },
+    vperfumes: Object.assign({ file: 'data/p/vperfumes.json', aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/' }, PERF_FEED),
     dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
       gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|ريتينول|هيالورونيك|نياسيناميد|حلزون|امبول|مستحلب|لوشن|تقشير|ليفه|لصقات|شامبو|تساقط|بيوتين|بايوتين|جاميز|اوميغا|اوميجا|زنك|مغنيسيوم|ميلاتونين|مكياج|شفاه|شفايف|بلاشر|كوري|شعر|\bhair\b|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|retinol|hyaluronic|niacinamide|snail|ampoule|gumm|biotin|omega|makeup|\blip|shampoo|hair loss|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
       generic: /^(products?|original)$/, titleOnly: true },
@@ -2003,6 +2054,20 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     mahaseel: Object.assign({ file: 'data/p/mahaseel.json' }, COFFEE_FEED),
     muthalath: Object.assign({ file: 'data/p/muthalath.json' }, COFFEE_FEED),
     barista: Object.assign({ file: 'data/p/barista.json' }, COFFEE_FEED),
+    amouage: Object.assign({ file: 'data/p/amouage.json' }, PERF_FEED, { perUsd: () => 1 }),
+    swissarabian: Object.assign({ file: 'data/p/swissarabian.json' }, PERF_FEED),
+    asgharali: Object.assign({ file: 'data/p/asgharali.json' }, PERF_FEED),
+    omanluxury: Object.assign({ file: 'data/p/omanluxury.json' }, PERF_FEED),
+    alhajis: Object.assign({ file: 'data/p/alhajis.json' }, PERF_FEED),
+    oudbank: Object.assign({ file: 'data/p/oudbank.json' }, PERF_FEED),
+    boulevard: Object.assign({ file: 'data/p/boulevard.json' }, PERF_FEED, { dupeRe: /(^|[\s\-–|])sadeem\b/i }),
+    oudworlds: Object.assign({ file: 'data/p/oudworlds.json' }, PERF_FEED, { dupeAny: true }),
+    artal: Object.assign({ file: 'data/p/artal.json' }, PERF_FEED),
+    raydan: Object.assign({ file: 'data/p/raydan.json' }, PERF_FEED),
+    ibraq: Object.assign({ file: 'data/p/ibraq.json' }, PERF_FEED),
+    almajed: Object.assign({ file: 'data/p/almajed.json' }, PERF_FEED),
+    nawader: Object.assign({ file: 'data/p/nawader.json' }, PERF_FEED, { perUsd: () => 3.6725 }),
+    alkhanjar: Object.assign({ file: 'data/p/alkhanjar.json' }, PERF_FEED),
   };
   const P_STOP = new Set(['for', 'the', 'and', 'with', 'of', 'an', 'in', 'on', 'to', 'best', 'cheap', 'original', 'new', 'buy', 'de', 'eau', 'le', 'la']);
   // معنى كل كلمة في عناوين المتاجر الشريكة (V Perfumes بالإنجليزي، DermaZone بالعربي)
@@ -2096,6 +2161,8 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
 
   const P_VIT = { a: 'ا|اي', c: 'سي', d: 'د|دي', e: 'اي|e' };
   const pTok = (w, F) => {
+    // متاجر العطور: «عطر» = منتج نوعه عطر/دهن/معطر/طقم (pfKind)، مو لازم الكلمة نفسها في العنوان
+    if (F && F.pkinds && F.pkinds[w]) { const ks = F.pkinds[w]; return (t, tn, title) => ks.has(pfKind(title, t.slice(0, 700))); }
     if (F && F.syn && F.syn[w]) {
       const re = new RegExp(F.syn[w], 'i'), ar = P_AR[w] ? new RegExp('(^|[\\s\\-|(/])(ال|لل|ل|و|وال|ب|بال)?(' + P_AR[w] + ')') : null;
       // أدوات («مطحنة»، «ابريق»): لازم تكون في اسم المنتج، لأن قسم «Machines & Grinders» يجمع كل شي
@@ -2116,6 +2183,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
   const partnerIndexP = fetch('data/p/index.json').then(r => r.ok ? r.json() : null).then(d => (partnerIndex = d)).catch(() => null);
   const loadPartner = k => partnerData[k] || (partnerData[k] = fetch(PARTNER_FEEDS[k].file).then(r => r.ok ? r.json() : null).catch(() => null));
   const coffeeKeys = () => KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
+  function perfKeys() { return KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].perf); }
   // ترجمة من القاموس بس (بدون ترجمات خدمة الترجمة المحفوظة)
   function dictEn(w) {
     const n = normalize(w), saved = TR.get(n);
@@ -2132,7 +2200,10 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const names = F.syn && partnerIndex && partnerIndex[k] && partnerIndex[k].names;
     const nameHit = !!F.syn && (state.coffeeMode || CF_NAMES.some(re => re.test(ar) || re.test(en)) ||
       (!!names && qWords.some(w => (/[\u0600-\u06ff]/.test(w) || (w.length >= 5 && !CF_COMMON_EN.test(w))) && names.includes(w))));
-    if (!F.gate.test(query) && !F.gate.test(en) && !brandHit && !nameHit) return [];
+    // متاجر العطور: في قسم العطور كلها تنبحث، وبره القسم أسماء العطور والماركات («interlude»، «dior») توصل للمتجر
+    const pnames = F.perf && partnerIndex && partnerIndex[k] && partnerIndex[k].names;
+    const perfHit = !!F.perf && (state.perfMode || (!!pnames && qWords.some(w => /^[a-z0-9]+$/.test(w) && w.length >= 4 && !/^\d+$/.test(w) && !CF_COMMON_EN.test(w) && !P_STOP.has(w) && pnames.includes(w))));
+    if (!F.gate.test(query) && !F.gate.test(en) && !brandHit && !nameHit && !perfHit) return [];
     // «عطر قوجي» = عطر، فمتاجر القهوة ما تطلع (حتى لو «قوجي» اسم محصول)
     if (F.syn && /(عطر|عطور|بارفان|perfume|parfum|cologne|كريم|سيروم|مرطب|serum|cream)/i.test(ar + ' ' + en)) return [];
     // «دبليو قوجي» = محصول قهوة (دبليو محمصة)، مو عطر Gucci: إذا فيه اسم يخص القهوة بس، العطور والعناية تطلع منها
@@ -2176,6 +2247,8 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
         toks = []; cfTests = [(t, tn, title) => cfKindIs({ kind: cfKind(title, t.slice(0, 700), st) }, bk)];
       }
     }
+    // ضغطت صنف («بخور») في قسم العطور: كل منتجات هذا الصنف
+    if (F.perf && state.perfMode && state.pfBrowse) { const bk = state.pfBrowse; toks = []; cfTests = [(t, tn, title) => pfKind(title, t.slice(0, 700)) === bk]; }
     const hard = [...toks.filter(w => !isSoft(w)).map(w => pTok(w, F)), ...cfTests], soft = toks.filter(isSoft).map(w => pTok(w, F));
     // كلمات عربية ما لها ترجمة: لازم تكون بداية كلمة في عنوان DermaZone
     const arToks = /[؀-ۿ]/.test(ar) ? ar.split(' ').map(w => w.replace(/^(ال|لل|بال|وال)(?=..)/, '')).filter(w => w.length > 1 && !AR_IGNORE.has(w)) : [];
@@ -2188,8 +2261,9 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       // DermaZone: وسوم المنتج تسويقية وعامة («i dew care mask» على فرشاة شعر) ← الكلمات الأساسية لازم تكون في العنوان أو النوع
       const text = t + ' | ' + (F.titleOnly ? String(tags).split(' | ').slice(0, 2).join(' | ') : tags), tn = normalize(text);
       const okEn = hard.every(f => f(text, tn, t)) && (hard.length || soft.length || F.generic.test(en.trim()) || !arToks.length);
-      const okAr = k === 'dermazone' && arRes.length && arRes.every(r => r.test(tn));
+      const okAr = (k === 'dermazone' || F.okAr) && arRes.length && arRes.every(r => r.test(tn));
       if (!(okEn || okAr)) continue;
+      if (!(price > 0)) continue;  // عينات مجانية بدون سعر
       const usd = price / F.perUsd();
       // V Perfumes: توصيل مجاني داخل عمان للطلب فوق 20 ر.ع. (من صفحة التوصيل عندهم)
       const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
@@ -2201,6 +2275,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       const full = F.titleOnly ? t + ' | ' + tags : text, fulln = F.titleOnly ? normalize(full) : tn;
       p._soft = soft.filter(f => f(full, fulln, t)).length;
       if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
+      if (F.perf) p.ptext = (t + ' | ' + tags).slice(0, 700);
       hit.push(p);
     }
     // اللي يطابق الوصف («صيفي»، «منعش») أول، وإذا كانوا قليلين نعرض الباقي معهم
@@ -2865,16 +2940,18 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     [/body mist|body splash|hair mist|\bmist\b/i, 'معطر جسم', 1], [/\bedp\b|eau de parfum/i, 'أو دو بارفان', 3], [/\bedt\b|eau de toilette/i, 'أو دو تواليت', 2],
     [/\bextrait\b/i, 'إكستريت دي بارفان', 4], [/\belixir\b/i, 'إليكسير', 0], [/\bedc\b|cologne/i, 'كولونيا', 1], [/\bparfum\b|\bperfume extract\b/i, 'بارفان', 4],
     [/\b(attar|dehn|perfume oil|oud oil|concentrated)\b/i, 'دهن عطري', 0],
+    [/او دو بارفان|أو دو بارفان|ماء العطر/, 'أو دو بارفان', 3], [/او دو تواليت|أو دو تواليت/, 'أو دو تواليت', 2], [/اكستريت|إكستريت|خلاصه العطر|خلاصة العطر/, 'إكستريت دي بارفان', 4],
+    [/معطر (ال)?جسم|بخاخ جسم|معطر (لل|ال)?شعر/, 'معطر جسم', 1], [/(^|\s)(ال)?(دهن|زيت عطري|عطر زيتي)/, 'دهن عطري', 0],
   ];
   const PF_LEVEL = ['', 'تركيز خفيف', 'تركيز متوسط', 'تركيز عالي', 'تركيز عالي جدًا'];
-  const PF_WORD = /\b(perfume|parfum|fragrance|cologne|eau de|edp|edt|edc|attar|oud|musk|bakhoor|body mist)\b|عطر|عطور/i;
+  const PF_WORD = /\b(perfume|parfum|fragrance|cologne|eau de|edp|edt|edc|attar|oud|musk|bakhoor|body mist)\b|عطر|عطور|دهن|(^|\s)(ال)?(عود|مسك|بخور)/i;
   function perfOf(p) {
     if (p._pf !== undefined) return p._pf;
     const t = String(p.title || '');
     let c = PF_CONC.find(([re]) => re.test(t));
     // «Mist» و«Elixir» و«Oil» تجي في أسماء قهوة وعناية، فنحتاج دليل إنه عطر
-    if (c && /mist|elixir|attar|dehn|oil|concentrated/.test(c[0].source) && p.platform !== 'vperfumes' && !PF_WORD.test(t)) c = null;
-    const m = t.match(/(\d+(?:\.\d+)?)\s*(ml|مل)\b/i);
+    if (c && /mist|elixir|attar|dehn|oil|concentrated/.test(c[0].source) && !(PARTNER_FEEDS[p.platform] || {}).perf && !PF_WORD.test(t)) c = null;
+    const m = normalize(t).match(/(\d+(?:\.\d+)?)\s*(ml|مل|ملي)(?![a-z\u0600-\u06ff])/i);
     const ml = m ? +m[1] : 0;
     if (!c && !(ml && PF_WORD.test(t))) return (p._pf = null);
     const g = /\bunisex\b|للجنسين/i.test(t) ? 'للجنسين' : /\b(women|woman|ladies|femme|for her)\b|نسائي/i.test(t) ? 'نسائي' : /\b(men|man|homme|for him)\b|رجالي/i.test(t) ? 'رجالي' : '';
@@ -2899,6 +2976,118 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     if (withUnit && f.ml && f.ml !== base) bits.push(`<span class="u"><bdi>${money(p.price / f.ml * base)}</bdi> لكل ${base} مل</span>`);
     return `<div class="pf">${bits.join('')}</div>`;
   }
+
+  // ================= قسم العطور: النوع ولمن والتركيز والعائلة العطرية والحجم =================
+  // من اسم المنتج أول، بعدين أقسام المتجر ووسومه («men’s perfumes»، «دهن العود»)، والعائلة من الوصف كمان
+  const PF_KIND_DEF = [
+    ['other', /(gift card|gift wrap\w*|greeting card|voucher|e-?gift)/i, null],
+    ['set', /(gift set|\bset\b|coffret|\bbundle\b|discovery|\bcombo\b|\d+\s*ml\s*x\s*\d|\d+\s*x\s*\d+\s*ml|\d\s*ml\s*\+|\+\s*[a-z ]+\d+\s*ml)/i, null],
+    ['home', /(home fragrance|room spray|air fresh\w*|reed diffuser|diffuser|candle|burner|mabkhara|car (air )?fresh\w*|linen spray|fabric spray|charcoal|lighter|tongs|accessor\w*)/i, null],
+    ['care', /(lotion|shower gel|\bbath\b|body wash|deodorant|\bdeo\b|antiperspirant|soap|\bcream\b|body butter|shampoo|hand wash|talc|rose water|body oil|lip balm|\bbalm\b)/i, null],
+    ['mist', /(body mist|body splash|hair mist|hair perfume|\bmist\b|body spray)/i, null],
+    ['oil', /(perfume oil|\battars?\b|\bdehn|oud oil|concentrated (perfume )?oil|\bcpo\b|roll ?on|fragrant oils?|\btola\b|\boil\b|alcohol.free)/i, null],
+    ['bakhoor', /(bakh?oo?r|bukhoor|bakhour|incense|dukhoon|oud chips|agarwood chips|frankincense|luban|mamoul|muattar|mubakhar)/i, null],
+  ];
+  const PF_KIND_AR = {
+    other: 'بطاقه|بطاقه تهنئه|تغليف|قسيمه|بطاقه هديه', set: 'طقم|اطقم|بوكس|صندوق|كومبو|باقه|توزيعات', home: 'معطر منزل|معطر جو|معطر الجو|معطر سيارات|جهاز تعطير|زيت جهاز|مبخر سيراميك|مبخر خشب|مبخر كهربائي|مبخر الكتروني|معطر مفارش|معطر سياره|معطر للسياره|فواحه|فواحات|شمعه|شموع|مبخره|مباخر|معطر غرف|فحم|ولاعه|ملقط|اكسسوارات',
+    bakhoor: 'بخور|دخون|معمول|مبخر|خشب العود|خشب عود|قطع عود|عود كمبودي|عود هندي|عود ماليزي|لبان|مسقى|خلطات البخور|خلطه بخور', mist: 'معطر جسم|معطر الجسم|بخاخ جسم|معطر شعر|معطر للشعر|عطر الشعر|بودي مست|بودي سبلاش',
+    care: 'لوشن|شاور|جل استحمام|مزيل عرق|صابون|كريم|بودره|شامبو|ماء ورد|ماء الورد|غسول|زبده|مرطب شفاه', oil: 'دهن|دهن العود|زيت|زيت عطري|عطر زيتي|مخمريه|مخمري|مخلط|مخلطات|معطر زيتي|توله|عطر مركز',
+  };
+  // كلمة عربية كاملة (مع ال/ب/و قبلها)، على النص بعد normalize
+  function pfW(alts) { return new RegExp('(^|[\\s\\-–—()\\[\\]/،,|_+&:])(ال|لل|بال|وال|و|ب|ل)?(' + alts + ')(?=$|[\\s\\-–—()\\[\\]/،,|_+&.:!\\d])', 'i'); }
+  PF_KIND_DEF.forEach(d => { d[2] = pfW(PF_KIND_AR[d[0]]); });
+  const PF_IS = /(perfume|parfum|fragrance|cologne|eau de|\bedp\b|\bedt\b|\bedc\b|extrait|elixir|\bspray\b|\bpour (homme|femme)\b|\bmen\b|\bwomen\b|\bunisex\b|\d\s*ml\b)|عطر|عطور|بارفان|تواليت|كولونيا|رجالي|نسائي|للجنسين|\d\s*مل/i;
+  // «مستوحى» من عطر ماركة (مو الأصلي): «inspired by: bvlgari»، «مستوحى من عطر ديور». «inspired by oriental richness» وصف عادي مو تقليد
+  const PF_DUPE = /(inspired by\s*:|alternative to|\bdupe\b|our version of|انسبايرد|بديل عطر|نسخه من عطر|inspired by\s+(the\s+)?(creed|dior|chanel|tom ford|bvlgari|bulgari|versace|armani|ysl|yves saint|gucci|prada|lanc[oô]me|givenchy|herm[eè]s|guerlain|kilian|parfums de marly|xerjoff|initio|maison francis|mfk|baccarat|roja|byredo|le labo|jo malone|montblanc|paco rabanne|carolina herrera|valentino|burberry|calvin klein|hugo boss|nautica|mancera|montale)|مستوحى من عطر\s+(ديور|شانيل|توم فورد|كريد|فرزاتشي|فرساتشي|ارماني|جوتشي|غوتشي|برادا|بلغاري|بربري|كارولينا|ايف سان لوران|جيفنشي|ميزون|بكارات|كيليان))/i;
+  const PF_FAM = [
+    ['oud', 'عود', /\b(oud|oudh|aoud|agarwood)\b|(^|\s)(ال)?عود/i], ['amber', 'عنبر', /\b(amber|ambre|ambergris)\b|عنبر/i], ['musk', 'مسك', /\b(musk|musc)\b|(^|\s)(ال)?مسك/i],
+    ['rose', 'ورد', /\b(rose|roses|rosa|taif)\b|(^|\s)(ال)?ورد|طائفي/i], ['saffron', 'زعفران', /saffron|زعفران/i], ['vanilla', 'فانيلا', /vanill|فانيل/i],
+    ['woody', 'خشبي', /\b(wood|woody|sandal\w*|cedar\w*|vetiver|patchouli)\b|خشب|صندل|ارز|فيتيفر|باتشولي/i],
+    ['fresh', 'منعش', /\b(fresh|citrus|bergamot|lemon|aquatic|marine|mint|green|ocean|blue)\b|منعش|حمضي|برغموت|ليمون|بحري|نعناع/i],
+    ['floral', 'زهري', /\b(floral|flower\w*|jasmine|tuberose|iris|peony|lily|orange blossom|neroli|violet)\b|زهري|زهور|ياسمين|فل|زنبق|سوسن|بنفسج/i],
+    ['sweet', 'حلو', /\b(gourmand|caramel|chocolate|honey|praline|sweet|candy|tonka)\b|حلو|كراميل|عسل|شوكولا|تونكا/i],
+  ];
+  const PF_KINDS = [['perfume', 'عطور'], ['oil', 'دهن وعطور زيتية'], ['bakhoor', 'بخور ولبان'], ['mist', 'معطرات جسم وشعر'], ['set', 'أطقم وهدايا'], ['home', 'للبيت والسيارة'], ['care', 'عناية واستحمام'], ['other', 'أخرى']];
+  const PF_KIND_Q = { perfume: 'عطور', oil: 'دهن عود', bakhoor: 'بخور', mist: 'معطر جسم', set: 'طقم عطور', home: 'معطر منزل', care: 'لوشن معطر' };
+  const PF_SIZE = [['s', ml => ml <= 30, 'أقل من 30 مل'], ['m', ml => ml > 30 && ml <= 75, '30–75 مل'], ['l', ml => ml > 75, '100 مل وأكثر']];
+  const PF_G = [['m', 'رجالي'], ['w', 'نسائي'], ['u', 'للجنسين']];
+  const pfKindMemo = new Map();
+  function pfKind(title, text) {
+    const mk = title + '\u0001' + text.length;
+    let v = pfKindMemo.get(mk);
+    if (v !== undefined) return v;
+    const t = String(title).toLowerCase(), tn = normalize(String(title));
+    const segs = normalize(String(text)).split(' | ').slice(1).filter(x => x.length > 1 && x.length <= 60).join(' | ');
+    const conc = /(^|[^a-z])(edp|edt|edc)(?![a-z])|\b(eau de|extrait|parfum)\b|او دو|بارفان|تواليت/i.test(t + ' ' + tn);
+    const find = s2 => { for (const [k, en, ar] of PF_KIND_DEF) if (en.test(s2) || ar.test(s2)) return k; return null; };
+    // «مجموعة بلو دايموند» طقم، بس «عطر وود من مجموعة وود» عطر من خط عطور
+    const isSet = PF_KIND_DEF[1][1].test(t) || PF_KIND_DEF[1][2].test(tn) || /^(ال)?مجموعه\s/.test(tn);
+    v = conc && !isSet ? 'perfume' : isSet ? 'set' : find(t) || find(tn) || (PF_IS.test(t) || PF_IS.test(tn) ? 'perfume' : find(segs) || 'perfume');  // متجر عطور: اللي ما له نوع غالبًا عطر
+    // «Luban Al Akhdar 12ml» عطر زيتي مو بخور: البخور بالجرام
+    if (v === 'bakhoor' && /\d\s*(ml|مل)(?![a-z\u0600-\u06ff])/i.test(tn)) v = /attar|oil|دهن|زيت|\b(3|6|12|20|24)\s*ml/i.test(tn) ? 'oil' : 'perfume';
+    if (pfKindMemo.size > 20000) pfKindMemo.clear();
+    pfKindMemo.set(mk, v);
+    return v;
+  }
+  function pfInfo(p) {
+    if (p._pi !== undefined) return p._pi;
+    if (!p.ptext) return (p._pi = null);
+    const t = String(p.title), x = p.ptext, tn = normalize(t), xn = normalize(x);
+    const segs = xn.split(' | ').slice(1).filter(s2 => s2.length <= 60).join(' | ');
+    const kind = pfKind(t, x), f = perfOf(p) || {};
+    const gOf = s2 => { const m = /\b(men|man|homme|for him|male|masculine)\b|رجالي|للرجال/i.test(s2), w = /\b(women|woman|ladies|femme|for her|female|feminine)\b|نسائي|للنساء/i.test(s2);
+      return /\bunisex\b|للجنسين/i.test(s2) || (m && w) ? 'u' : m ? 'm' : w ? 'w' : ''; };
+    const g = gOf(t + ' ' + tn) || gOf(segs);
+    let conc = f.conc || '';
+    if (!conc) { const c = PF_CONC.find(([re]) => re.test(segs)); if (c && kind === 'perfume') conc = c[1]; }
+    const fam = PF_FAM.filter(([, , re]) => re.test(t) || re.test(tn) || re.test(xn)).map(a => a[0]);
+    const F = PARTNER_FEEDS[p.platform] || {};
+    // عالم العود: خط عطوره المستوحاة، وبوليفارد: مجموعة «سديم» («INTERLUDE BLACK IRIS-SADEEM» بـ8 ريال)
+    const dupe = (kind === 'perfume' || kind === 'oil' || kind === 'set') && (PF_DUPE.test(x) || PF_DUPE.test(xn) || (!!F.dupeAny && /inspired|مستوحى/i.test(xn)) || (!!F.dupeRe && F.dupeRe.test(xn)));
+    return (p._pi = { kind, g, conc, fam, ml: f.ml || 0, dupe });
+  }
+  function passPerf(p) {
+    const f = state.pfF || {};
+    if (!f.kind && !f.g && !f.conc && !f.fam && !f.size) return true;
+    const c = pfInfo(p);
+    if (!c) return false;
+    if (f.kind && c.kind !== f.kind) return false;
+    if (f.g && c.g !== f.g && !(c.g === 'u' && f.g !== 'u')) return false;  // «رجالي» يشمل للجنسين
+    if (f.conc && c.conc !== f.conc) return false;
+    if (f.fam && !c.fam.includes(f.fam)) return false;
+    if (f.size) { const b = PF_SIZE.find(z => z[0] === f.size); if (!c.ml || !b[1](c.ml)) return false; }
+    return true;
+  }
+  function pfBarHtml(base) {
+    if (!state.perfMode) return '';
+    const all = base.filter(p => pfInfo(p)), f = state.pfF || {};
+    const chip = (k, v, label, n) => `<button type="button" class="cf-chip${(f[k] || '') === v ? ' on' : ''}" data-pff="${k}" data-v="${v}" aria-pressed="${(f[k] || '') === v}">${label}${n != null ? ` <i class="num">${n}</i>` : ''}</button>`;
+    const row = (title, k, items) => items.length ? `<div class="cf-row"><span class="cf-k">${title}</span><div class="cf-chips">${chip(k, '', 'الكل')}${items.join('')}</div></div>` : '';
+    const n = fn => all.filter(p => fn(pfInfo(p))).length;
+    const kinds = PF_KINDS.map(([k, l]) => [k, l, n(c => c.kind === k)]).filter(x => x[2] || PF_KIND_Q[x[0]])
+      .map(([k, l, c]) => c ? chip('kind', k, l, c) : `<button type="button" class="cf-chip" data-pfk="${k}">${l}</button>`);
+    const gs = PF_G.map(([k, l]) => [k, l, n(c => c.g === k)]).filter(x => x[2]).map(([k, l, c]) => chip('g', k, l, c));
+    const concs = [...new Set(all.map(p => pfInfo(p).conc).filter(Boolean))].map(c => [c, n(x => x.conc === c)]).sort((a, b) => b[1] - a[1]).map(([c, k]) => chip('conc', c, c, k));
+    const fams = PF_FAM.map(([k, l]) => [k, l, n(c => c.fam.includes(k))]).filter(x => x[2]).sort((a, b) => b[2] - a[2]).map(([k, l, c]) => chip('fam', k, l, c));
+    const sizes = PF_SIZE.map(([k, fn, l]) => [k, l, n(c => c.ml && fn(c.ml))]).filter(x => x[2]).map(([k, l, c]) => chip('size', k, l, c));
+    const dupes = all.filter(p => pfInfo(p).dupe).length;
+    return `<section class="cf-bar pf-bar" aria-label="قسم العطور">
+      <div class="cf-head"><b>🌸 قسم العطور</b><span><bdi class="num">${all.length}</bdi> منتج من متاجر عطور في عمان</span></div>
+      ${row('النوع', 'kind', kinds)}${row('لمن', 'g', gs)}${row('التركيز', 'conc', concs)}${row('العائلة العطرية', 'fam', fams)}${row('الحجم', 'size', sizes)}
+      ${dupes ? '<p class="cf-note">⚠️ بعض العطور مستوحاة من عطور ماركات ومو الأصلية، وعليها علامة مستوحى.</p>' : ''}
+    </section>`;
+  }
+  const PF_G_TXT = { m: 'رجالي', w: 'نسائي', u: 'للجنسين' };
+  function pfExtraHtml(p) {
+    const c = pfInfo(p);
+    if (!c) return '';
+    const bits = [];
+    if (c.dupe) bits.push('<span class="dupe">مستوحى (مو الأصلي)</span>');
+    const kl = c.kind !== 'perfume' && c.kind !== 'other' ? (PF_KINDS.find(k => k[0] === c.kind) || [])[1] : '';
+    if (kl) bits.push(`<span>${kl}</span>`);
+    if (c.g && !(perfOf(p) || {}).g) bits.push(`<span>${PF_G_TXT[c.g]}</span>`);
+    return bits.length ? `<div class="pf">${bits.join('')}</div>` : '';
+  }
   // المتاجر الشريكة: ما عندها تقييمات للمنتجات، فنعرض اللي نعرفه عنها من صفحاتها (أصلي، التوصيل، الدفع)
   const PARTNER_INFO = {
     vperfumes: { trust: 'أصلي ومغلّف حسب المتجر', short: 'أصلي حسب المتجر', why: 'عطر أصلي ومغلّف حسب V Perfumes', whyItem: 'منتج أصلي ومغلّف حسب V Perfumes', freeOverOmr: 20, cod: true },
@@ -2915,6 +3104,20 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     mahaseel: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
     muthalath: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
     barista: { trust: 'متجر قهوة عماني', short: 'متجر عماني' },
+    amouage: { trust: 'دار عطور عمانية', short: 'دار عمانية', ship: 'السعر من موقع أمواج العالمي بالدولار' },
+    swissarabian: { trust: 'متجر الماركة في عمان', short: 'متجر الماركة' },
+    asgharali: { trust: 'متجر الماركة في عمان', short: 'متجر الماركة' },
+    omanluxury: { trust: 'متجر عطور عماني', short: 'متجر عماني' },
+    alhajis: { trust: 'متجر عطور في عمان', short: 'متجر في عمان' },
+    oudbank: { trust: 'متجر عطور في عمان', short: 'متجر في عمان' },
+    boulevard: { trust: 'متجر عطور في عمان', short: 'متجر في عمان' },
+    oudworlds: { trust: 'متجر عطور في عمان', short: 'متجر في عمان' },
+    artal: { trust: 'متجر الماركة', short: 'متجر الماركة' },
+    raydan: { trust: 'متجر الماركة في عمان', short: 'متجر الماركة' },
+    ibraq: { trust: 'متجر الماركة في عمان', short: 'متجر الماركة' },
+    almajed: { trust: 'متجر الماركة في عمان', short: 'متجر الماركة' },
+    nawader: { trust: 'متجر عود إماراتي', short: 'متجر إماراتي', ship: 'السعر محوّل من الدرهم الإماراتي' },
+    alkhanjar: { trust: 'متجر عطور عماني', short: 'متجر عماني' },
   };
 
   // ================= قسم القهوة: معلومات المحصول وفلاتره والكولد برو =================
@@ -3166,6 +3369,18 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       // الأفضل يكون كيس محصول نعرف وزنه (نقارن سعر الـ250 جرام صح)
       if (beans.length >= 3 && beans.length >= pool.length * 0.3) pool = weighed.length >= 3 ? weighed : beans;
     }
+    // متاجر العطور: الأفضل عطر أو دهن (مو مبخرة ولا لوشن) إلا إذا طلبتها، والعطور «المستوحاة» ما تنافس الأصلية
+    if (pool.some(p => pfInfo(p))) {
+      // نوع المطلوب من كلام البحث نفسه: «دهن عود» دهن، «بخور» بخور، «interlude» أو «عطر عود» عطر
+      if (!(state.pfF && state.pfF.kind)) {
+        const qk = pfKind(state.query || '', state.query || ''), want = qk === 'perfume' ? ['perfume'] : [qk];
+        const pk = pool.filter(p => { const c = pfInfo(p); return !c || want.includes(c.kind); });
+        const po = pool.filter(p => { const c = pfInfo(p); return !c || c.kind === 'perfume' || c.kind === 'oil'; });
+        if (pk.length) pool = pk; else if (qk === 'perfume' && po.length) pool = po;
+      }
+      const real = pool.filter(p => !(pfInfo(p) || {}).dupe);
+      if (real.length) pool = real;
+    }
     const best = pool.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = pool.reduce((a, b) => tot(b) < tot(a) ? b : a);
     const rated = pool.filter(p => !p.sellerRated && !p.unrated);
@@ -3272,7 +3487,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     return (lo == null || v >= lo - 1e-9) && (hi == null || v <= hi + 1e-9);
   }
   const passBase = p => state.platforms.has(p.platform) && p.rating >= state.minRating && (p.freeShip || !state.freeOnly) && inPrice(p);
-  const passFilters = p => passBase(p) && passCoffee(p);
+  const passFilters = p => passBase(p) && passCoffee(p) && passPerf(p);
   function parsePrice(s) {
     const t = String(s || '').trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٫,]/g, '.').replace(/[^0-9.]/g, '');
     const v = parseFloat(t);
@@ -3410,7 +3625,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
         <div class="pstore">${dotI(p.platform)}<span>${PLATFORMS[p.platform].name}</span></div>
         <div class="ptitle" title="${esc(p.title)}">${esc(p.title)}</div>
         <div class="rating">${PARTNER_INFO[p.platform] && p.unrated ? `<span class="ok">✓ ${PARTNER_INFO[p.platform].short}</span>` : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
-        ${perfHtml(p, false)}${coffeeHtml(p, false)}
+        ${perfHtml(p, false)}${pfExtraHtml(p)}${coffeeHtml(p, false)}
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
         ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
@@ -3428,7 +3643,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
         <span class="ribbon">الخيار الأفضل لهذا البحث</span>
         <h3>${esc(p.title)}</h3>
         <div class="rating">${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span> · ${pill(p.platform, true)}</div>
-        ${perfHtml(p, true)}${coffeeHtml(p, true)}
+        ${perfHtml(p, true)}${pfExtraHtml(p)}${coffeeHtml(p, true)}
         <div class="reason">${reasonHtml(p, list)}</div>
         <div class="row"><span class="big-price">${money(p.price)}</span>
           ${d >= 5 ? `<span class="old">${money(p.original)}</span><span class="disc static">-${d}%</span>` : ''}
@@ -3569,7 +3784,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     if (state.mode === 'basket' && state.basket && state.basket.data) { box.innerHTML = basketHtml(); return; }
     if (!state.query) { box.innerHTML = ''; return; }
     const list = state.products.filter(passFilters);
-    const cfBar = cfBarHtml(state.products.filter(passBase));
+    const cfBar = cfBarHtml(state.products.filter(passBase)) + pfBarHtml(state.products.filter(passBase));
     const best = scoreProducts(list, PRIORITY[state.priority][1]);
     const sorters = {
       best: (a, b) => (b.score - a.score), price_asc: (a, b) => tot(a) - tot(b), price_desc: (a, b) => tot(b) - tot(a),
@@ -3579,9 +3794,9 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     // من كل متجر نعرض أفضل N حسب الأولوية الحالية (تتغيّر فوري)
     const ordered = KEYS.flatMap(k => list.filter(p => p.platform === k).sort(sorters[state.sort]).slice(0, state.limit)).sort(sorters[state.sort]);
 
-    const cfKeys = state.coffeeMode ? coffeeKeys().filter(k => state.platforms.has(k)) : null;
+    const cfKeys = state.coffeeMode ? coffeeKeys().filter(k => state.platforms.has(k)) : state.perfMode ? perfKeys().filter(k => state.platforms.has(k)) : null;
     let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${cfKeys ? cfKeys.length : state.platforms.size} متاجر</span></div>${linkHtml()}` + (cfKeys
-      ? ''  // قسم القهوة: عنوانه فوق يشرح، فما نكرر ملاحظة المتاجر
+      ? ''  // قسم القهوة والعطور: عنوانه فوق يشرح، فما نكرر ملاحظة المتاجر
       : `<div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`);
     if (!state.platforms.size) {
       box.innerHTML = html + '<div class="empty">اختر منصة واحدة على الأقل من الفلاتر لعرض النتائج.</div>';
@@ -3589,6 +3804,10 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     }
     if (!list.length && Object.values(state.cf || {}).some(Boolean)) {
       box.innerHTML = html + cfBar + '<div class="empty">ما في محاصيل بهالفلاتر. جرّب تختار الكل في واحد منها.</div>';
+      return;
+    }
+    if (!list.length && Object.values(state.pfF || {}).some(Boolean)) {
+      box.innerHTML = html + cfBar + '<div class="empty">ما في عطور بهالفلاتر. جرّب تختار الكل في واحد منها.</div>';
       return;
     }
     if (!list.length) {
@@ -3698,14 +3917,16 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const id = ++searchId;
     state.mode = 'search';
     // قسم القهوة له بحثه الخاص: متاجر القهوة العمانية بس
-    const keys = state.coffeeMode ? coffeeKeys() : KEYS;
-    if (state.query !== query) state.cf = {};  // فلاتر القهوة تبدأ من جديد مع كل بحث
+    const keys = state.coffeeMode ? coffeeKeys() : state.perfMode ? perfKeys() : KEYS;
+    if (state.query !== query) { state.cf = {}; state.pfF = {}; }  // فلاتر القهوة والعطور تبدأ من جديد مع كل بحث
+    if (state.pfPending) { state.pfF = { kind: state.pfPending }; state.pfPending = null; }
+    state.pfBrowse = state.perfMode && state.pfBrowseNext || null; state.pfBrowseNext = null;
     if (state.cfPending) { state.cf = { kind: state.cfPending }; state.cfPending = null; }  // ضغطت «مطاحن» وهي مو في النتائج
     state.cfBrowse = state.coffeeMode && state.cfBrowseNext || null; state.cfBrowseNext = null;
     state.query = query;
-    { const tq = trText(query); $(state.coffeeMode ? 'cfQ' : 'q').value = tq != null ? tq.trim() : query; }
+    { const tq = trText(query); $(state.coffeeMode ? 'cfQ' : state.perfMode ? 'pfQ' : 'q').value = tq != null ? tq.trim() : query; }
     document.querySelectorAll('.chip-btn').forEach(b => b.classList.toggle('on', b.dataset.q === query));
-    const key = (state.coffeeMode ? 'cf:' + (state.cfBrowse ? state.cfBrowse + ':' : '') : '') + normalize(query);
+    const key = (state.coffeeMode ? 'cf:' + (state.cfBrowse ? state.cfBrowse + ':' : '') : state.perfMode ? 'pf:' + (state.pfBrowse ? state.pfBrowse + ':' : '') : '') + normalize(query);
     const cached = cache.get(key);
     if (cached) {
       if (!instant) { userSearches++; track('search', query); }
@@ -4223,15 +4444,17 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
     // متاجر القهوة في سطر واحد مختصر (عشان الصفحة الرئيسية تبقى بسيطة)
-    { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
-      $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
+    { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prf = perfKeys();
+      $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k) && !prf.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
+        (prf.length ? `<span>🌸 <bdi class="num">${prf.length}</bdi> متاجر عطور</span>` : '') +
         (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> متجر قهوة عماني</span>` : ''); }
     // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
     const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`;
-    const coffeeKeys = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn);
-    $('platformChecks').innerHTML = KEYS.filter(k => !coffeeKeys.includes(k)).map(pill).join('') +
-      (coffeeKeys.length ? `<details class="check-group"><summary><span>☕ متاجر القهوة العمانية</span> <b>${coffeeKeys.length}</b></summary><div class="checks">${coffeeKeys.map(pill).join('')}</div></details>` : '');
+    const coffeeKeys = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prfKeys = perfKeys();
+    $('platformChecks').innerHTML = KEYS.filter(k => !coffeeKeys.includes(k) && !prfKeys.includes(k)).map(pill).join('') +
+      (prfKeys.length ? `<details class="check-group pf-group"><summary><span>🌸 متاجر العطور</span> <b>${prfKeys.length}</b></summary><div class="checks">${prfKeys.map(pill).join('')}</div></details>` : '') +
+      (coffeeKeys.length ? `<details class="check-group cf-group"><summary><span>☕ متاجر القهوة العمانية</span> <b>${coffeeKeys.length}</b></summary><div class="checks">${coffeeKeys.map(pill).join('')}</div></details>` : '');
     $('sortSel').innerHTML = Object.entries(SORTS).map(([k, l]) => `<option value="${k}">${l.replace(EMO_LEAD, '')}</option>`).join('');
     const isLive = k => (k === 'ebay' && EBAY_API) || (k === 'aliexpress' && aliLive) || k === 'etsy';
     const renderSources = () => { if (!$('sources')) return; $('sources').innerHTML = KEYS.map(k => `<div class="src-row"><span>${PLATFORMS[k].name}</span><span class="pill-demo"${isLive(k) ? ' style="background:var(--tint-1);color:var(--good)"' : ''}>${isLive(k) ? 'حقيقي ✓' : 'توضيحي'}</span></div>`).join(''); };
@@ -4261,9 +4484,10 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const CF_QUICK = ['قهوة مختصة', 'قهوة عمانية', 'قهوة اثيوبية', 'كولومبيا', 'جيشا', 'كبسولات', 'دريب', 'مطحنة قهوة', 'في 60', 'ميزان قهوة', 'ابريق تقطير'];
     $('cfQuick').innerHTML = CF_QUICK.map(q => `<button type="button" class="cf-chip" data-cfq="${esc(q)}">${esc(q)}</button>`).join('');
     function openCoffee(q) {
+      if (state.perfMode) closePerf(true);
       state.coffeeMode = true;
       document.body.classList.add('coffee-view');
-      document.querySelectorAll('#platformChecks details').forEach(d => (d.open = true));
+      document.querySelectorAll('#platformChecks details.cf-group').forEach(d => (d.open = true));
       $('coffeeHead').hidden = false;
       if (location.hash !== '#coffee') history.pushState(null, '', '#coffee');
       search(q || $('cfQ').value || 'قهوة مختصة');
@@ -4273,6 +4497,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
       if (!state.coffeeMode) return;
       state.coffeeMode = false; state.cf = {}; state.query = ''; state.products = [];
       document.body.classList.remove('coffee-view'); document.body.classList.add('pre-search');
+      document.querySelectorAll('#platformChecks details').forEach(d => (d.open = false));
       $('coffeeHead').hidden = true; $('status').innerHTML = ''; $('cfQ').value = '';
       if (!fromHistory && location.hash === '#coffee') history.pushState(null, '', location.pathname + location.search);
       render(); window.scrollTo(0, 0);
@@ -4312,8 +4537,68 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     }
     $('cfImgBtn').addEventListener('click', () => $('cfImgIn').click());
     $('cfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; cfImageSearch(f); });
-    window.addEventListener('popstate', () => { if (location.hash === '#coffee') { if (!state.coffeeMode) openCoffee(); } else closeCoffee(true); });
+    window.addEventListener('popstate', () => {
+      if (location.hash === '#coffee') { closePerf(true); if (!state.coffeeMode) openCoffee(); }
+      else if (location.hash === '#perfume') { closeCoffee(true); if (!state.perfMode) openPerf(); }
+      else { closeCoffee(true); closePerf(true); }
+    });
     if (location.hash === '#coffee') setTimeout(() => openCoffee(), 0);
+    // 🌸 قسم العطور: صفحة لها بحثها الخاص (#perfume)، متاجر العطور بس
+    const PF_QUICK = ['عطر عود', 'دهن عود', 'بخور', 'عطر رجالي', 'عطر نسائي', 'مسك', 'عنبر', 'زعفران', 'أمواج', 'معطر جسم', 'طقم هدية'];
+    $('pfQuick').innerHTML = PF_QUICK.map(q => `<button type="button" class="cf-chip" data-pfq="${esc(q)}">${esc(q)}</button>`).join('');
+    function openPerf(q) {
+      if (state.coffeeMode) closeCoffee(true);
+      state.perfMode = true;
+      document.body.classList.add('perf-view');
+      document.querySelectorAll('#platformChecks details.pf-group').forEach(d => (d.open = true));
+      $('perfHead').hidden = false;
+      if (location.hash !== '#perfume') history.pushState(null, '', '#perfume');
+      search(q || $('pfQ').value || 'عطور');
+      window.scrollTo(0, 0);
+    }
+    function closePerf(fromHistory) {
+      if (!state.perfMode) return;
+      state.perfMode = false; state.pfF = {}; state.query = ''; state.products = [];
+      document.body.classList.remove('perf-view'); document.body.classList.add('pre-search');
+      document.querySelectorAll('#platformChecks details').forEach(d => (d.open = false));
+      $('perfHead').hidden = true; $('status').innerHTML = ''; $('pfQ').value = '';
+      if (!fromHistory && location.hash === '#perfume') history.pushState(null, '', location.pathname + location.search);
+      render(); window.scrollTo(0, 0);
+    }
+    $('perfTile').addEventListener('click', () => openPerf('عطور'));
+    $('pfBack').addEventListener('click', () => closePerf(false));
+    $('pfForm').addEventListener('submit', e => { e.preventDefault(); const q = $('pfQ').value.trim(); if (q) search(q); });
+    $('pfQuick').addEventListener('click', e => { const b = e.target.closest('[data-pfq]'); if (b) search(b.dataset.pfq); });
+    document.addEventListener('click', e => {
+      const k = e.target.closest('[data-pfk]');
+      if (k) { state.pfPending = state.pfBrowseNext = k.dataset.pfk; search(PF_KIND_Q[k.dataset.pfk] || 'عطور'); return; }
+      const b = e.target.closest('[data-pff]');
+      if (!b) return;
+      state.pfF = Object.assign({}, state.pfF, { [b.dataset.pff]: b.dataset.v });
+      render();
+    });
+    // 📷 بحث بالصورة في قسم العطور: اسم العطر من الصورة، وإذا ما لقينا نفس العطر نجيب الشبيه (النوع والعائلة)
+    async function pfImageSearch(file) {
+      if (!file) return;
+      $('status').innerHTML = '<div class="status" aria-live="polite"><b>📷 جارِ التعرف على المنتج في الصورة...</b><span class="spinner"></span></div>';
+      let q;
+      try { q = await imageToQuery(file); } catch (e) {
+        $('status').innerHTML = '<div class="status warn">ما قدرنا نتعرف على المنتج في الصورة. جرّب صورة أوضح للمنتج لحاله، أو اكتب اسمه.</div>';
+        return;
+      }
+      toast('📷 ' + q);
+      const s2 = String(q).toLowerCase().replace(/\b(bottle|perfume|fragrance|spray|eau de parfum|eau de toilette|cologne|for (men|women)|men|women|glass|luxury)\b/g, ' ').replace(/\s+/g, ' ').trim();
+      const fam = PF_FAM.find(([, , re]) => re.test(q));
+      const qs = [q, s2, fam ? 'عطر ' + fam[1] : '', 'عطور'].filter((x, i, a) => x && a.indexOf(x) === i);
+      for (const cq of qs) {
+        if (!state.perfMode) return;
+        await search(cq);
+        if (state.products.some(p => passPerf(p))) break;
+      }
+    }
+    $('pfImgBtn').addEventListener('click', () => $('pfImgIn').click());
+    $('pfImgIn').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; pfImageSearch(f); });
+    if (location.hash === '#perfume') setTimeout(() => openPerf(), 0);
     document.addEventListener('click', e => {
       if (!e.target.closest('[data-cf-exit]')) return;
       const q = state.query;
