@@ -82,7 +82,7 @@ function parseShopify(json, base) {
     const cheap = vs.find(v => +v.price === price) || {};
     const size = /\d\s*(ml|مل|g|gm|gr|جرام|غرام|tola|توله|تولة|kg|كيلو)\b/i.test(cheap.title || '') && !/\d\s*(ml|مل|g|gm|tola|توله)\b/i.test(p.title || '') ? ' ' + String(cheap.title).trim() : '';
     const img = (p.images && p.images[0] && p.images[0].src) || '';
-    if (!(price > 0) || !img) return null;
+    if (!(price > 0) || !isFinite(price) || !img) return null;
     const tags = Array.isArray(p.tags) ? p.tags.join(' ') : String(p.tags || '');
     const cmp = Math.max(0, ...vs.map(v => +v.compare_at_price || 0));
     return { t: (String(p.title || '').trim() + size).trim(), p: price, o: cmp > price * 1.02 ? cmp : 0, i: img, u: base + '/products/' + p.handle, b: String(p.vendor || ''), ty: String(p.product_type || ''), tags };
@@ -208,18 +208,21 @@ async function fooh() {
 
 // ---------- متاجر العطور العمانية ----------
 // شوبيفاي: أمواج (دار عطور عمانية، أسعار موقعها العالمي بالدولار)، سويس أرابيان عمان، أصغر علي عمان، عمان لكشري، الحاجّي، بنك العود
-async function shopifyStore(B, name, tags, cur = 'OMR') {
+async function shopifyStore(B, name, tags, cur = 'OMR', ownTags = true) {
   const all = [];
+  // العينات المجانية وتغليف الهدايا وبطاقات التهنئة مو منتجات
+  const SKIP = /complimentary|gift ?wrap|greeting card|تغليف|بطاقة تهنئة/i;
   for (let page = 1; page <= 20; page++) {
     const items = parseShopify(await get(`${B}/products.json?limit=250&page=${page}`), B);
     if (!items.raw) break;
-    all.push(...items.map(x => Object.assign(x, { tags: [tags, x.b, x.ty, x.tags].filter(Boolean).join(' | ') })));
+    // وسوم أمواج فيها أسماء الدول والعملات («africa dollar $»): نكتفي بنوع المنتج
+    all.push(...items.filter(x => !SKIP.test(x.t + ' ' + x.ty)).map(x => Object.assign(x, { tags: [tags, /vendor-unknown/.test(x.b) ? '' : x.b, x.ty, ownTags ? x.tags : ''].filter(Boolean).join(' | ') })));
     console.log(name, 'page', page, all.length);
     await sleep(700);
   }
   return { updated: new Date().toISOString(), cur, store: B, brands: [], items: all.map(pack) };
 }
-const amouage = () => shopifyStore('https://amouage.com', 'amouage', 'amouage | أمواج', 'USD');
+const amouage = () => shopifyStore('https://amouage.com', 'amouage', 'amouage | أمواج', 'USD', false);
 const swissarabian = () => shopifyStore('https://om.swissarabian.com', 'swissarabian', 'swiss arabian | سويس أرابيان');
 const asgharali = () => shopifyStore('https://om.asgharali.com', 'asgharali', 'asgharali | أصغر علي');
 const omanluxury = () => shopifyStore('https://omanluxury.store', 'omanluxury', 'oman luxury | عمان لكشري');
