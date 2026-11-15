@@ -5,7 +5,7 @@ const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true 
 const SITE = 'https://abtkar2011-bot.github.io/Qarin/';
 (async () => {
   const b = await chromium.launch(); const log = [];
-  for (const [name, q] of [['tile', null], ['adham', 'ادهم'], ['wguji', 'دبليو قوجي'], ['geisha', 'جيشا'], ['gucci', 'عطر قوجي'], ['grinder', 'مطحنة قهوة']]) {
+  for (const [name, q] of [['adham', 'ادهم'], ['adham2', 'قهوة ادهم'], ['wguji', 'دبليو قوجي'], ['eth', 'قهوة اثيوبية طبيعي']]) {
     const ctx = await b.newContext({ ...devices['iPhone 14 Pro'], deviceScaleFactor: 2, locale: 'ar-OM' });
     await ctx.addInitScript(() => { localStorage.setItem('qarin.lang', 'ar'); localStorage.setItem('qarin.instHide', String(Date.now())); });
     const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
