@@ -1,0 +1,28 @@
+prints index: {"model":"Xenova/dinov2-small","dtype":"q8","side":320,"dim":384,"v":"2026-11-15T21:31","stores":{"alhajis":{"n":1781,"ok":1781},"alkhanjar":{"n":111,"ok":111},"almajed":{"n":204,"ok":204},"amouage":{"n":105,"ok":105},"artal":{"n":4,"ok":0},"asgharali":{"n":64,"ok":64},"barista":{"n":222,"ok":222},"boulevard":{"n":674,"ok":674},"bunalqassab":{"n":28,"ok":28},"copper":{"n":212,"ok":211},"dermazone":{"n":131,"ok":131},"epanda":{"n":1087,"ok":1087},"fooh":{"n":39,"ok":39},"ibraq":{"n":133,"ok":133},"mahaseel":{"n":453,"ok":453},"muthalath":{"n":436,"ok":436},"nawader":{"n":73,"ok":73},"omanluxury
+cases 24
+TOP1 perfume vperfumes | Victor Hills Influencer EDP For Men 100ML | got: Victor Hills Influencer EDP For Men 100M / زيت جهاز تعطير بوازيه من مجموعة كلاسيك 5 | 📷 نفس الشكل في المتاجر العمانية | 4569ms
+TOP1 perfume vperfumes | Burberry EDP For Women 100ML | got: Burberry EDP For Women 100ML / Burberry EDP L 100ML | 📷 نفس الشكل في المتاجر العمانية | 4514ms
+TOP1 perfume alhajis | VALENTINO BORN IN ROMA UOMO RENDEZVOUS RUBY EDT (M | got: VALENTINO BORN IN ROMA UOMO RENDEZVOUS R / VALENTINO BORN IN ROMA DONNA RENDEZVOUS  | 📷 نفس الشكل في المتاجر العمانية | 1553ms
+TOP1 perfume alhajis | Reef Princess Perfumes 100 ML | got: Reef Princess Perfumes 100 ML / Narciso Rodriguez Musc Nude EDP For Wome | 📷 نفس الشكل في المتاجر العمانية | 4103ms
+TOP3 perfume swissarabian | JANNET EL FIRDAUS (R2B/2) | got: JANNET EL FIRDAUS (R2B) / JANNET EL FIRDAUS (R2B/2) | 📷 نفس الشكل في المتاجر العمانية | 2918ms
+TOP3 perfume swissarabian | SHAGHAF NECTAR BLUSH MINI - 25 ML | got: SHAGHAF NECTAR BLUSH / SHAGHAF NECTAR BLUSH MINI - 25 ML | 📷 نفس الشكل في المتاجر العمانية | 4246ms
+TOP1 perfume oudworlds | Signature 14 | got: Signature 14 / Signature 15 | 📷 نفس الشكل في المتاجر العمانية | 6018ms
+TOP1 perfume oudworlds | Signature 6 | got: Signature 6 / Signature 8 | 📷 نفس الشكل في المتاجر العمانية | 5417ms
+TOP1 perfume boulevard | Stronger With You Powerfully | got: Stronger With You Powerfully / STRONGER WITH YOU EDT | 📷 نفس الشكل في المتاجر العمانية | 2650ms
+TOP1 perfume boulevard | Halfeti | got: Halfeti / Penhaligons Halfeti EDP 100ML | 📷 نفس الشكل في المتاجر العمانية | 4201ms
+TOP1 coffee mahaseel | كولومبيا - مَـلاذ (حصري لمحاصيل البُن) - ٢٠٠ جرام  | got: كولومبيا - مَـلاذ (حصري لمحاصيل البُن) - / كينيا - كاريميكوي (حصري لمحاصيل البُن) - | 📷 نفس الشكل في المتاجر العمانية | 3175ms
+TOP1 coffee mahaseel | صندوق محمصة الرياض الكلاسيكي لليوم الوطني (١١) | got: صندوق محمصة الرياض الكلاسيكي لليوم الوطن / صندوق مُفضلات قهاوي الحليب لليوم الوطني  | 📷 نفس الشكل في المتاجر العمانية | 8882ms
+MISS coffee souqalbon | البرازيل – كيت كات 250g جرام | got: كولومبيا – فيلا ريكا 250g جرام / كولومبيا – هويلا 250g جرام | 📷 نفس الشكل في المتاجر العمانية | 2539ms
+MISS coffee souqalbon | قوجي – أثيوبيا 250g جرام | got: كولومبيا – هويلا 250g جرام / كولومبيا – فيلا ريكا 250g جرام | 📷 نفس الشكل في المتاجر العمانية | 2399ms
+TOP1 coffee epanda | Coffee Flexible dripper | got: Coffee Flexible dripper / Timemore Turbo 01 Crystal Eye Glass Drip | 📷 نفس الشكل في المتاجر العمانية | 2870ms
+TOP1 coffee epanda | Plastic Ice maker mold | got: Plastic Ice maker mold / Sillicon Ice mold4 | 📷 نفس الشكل في المتاجر العمانية | 2639ms
+TOP1 coffee copper | Level 3: Professional Home Espresso – Sage × Coppe | got: Level 3: Professional Home Espresso – Sa / كبسولات محمصة قهوة الصيف - مزيج نزهة الك | 📷 أقرب شكل لصورتك في المتاجر العمانية | 2562ms
+TOP1 coffee copper | Latte Decoration Set | got: Latte Decoration Set / أولالا ماتشا درجة أحتفالية (30 جم) | 📷 نفس الشكل في المتاجر العمانية | 2301ms
+TOP3 coffee bunalqassab | Candy (كاندي) | got: Shorouq (شروق) / Candy (كاندي) | 📷 نفس الشكل في المتاجر العمانية | 2510ms
+TOP3 coffee bunalqassab | Green Omani Box - بوكس القهوة العمانية | got: Red Infuse Box - بوكس الانفيوزد / Yellow Ethiopia Box - بوكس مختارات أثيوب | 📷 نفس الشكل في المتاجر العمانية | 2801ms
+TOP1 main vperfumes | Victor Hills Influencer EDP For Men 100ML | got: Victor Hills Influencer EDP For Men 100M / زيت جهاز تعطير بوازيه من مجموعة كلاسيك 5 | 📷 نفس الشكل في المتاجر العمانية | 2626ms
+TOP3 main swissarabian | SHAGHAF NECTAR BLUSH MINI - 25 ML | got: SHAGHAF NECTAR BLUSH / SHAGHAF NECTAR BLUSH MINI - 25 ML | 📷 نفس الشكل في المتاجر العمانية | 3969ms
+TOP1 main mahaseel | كولومبيا - مَـلاذ (حصري لمحاصيل البُن) - ٢٠٠ جرام  | got: كولومبيا - مَـلاذ (حصري لمحاصيل البُن) - / كينيا - كاريميكوي (حصري لمحاصيل البُن) - | 📷 نفس الشكل في المتاجر العمانية | 10741ms
+TOP1 main epanda | Plastic Ice maker mold | got: Plastic Ice maker mold / Sillicon Ice mold4 | 📷 نفس الشكل في المتاجر العمانية | 5334ms
+SUMMARY top1 17/24  top3 22/24
+errors ["Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)","Failed to load resource: the server responded with a status of 404 (File not found)"]
