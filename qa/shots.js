@@ -18,6 +18,7 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     p.on('requestfailed', r => { const u = r.url(); if (!/\.(png|jpe?g|webp|gif|svg)(\?|$)/i.test(u) && !/alicdn|ebayimg|etsystatic|googletagmanager|google-analytics/.test(u)) p.bad.push('FAILED ' + (r.failure() || {}).errorText + ' ' + u.slice(0, 140)); });
     return p;
   };
+  const clr = p => p.evaluate(() => { const s = document.getElementById('status'); if (s) s.innerHTML = ''; }).catch(() => {});
   const done = async (p, to = 75000) => { await p.waitForTimeout(400); const t0 = Date.now(); const ok = await p.waitForFunction(() => document.querySelector('.status.done') || document.querySelector('.status.warn'), null, { timeout: to }).then(() => true).catch(() => false); return { ok, ms: Date.now() - t0 }; };
   const status = p => p.evaluate(() => (document.getElementById('status') || {}).innerText || '').catch(() => '');
   const overflow = p => p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
@@ -61,18 +62,20 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     await p.click('#openFilters'); await p.waitForTimeout(500); chk(await p.locator('#sidebar').isVisible(), 'filters panel opens');
     await p.selectOption('#sortSel', { index: 1 }).catch(e => log(false, 'sort select', e.message)); await p.waitForTimeout(800);
     const sortName = await p.$eval('#sortSel', s => s.options[s.selectedIndex].text).catch(() => '');
-    await p.check('#freeOnly').catch(() => p.click('#freeOnly')); await p.waitForTimeout(800);
+    await p.locator('#freeOnly').check({ force: true }).catch(e => log(false, 'free toggle', e.message.slice(0, 80))); await p.waitForTimeout(800);
     const free = await p.locator('.pcard').count(); log(true, 'free shipping only', before + ' → ' + free);
-    await p.uncheck('#freeOnly').catch(() => p.click('#freeOnly')); await p.waitForTimeout(500);
+    await p.locator('#freeOnly').uncheck({ force: true }).catch(() => {}); await p.waitForTimeout(500);
     await p.fill('#priceMax', '5'); await p.dispatchEvent('#priceMax', 'input'); await p.dispatchEvent('#priceMax', 'change'); await p.waitForTimeout(900);
     const cheap = await p.locator('.pcard').count(); log(true, 'price max 5', before + ' → ' + cheap);
     await p.click('#priceClear').catch(() => {}); await p.waitForTimeout(500);
     const plats = await p.locator('#platformChecks input').count(); chk(plats >= 3, 'store checkboxes', plats);
     log(true, 'sort option', sortName);
-    await p.click('#closeFilters').catch(() => p.click('#scrim').catch(() => {})); await p.waitForTimeout(400);
+    await p.click('#closeFilters', { timeout: 5000 }).catch(() => p.click('#scrim', { timeout: 5000 }).catch(() => {})); await p.waitForTimeout(400);
+    chk(!(await p.evaluate(() => document.getElementById('app').classList.contains('filters-open'))), 'filters panel closes');
     errsOf(p, 'filters');
   });
   await step('fav / compare / cart', async () => {
+    await p.keyboard.press('Escape').catch(() => {}); await p.evaluate(() => { document.getElementById('app').classList.remove('filters-open'); document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); });
     const cards = p.locator('.pcard'); await cards.nth(1).locator('[data-fav]').click(); await p.waitForTimeout(300);
     chk((await p.locator('#favCount').innerText().catch(() => '0')).trim() !== '0', 'favourite added', await p.locator('#favCount').innerText().catch(() => ''));
     await p.click('#favFab').catch(() => {}); await p.waitForTimeout(500); chk(await p.locator('#favModal.on').count(), 'favourites window opens');
@@ -97,9 +100,11 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     errsOf(p, 'en');
   });
   await step('image search (main)', async () => {
-    await p.fill('#q', 'ساعة ذكية'); await p.press('#q', 'Enter'); await done(p);
+    await clr(p); await p.fill('#q', 'ساعة ذكية'); await p.press('#q', 'Enter'); await done(p);
+    await p.locator('.best-card').scrollIntoViewIfNeeded().catch(() => {});
     const img = p.locator('.best-card img').first(); await img.screenshot({ path: '/tmp/qa_img.png' });
-    await p.setInputFiles('#imgIn', '/tmp/qa_img.png'); const d = await done(p, 60000);
+    await clr(p); await p.setInputFiles('#imgIn', '/tmp/qa_img.png'); const d = await done(p, 60000);
+    await p.waitForSelector('.vs-box .vs-card', { timeout: 60000 }).then(() => log(true, 'same-look box (main)', '')).catch(() => log('warn', 'same-look box (main)', 'not shown'));
     const st = await status(p); const toast = await p.locator('#toast').innerText().catch(() => '');
     chk(d.ok && await p.locator('.pcard').count() > 0, 'image → results', toast + ' | ' + st); await snap(p, 'img_main'); errsOf(p, 'img');
   });
@@ -110,7 +115,7 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     if (await ins.count() < 3) await p.click('#basketAdd').catch(() => {});
     const n = await ins.count(); const items = ['شاحن ايفون', 'كفر ايفون', 'سماعات بلوتوث'];
     for (let i = 0; i < Math.min(3, n); i++) await ins.nth(i).fill(items[i]);
-    await p.click('#basketGo'); const d = await done(p, 120000); chk(d.ok, 'basket finished', d.ms + 'ms ' + await status(p));
+    await clr(p); await p.click('#basketGo'); const d = await done(p, 120000); chk(d.ok, 'basket finished', d.ms + 'ms ' + await status(p));
     const bk = await p.locator('.bk-card').count(); chk(bk >= 2, 'basket per store', bk);
     const sw = p.locator('[data-bk-swap]').first(); if (await sw.count()) { await sw.click(); await p.waitForTimeout(500); chk(await p.locator('#swapModal.on').count(), 'swap window opens'); await p.evaluate(() => document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on'))); }
     const c = p.locator('[data-bk-cart]').first(); if (await c.count()) { await c.click(); await p.waitForTimeout(400); log(true, 'basket → cart', await p.locator('#cartCount').innerText().catch(() => '')); }
@@ -145,7 +150,8 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     const ro = p.locator('.cf-bar .cf-row').filter({ hasText: 'المحمصة' }).locator('.cf-chip').nth(1); if (await ro.count()) { await ro.click(); await done(p, 20000); chk(await p.locator('.pcard').count() > 0, 'roaster filter', await ro.innerText().catch(() => '')); }
     const reset = p.locator('[data-reset]').first(); if (await reset.isVisible().catch(() => false)) { await reset.click(); await done(p, 30000); chk(await p.locator('.pcard').count() >= n0 * 0.8, 'reset button', await p.locator('.pcard').count()); } else log('warn', 'reset button', 'not visible');
     const more = p.locator('[data-more]').first(); if (await more.count()) { const a = await p.locator('.pcard').count(); await more.click(); await p.waitForTimeout(800); chk(await p.locator('.pcard').count() > a, 'show more', a + ' → ' + await p.locator('.pcard').count()); }
-    const img = p.locator('.best-card img').first(); if (await img.count()) { await img.screenshot({ path: '/tmp/qa_cf.png' }); await p.setInputFiles('#cfImgIn', '/tmp/qa_cf.png'); const d2 = await done(p, 60000); chk(d2.ok && await p.locator('.pcard').count() > 0, 'coffee image search', (await p.locator('#toast').innerText().catch(() => '')) + ' | ' + await status(p)); }
+    const img = p.locator('.best-card img').first(); if (await img.count()) { await img.screenshot({ path: '/tmp/qa_cf.png' }); await clr(p); await p.setInputFiles('#cfImgIn', '/tmp/qa_cf.png'); const d2 = await done(p, 60000);
+      await p.waitForSelector('.vs-box .vs-card', { timeout: 60000 }).then(async () => log(true, 'same-look box (coffee)', await p.locator('.vs-box .vs-t').first().innerText())).catch(() => log('warn', 'same-look box (coffee)', 'not shown')); chk(d2.ok && await p.locator('.pcard').count() > 0, 'coffee image search', (await p.locator('#toast').innerText().catch(() => '')) + ' | ' + await status(p)); }
     chk(await overflow(p) <= 1, 'no overflow', await overflow(p)); await snap(p, 'coffee'); errsOf(p, 'coffee');
   });
   await step('perfume', async () => {
@@ -160,14 +166,15 @@ const chk = (cond, name, info) => log(!!cond, name, info);
     const q = await p.locator('.pf .q').count(); log(true, 'global ratings shown on cards', q);
     await p.click('.prio-seg [data-prio="4"]').catch(() => {}); await p.waitForTimeout(900); log(true, 'quality pick', await p.locator('.best-card h3').first().innerText().catch(() => ''));
     await p.click('.prio-seg [data-prio="0"]').catch(() => {}); await p.waitForTimeout(900); log(true, 'cheap pick', await p.locator('.best-card h3').first().innerText().catch(() => ''));
-    const img = p.locator('.best-card img').first(); if (await img.count()) { await img.screenshot({ path: '/tmp/qa_pf.png' }); await p.setInputFiles('#pfImgIn', '/tmp/qa_pf.png'); const d2 = await done(p, 60000); chk(d2.ok && await p.locator('.pcard').count() > 0, 'perfume image search', (await p.locator('#toast').innerText().catch(() => '')) + ' | ' + await status(p)); }
+    const img = p.locator('.best-card img').first(); if (await img.count()) { await img.screenshot({ path: '/tmp/qa_pf.png' }); await clr(p); await p.setInputFiles('#pfImgIn', '/tmp/qa_pf.png'); const d2 = await done(p, 60000);
+      await p.waitForSelector('.vs-box .vs-card', { timeout: 60000 }).then(async () => log(true, 'same-look box (perfume)', await p.locator('.vs-box .vs-t').first().innerText())).catch(() => log('warn', 'same-look box (perfume)', 'not shown')); chk(d2.ok && await p.locator('.pcard').count() > 0, 'perfume image search', (await p.locator('#toast').innerText().catch(() => '')) + ' | ' + await status(p)); }
     chk(await overflow(p) <= 1, 'no overflow', await overflow(p)); await snap(p, 'perfume'); errsOf(p, 'perfume');
   });
   await step('coupons', async () => {
     await p.goto(SITE + 'coupons.html?qa=' + Date.now()); await p.waitForTimeout(4000);
     const cnt = await p.locator('#count').innerText().catch(() => ''); chk(/\d/.test(cnt), 'coupon count', cnt);
     const chips = await p.locator('button[data-f], [data-reg], [data-min], [data-type]').count(); log(true, 'filter chips', chips);
-    const btns = p.locator('.chips button, .flt button, button[data-v]'); const nb = Math.min(await btns.count(), 14); let empty = [];
+    const btns = p.locator('#fReg button, #fMin button, #fType button'); const nb = Math.min(await btns.count(), 14); let empty = [];
     for (let i = 0; i < nb; i++) { const bt = btns.nth(i); const l = await bt.innerText().catch(() => ''); await bt.click().catch(() => {}); await p.waitForTimeout(250); const c = await p.locator('#count').innerText().catch(() => ''); if (/^0\s/.test(c.trim())) empty.push(l.replace(/\s+/g, ' ')); }
     log(empty.length ? 'warn' : true, 'filters leading to 0 coupons', empty.join(', '));
     chk(await overflow(p) <= 1, 'no overflow', await overflow(p)); await snap(p, 'coupons'); errsOf(p, 'coupons');
