@@ -1,6 +1,10 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"كيس محصول": ["Coffee bag", "Sachet de café", "Bolsa de café", "袋装咖啡豆", "कॉफ़ी बैग", "کافی کا بیگ", "Пачка зерна", "Kahve paketi", "Kantong kopi"],
+"جرام": ["g", "g", "g", "克", "ग्राम", "گرام", "г", "g", "g"],
+"كيلو": ["kg", "kg", "kg", "公斤", "किलो", "کلو", "кг", "kg", "kg"],
+"لكل {n} جرام": ["per {n} g", "les {n} g", "por {n} g", "每{n}克", "प्रति {n} ग्राम", "فی {n} گرام", "за {n} г", "{n} g başına", "per {n} g"],
 "في {n}": ["V{n}", "V{n}", "V{n}", "V{n}", "V{n}", "V{n}", "V{n}", "V{n}", "V{n}"],
 "قهوة عمانية": ["Omani coffee", "Café omanais", "Café omaní", "阿曼咖啡", "ओमानी कॉफ़ी", "عمانی کافی", "Оманский кофе", "Umman kahvesi", "Kopi Oman"],
 "قهوة اثيوبية": ["Ethiopian coffee", "Café éthiopien", "Café etíope", "埃塞俄比亚咖啡", "इथियोपियाई कॉफ़ी", "ایتھوپین کافی", "Эфиопский кофе", "Etiyopya kahvesi", "Kopi Etiopia"],

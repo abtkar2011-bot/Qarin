@@ -609,6 +609,8 @@ table.dt { min-width: 0; font-size: .76rem; }
 .cf-back { justify-self: start; border: 0; background: none; color: var(--accent); font: inherit; font-size: 0.9rem; font-weight: 700; padding: 4px 0; cursor: pointer; }
 .cf-quick { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; padding-bottom: 2px; }
 .cf-quick::-webkit-scrollbar { display: none; }
+body.coffee-view #platformChecks > .check, body.coffee-view .check-group > summary { display: none !important; }
+body.coffee-view .check-group > .checks { margin-top: 0; }
 body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line, body.coffee-view .tools-row, body.coffee-view .basket-box, body.coffee-view .follow { display: none !important; }
 .notice.cf-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .cf-exit { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
@@ -2916,7 +2918,8 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     if (!p.ctext) return (p._cf = null);
     const t = String(p.title), x = p.ctext, tn = normalize(t), xn = normalize(x);
     if (CF_TOOLS_RE.test(t) || !CF_BEAN_RE.test(x)) return (p._cf = null);
-    const kind = /capsule|كبسول/i.test(t) ? 'capsule' : /drip|دريب|ufo/i.test(t) ? 'drip' : /gift card|بطاقه|box|بوكس|صندوق/i.test(t) && !CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn)) ? 'box' : 'beans';
+    // النوع: من العنوان أو قسم المتجر («Capsules» في Yield)
+    const kind = /capsule|كبسول|nespresso|نسبريسو/i.test(t) || /(^|\| )(capsules?|كبسولات|كبسولة)( \||$)/i.test(x) ? 'capsule' : /drip|دريب|ufo/i.test(t) || /(^|\| )(drip bags?|اكياس دريب|دريب)( \||$)/i.test(x) ? 'drip' : /gift card|بطاقه|box|بوكس|صندوق/i.test(t) && !CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn)) ? 'box' : 'beans';
     const o = CF_ORIGINS.find(c => c.re.test(t) || c.re.test(tn)) || null;  // البلد من العنوان بس («المحاصيل السعودية» في سوق البن = محامص سعودية)
     const pr = CF_PROC.find(c => c.re.test(x) || c.re.test(xn)) || null;
     let alt = null;
@@ -2938,6 +2941,13 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     const cb = kind !== 'beans' && kind !== 'drip' ? '' : store ? 'store' : sc >= 1 ? 'good' : sc <= -1 ? 'less' : 'ok';
     return (p._cf = { kind, o, pr, alt, roast, esp, fil, cb, why });
   }
+  // وزن البُن من العنوان («250 جرام»، «1Kg»): نقارن سعر الـ250 غ بدل سعر الكيس
+  function cfGrams(p) {
+    const t = normalize(String(p.title)).replace(/٫/g, '.');
+    const kg = t.match(/(\d+(?:\.\d+)?)\s*(?:kg|كيلو|كجم|كغ)/i); if (kg) return +kg[1] * 1000;
+    const g = t.match(/(\d{2,4})\s*(?:g|gm|gr|grams?|جرام|غرام|جم|غ)(?![a-z\u0600-\u06ff])/i); return g ? +g[1] : 0;
+  }
+  const cfMode = list => { const b = list.filter(p => { const c = coffeeOf(p); return c && c.kind === 'beans' && cfGrams(p) >= 50; }); return b.length >= 3 && b.length >= list.length * 0.4; };
   const CF_ROAST = { light: 'تحميص فاتح', medium: 'تحميص متوسط', dark: 'تحميص غامق' };
   const CB_TXT = { store: '❄️ يناسب الكولد برو', good: '❄️ يناسب الكولد برو', ok: '❄️ يصلح للكولد برو', less: '❄️ أقل مناسبة للكولد برو' };
   const CB_SHORT = { store: '❄️ للكولد برو ✓', good: '❄️ للكولد برو ✓', ok: '❄️ يصلح كولد برو', less: '❄️ أقل للكولد برو' };
@@ -2950,6 +2960,9 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     if (c.o) bits.push(`<span class="c"><span aria-hidden="true">${c.o.flag}</span> ${c.o.name}</span>`);
     if (c.pr) bits.push(`<span>${c.pr.name}</span>`);
     if (c.alt) bits.push(`<span>${altTxt(c.alt)}</span>`);
+    const gr = c.kind === 'beans' ? cfGrams(p) : 0;
+    if (gr) bits.push(`<span><bdi>${gr >= 1000 ? gr / 1000 : gr}</bdi> ${gr >= 1000 ? 'كيلو' : 'جرام'}</span>`);
+    if (full && gr && gr !== 250) bits.push(`<span class="u"><bdi>${money(p.price / gr * 250)}</bdi> لكل 250 جرام</span>`);
     if (full && c.roast) bits.push(`<span>${CF_ROAST[c.roast]}</span>`);
     if (full && c.esp) bits.push('<span>إسبريسو</span>');
     if (full && c.fil) bits.push('<span>فلتر</span>');
@@ -2959,7 +2972,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     return (bits.length ? `<div class="pf cf">${bits.join('')}</div>` : '') + cb;
   }
   const CF_ALT = [['low', p => p[1] < 1500, 'أقل من 1500 م'], ['mid', p => p[0] <= 1900 && p[1] >= 1500, '1500–1900 م'], ['high', p => p[1] > 1900, 'فوق 1900 م']];
-  const CF_KIND = [['beans', 'بُن'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
+  const CF_KIND = [['beans', 'كيس محصول'], ['capsule', 'كبسولات'], ['drip', 'دريب']];
   const CF_USE = [['filter', c => c.fil, 'فلتر'], ['espresso', c => c.esp, 'إسبريسو'], ['cold', c => c.cb === 'good' || c.cb === 'store', '❄️ كولد برو']];
   function passCoffee(p) {
     const f = state.cf || {};
@@ -3002,8 +3015,10 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     if (!list.length) return null;
     // نقيّم كل مجموعة لحالها (الحقيقية ضد الحقيقية، والتوضيحية ضد التوضيحية)
     const rate = group => {
-      const pm = perfMode(group);
-      const logs = group.map(p => Math.log(Math.max(unitPrice(p, pm), 0.01)));
+      const pm = perfMode(group), cm = !pm && cfMode(group);
+      // القهوة: سعر الـ250 جرام (كيس كيلو مو أغلى من كيس 200 جرام لأنه أكبر)
+      const unit = p => { if (cm) { const g = cfGrams(p); if (g >= 50) return tot(p) / g * 250; } return unitPrice(p, pm); };
+      const logs = group.map(p => Math.log(Math.max(unit(p), 0.01)));
       const lo = Math.min(...logs), hi = Math.max(...logs);
       group.forEach((p, i) => {
         // تقييم البائع ليس تقييمًا للمنتج، فنعطيه وزنًا ضعيفًا
@@ -3025,7 +3040,12 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     // بحث عطور: الأفضل والأرخص لازم يكونون عطور فعلًا (فيها تركيز مكتوب)، مو مباخر أو شموع
     const pf = perfMode(realOnly) ? realOnly.filter(p => { const f = perfOf(p); return f && f.conc; }) : [];
     const pfMain = pf.filter(p => perfOf(p).level !== 1);  // معطر الجسم والكولونيا بس إذا ما فيه غيرها
-    const pool = pfMain.length ? pfMain : pf.length ? pf : realOnly;
+    let pool = pfMain.length ? pfMain : pf.length ? pf : realOnly;
+    // بحث قهوة: الأفضل يكون بُن (مو كبسولات أو دريب)، إلا إذا البحث نفسه عن الكبسولات أو الدريب
+    if (!/(كبسول|capsule|دريب|drip|مكين|مطحن|grinder|machine|ميزان|scale|ابريق|kettle|في ?60|v60)/i.test(state.query || '')) {
+      const beans = pool.filter(p => { const c = coffeeOf(p); return c && c.kind === 'beans'; });
+      if (beans.length >= 3 && beans.length >= pool.length * 0.3) pool = beans;
+    }
     const best = pool.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.adj > a.adj)) ? b : a);
     const cheapest = pool.reduce((a, b) => tot(b) < tot(a) ? b : a);
     const rated = pool.filter(p => !p.sellerRated && !p.unrated);
@@ -4118,6 +4138,7 @@ body.coffee-view .hero, body.coffee-view .search-row, body.coffee-view .src-line
     function openCoffee(q) {
       state.coffeeMode = true;
       document.body.classList.add('coffee-view');
+      document.querySelectorAll('#platformChecks details').forEach(d => (d.open = true));
       $('coffeeHead').hidden = false;
       if (location.hash !== '#coffee') history.pushState(null, '', '#coffee');
       search(q || $('cfQ').value || 'قهوة مختصة');
