@@ -17,6 +17,7 @@ const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true 
   await p.goto('https://abtkar2011-bot.github.io/Qarin/?v=' + Date.now() + '#perfume'); await done();
   log.push('## perfume', JSON.stringify(await info()));
   for (const i of [0, 4]) { await p.click(`[data-prio="${i}"]`); await p.waitForTimeout(900); log.push(' prio ' + i + ': ' + await best()); }
+  try { const cj = await (await fetch('https://abtkar2011-bot.github.io/Qarin/coupons.json?x=' + Date.now())).text(); fs.writeFileSync(OUT + '/coupons.json', cj); log.push('coupons.json ' + cj.length); } catch (e) { log.push('coupons ERR ' + e.message); }
   log.push('errors: ' + JSON.stringify(errs));
   fs.writeFileSync(OUT + '/report.txt', log.join('\n')); console.log(log.join('\n'));
   await b.close();
