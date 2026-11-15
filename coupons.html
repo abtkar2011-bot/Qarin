@@ -196,7 +196,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
   function daysLeft(e) { if (!e) return null; const d = Math.ceil((new Date(e + 'T23:59:59Z') - Date.now()) / 864e5); return d; }
   function card(c, i) {
     const d = daysLeft(c.e);
-    const exp = d == null ? 'بدون تاريخ انتهاء' : d <= 0 ? 'ينتهي اليوم' : d === 1 ? 'ينتهي بكرة' : `ينتهي بعد ${d} يوم`;
+    const exp = d == null ? 'بدون تاريخ انتهاء' : d <= 0 ? 'ينتهي اليوم' : d === 1 ? 'ينتهي بكرة' : d === 2 ? 'ينتهي بعد يومين' : `ينتهي بعد ${d} ${d >= 3 && d <= 10 ? 'أيام' : 'يوم'}`;
     return `<article class="cp">
       <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
       <div class="cp-t">${esc(c.t)}</div>
