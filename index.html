@@ -1001,6 +1001,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
 (() => {
   'use strict';
 
+  // العدد بالعربي: من 3 إلى 10 جمع (5 متاجر)، والباقي مفرد (12 متجر، 31 منصة)
+  function arC(n, plural, single) { return n >= 3 && n <= 10 ? plural : single; }
   // ================= المنصات =================
   const qp = q => encodeURIComponent(q.trim()).replace(/%20/g, '+');
   const PLATFORMS = {
@@ -3901,7 +3903,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       ['💰', 'var(--tint-1)', 'أقل سعر', money(cheapest.price), PLATFORMS[cheapest.platform].name],
       ['📊', 'var(--tint-2)', 'متوسط السعر', money(avg), `عبر ${list.length} منتج`],
       ['⭐', 'var(--tint-3)', 'أعلى تقييم', noRatings ? '—' : `<bdi>${top.rating.toFixed(1)} / 5</bdi>`, noRatings ? 'ما فيه تقييمات للمنتجات' : PLATFORMS[top.platform].name],
-      ['🛍️', 'var(--tint-4)', 'عدد النتائج', `${list.length}`, `من ${nPlat} منصات`],
+      ['🛍️', 'var(--tint-4)', 'عدد النتائج', `${list.length}`, `من ${nPlat} ${arC(nPlat, 'منصات', 'منصة')}`],
     ];
     return `<div class="kpis">${items.map(([ico, bg, label, val, sub]) =>
       `<div class="kpi"><div class="ico" style="background:${bg}">${ico}</div><div><small>${label}</small><b>${val}</b><em>${esc(sub)}</em></div></div>`).join('')}</div>`;
@@ -4037,7 +4039,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     { const changed = state.coffeeMode ? (normalize(state.query) !== normalize('قهوة') || Object.values(state.cf || {}).some(Boolean))
         : state.perfMode ? (normalize(state.query) !== normalize('عطور') || Object.values(state.pfF || {}).some(Boolean)) : false;
       document.querySelectorAll('[data-reset]').forEach(b => { b.hidden = !changed || b.dataset.reset !== (state.coffeeMode ? 'coffee' : 'perfume'); }); }
-    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${cfKeys ? cfKeys.length : state.platforms.size} متاجر</span></div>${linkHtml()}` + (cfKeys
+    let html = `<div class="section-title"><h2>نتائج البحث عن «${esc(state.query)}»</h2><span>${ordered.length} منتج من ${cfKeys ? cfKeys.length : state.platforms.size} ${arC(cfKeys ? cfKeys.length : state.platforms.size, 'متاجر', 'متجر')}</span></div>${linkHtml()}` + (cfKeys
       ? ''  // قسم القهوة والعطور: عنوانه فوق يشرح، فما نكرر ملاحظة المتاجر
       : `<div class="notice"><div><b>كل المنتجات حقيقية</b> من علي إكسبريس وإيباي وإتسي، بأسعارها وروابطها المباشرة. سعر إيباي يشمل الشحن لعمان، وعلي إكسبريس وإتسي يحسبون الشحن في صفحتهم.</div></div>${priceNoteHtml()}${partnersHtml()}`);
     if (!state.platforms.size) {
@@ -4127,7 +4129,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (!L || L.query !== state.query) return '';
     return `<div class="link-box">${L.image ? `<img referrerpolicy="no-referrer" src="${esc(L.image)}" alt="">` : '<span style="font-size:30px">🔗</span>'}
       <div><b>🔗 المنتج اللي لصقت رابطه${L.site ? ` من ${esc(L.site)}` : ''}</b><small title="${esc(L.title || L.url)}">${esc(L.title || L.url)}</small>
-      دوّرنا عليه باسم «${esc(L.query)}» في ${KEYS.length} متاجر. إذا النتائج مو دقيقة، عدّل كلمات البحث فوق.</div></div>`;
+      دوّرنا عليه باسم «${esc(L.query)}» في ${KEYS.length} ${arC(KEYS.length, 'متاجر', 'متجر')}. إذا النتائج مو دقيقة، عدّل كلمات البحث فوق.</div></div>`;
   }
   function setPrio(i) {
     state.priority = i;
@@ -4173,14 +4175,14 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (cached) {
       if (!instant) { userSearches++; track('search', query); }
       state.products = cached.map(p => ({ ...p }));
-      status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${cached.length} منتج من ${keys.length} منصات</div>`;
+      status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${cached.length} منتج من ${keys.length} ${arC(keys.length, 'منصات', 'منصة')}</div>`;
       state.loading = false;
       render();
       return;
     }
     state.loading = true;
     if (!instant) { userSearches++; track('search', query); }
-    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن «${esc(query)}» في ${keys.length} منصات...</b>${keys.map(k =>
+    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن «${esc(query)}» في ${keys.length} ${arC(keys.length, 'منصات', 'منصة')}...</b>${keys.map(k =>
       `<div class="row" id="st-${k}"><span class="spinner"></span>${PLATFORMS[k].name}</div>`).join('')}</div>`;
     $('results').innerHTML = skeletonHtml(8);
     await resolveEnglish(query);
@@ -4208,7 +4210,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     cache.set(key, all);
     state.products = all.map(p => ({ ...p }));
     state.loading = false;
-    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${all.length} منتج من ${keys.length} منصات</div>`;
+    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتمل البحث: ${all.length} منتج من ${keys.length} ${arC(keys.length, 'منصات', 'منصة')}</div>`;
     render();
   }
 
@@ -4243,7 +4245,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const id = ++searchId;
     state.mode = 'basket'; state.query = queries.join(' + '); state.basket = { queries, data: null, pick: {} }; state.loading = true;
     track('basket', state.query);
-    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن ${queries.length} منتجات في ${KEYS.length} متاجر...</b>${queries.map((q, i) =>
+    status.innerHTML = `<div class="status" aria-live="polite"><b>جارِ البحث عن ${queries.length} ${arC(queries.length, 'منتجات', 'منتج')} في ${KEYS.length} ${arC(KEYS.length, 'متاجر', 'متجر')}...</b>${queries.map((q, i) =>
       `<div class="row" id="bk-${i}"><span class="spinner"></span><bdi>${esc(q)}</bdi></div>`).join('')}</div>`;
     $('results').innerHTML = skeletonHtml(6);
     const data = [];
@@ -4258,7 +4260,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     }));
     if (id !== searchId) return;
     state.basket.data = data; state.loading = false;
-    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتملت السلة: ${queries.length} منتجات من ${KEYS.length} متاجر</div>`;
+    status.innerHTML = `<div class="status done"><span class="ok">✓</span> اكتملت السلة: ${queries.length} ${arC(queries.length, 'منتجات', 'منتج')} من ${KEYS.length} ${arC(KEYS.length, 'متاجر', 'متجر')}</div>`;
     render();
     $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -4688,7 +4690,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     // متاجر القهوة في سطر واحد مختصر (عشان الصفحة الرئيسية تبقى بسيطة)
     { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prf = perfKeys();
       $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k) && !prf.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
-        (prf.length ? `<span>🌸 <bdi class="num">${prf.length}</bdi> متاجر عطور</span>` : '') +
+        (prf.length ? `<span>🌸 <bdi class="num">${prf.length}</bdi> ${arC(prf.length, 'متاجر عطور', 'متجر عطور')}</span>` : '') +
         (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> متجر قهوة عماني</span>` : ''); }
     // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
     const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
