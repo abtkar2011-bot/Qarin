@@ -1,17 +1,17 @@
-// فحص محاصيل البن: المنصة، robots، وعينة منتجات
+// Barista Oman (Kushk): خريطة المنتجات وصفحتين منتج
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
-const urls = ['https://barista-oman.kushk.om/robots.txt', 'https://barista-oman.kushk.om/', 'https://barista-oman.kushk.om/sitemap.xml', 'https://barista-oman.kushk.om/products', 'https://barista-oman.kushk.om/products.json?limit=3', 'https://barista-oman.kushk.om/api/products'];
-const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'woocommerce', 'wp-content', 'wix', 'odoo', 'Odoo', '__NEXT_DATA__', 'kyte', 'kushk', '__NUXT__', 'window.__INITIAL', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart'].filter(m => t.includes(m));
+const get = async u => { const r = await fetch(u, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(25000) }); return [r.status, await r.text()]; };
 (async () => {
   const log = [];
-  for (const u of urls) {
-    try {
-      const ctl = new AbortController(); setTimeout(() => ctl.abort(), 25000); const r = await fetch(u, { headers: { 'user-agent': UA, 'accept-language': 'ar,en' }, signal: ctl.signal }); const t = await r.text();
-      fs.writeFileSync(path.join(OUT, u.replace(/^https?:\/\/(www\.)?/, '').replace(/[^a-z0-9.]+/gi, '_').slice(0, 80) + '.txt'), t.slice(0, 4000000));
-      log.push(`${r.status} ${u} -> ${r.url} len=${t.length} carts=${(t.match(/oe_product_cart/g) || []).length} [${mk(t).join(',')}]`);
-    } catch (e) { log.push(`ERR ${u} ${e.message}`); }
+  const [st, sm] = await get('https://barista-oman.kushk.om/sitemap-products.xml');
+  fs.writeFileSync(path.join(OUT, 'kushk_products.xml'), sm);
+  const locs = [...sm.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map(m => m[1]);
+  log.push(`sitemap ${st} ${locs.length} ${locs.slice(0, 3).join(' ')}`);
+  for (const [i, u] of locs.slice(0, 2).entries()) {
+    const [s2, t] = await get(u); fs.writeFileSync(path.join(OUT, 'kushk_p' + i + '.html'), t);
+    log.push(`${s2} ${u} len=${t.length} ld_product=${/"@type"\s*:\s*"Product"/.test(t)}`);
   }
   fs.writeFileSync(path.join(OUT, 'log.txt'), log.join('\n')); console.log(log.join('\n'));
 })();
