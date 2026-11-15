@@ -1,32 +1,24 @@
-// فحص رواسي و Yield: المنصة، robots، وعينة منتجات
+// نفتح صفحة Linktree حق Yield في متصفح حقيقي ونطلع روابطها، ونفحص المتجر
+const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const OUT = process.env.OUT || 'shots-out'; fs.mkdirSync(OUT, { recursive: true });
 const UA = 'Mozilla/5.0 (compatible; QarinBot/1.0; +https://abtkar2011-bot.github.io/Qarin/)';
-const BUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
-const urls = ['https://www.rawasiom.com/robots.txt', 'https://www.rawasiom.com/ar', 'https://www.rawasiom.com/products.json?limit=3', 'https://www.rawasiom.com/wp-json/wc/store/v1/products?per_page=3',
-  'https://www.rawasiom.com/sitemap.xml', 'https://www.rawasiom.com/ar/shop?ppg=200', 'https://www.rawasiom.com/shop?ppg=200', 'https://linktr.ee/yieldoman'];
-const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'zidcdn', 'woocommerce', 'wp-content', 'wix', 'magento', 'expandcart', 'odoo', 'Odoo', '__NEXT_DATA__', 'nuxt', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart'].filter(m => t.includes(m));
-async function probe(u, ua) {
+const mk = t => ['cdn.shopify', 'salla', 'zid.store', 'zidcdn', 'woocommerce', 'wp-content', 'wix', 'odoo', 'Odoo', '__NEXT_DATA__', 'OMR', 'ر.ع', 'ld+json', 'oe_product_cart', 'ecwid', 'squarespace', 'bigcommerce'].filter(m => t.includes(m));
+async function probe(u) {
   try {
-    const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 25000);
-    const r = await fetch(u, { headers: { 'user-agent': ua || UA, 'accept-language': 'ar,en' }, signal: ctl.signal }); clearTimeout(tm);
-    const t = await r.text();
-    const f = u.replace(/^https:\/\/(www\.)?/, '').replace(/[^a-z0-9.]+/gi, '_').slice(0, 80);
-    fs.writeFileSync(path.join(OUT, f + '.txt'), t.slice(0, 4000000));
-    return { line: `${r.status} ${u} -> ${r.url} len=${t.length} carts=${(t.match(/oe_product_cart/g) || []).length} [${mk(t).join(',')}]`, t };
-  } catch (e) { return { line: `ERR ${u} ${e.message}`, t: '' }; }
+    const r = await fetch(u, { headers: { 'user-agent': UA, 'accept-language': 'ar,en' } }); const t = await r.text();
+    fs.writeFileSync(path.join(OUT, u.replace(/^https?:\/\/(www\.)?/, '').replace(/[^a-z0-9.]+/gi, '_').slice(0, 80) + '.txt'), t.slice(0, 4000000));
+    return `${r.status} ${u} -> ${r.url} len=${t.length} carts=${(t.match(/oe_product_cart/g) || []).length} [${mk(t).join(',')}]`;
+  } catch (e) { return `ERR ${u} ${e.message}`; }
 }
 (async () => {
   const log = [];
-  for (const u of urls) { const { line, t } = await probe(u, /linktr/.test(u) ? BUA : UA); log.push(line); console.log(line);
-    if (/linktr/.test(u)) {
-      const links = [...new Set([...t.matchAll(/"url":"(https?:[^"]+)"/g)].map(m => m[1].replace(/\\u002F/g, '/')))].filter(x => !/linktr\.ee|linktree/.test(x));
-      log.push('LINKS ' + links.join(' '));
-      for (const l of links.filter(x => !/instagram|tiktok|wa\.me|whatsapp|facebook|twitter|x\.com|snapchat|youtube|google\.com\/maps|maps\.app/.test(x)).slice(0, 4)) {
-        const base = new URL(l).origin;
-        for (const p of [l, base + '/robots.txt', base + '/products.json?limit=3', base + '/wp-json/wc/store/v1/products?per_page=3', base + '/sitemap.xml']) { const x = await probe(p); log.push(x.line); }
-      }
-    }
-  }
+  const b = await chromium.launch(); const p = await b.newPage();
+  try { await p.goto('https://linktr.ee/yieldoman', { waitUntil: 'networkidle', timeout: 60000 }); } catch (e) { log.push('goto ' + e.message); }
+  const links = await p.$$eval('a[href]', as => as.map(a => (a.innerText || '').trim().replace(/\s+/g, ' ') + ' => ' + a.href)).catch(() => []);
+  log.push(...links.map(l => 'LINK ' + l)); await p.screenshot({ path: path.join(OUT, 'yield.png') }).catch(() => {});
+  await b.close();
+  const sites = [...new Set(links.map(l => l.split(' => ')[1]).filter(h => h && /^https?:/.test(h) && !/linktr|linktree|instagram|tiktok|wa\.me|whatsapp|facebook|twitter|x\.com|snapchat|youtube|google|apple\.com|maps\.app|cookie|privacy|report/.test(h)).map(h => new URL(h).origin))].slice(0, 4);
+  for (const o of sites) for (const s of ['/', '/robots.txt', '/products.json?limit=3', '/wp-json/wc/store/v1/products?per_page=3', '/shop?ppg=200', '/sitemap.xml']) log.push(await probe(o + s));
   fs.writeFileSync(path.join(OUT, 'log.txt'), log.join('\n')); console.log(log.join('\n'));
 })();
