@@ -179,8 +179,10 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
     const om = base.filter(c => condOf(c).reg.ok).length;
     $('fReg').innerHTML = `<span class="k">الدولة</span><button type="button" class="chip${fReg === 'om' ? ' on' : ''}" data-r="om">🇴🇲 تصلح لعمان <i>${om}</i></button><button type="button" class="chip${fReg ? '' : ' on'}" data-r="">🌍 كل الدول <i>${base.length}</i></button>`;
     const b2 = fReg === 'om' ? base.filter(c => condOf(c).reg.ok) : base;
-    const row2 = (id, title, defs, cur, key) => row(id, title, defs, cur, key, b2);
-    row2('fMin', 'الحد الأدنى', MIN_F, fMin, 'm'); row2('fType', 'النوع', TYPE_F, fType, 'y');
+    // العدد جنب كل خيار يحسب الفلتر الثاني المختار (عشان ما يقول 9 وتطلع 0)
+    const fa = MIN_F.find(f => f[0] === fMin), ft = TYPE_F.find(f => f[0] === fType);
+    row('fMin', 'الحد الأدنى', MIN_F, fMin, 'm', ft ? b2.filter(c => ft[2](condOf(c))) : b2);
+    row('fType', 'النوع', TYPE_F, fType, 'y', fa ? b2.filter(c => fa[2](condOf(c))) : b2);
   }
   function tagsOf(c) {
     const k = condOf(c), t = [];
