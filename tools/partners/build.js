@@ -113,7 +113,8 @@ function parseWoo(list, store = 'copper roastery', skip = /cafe beverages/i) {
   const out = [];
   for (const p of list || []) {
     const cats = (p.categories || []).map(c => ent(c.name));
-    if (!p.is_in_stock || cats.some(c => skip.test(c))) continue;  // مشروبات الكوفي (داخل المقهى) مو للشحن
+    if (!p.is_in_stock || cats.some(c => skip.test(c))) continue;
+    if (/^(shipping insurance|gift card|e-?gift)/i.test(p.name || '')) continue;  // تأمين الشحن وبطاقات الهدايا مو منتجات  // مشروبات الكوفي (داخل المقهى) مو للشحن
     const pr = p.prices || {}, mu = Math.pow(10, pr.currency_minor_unit ?? 3);
     const price = (+pr.price || +(pr.price_range && pr.price_range.min_amount) || 0) / mu, reg = (+pr.regular_price || 0) / mu;
     if (!(price > 0) || !p.permalink) continue;
@@ -125,7 +126,7 @@ function parseWoo(list, store = 'copper roastery', skip = /cafe beverages/i) {
   return out;
 }
 // متجر ووكومرس (واجهة المتجر العامة): Copper Roastery و سوق البن
-async function wooStore(B, store, skip) {
+async function wooStore(B, store, skip, cur = 'OMR') {
   const all = [];
   for (let page = 1; page <= 10; page++) {
     const txt = await get(`${B}/wp-json/wc/store/v1/products?per_page=100&page=${page}`);
@@ -135,7 +136,7 @@ async function wooStore(B, store, skip) {
     if (d.length < 100) break;
     await sleep(800);
   }
-  return { updated: new Date().toISOString(), cur: 'OMR', store: B, brands: [], items: all.map(pack) };
+  return { updated: new Date().toISOString(), cur, store: B, brands: [], items: all.map(pack) };
 }
 const copper = () => wooStore('https://copperroastery.com', 'copper roastery', /cafe beverages/i);
 // سوق البن (مسقط): محاصيل محامص سعودية وعالمية وأدوات — نشيل المشروبات الباردة والتغليفات
@@ -234,6 +235,9 @@ const oudworlds = () => wooStore('https://oudworlds.com', 'oud worlds | عالم
 const artal = () => wooStore('https://artalofficial.com', 'artal | أرتال', /^$/);
 // نوادر العود (شوبيفاي، أسعارهم بالدرهم الإماراتي) والخنجر للعطور (أودو، بالريال العماني)
 const nawader = () => shopifyStore('https://nwaderoud.com', 'nawader', 'nawader oud | نوادر العود', 'AED');
+// متاجر Admitad العالمية (انقبلنا فيها): أوبنهاغن (حوامل جيتار وتصميم، شوبيفاي بالدولار) ووودستك (ألعاب طاولة خشب، ووكومرس بالدولار)
+const openhagen = () => shopifyStore('https://openhagen.com', 'openhagen', 'openhagen | guitar wall mount | ukulele | speaker | home decor design | حامل جيتار | ديكور', 'USD');
+const woodestic = () => wooStore('https://woodestic.com', 'woodestic | wooden board games | wooden table games | game | crokinole | billiards | ألعاب طاولة خشب | لعبة طاولة | كروكينول', /shipping insurance|gift card/i, 'USD');
 const alkhanjar = () => odooPaged('https://www.alkhanjar.om', 'alkhanjar', 'al khanjar | الخنجر للعطور', 30);
 // سلة: واجهة المتجر العامة (api.salla.dev) برقم المتجر، 15 منتج في الصفحة
 async function sallaApi(storeId, B, name, tags) {
@@ -389,9 +393,9 @@ if (require.main === module) (async () => {
     .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي');
   const namesOf = items => [...new Set(items.flatMap(x => nrm(x[0] + ' ' + String(x[4]).split(' | ').filter(t => /محمص|roaster/i.test(t)).join(' '))
     .split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP.has(w))))].slice(0, 3000);
-  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10, raydan: 10, ibraq: 10, almajed: 10, artal: 3, nawader: 10, alkhanjar: 10 };
+  const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10, raydan: 10, ibraq: 10, almajed: 10, artal: 3, nawader: 10, alkhanjar: 10, openhagen: 10, woodestic: 10 };
   for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista],
-    ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds], ['raydan', raydan], ['ibraq', ibraq], ['almajed', almajed], ['artal', artal], ['nawader', nawader], ['alkhanjar', alkhanjar]]) {
+    ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds], ['raydan', raydan], ['ibraq', ibraq], ['almajed', almajed], ['artal', artal], ['nawader', nawader], ['alkhanjar', alkhanjar], ['openhagen', openhagen], ['woodestic', woodestic]]) {
     // ONLY=amouage,oudbank: نبني متاجر معيّنة بس (للتجربة)
     if (process.env.ONLY && !process.env.ONLY.split(',').includes(name)) continue;
     try {

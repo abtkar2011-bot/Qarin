@@ -1030,6 +1030,10 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     // متاجر شريكة عن طريق Admitad: منتجاتها من ملفات نبنيها كل يوم (tools/partners/build.js)
     vperfumes:  { name: 'V Perfumes',  color: '#B8860B', text: '#FFFFFF', bar: '#B8860B', tagline: 'عطور أصلية من عُمان',
                   url: () => 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/?ulp=' + encodeURIComponent('https://www.vperfumes.com/om-en/collection/best-sellers') },
+    openhagen:  { name: 'Openhagen',   color: '#1F2937', text: '#FFFFFF', bar: '#1F2937', tagline: 'حوامل جيتار وإكسسوارات تصميم للبيت', small: true,
+                  url: q => 'https://plrvq.com/g/4dcmqmvxpp683a5815dd0ad4f263fe/?ulp=' + encodeURIComponent('https://openhagen.com/search?q=' + qp(q)) },
+    woodestic:  { name: 'Woodestic',   color: '#8B5E34', text: '#FFFFFF', bar: '#8B5E34', tagline: 'ألعاب طاولة خشب مثل الكروكينول والبلياردو الصغير', small: true,
+                  url: q => 'https://woodestic.com/?s=' + qp(q) + '&post_type=product' },
     dermazone:  { name: 'DermaZone',   color: '#2E8B57', text: '#FFFFFF', bar: '#2E8B57', tagline: 'عناية بالبشرة ومنتجات كورية',
                   url: q => 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/?ulp=' + encodeURIComponent('https://www.dermazonestore.com/search?q=' + qp(q)) },
     // محامص قهوة عمانية (روابط مباشرة، منتجاتها من صفحاتها العامة كل يوم)
@@ -2061,6 +2065,11 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       incense: new Set(['bakhoor']), bakhoor: new Set(['bakhoor']) } };
   const PARTNER_FEEDS = {
     vperfumes: Object.assign({ file: 'data/p/vperfumes.json', aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/' }, PERF_FEED),
+    // متاجر Admitad العالمية الصغيرة: تطلع بس لما البحث عن شي يبيعونه
+    openhagen: { file: 'data/p/openhagen.json', perUsd: () => 1, aff: 'https://plrvq.com/g/4dcmqmvxpp683a5815dd0ad4f263fe/',
+      gate: /(guitar|ukulele|bass|violin|wall ?mount|hanger|speaker|record|vinyl|جيتار|قيتار|غيتار|يوكوليلي|حامل|تعليق|معلاق|سماعة|مكبر صوت|اسطوان|ديكور)/i, generic: /^(products?|original)$/, titleOnly: true },
+    woodestic: { file: 'data/p/woodestic.json', perUsd: () => 1, aff: '',
+      gate: /(crokinole|board ?game|table ?game|billiard|carrom|shuffleboard|kids? games?|wooden game|كروكينول|كيرم|كرم|بلياردو|بليارد|لعب(ة|ه) طاول|العاب طاول|ألعاب طاول|لعبة خشب|العاب خشب|ألعاب خشب)/i, generic: /^(products?|original)$/, okAr: true },
     dermazone: { file: 'data/p/dermazone.json', perUsd: () => 3.75, aff: 'https://bjpql.com/g/03how5od0x683a5815dd238e05a71e/',
       gate: /(كريم|سيروم|واقي|مرطب|غسول|بشر|تونر|ماسك|فيتامين|كولاجين|مكمل|حب الشباب|ريتينول|هيالورونيك|نياسيناميد|حلزون|امبول|مستحلب|لوشن|تقشير|ليفه|لصقات|شامبو|تساقط|بيوتين|بايوتين|جاميز|اوميغا|اوميجا|زنك|مغنيسيوم|ميلاتونين|مكياج|شفاه|شفايف|بلاشر|كوري|شعر|\bhair\b|skin|serum|sunscreen|sun ?block|spf|moistur|cleanser|toner|face mask|vitamin|collagen|supplement|retinol|hyaluronic|niacinamide|snail|ampoule|gumm|biotin|omega|makeup|\blip|shampoo|hair loss|cerave|la roche|bioderma|vichy|ordinary|cosrx|korean)/i,
       generic: /^(products?|original)$/, titleOnly: true },
@@ -3166,6 +3175,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   // المتاجر الشريكة: ما عندها تقييمات للمنتجات، فنعرض اللي نعرفه عنها من صفحاتها (أصلي، التوصيل، الدفع)
   const PARTNER_INFO = {
     vperfumes: { trust: 'أصلي ومغلّف حسب المتجر', short: 'أصلي حسب المتجر', why: 'عطر أصلي ومغلّف حسب V Perfumes', whyItem: 'منتج أصلي ومغلّف حسب V Perfumes', freeOverOmr: 20, cod: true },
+    openhagen: { trust: 'متجر الماركة الرسمي', short: 'متجر الماركة', ship: 'شحن دولي من أوروبا، ومجاني فوق 199 دولار لأغلب الدول' },
+    woodestic: { trust: 'متجر الماركة الرسمي', short: 'متجر الماركة', ship: 'شحن دولي من أوروبا' },
     dermazone: { trust: 'أصلي بضمان المتجر', short: 'أصلي حسب المتجر', why: 'منتج أصلي بضمان DermaZone', ship: 'التوصيل لعمان قد يأخذ 10 إلى 15 يوم' },
     copper: { trust: 'محمصة عمانية', short: 'محمصة عمانية' },
     bunalqassab: { trust: 'محمصة عمانية', short: 'محمصة عمانية', ship: 'يوصل داخل عمان خلال 2 إلى 3 أيام عمل' },
@@ -4836,7 +4847,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
     // متاجر القهوة في سطر واحد مختصر (عشان الصفحة الرئيسية تبقى بسيطة)
     const drawHeroChips = () => { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prf = perfKeys();
-      $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k) && !prf.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
+      $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k) && !prf.includes(k) && !PLATFORMS[k].small).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
         (prf.length ? `<span>🌸 <bdi class="num">${prf.length}</bdi> ${arC(prf.length, 'متاجر عطور', 'متجر عطور')}</span>` : '') +
         (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> ${arC(cof.length, 'متاجر قهوة عمانية', 'متجر قهوة عماني')}</span>` : ''); };
     drawHeroChips();
