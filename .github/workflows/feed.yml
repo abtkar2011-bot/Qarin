@@ -134,11 +134,12 @@ jobs:
         continue-on-error: true
         timeout-minutes: 45
         env:
+          ONNXRUNTIME_NODE_INSTALL_CUDA: skip
           EMB_MODEL: Xenova/dinov2-small
           EMB_DTYPE: q8
         run: |
           node -v; npm -v
-          (cd tools/embed && npm i --no-save --no-package-lock --no-audit --no-fund --loglevel=error @huggingface/transformers@3.7.1 sharp@0.33.5)
+          (cd tools/embed && npm i --no-save --no-package-lock --no-audit --no-fund --loglevel=error --onnxruntime-node-install-cuda=skip @huggingface/transformers@3.7.1 sharp@0.33.5)
           node tools/embed/embed.js partners embcache embout
 
       - name: Save image prints
