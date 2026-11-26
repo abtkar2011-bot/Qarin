@@ -3,11 +3,12 @@ const lines = []; const L = (...a) => { const s = a.join(' '); console.log(s); l
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 const get = async u => { try { const r = await fetch(u, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(25000) }); return { s: r.status, t: await r.text() }; } catch (e) { return { s: 'ERR', t: '' }; } };
 (async () => {
-  const h = await get('https://openhagen.com/'); L('openhagen currency', (h.t.match(/Shopify\.currency\s*=\s*(\{[^}]*\})/) || [])[1], (h.t.match(/"currency":"([A-Z]{3})"/) || [])[1]);
-  const pj = await get('https://openhagen.com/products.json?limit=250'); const P = JSON.parse(pj.t).products; L('openhagen n', P.length, P.slice(0, 6).map(p => p.title + ' = ' + p.variants[0].price + ' | ' + p.product_type).join(' ;; '));
-  const w = await get('https://woodestic.com/wp-json/wc/store/v1/products?per_page=100'); L('woodestic api', w.s);
-  try { const d = JSON.parse(w.t); L('woodestic n', d.length, d.slice(0, 5).map(p => p.name + ' = ' + p.prices.price + ' ' + p.prices.currency_code + ' minor ' + p.prices.currency_minor_unit).join(' ;; ')); } catch (e) { L('woodestic parse', w.t.slice(0, 200)); }
-  const s = await get('https://woodestic.com/shipping/'); L('woodestic shipping page', s.s, (s.t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').match(/.{0,120}(Middle East|Oman|worldwide|international).{0,160}/i) || [''])[0]);
-  const o = await get('https://openhagen.com/policies/shipping-policy'); L('openhagen shipping', o.s, (o.t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').match(/.{0,120}(worldwide|international|countries|Oman|Middle East).{0,160}/i) || [''])[0]);
+  const P = JSON.parse((await get('https://openhagen.com/products.json?limit=250')).t).products;
+  for (const p of P.slice(0, 3).concat(P.filter(x => /mount|hang/i.test(x.title)).slice(0, 2))) {
+    const h = await get('https://openhagen.com/products/' + p.handle);
+    const ld = [...h.t.matchAll(/"price"\s*:\s*"?([\d.]+)"?[^}]*?"priceCurrency"\s*:\s*"([A-Z]{3})"|"priceCurrency"\s*:\s*"([A-Z]{3})"[^}]*?"price"\s*:\s*"?([\d.]+)/g)].slice(0, 2).map(m => (m[1] || m[4]) + ' ' + (m[2] || m[3]));
+    const js = JSON.parse((await get('https://openhagen.com/products/' + p.handle + '.js')).t || '{}');
+    L(p.title, '| products.json', p.variants[0].price, '| page ld', ld.join(','), '| .js price', js.price, '| meta', (h.t.match(/og:price:amount" content="([^"]+)/) || [])[1], (h.t.match(/og:price:currency" content="([^"]+)/) || [])[1]);
+  }
   L('done');
 })();
