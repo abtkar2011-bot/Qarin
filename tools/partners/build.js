@@ -269,6 +269,9 @@ async function almajed() {
 // زد: ريدان (روابط المنتجات من خريطة الموقع، والسعر بالريال العماني من نسخة /ar-om/)
 async function raydan() {
   const B = 'https://raydanuae.com';
+  // زد يعرض «هذا المتجر غير متاح» لما المتجر يتقفل: نشيله من قارِن على طول (روابطه ما تفتح)
+  const home = await fetch(B + '/ar-om/', { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(30000) }).then(r => r.text()).catch(() => '');
+  if (/هذا المتجر غير متاح|store is (not|un)available/i.test(home)) { const e = new Error('store unavailable (closed on Zid)'); e.gone = true; throw e; }
   const urls = [...new Set(locs(await get(B + '/sitemap_products.xml')).filter(u => /\/products\/[^/]+$/.test(u)))].slice(0, 400)
     .map(u => u.replace(/^https:\/\/raydanuae\.com\/(ar-om\/|ar\/|en\/)?/, B + '/ar-om/'));
   const all = [];
@@ -397,7 +400,14 @@ if (require.main === module) (async () => {
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
       fs.writeFileSync(path.join(OUT, name + '.json'), JSON.stringify(data));
       console.log(name, 'items', data.items.length, 'size', fs.statSync(path.join(OUT, name + '.json')).size);
-    } catch (e) { console.log(name, 'FAILED', e.message, '(keeping the previous file if any)'); }
+    } catch (e) {
+      // فشل اليوم: نخلي ملف أمس إذا عمره ٣ أيام أو أقل. أقدم من كذا (أو المتجر مقفل) نشيله، عشان ما نعرض أسعار قديمة وروابط خربانة
+      const fp = path.join(OUT, name + '.json');
+      let old = null; try { old = JSON.parse(fs.readFileSync(fp, 'utf8')); } catch (x) { /* ما فيه ملف قديم */ }
+      const age = old ? (Date.now() - Date.parse(old.updated)) / 864e5 : Infinity;
+      if (old && (e.gone || !(age <= 3))) { fs.unlinkSync(fp); console.log(name, 'FAILED', e.message, `(removed: last good list was ${age.toFixed(1)} days old)`); }
+      else console.log(name, 'FAILED', e.message, old ? `(keeping the list from ${age.toFixed(1)} days ago)` : '(no list)');
+    }
     try { const d = JSON.parse(fs.readFileSync(path.join(OUT, name + '.json'), 'utf8')); index[name] = { updated: d.updated, n: d.items.length, brands: d.brands, ...(d.names ? { names: d.names } : {}) }; } catch (e) { /* ما في ملف */ }
   }
   fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(index));

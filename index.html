@@ -4835,10 +4835,19 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     initTheme();
     if (QA) window.__qa = { search, state, raw: QA_RAW, toEnglish, normalize, cache, tot, money, RATES };
     // متاجر القهوة في سطر واحد مختصر (عشان الصفحة الرئيسية تبقى بسيطة)
-    { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prf = perfKeys();
+    const drawHeroChips = () => { const cof = KEYS.filter(k => PARTNER_FEEDS[k] && PARTNER_FEEDS[k].syn), prf = perfKeys();
       $('heroChips').innerHTML = KEYS.filter(k => !cof.includes(k) && !prf.includes(k)).map(k => `<span>${dotI(k)}${PLATFORMS[k].name}</span>`).join('') +
         (prf.length ? `<span>🌸 <bdi class="num">${prf.length}</bdi> ${arC(prf.length, 'متاجر عطور', 'متجر عطور')}</span>` : '') +
-        (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> متجر قهوة عماني</span>` : ''); }
+        (cof.length ? `<span>☕ <bdi class="num">${cof.length}</bdi> ${arC(cof.length, 'متاجر قهوة عمانية', 'متجر قهوة عماني')}</span>` : ''); };
+    drawHeroChips();
+    // متجر شريك ما له قائمة اليوم (موقعه مقفل أو ما تحدّث من أيام): نشيله من البحث ومن العدد
+    partnerIndexP.then(ix => {
+      if (!ix) return;
+      const gone = KEYS.filter(k => PARTNER_FEEDS[k] && !ix[k]);
+      if (!gone.length) return;
+      gone.forEach(k => { KEYS.splice(KEYS.indexOf(k), 1); state.platforms.delete(k); const el = document.getElementById('pf-' + k); if (el) el.closest('label').remove(); });
+      drawHeroChips();
+    });
     // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
     const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`;
