@@ -83,19 +83,48 @@ def rows_from_xml(text):
     return rows
 
 
+LOCAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coupons_local.json")
+
+
+def local_codes():
+    """أكواد حصرية من المتاجر اللي اتفقنا معها (coupons_local.json)، تطلع فوق في صفحة الكوبونات."""
+    try:
+        items = json.load(open(LOCAL, encoding="utf-8")).get("coupons", [])
+    except Exception:
+        return []
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out = []
+    for c in items:
+        if not c.get("t") or not str(c.get("u", "")).startswith("https://") or (c.get("e") and c["e"] < today):
+            continue
+        out.append({"t": c["t"], "c": c.get("c", ""), "u": c["u"], "s": c.get("s", ""), "d": c.get("d", ""), "x": c.get("x", ""),
+                    "k": c.get("k", ""), "r": c.get("r", "عُمان"), "l": c.get("l", ""), "a": c.get("a", today), "e": c.get("e", ""),
+                    "p": 1, "pk": c.get("pk", "")})
+    return out
+
+
+def write_only_local():
+    old = []
+    try:
+        old = [c for c in json.load(open(OUT, encoding="utf-8")).get("coupons", []) if not c.get("p")]
+    except Exception:
+        pass
+    loc = local_codes()
+    json.dump({"updated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M") if (loc or old) else None, "coupons": loc + old},
+              open(OUT, "w"), ensure_ascii=False, separators=(",", ":"))
+
+
 def main():
     if not URL:
         print("COUPONS_FEED_URL not set; skipping")
-        if not os.path.exists(OUT):
-            json.dump({"updated": None, "coupons": []}, open(OUT, "w"))
+        write_only_local()
         return
     try:
         req = urllib.request.Request(URL, headers={"User-Agent": "Qarin/1.0"})
         raw = urllib.request.urlopen(req, timeout=120).read()
     except Exception as e:
         print("download failed:", type(e).__name__)
-        if not os.path.exists(OUT):
-            json.dump({"updated": None, "coupons": []}, open(OUT, "w"))
+        write_only_local()
         return
     text = raw.decode("utf-8-sig", errors="replace")
     rows = rows_from_xml(text) if text.lstrip().startswith("<") else rows_from_csv(text)
@@ -132,7 +161,7 @@ def main():
             "e": end.strftime("%Y-%m-%d") if end else "",
         })
     out.sort(key=lambda c: c["a"], reverse=True)
-    out = out[:MAX]
+    out = local_codes() + out[:MAX]
     json.dump({"updated": now.strftime("%Y-%m-%d %H:%M"), "coupons": out}, open(OUT, "w"), ensure_ascii=False, separators=(",", ":"))
     stores = sorted({c["s"] for c in out if c["s"]})
     print(f"coupons: {len(out)} active from {len(rows)} rows; stores: {stores[:15]}")

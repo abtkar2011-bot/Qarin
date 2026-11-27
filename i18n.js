@@ -1,6 +1,8 @@
 // قارِن — ترجمة واجهة الموقع. كل سطر: النص العربي ← [en, fr, es, zh, hi, ur, ru, tr, id]
 window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
 window.QARIN_I18N = {
+"⭐ حصري لزوار قارِن": ["⭐ Exclusive to Qarin visitors", "⭐ Exclusif aux visiteurs de Qarin", "⭐ Exclusivo para visitantes de Qarin", "⭐ Qarin 访客专享", "⭐ Qarin विज़िटर्स के लिए खास", "⭐ قارِن کے صارفین کے لیے خاص", "⭐ Только для посетителей Qarin", "⭐ Qarin ziyaretçilerine özel", "⭐ Khusus pengunjung Qarin"],
+"🎟️ كود حصري لزوار قارِن:": ["🎟️ Exclusive Qarin code:", "🎟️ Code exclusif Qarin :", "🎟️ Código exclusivo de Qarin:", "🎟️ Qarin 专属优惠码：", "🎟️ Qarin का खास कोड:", "🎟️ قارِن کا خاص کوڈ:", "🎟️ Эксклюзивный код Qarin:", "🎟️ Qarin'e özel kod:", "🎟️ Kode eksklusif Qarin:"],
 "📉 نزل سعر «{q}» من {n} ر.ع. إلى {n} ر.ع.": ["📉 Price drop: “{q}” from {n} OMR to {n} OMR", "📉 Baisse de prix : « {q} » de {n} OMR à {n} OMR", "📉 Bajó el precio: «{q}» de {n} OMR a {n} OMR", "📉 降价：「{q}」从 {n} 里亚尔降到 {n} 里亚尔", "📉 कीमत घटी: “{q}” {n} OMR से {n} OMR", "📉 قیمت کم ہوئی: «{q}» {n} OMR سے {n} OMR", "📉 Цена снизилась: «{q}» с {n} до {n} OMR", "📉 Fiyat düştü: “{q}” {n} OMR'den {n} OMR'ye", "📉 Harga turun: “{q}” dari {n} OMR ke {n} OMR"],
 "عروض اليوم": ["Today's deals", "Offres du jour", "Ofertas de hoy", "今日特惠", "आज के ऑफ़र", "آج کی ڈیلز", "Скидки дня", "Günün fırsatları", "Promo hari ini"],
 "أكبر التخفيضات اليوم": ["Biggest discounts today", "Plus grosses remises du jour", "Mayores descuentos de hoy", "今日最大折扣", "आज की सबसे बड़ी छूट", "آج کی سب سے بڑی رعایتیں", "Самые большие скидки сегодня", "Bugünün en büyük indirimleri", "Diskon terbesar hari ini"],

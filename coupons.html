@@ -65,6 +65,8 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
 .cp-store { font-weight: 700; font-size: .9rem; }
 .cp-exp { font-size: .78rem; color: var(--muted); }
 .cp-exp.soon { color: var(--warn); font-weight: 700; }
+.cp.pin { border: 2px solid #34C759; }
+.cp-pin { font-size: .82rem; font-weight: 700; color: #1E8E3E; margin-bottom: 6px; }
 .cp-disc { margin-inline-start: auto; background: var(--surface-2); color: #BF4800; font-weight: 700; border-radius: 10px; padding: 3px 10px; font-size: .9rem; white-space: nowrap; direction: ltr; }
 .cp-t { font-weight: 700; line-height: 1.45; direction: auto; unicode-bidi: plaintext; }
 .cp-d { color: var(--muted); font-size: .85rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; direction: auto; unicode-bidi: plaintext; }
@@ -199,7 +201,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--fo
   function card(c, i) {
     const d = daysLeft(c.e);
     const exp = d == null ? 'بدون تاريخ انتهاء' : d <= 0 ? 'ينتهي اليوم' : d === 1 ? 'ينتهي بكرة' : d === 2 ? 'ينتهي بعد يومين' : `ينتهي بعد ${d} ${d >= 3 && d <= 10 ? 'أيام' : 'يوم'}`;
-    return `<article class="cp">
+    return `<article class="cp${c.p ? ' pin' : ''}">${c.p ? '<div class="cp-pin">⭐ حصري لزوار قارِن</div>' : ''}
       <div class="cp-top">${safe(c.l) ? `<img src="${safe(c.l)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}<div><div class="cp-store">${esc(c.s || 'متجر')}</div><div class="cp-exp${d != null && d <= 3 ? ' soon' : ''}">⏳ ${exp}</div></div>${c.x ? `<span class="cp-disc">${esc(c.x)}</span>` : ''}</div>
       <div class="cp-t">${esc(c.t)}</div>
       ${tagsOf(c)}

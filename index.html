@@ -396,6 +396,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 .card-acts button.on { background: var(--fg); color: var(--surface); }
 .card-acts button.fav.on { background: var(--glass); color: var(--bad); }
 .pcard .img .disc { left: auto; right: 10px; top: 10px; }
+.xcode { margin-top: 4px; font-size: .8rem; font-weight: 700; color: #1E8E3E; }
+.xcode b { background: rgba(52,199,89,.12); border: 1px dashed #34C759; border-radius: 6px; padding: 0 6px; letter-spacing: .5px; }
 .hist { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; font-size: 0.8rem; font-weight: 700; }
 .hist .h-good { color: var(--good); }
 .hist .h-bad { color: var(--bad); }
@@ -2226,6 +2228,11 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (saved !== undefined) TR.delete(n);
     try { return toEnglish(w); } finally { if (saved !== undefined) TR.set(n, saved); }
   }
+  // أكواد خصم حصرية لزوار قارِن من المتاجر اللي اتفقنا معها (coupons_local.json ← coupons.json، p=1)
+  const CODES = {}; let CODESP = null;
+  const loadCodes = () => CODESP || (CODESP = fetch('coupons.json?v=' + new Date().toISOString().slice(0, 13)).then(r => r.ok ? r.json() : null).catch(() => null)
+    .then(d => { ((d && d.coupons) || []).forEach(c => { if (c.p && c.pk && c.c && !CODES[c.pk]) CODES[c.pk] = c; }); }));
+  const codeHtml = p => p.code ? `<div class="xcode">🎟️ كود حصري لزوار قارِن: <b dir="ltr">${esc(p.code.c)}</b>${p.code.x ? ` (خصم <bdi>${esc(p.code.x)}</bdi>)` : ''}</div>` : '';
   // تاريخ أسعار المتاجر الشريكة (data/h، يتسجل كل يوم): نحوله لنفس شكل تاريخ علي إكسبريس
   // [أيام التسجيل، أقل، أعلى، سعر قبل أسبوع، (قبل كم يوم، السعر)...] بالسنت
   const HISTD = {}, HISTP = {};
@@ -2249,6 +2256,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
       shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [], rawUrl: url };
     p.hist = partnerHist(k, url, F);
+    if (CODES[k]) p.code = CODES[k];
     if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
     if (F.perf) p.ptext = (t + ' | ' + tags).slice(0, 700);
     return p;
@@ -2275,7 +2283,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const own = w => { const e = (toEnglish(w) || '').toLowerCase(); return e && (F.gate.test(e) || brands.some(b => e.includes(b))); };
       if (qWords.some(w => /[\u0600-\u06ff]/.test(w) && coffeeNames.includes(w) && !own(w) && !CF_GROUPS.some(re => re.test(w)))) return [];
     }
-    const [d] = await Promise.all([loadPartner(k), loadHist(k)]);
+    const [d] = await Promise.all([loadPartner(k), loadHist(k), loadCodes()]);
     if (!d || !Array.isArray(d.items)) return [];
     let toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
     // «مكينة قهوة» ← المكينة هي المطلوبة، فكلمة «قهوة» ما تشترط إن المنتج قهوة
@@ -3917,7 +3925,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
         <div class="rating">${PARTNER_INFO[p.platform] && p.unrated ? `<span class="ok">✓ ${PARTNER_INFO[p.platform].short}</span>` : `${p.unrated ? '' : stars(p.rating)}<b><bdi>${ratingNum(p)}</bdi></b><span>${reviewsText(p)}</span>`}</div>
         ${perfHtml(p, false)}${pfExtraHtml(p)}${coffeeHtml(p, false)}
         <div class="prices"><span class="price">${money(p.price)}</span>${d >= 5 ? `<span class="old">${money(p.original)}</span>` : ''}${nativeHtml(p)}</div>
-        ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}
+        ${totalHtml(p)}${dropHtml(p)}${histHtml(p)}${codeHtml(p)}
         <div class="meta-line">${metaHtml(p)}</div>
         <div class="score"><span>مؤشر القيمة</span><div class="bar"><span style="width:${p.score.toFixed(0)}%"></span></div><b class="num">${p.score.toFixed(0)}</b></div>
         ${cartBtn(p)}${shopBtn(p, 'تسوّق ↗')}

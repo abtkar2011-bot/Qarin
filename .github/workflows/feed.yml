@@ -203,7 +203,7 @@ jobs:
       - name: Put the site together
         run: |
           mkdir -p _site
-          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|embcache|embout|pricehist|seoout|adminout|_site) ;; *) cp -r "$f" _site/ ;; esac; done
+          for f in *; do case "$f" in build_feed.py|build_coupons.py|coupons_local.json|qa|tools|products|history|partners|embcache|embout|pricehist|seoout|adminout|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
           cp -r products _site/data/s
           mkdir -p _site/data/p && cp partners/*.json _site/data/p/ 2>/dev/null || true
