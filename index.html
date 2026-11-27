@@ -3277,7 +3277,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   // «قهوة» في أول الاسم أو «قهوة مختصة/عربية…» = محصول، بس «حصيرة لركن القهوة» أداة
   const CF_BEAN_AR2 = /^(ال)?قهوه(\s|$)|(^|[\s(\-])(ال)?قهوه\s+(مختصه|عربيه|عمانيه|تركيه|سعوديه|يمنيه|خليجيه|اثيوبيه|كولومبيه|برازيليه|كينيه|مقطره|فلتر|اسبريسو|سوداء|بالهيل|بالزعفران|مطحونه|محمصه|حبوب|منزوعه|نجديه|حجازيه|شقراء)(\s|$)/;
   const CF_GRAMS = /\d+\s*(g|gm|gr|grams?|kg|جرام|غرام|جم|كيلو|كجم)(?![a-z؀-ۿ])/i;
-  const CF_CAPS = /(capsules?|\bpods?\b|nespresso|dolce gusto)/i, CF_CAPS_AR = cfW('كبسوله|كبسولات|كبسولتين|نسبريسو|نيسبريسو|نيسبرسو');
+  const CF_CAPS = /(capsules?|\bpods?\b|nespresso|dolce gusto)/i, CF_CAPS_AR = cfW('كبسوله|كبسولات|كبسولتين|كابسول|كابسوله|كابسولات|بودس|بودز|نسبريسو|نيسبريسو|نيسبرسو|نسبرسو');
   const CF_CAPS_NOT = /(machine|holder|stand|refill|reusable|dispenser|drawer|organi[sz]er|portafilter|adapt[eo]r|basket)/i, CF_CAPS_NOT_AR = cfW('مكينه|ماكينه|حامل|ستاند|اعاده التعبئه|اعاده تعبئه|درج|منظم');
   const CF_DRIP = /(drip (bags?|box|coffee|pack)|\bufo\b|\bdrip\b)/i, CF_DRIP_AR = cfW('دريب|اظرف|ظرف|اكياس تقطير|قهوه مقطره جاهزه');
   const CF_TURK = /turkish/i, CF_TURK_AR = cfW('تركي|تركيه');
@@ -3315,6 +3315,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     }
     if (CF_SERVE.test(t) || CF_SERVE_AR.test(tn)) return 'other';
     if (has(CF_CAPS, CF_CAPS_AR) && !has(CF_CAPS_NOT, CF_CAPS_NOT_AR)) return 'capsule';
+    // قسم المتجر «كبسولات القهوة» / «Capsules» (اسم قسم قصير مو وصف): كبسولات حتى لو العنوان «Brazil Espresso Classic» أو «اكس بودس - إثيوبيا»
+    if (!has(CF_CAPS_NOT, CF_CAPS_NOT_AR) && normalize(text).split(' | ').slice(1).some(g => g.length <= 40 && /(^|\s)(كبسولات|كبسوله|capsules?|pods)(\s|$)/.test(g) && !/(مكين|ماكين|machine|holder|حامل)/.test(g))) return 'capsule';
     if (CF_GIFT.test(t)) return 'other';
     const origin = CF_ORIGINS.some(c => c.re.test(t) || c.re.test(tn));
     // «إثيوبيا قوجي – V60» محصول مو قمع: اسم البلد في العنوان يغلب الأدوات الخفيفة
