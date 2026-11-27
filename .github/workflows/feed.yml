@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -191,14 +191,16 @@ jobs:
           git clone -q --depth 1 -b health-out "https://github.com/${{ github.repository }}.git" /tmp/hp 2>/dev/null || mkdir -p /tmp/hp
           node tools/admin/build.js partners adminout
 
-      # صحة المتاجر للتقرير الأسبوعي: فرع health-out (بدون روابط ولا بيانات زوار)
-      - name: Store health
+      # صحة المتاجر للتقرير الأسبوعي: ننقلها لمهمة صغيرة لحالها (هي بس اللي عندها صلاحية الكتابة)
+      - name: Store health file
         continue-on-error: true
-        run: |
-          mkdir -p /tmp/ho && cp adminout/health.json adminout/log.json /tmp/ho/ && cd /tmp/ho
-          git init -q -b health-out && git add -A
-          git -c user.name="qarin-bot" -c user.email="qarin-bot@users.noreply.github.com" commit -qm "health $(date -u +%F' '%H:%M)"
-          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" health-out
+        uses: actions/upload-artifact@v4
+        with:
+          name: health
+          path: |
+            adminout/health.json
+            adminout/log.json
+          retention-days: 3
 
       - name: Put the site together
         run: |
@@ -216,6 +218,24 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+  # فرع health-out للتقرير الأسبوعي (بدون روابط ولا بيانات زوار). مهمة منفصلة عشان البناء نفسه ما يقدر يكتب في المستودع
+  health:
+    needs: build
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: health
+          path: /tmp/ho
+      - name: Push health-out
+        run: |
+          cd /tmp/ho && ls -la && git init -q -b health-out && git add -A
+          git -c user.name="qarin-bot" -c user.email="qarin-bot@users.noreply.github.com" commit -qm "health $(date -u +%F' '%H:%M)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" health-out
 
   deploy:
     needs: build

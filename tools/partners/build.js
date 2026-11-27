@@ -106,7 +106,9 @@ async function dermazone() {
 // ---------- محامص القهوة العمانية ----------
 const ent = v => fixText(String(v || '').replace(/&#(\d+);/g, (m, n) => String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCharCode(parseInt(n, 16)))
   .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#039;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<[^>]+>/g, ' '));
-const pack = (x, extra) => [x.t, x.p, x.i, x.u, x.tags.toLowerCase(), x.o || 0, x.r || 0, x.n || 0];
+// أمان: روابط المنتج والصورة لازم تكون https (لا javascript: ولا علامات تكسر HTML)
+const okUrl = u => /^https:\/\/[^\s"'<>]+$/i.test(String(u || ''));
+const pack = (x, extra) => [String(x.t).replace(/[<>]/g, ' '), x.p, okUrl(x.i) ? x.i : '', x.u, x.tags.toLowerCase(), x.o || 0, x.r || 0, x.n || 0];
 
 // Copper Roastery (مسقط): ووكومرس — واجهة المتجر العامة /wp-json/wc/store/v1/products
 function parseWoo(list, store = 'copper roastery', skip = /cafe beverages/i) {
@@ -401,6 +403,7 @@ if (require.main === module) (async () => {
     if (process.env.ONLY && !process.env.ONLY.split(',').includes(name)) continue;
     try {
       const data = await fn();
+      data.items = data.items.filter(r => okUrl(r[3]));   // أمان: منتج رابطه مو https ما ينزل
       if (COFFEE.has(name)) data.names = namesOf(data.items);
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
       fs.writeFileSync(path.join(OUT, name + '.json'), JSON.stringify(data));

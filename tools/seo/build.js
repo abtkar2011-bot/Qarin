@@ -34,8 +34,10 @@ for (const k of stores) {
   const rate = RATE[d.cur || 'OMR'] || 1;
   for (const r of d.items || []) {
     const [t, p, img, u, tags, orig] = r;
-    if (!(p > 0) || !u || !t) continue;
-    items.push({ k, t: String(t).replace(/Â|\u00a0/g, ' ').replace(/\s+/g, ' ').trim(), p: p * rate, o: orig > p ? orig * rate : 0, img: img || '', u: String(u), tags: String(tags || ''), raw: p });
+    // أمان: روابط https بس (ما نسمح بـ javascript: أو غيره من بيانات المتاجر)
+    if (!(p > 0) || !t || !/^https:\/\/[^\s"'<>]+$/i.test(String(u || ''))) continue;
+    const im = /^https:\/\/[^\s"'<>]+$/i.test(String(img || '')) ? String(img) : '';
+    items.push({ k, t: String(t).replace(/Â|\u00a0/g, ' ').replace(/\s+/g, ' ').trim(), p: p * rate, o: orig > p ? orig * rate : 0, img: im, u: String(u), tags: String(tags || ''), raw: p });
   }
 }
 console.log('items', items.length, 'stores', stores.length);
@@ -141,7 +143,7 @@ h1{font-size:clamp(22px,5vw,32px);margin:8px 0 4px;line-height:1.35}.sub{color:v
 footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}`;
 
 function page({ title, h1, sub, cta, body, canonical, desc, ld }) {
-  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:image" content="${SITE}icons/icon-512.png?v=5">
 <link rel="icon" href="${SITE}icons/favicon-32.png?v=5"><link rel="apple-touch-icon" href="${SITE}icons/apple-touch-icon.png?v=5">

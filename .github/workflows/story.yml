@@ -11,7 +11,7 @@ on:
         required: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: story
@@ -36,10 +36,26 @@ jobs:
           OUT: story-out
           QUERY: ${{ github.event.inputs.query }}
         run: node tools/story/story.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: story
+          path: story-out/
+          retention-days: 3
+
+  # النشر في مهمة لحالها: هي بس اللي عندها صلاحية الكتابة (مو المهمة اللي تشغّل المتصفح وحزم npm)
+  publish:
+    needs: story
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: story
+          path: /tmp/out
       - name: Publish story
         run: |
           set -e
-          mkdir -p /tmp/out && cp -r story-out/* /tmp/out/
           cd /tmp/out
           git init -q -b story-out
           git config user.name "qarin-story"; git config user.email "story@users.noreply.github.com"

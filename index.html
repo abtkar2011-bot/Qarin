@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://qarin-ebay.abtkar2011.workers.dev https://api.mymemory.translated.net https://open.er-api.com https://cdn.jsdelivr.net data: blob:; img-src 'self' https: data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; media-src 'self' blob: mediastream:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mitgo-verification" content="ad1a1e9a-a5c5-4615-ae72-e39fe8fcf711" />
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
@@ -497,6 +499,7 @@ table.dt { min-width: 0; font-size: .76rem; }
 .wa-btn svg { width: 18px; height: 18px; color: var(--muted); }
 .wa-btn:hover { border-color: var(--muted); }
 .inst-bar { position: fixed; z-index: 65; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(560px, calc(100% - 24px)); display: flex; align-items: center; gap: 12px; padding: 12px 10px 12px 14px; border-radius: 20px; background: var(--glass); color: var(--fg); border: 1px solid var(--line); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 12px 40px rgba(0,0,0,.14); animation: ibIn .4s ease-out; direction: rtl; }
+body.inst-on { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 .inst-bar img { width: 46px; height: 46px; border-radius: 11px; flex: none; }
 .inst-bar .ib-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .inst-bar b { font-size: 15px; }
@@ -4048,8 +4051,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const pl = PLATFORMS[pk] || { name: pk, color: '#666', text: '#fff' };
       const sub = groups[pk].reduce((a, k) => a + (cart[k].price + (cart[k].ship || 0)) * cart[k].qty, 0); grand += sub;
       const rows = groups[pk].map(k => { const c = cart[k]; return `<div class="bk-row cart-row">
-          ${c.image ? `<img referrerpolicy="no-referrer" src="${esc(c.image)}" alt="">` : '<span style="font-size:26px;text-align:center">🛍️</span>'}
-          <div style="min-width:0"><a class="tt" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer" title="${esc(c.title)}">${esc(c.title)}</a>
+          ${safeUrl(c.image) ? `<img referrerpolicy="no-referrer" src="${esc(safeUrl(c.image))}" alt="">` : '<span style="font-size:26px;text-align:center">🛍️</span>'}
+          <div style="min-width:0"><a class="tt" href="${esc(safeUrl(c.url) || '#')}" target="_blank" rel="noopener noreferrer" title="${esc(c.title)}">${esc(c.title)}</a>
             <div class="qty"><button type="button" data-qty="${esc(k)}" data-d="-1" aria-label="أنقص">−</button><b class="num">${c.qty}</b><button type="button" data-qty="${esc(k)}" data-d="1" aria-label="زِد">+</button>
             <button type="button" data-cart-del="${esc(k)}" aria-label="احذف">🗑️</button></div></div>
           <span class="pr">${money((c.price + (c.ship || 0)) * c.qty)}${c.ship ? '<br><small>مع الشحن</small>' : ''}</span></div>`; }).join('');
@@ -4066,7 +4069,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   function openStore(pk) {
     const ks = Object.keys(cart).filter(k => cart[k].platform === pk);
     let blocked = false;
-    ks.forEach((k, i) => { const w = window.open(cart[k].url, '_blank', 'noopener'); if (!w && i > 0) blocked = true; });
+    ks.forEach((k, i) => { const w = safeUrl(cart[k].url) && window.open(safeUrl(cart[k].url), '_blank', 'noopener'); if (!w && i > 0) blocked = true; });
     if (blocked) toast('المتصفح فتح أول منتج بس، استخدم «انسخ الروابط» للباقي');
   }
   async function copyStore(pk) {
@@ -4593,14 +4596,14 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   const SITE_URL = 'https://abtkar2011-bot.github.io/Qarin/';
   const INST_KEY = 'qarin.instHide';
   function hideInstBar(remember) {
-    $('instBar').hidden = true;
+    $('instBar').hidden = true; document.body.classList.remove('inst-on');
     if (remember) { try { localStorage.setItem(INST_KEY, String(Date.now())); } catch (e) { /* تجاهل */ } }
   }
   function maybeShowInstBar() {
     if (isStandalone() || document.querySelector('.modal.on')) return;
     let t = 0; try { t = +localStorage.getItem(INST_KEY) || 0; } catch (e) { /* تجاهل */ }
     if (Date.now() - t < 3 * 864e5) return;
-    $('instBar').hidden = false;
+    $('instBar').hidden = false; document.body.classList.add('inst-on');
   }
   function copySiteLink() {
     const done = () => toast('✅ تم نسخ الرابط');
@@ -4701,10 +4704,10 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     $('favList').innerHTML = keys.map(k => {
       const f = favs[k], diff = (f.last - f.saved) / f.saved * 100;
       const ch = Math.abs(diff) < 1 ? '<span class="muted">نفس السعر</span>' : diff < 0 ? `<span class="down">📉 نزل ${Math.abs(diff).toFixed(0)}%</span>` : `<span class="up">📈 ارتفع ${diff.toFixed(0)}%</span>`;
-      return `<div class="fav-row">${f.image ? `<img referrerpolicy="no-referrer" src="${esc(f.image)}" alt="">` : '<span style="font-size:28px;text-align:center">🛍️</span>'}
+      return `<div class="fav-row">${safeUrl(f.image) ? `<img referrerpolicy="no-referrer" src="${esc(safeUrl(f.image))}" alt="">` : '<span style="font-size:28px;text-align:center">🛍️</span>'}
         <div style="min-width:0"><div class="t" title="${esc(f.title)}">${esc(f.title)}</div>
         <div class="sub">${PLATFORMS[f.platform] ? PLATFORMS[f.platform].name : ''} · حفظته بـ ${money(f.saved)} · آخر سعر ${money(f.last)} · ${ch}</div></div>
-        <div class="acts">${f.q ? `<button type="button" data-fav-search="${esc(f.q)}">🔄 تحقق</button>` : ''}<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">فتح ↗</a><button type="button" data-fav-del="${esc(k)}">🗑️</button></div></div>`;
+        <div class="acts">${f.q ? `<button type="button" data-fav-search="${esc(f.q)}">🔄 تحقق</button>` : ''}${safeUrl(f.url) ? `<a href="${esc(safeUrl(f.url))}" target="_blank" rel="noopener noreferrer">فتح ↗</a>` : ''}<button type="button" data-fav-del="${esc(k)}">🗑️</button></div></div>`;
     }).join('');
   }
   function toggleCmp(k) {
@@ -4778,7 +4781,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const fromApp = new URLSearchParams(location.search).has('add');
     if (fromApp) { try { history.replaceState(null, '', location.pathname); } catch (e) { /* تجاهل */ } }
     if (fromApp && !isStandalone() && !IN_APP) {
-      if (IS_IOS) setTimeout(openInstall, 900); else setTimeout(() => { $('instBar').hidden = false; }, 900);
+      if (IS_IOS) setTimeout(openInstall, 900); else setTimeout(() => { $('instBar').hidden = false; document.body.classList.add('inst-on'); }, 900);
     } else setTimeout(maybeShowInstBar, 4000);
     $('favFab').addEventListener('click', () => { $('favFab').classList.remove('has-drop'); renderFavs(); openModal('favModal'); });
     $('cmpGo').addEventListener('click', () => { if (cmp.length >= 2) { renderCmp(); openModal('cmpModal'); } });
