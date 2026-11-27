@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة الأدمن — قارِن</title>
+<link rel="icon" href="../icons/favicon-32.png?v=5">
+<style>
+:root{--bg:#F5F5F7;--card:#fff;--fg:#1D1D1F;--muted:#6E6E73;--line:#E3E3E8;--accent:#0071E3;--ok:#1E8E3E;--warn:#B26A00;--bad:#C5221F}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#1C1C1E;--fg:#F5F5F7;--muted:#98989D;--line:#38383A;--accent:#2997FF;--ok:#30D158;--warn:#FFD60A;--bad:#FF453A}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"SF Arabic","Segoe UI",Tahoma,Arial,sans-serif;line-height:1.55}
+a{color:var(--accent)}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+header img{width:40px;height:40px;border-radius:10px}
+header b{font-size:20px}
+header small{color:var(--muted);margin-inline-start:auto;font-size:12px;text-align:left}
+.login{max-width:380px;margin:12vh auto;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;text-align:center}
+.login img{width:72px;height:72px;border-radius:18px}
+.login h1{font-size:20px;margin:10px 0 4px}
+.login p{color:var(--muted);margin:0 0 16px;font-size:14px}
+input[type=password]{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:16px;text-align:center}
+button{font:inherit;cursor:pointer}
+.btn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:16px}
+.btn[disabled]{opacity:.6}
+.err{color:var(--bad);font-size:14px;min-height:1.4em;margin-top:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.kpi span{color:var(--muted);font-size:13px}
+.kpi b{display:block;font-size:26px;margin-top:2px}
+.kpi small{color:var(--muted);font-size:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
+.box h2{font-size:17px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.box h2 small{color:var(--muted);font-weight:400;font-size:12px;margin-inline-start:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.tbl{overflow-x:auto}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:6px}
+.ok{background:var(--ok)}.warn{background:var(--warn)}.off{background:var(--bad)}
+.msg{color:var(--muted);font-size:12px}
+.alerts div{padding:10px 12px;border-radius:12px;margin-bottom:8px;font-size:14px;background:rgba(197,34,31,.08)}
+.alerts div.good{background:rgba(30,142,62,.10)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:110px;padding-top:6px}
+.bars i{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.bars-l{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px}
+.cm{border-bottom:1px solid var(--line);padding:8px 0;font-size:14px}
+.cm small{color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:7px 12px;text-decoration:none;font-size:13px;font-weight:600}
+.copy{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:8px 12px;font-weight:700}
+pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;max-height:240px;overflow:auto;font-family:inherit}
+.out{display:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.m-hide{display:none}td,th{padding:8px 4px}}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <form class="login" id="login" autocomplete="off">
+    <img src="../icons/apple-touch-icon.png?v=5" alt="">
+    <h1>لوحة الأدمن</h1>
+    <p>هذي الصفحة لفريق قارِن بس.</p>
+    <input type="password" id="pass" placeholder="كلمة السر" aria-label="كلمة السر" autocomplete="current-password">
+    <button class="btn" id="go" type="submit">دخول</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+
+  <div class="out" id="out">
+    <header><img src="../icons/apple-touch-icon.png?v=5" alt=""><b>لوحة أدمن قارِن</b><small id="built"></small></header>
+    <div class="kpis" id="kpis"></div>
+    <div class="box alerts" id="alerts"></div>
+    <div class="grid2">
+      <div class="box"><h2>📈 الزوار آخر 30 يوم <small id="statsAt"></small></h2><div class="bars" id="bars"></div><div class="bars-l" id="barsL"></div></div>
+      <div class="box"><h2>🔎 أكثر شي انبحث</h2><div class="chips" id="top"></div></div>
+    </div>
+    <div class="box"><h2>🏪 المتاجر <small id="storesSum"></small></h2><div class="tbl"><table><thead><tr><th>المتجر</th><th class="m-hide">القسم</th><th>المنتجات</th><th>آخر تحديث</th><th class="m-hide">بصمات الصور</th><th>الحالة</th></tr></thead><tbody id="stores"></tbody></table></div></div>
+    <div class="grid2">
+      <div class="box"><h2>⭐ تقييمات الزوار <small id="rateSum"></small></h2><div id="comments"></div></div>
+      <div class="box"><h2>🔥 عروض اليوم لقناة الواتساب</h2><button class="copy" id="copyDeals" type="button">نسخ النص</button><pre id="deals">…</pre></div>
+    </div>
+    <div class="box"><h2>🔗 روابط سريعة</h2><div class="links" id="links"></div></div>
+  </div>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const API = 'https://qarin-ebay.abtkar2011.workers.dev/';
+  const ago = iso => { if (!iso) return '—'; const h = (Date.now() - Date.parse(iso)) / 36e5; return h < 1 ? 'قبل أقل من ساعة' : h < 24 ? `قبل ${Math.round(h)} ساعة` : `قبل ${Math.round(h / 24)} يوم`; };
+  const n = v => Number(v || 0).toLocaleString('en-US');
+
+  async function decrypt(pass) {
+    const r = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('nofile');
+    const d = await r.json();
+    if (d.missing) throw new Error('missing');
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(d.salt), iterations: d.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(d.iv) }, key, b64(d.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  $('login').addEventListener('submit', async e => {
+    e.preventDefault();
+    const pass = $('pass').value; if (!pass) return;
+    $('go').disabled = true; $('err').textContent = 'جارِ الفتح…';
+    try {
+      const data = await decrypt(pass);
+      $('pass').value = ''; $('login').style.display = 'none'; $('out').style.display = 'block';
+      show(data); live(); deals();
+    } catch (x) {
+      $('err').textContent = x.message === 'missing' ? 'كلمة السر ما انضبطت في إعدادات GitHub للحين.' : x.message === 'nofile' ? 'بيانات اللوحة ما انبنت للحين. جرّب بعد التحديث الجاي.' : 'كلمة السر غلط.';
+    } finally { $('go').disabled = false; }
+  });
+
+  function show(d) {
+    $('built').innerHTML = `آخر تحديث للموقع: ${ago(d.built)}${d.run ? ` · <a href="${esc(d.run)}" target="_blank" rel="noopener">التفاصيل</a>` : ''}`;
+    const bad = d.stores.filter(s => s.status !== 'ok');
+    $('kpis').innerHTML = [
+      ['المتاجر الشغالة', `${d.totals.storesOn}/${d.stores.length}`, ''],
+      ['منتجات المتاجر', n(d.totals.products), ''],
+      ['بصمات الصور', n(d.totals.prints), d.totals.printsOn ? 'البحث بنفس الشكل شغال' : 'البحث بنفس الشكل طافي'],
+      ['الكوبونات', n(d.coupons.n), ago(d.coupons.updated)],
+      ['صفحات قوقل', n(d.pages), 'مقارنات الأسعار'],
+    ].map(([a, b, c]) => `<div class="kpi"><span>${a}</span><b>${b}</b><small>${esc(c)}</small></div>`).join('') + '<div class="kpi" id="kV"><span>زوار اليوم</span><b>…</b><small></small></div><div class="kpi" id="kS"><span>عمليات البحث</span><b>…</b><small></small></div>';
+    const al = [];
+    for (const s of bad) al.push(`<div>⚠️ <b>${esc(s.name)}</b>: ${esc(s.msg || (s.age > 1.5 ? `ما تحدّث من ${s.age.toFixed(1)} يوم` : 'فيه مشكلة'))}</div>`);
+    const st = d.steps || {};
+    if (st.prints && st.prints !== 'success') al.push('<div>⚠️ بصمات الصور فشلت في آخر تحديث، والبحث بنفس الشكل يمكن يكون طافي.</div>');
+    if (st.seo && st.seo !== 'success') al.push('<div>⚠️ صفحات قوقل وعروض اليوم ما تحدثت في آخر تحديث.</div>');
+    if (st.partners && st.partners === 'failure') al.push('<div>⚠️ تحديث المتاجر فشل في آخر تشغيل.</div>');
+    $('alerts').innerHTML = al.length ? al.join('') : '<div class="good">✅ كل شي شغال، وما في مشاكل في آخر تحديث.</div>';
+    $('storesSum').textContent = `${d.stores.length} متجر`;
+    $('stores').innerHTML = d.stores.map(s => `<tr><td><span class="dot ${s.status}"></span><b>${esc(s.name)}</b>${s.msg ? `<div class="msg">${esc(s.msg)}</div>` : ''}</td><td class="m-hide">${esc(s.group)}</td><td>${n(s.n)}</td><td>${ago(s.updated)}</td><td class="m-hide">${s.n ? n(s.prints) : '—'}</td>
+      <td>${s.status === 'ok' ? 'شغال' : s.status === 'warn' ? 'متابعة' : 'طافي'}</td></tr>`).join('');
+    $('links').innerHTML = [
+      ['الموقع', '../'], ['عروض اليوم', '../deals.html'], ['مقارنات الأسعار', '../compare/'], ['الإحصائيات العامة', '../stats.html'],
+      ['تحديثات GitHub', 'https://github.com/abtkar2011-bot/Qarin/actions'], ['Admitad', 'https://store.admitad.com/'], ['Google Search Console', 'https://search.google.com/search-console'],
+      ['Cloudflare', 'https://dash.cloudflare.com/'], ['قناة الواتساب', 'https://whatsapp.com/channel/0029Vb9jfF32ER6lZlW2Qn2F'], ['إنستقرام', 'https://www.instagram.com/qarin_app/'],
+    ].map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('');
+  }
+
+  async function live() {
+    try {
+      const s = await (await fetch(API + 'stats', { cache: 'no-store' })).json();
+      $('kV').innerHTML = `<span>زوار اليوم</span><b>${n(s.visitorsToday)}</b><small>الكل: ${n(s.visitors)} زائر</small>`;
+      $('kS').innerHTML = `<span>عمليات البحث</span><b>${n(s.searches)}</b><small>من البداية</small>`;
+      $('statsAt').textContent = ago(s.updated);
+      const days = s.perDay || [], max = Math.max(1, ...days.map(x => x.u));
+      $('bars').innerHTML = days.map(x => `<i style="height:${Math.max(2, x.u / max * 100)}%" title="${esc(x.day)}: ${x.u} زائر"></i>`).join('') || '<span class="msg">ما في بيانات</span>';
+      $('barsL').innerHTML = days.length ? `<span>${esc(days[0].day)}</span><span>${esc(days[days.length - 1].day)}</span>` : '';
+      $('top').innerHTML = (s.topSearches || []).map(x => `<span>${esc(x.q)} · ${x.c}</span>`).join('') || '<span class="msg">ما في بحث للحين</span>';
+      $('rateSum').textContent = s.ratings ? `${s.ratings} تقييم · ${s.avgStars} من 5` : 'ما في تقييمات';
+      $('comments').innerHTML = (s.comments || []).map(c => `<div class="cm">${'★'.repeat(c.stars || 0)} <small>${esc(c.day)}</small><br>${esc(c.comment)}</div>`).join('') || '<span class="msg">ما في تعليقات للحين</span>';
+    } catch (e) { $('kV').querySelector('small').textContent = 'ما قدرنا نجيب الإحصائيات'; }
+  }
+  async function deals() {
+    try { const t = await (await fetch('../data/deals.txt?t=' + Date.now(), { cache: 'no-store' })).text(); $('deals').textContent = t; }
+    catch (e) { $('deals').textContent = 'ما في عروض اليوم للحين.'; }
+    $('copyDeals').onclick = async () => { try { await navigator.clipboard.writeText($('deals').textContent); $('copyDeals').textContent = '✓ انسخ'; setTimeout(() => ($('copyDeals').textContent = 'نسخ النص'), 1800); } catch (e) { /* */ } };
+  }
+})();
+</script>
+</body>
+</html>

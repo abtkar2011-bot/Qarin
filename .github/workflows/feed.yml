@@ -117,25 +117,25 @@ jobs:
           key: qarin-partners-${{ github.run_id }}
 
       # 🔎 صفحات قوقل (مقارنة الأسعار) + عروض اليوم + تاريخ الأسعار (يتسجل كل يوم في الكاش)
-      - name: Restore price history
+      - name: Restore store price history
         uses: actions/cache/restore@v4
         with:
           path: pricehist
-          key: qarin-hist-${{ github.run_id }}
-          restore-keys: qarin-hist-
+          key: qarin-phist-${{ github.run_id }}
+          restore-keys: qarin-phist-
 
       - name: Comparison pages, deals, price history
         id: seo
         continue-on-error: true
         run: node tools/seo/build.js partners pricehist seoout
 
-      - name: Save price history
+      - name: Save store price history
         if: steps.seo.outcome == 'success'
         continue-on-error: true
         uses: actions/cache/save@v4
         with:
           path: pricehist
-          key: qarin-hist-${{ github.run_id }}
+          key: qarin-phist-${{ github.run_id }}
 
       # 📷 «بصمة شكل» لكل صورة منتج في المتاجر الشريكة (للبحث بنفس الشكل) ← data/pe + models
       # Node 20 ثابت (نسخة الجهاز تتغير، وأداة الصور اختبرناها على 20)
@@ -178,15 +178,26 @@ jobs:
           COUPONS_FEED_URL: ${{ secrets.COUPONS_FEED_URL }}
         run: python3 build_coupons.py
 
+      # 🔐 بيانات صفحة الأدمن، مشفّرة بكلمة السر (ADMIN_PASS في أسرار المستودع)
+      - name: Admin data
+        continue-on-error: true
+        env:
+          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+          ST_PARTNERS: ${{ steps.partners.outcome }}
+          ST_PRINTS: ${{ steps.emb.outcome }}
+          ST_SEO: ${{ steps.seo.outcome }}
+        run: node tools/admin/build.js partners adminout
+
       - name: Put the site together
         run: |
           mkdir -p _site
-          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|embcache|embout|pricehist|seoout|_site) ;; *) cp -r "$f" _site/ ;; esac; done
+          for f in *; do case "$f" in build_feed.py|build_coupons.py|qa|tools|products|history|partners|embcache|embout|pricehist|seoout|adminout|_site) ;; *) cp -r "$f" _site/ ;; esac; done
           mkdir -p _site/data
           cp -r products _site/data/s
           mkdir -p _site/data/p && cp partners/*.json _site/data/p/ 2>/dev/null || true
           mkdir -p _site/data/pe && cp embout/pe/* _site/data/pe/ 2>/dev/null || true
           [ -d embout/models ] && cp -r embout/models _site/models || true
+          mkdir -p _site/admin && cp adminout/data.json _site/admin/ 2>/dev/null || true
           if [ -d seoout/compare ]; then cp -r seoout/compare _site/compare; cp seoout/deals.html seoout/sitemap.xml seoout/robots.txt _site/; cp -r seoout/data/* _site/data/; fi
           echo "files: $(find _site -type f | wc -l)"; du -sh _site
 

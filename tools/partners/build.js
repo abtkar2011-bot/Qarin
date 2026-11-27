@@ -393,6 +393,7 @@ if (require.main === module) (async () => {
     .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/چ/g, 'ج').replace(/ڤ/g, 'ف').replace(/[گک]/g, 'ك').replace(/ی/g, 'ي');
   const namesOf = items => [...new Set(items.flatMap(x => nrm(x[0] + ' ' + String(x[4]).split(' | ').filter(t => /محمص|roaster/i.test(t)).join(' '))
     .split(/[^a-z0-9\u0600-\u06ff]+/).map(w => w.replace(/^(ال|لل|بال|وال)(?=...)/, '')).filter(w => w.length >= 3 && !/^\d+$/.test(w) && !STOP.has(w))))].slice(0, 3000);
+  const STATUS = {};
   const MIN = { bunalqassab: 8, spirithub: 10, rawasi: 5, yield: 5, sura: 5, fooh: 5, amouage: 10, oudbank: 10, omanluxury: 10, alhajis: 10, raydan: 10, ibraq: 10, almajed: 10, artal: 3, nawader: 10, alkhanjar: 10, openhagen: 10, woodestic: 10 };
   for (const [name, fn] of [['vperfumes', vperfumes], ['dermazone', dermazone], ['copper', copper], ['bunalqassab', bunalqassab], ['spirithub', spirithub], ['souqalbon', souqalbon], ['epanda', epanda], ['rawasi', rawasi], ['yield', yieldOm], ['sura', sura], ['fooh', fooh], ['mahaseel', mahaseel], ['muthalath', muthalath], ['barista', barista],
     ['amouage', amouage], ['swissarabian', swissarabian], ['asgharali', asgharali], ['omanluxury', omanluxury], ['alhajis', alhajis], ['oudbank', oudbank], ['boulevard', boulevard], ['oudworlds', oudworlds], ['raydan', raydan], ['ibraq', ibraq], ['almajed', almajed], ['artal', artal], ['nawader', nawader], ['alkhanjar', alkhanjar], ['openhagen', openhagen], ['woodestic', woodestic]]) {
@@ -404,6 +405,7 @@ if (require.main === module) (async () => {
       if (data.items.length < (MIN[name] || 20)) throw new Error('too few items: ' + data.items.length);
       fs.writeFileSync(path.join(OUT, name + '.json'), JSON.stringify(data));
       console.log(name, 'items', data.items.length, 'size', fs.statSync(path.join(OUT, name + '.json')).size);
+      STATUS[name] = { ok: true, n: data.items.length };
     } catch (e) {
       // فشل اليوم: نخلي ملف أمس إذا عمره ٣ أيام أو أقل. أقدم من كذا (أو المتجر مقفل) نشيله، عشان ما نعرض أسعار قديمة وروابط خربانة
       const fp = path.join(OUT, name + '.json');
@@ -411,8 +413,11 @@ if (require.main === module) (async () => {
       const age = old ? (Date.now() - Date.parse(old.updated)) / 864e5 : Infinity;
       if (old && (e.gone || !(age <= 3))) { fs.unlinkSync(fp); console.log(name, 'FAILED', e.message, `(removed: last good list was ${age.toFixed(1)} days old)`); }
       else console.log(name, 'FAILED', e.message, old ? `(keeping the list from ${age.toFixed(1)} days ago)` : '(no list)');
+      STATUS[name] = { ok: false, msg: String(e.message).slice(0, 160), gone: !!e.gone, removed: !!(old && (e.gone || !(age <= 3))), age: isFinite(age) ? +age.toFixed(1) : null };
     }
     try { const d = JSON.parse(fs.readFileSync(path.join(OUT, name + '.json'), 'utf8')); index[name] = { updated: d.updated, n: d.items.length, brands: d.brands, ...(d.names ? { names: d.names } : {}) }; } catch (e) { /* ما في ملف */ }
   }
   fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(index));
+  // حالة كل متجر في هالتشغيل (لصفحة الأدمن)، برا مجلد الموقع
+  try { fs.writeFileSync(process.env.STATUS_FILE || '/tmp/qarin_status.json', JSON.stringify({ at: new Date().toISOString(), stores: STATUS })); } catch (e) { /* عادي */ }
 })();

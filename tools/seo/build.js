@@ -15,7 +15,7 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // ---- أسماء المتاجر ومجموعاتها من index.html نفسه (عشان ما تختلف) ----
 const NAME = {}, GROUP = {}, AFF = {};
 for (const m of html.matchAll(/^\s*([a-z0-9]+):\s*\{\s*name:\s*'([^']+)'/gm)) NAME[m[1]] = m[2];
-for (const m of html.matchAll(/^\s*([a-z0-9]+): Object\.assign\(\{ file: 'data\/p\/[a-z0-9]+\.json'[^}]*\}, (PERF|COFFEE)_FEED\)/gm)) GROUP[m[1]] = m[2] === 'PERF' ? 'perfume' : 'coffee';
+for (const m of html.matchAll(/^\s*([a-z0-9]+): Object\.assign\(\{ file: 'data\/p\/[a-z0-9]+\.json'[^}]*\}, (PERF|COFFEE)_FEED[,)]/gm)) GROUP[m[1]] = m[2] === 'PERF' ? 'perfume' : 'coffee';
 for (const m of html.matchAll(/^\s*([a-z0-9]+):[^\n]*?file: 'data\/p\/[a-z0-9]+\.json'[^\n]*?aff: '(https:\/\/[^']+)'/gm)) AFF[m[1]] = m[2];
 const USD_OMR = 1 / 2.6008, RATE = { OMR: 1, USD: USD_OMR, AED: USD_OMR / 3.6725, SAR: USD_OMR / 3.75 };
 
