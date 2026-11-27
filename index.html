@@ -1019,7 +1019,9 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   </div>
 </div>
 
-<script src="i18n.js"></script>
+<script>window.QARIN_LANGS = [["ar", "العربية"], ["en", "English"], ["fr", "Français"], ["es", "Español"], ["zh", "中文"], ["hi", "हिन्दी"], ["ur", "اردو"], ["ru", "Русский"], ["tr", "Türkçe"], ["id", "Bahasa Indonesia"]];
+// ملف الترجمة كبير (280 ك.ب): ما ننزله إلا إذا اللغة مو عربي
+(function () { var l = "ar"; try { l = localStorage.getItem("qarin.lang") || (navigator.language || "").slice(0, 2).toLowerCase(); } catch (e) { /* عادي */ } if (l !== "ar" && window.QARIN_LANGS.some(function (x) { return x[0] === l; })) document.write('<script src="i18n.js"><\/script>'); })();</script>
 <script>
 (() => {
   'use strict';
@@ -1242,7 +1244,13 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
 
   // ================= اللغات: نترجم النصوص العربية في الصفحة حسب اللغة المختارة =================
   const LANGS = window.QARIN_LANGS || [['ar', 'العربية']];
-  const I18N = window.QARIN_I18N || {};
+  let I18N = window.QARIN_I18N || {};
+  // لو بدأ بالعربي وبعدين غيّر اللغة: ننزل ملف الترجمة وقتها
+  function ensureI18n() {
+    if (window.QARIN_I18N) { I18N = window.QARIN_I18N; return Promise.resolve(); }
+    return new Promise(res => { const s = document.createElement('script'); s.src = 'i18n.js'; s.onload = s.onerror = () => res(); document.head.appendChild(s); })
+      .then(() => { I18N = window.QARIN_I18N || {}; I18N_BARE = null; });
+  }
   const LIDX = { en: 0, fr: 1, es: 2, zh: 3, hi: 4, ur: 5, ru: 6, tr: 7, id: 8 };
   const RTL_LANGS = new Set(['ar', 'ur']);
   let LANG = 'ar';
@@ -1333,8 +1341,9 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     }
     trTree(document.body);
   }
-  function setLang(l) {
+  async function setLang(l) {
     if (!LANGS.some(x => x[0] === l)) l = 'ar';
+    if (l !== 'ar') await ensureI18n();
     LANG = l;
     try { localStorage.setItem('qarin.lang', l); } catch (e) { /* التخزين غير متاح */ }
     $('langSel').value = l;
