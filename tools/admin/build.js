@@ -42,6 +42,17 @@ const data = {
 };
 
 fs.mkdirSync(OUT, { recursive: true });
+// ملخص صحة المتاجر للتقرير الأسبوعي (فرع health-out). بدون روابط ولا تعليقات ولا إحصائيات الزوار.
+{
+  const clean = m => String(m || '').replace(/https?:\/\/\S+/g, '[رابط]').slice(0, 140);
+  const day = { at: data.built, event: data.event, run: data.run, steps: data.steps, products: data.totals.products, storesOn: data.totals.storesOn,
+    prints: data.totals.prints, coupons: data.coupons.n, pages: data.pages, deals: deals ? deals.items.length : 0,
+    warn: stores.filter(s => s.status === 'warn').map(s => s.k), off: stores.filter(s => s.status === 'off').map(s => s.k) };
+  const prev = readJ(process.env.HEALTH_PREV || '/tmp/hp/log.json', []);
+  const log = (Array.isArray(prev) ? prev : []).concat([day]).filter(d => Date.parse(d.at) > now - 45 * 864e5).slice(-300);
+  fs.writeFileSync(path.join(OUT, 'log.json'), JSON.stringify(log));
+  fs.writeFileSync(path.join(OUT, 'health.json'), JSON.stringify({ ...day, stores: stores.map(s => ({ k: s.k, name: s.name, group: s.group, n: s.n, age: s.age, prints: s.prints, status: s.status, msg: clean(s.msg) })) }, null, 1));
+}
 const pass = process.env.ADMIN_PASS || '';
 if (!pass) {
   fs.writeFileSync(path.join(OUT, 'data.json'), JSON.stringify({ v: 1, missing: true }));
