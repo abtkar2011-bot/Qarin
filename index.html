@@ -401,6 +401,8 @@ td a { color: var(--accent-strong); font-weight: 700; text-decoration: none; whi
 .hist .h-bad { color: var(--bad); }
 .hist .spark-wrap { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 500; }
 .hist .spark { width: 96px; height: 24px; color: var(--accent); flex: none; }
+.fav-fab.has-drop { position: relative; }
+.fav-fab.has-drop::after { content: ''; position: absolute; top: 6px; inset-inline-end: 6px; width: 10px; height: 10px; border-radius: 50%; background: #FF3B30; box-shadow: 0 0 0 2px var(--bg); }
 .drop-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--tint-1); color: var(--good); font-weight: 700; font-size: 0.8rem; }
 .no-real { background: var(--notice-bg); border: 1px solid var(--notice-line); color: var(--notice-fg); border-radius: 14px; padding: 10px 14px; font-size: 0.92rem; }
 
@@ -2224,6 +2226,17 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (saved !== undefined) TR.delete(n);
     try { return toEnglish(w); } finally { if (saved !== undefined) TR.set(n, saved); }
   }
+  // تاريخ أسعار المتاجر الشريكة (data/h، يتسجل كل يوم): نحوله لنفس شكل تاريخ علي إكسبريس
+  // [أيام التسجيل، أقل، أعلى، سعر قبل أسبوع، (قبل كم يوم، السعر)...] بالسنت
+  const HISTD = {}, HISTP = {};
+  const loadHist = k => HISTP[k] || (HISTP[k] = fetch('data/h/' + k + '.json').then(r => r.ok ? r.json() : null).catch(() => null).then(d => (HISTD[k] = d)));
+  function partnerHist(k, url, F) {
+    const d = HISTD[k], arr = d && d.h && d.h[url];
+    if (!arr || arr.length < 2) return 0;
+    const c = v => Math.round(v / F.perUsd() * 100), vals = arr.map(a => c(a[1]));
+    let p7 = 0; for (const [day, v] of arr) if (day <= d.day - 7) p7 = c(v);
+    return [d.day - d.since, Math.min(...vals), Math.max(...vals), p7, ...arr.flatMap(([day, v]) => [d.day - day, c(v)])];
+  }
   // منتج من سطر في ملف المتجر الشريك (البحث بالكلمات والبحث بنفس الشكل يستخدمونه)
   function partnerProduct(k, row) {
     const F = PARTNER_FEEDS[k], [t, price, img, url, tags, orig, rate, nrev] = row;
@@ -2234,7 +2247,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const p = { platform: k, title: t, price: usd, unrated: !rated, partner: true, rating: rated ? rate : PRIOR_RATING, reviews: rated ? nrev : 0,
       url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : url), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
       original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
-      shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [] };
+      shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [], rawUrl: url };
+    p.hist = partnerHist(k, url, F);
     if (F.syn) p.ctext = (t + ' | ' + tags).slice(0, 700);
     if (F.perf) p.ptext = (t + ' | ' + tags).slice(0, 700);
     return p;
@@ -2261,7 +2275,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       const own = w => { const e = (toEnglish(w) || '').toLowerCase(); return e && (F.gate.test(e) || brands.some(b => e.includes(b))); };
       if (qWords.some(w => /[\u0600-\u06ff]/.test(w) && coffeeNames.includes(w) && !own(w) && !CF_GROUPS.some(re => re.test(w)))) return [];
     }
-    const d = await loadPartner(k);
+    const [d] = await Promise.all([loadPartner(k), loadHist(k)]);
     if (!d || !Array.isArray(d.items)) return [];
     let toks = [...new Set(en.split(/[^a-z0-9]+/).filter(w => w.length > 1 && !P_STOP.has(w) && !F.generic.test(w)))];
     // «مكينة قهوة» ← المكينة هي المطلوبة، فكلمة «قهوة» ما تشترط إن المنتج قهوة
@@ -3856,7 +3870,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const notes = [];
     if (p7 && cur <= p7 * 0.9) notes.push(`<span class="h-good">🔥 نزل ${Math.round((1 - cur / p7) * 100)}% عن الأسبوع الماضي</span>`);
     else if (days >= 7 && lo && cur <= lo && hi > lo) notes.push(`<span class="h-good">📉 أرخص سعر خلال ${win} يوم</span>`);
-    if (days >= 7 && discountPct(p) >= 20 && hi && hi < p.original * 100 * 0.9) notes.push(`<span class="h-bad">⚠️ الخصم غالبًا وهمي: ما شفنا سعره ${money(p.original)} ولا مرة خلال آخر ${win} يوم</span>`);
+    if (!p.partner && days >= 7 && discountPct(p) >= 20 && hi && hi < p.original * 100 * 0.9) notes.push(`<span class="h-bad">⚠️ الخصم غالبًا وهمي: ما شفنا سعره ${money(p.original)} ولا مرة خلال آخر ${win} يوم</span>`);
     const pts = [];
     for (let i = 4; i + 1 < h.length; i += 2) pts.push([h[i], h[i + 1]]);
     const chart = pts.length >= 2 ? sparkline(pts) : '';
@@ -4623,6 +4637,29 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }
   function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); }
+  // المفضلة من المتاجر الشريكة: نشيك سعرها كل ما يفتح قارِن، وننبهه إذا نزل
+  async function favAutoCheck() {
+    const keys = Object.keys(favs).filter(k => PARTNER_FEEDS[favs[k].platform]);
+    if (!keys.length) return;
+    const raw = u => { try { const x = new URL(u); return x.searchParams.get('ulp') || u; } catch (e) { return u; } };
+    const drops = [];
+    for (const k of keys) {
+      const f = favs[k], F = PARTNER_FEEDS[f.platform], d = await loadPartner(f.platform);
+      if (!d || !Array.isArray(d.items)) continue;
+      const u = raw(f.url), row = d.items.find(r => r[3] === u);
+      if (!row || !(row[1] > 0)) continue;
+      const now = row[1] / F.perUsd();
+      if (Math.abs(now - f.last) / f.last >= 0.01 && now < f.last) drops.push([f, f.last, now]);
+      f.last = now;
+    }
+    store.set('qarin.favs', favs);
+    if (drops.length) {
+      const [f, a, b] = drops[0], m = v => money(v).replace(/<[^>]+>/g, '');
+      toast(`📉 نزل سعر «${f.title.slice(0, 40)}» من ${m(a)} إلى ${m(b)}` + (drops.length > 1 ? ` (و${drops.length - 1} غيره)` : ''));
+      $('favFab').classList.add('has-drop');
+      try { if (window.Notification && Notification.permission === 'granted') new Notification('قارِن: نزل السعر 📉', { body: `${f.title.slice(0, 60)}: ${m(b)}`, icon: 'icons/icon-192.png?v=5' }); } catch (e) { /* عادي */ }
+    }
+  }
   function updateFavCount() { $('favCount').textContent = Object.keys(favs).length; syncDock(); }
   // الشريط السفلي: نخفي السلة والمفضلة لين يكون فيها شي
   function syncDock() {
@@ -4652,6 +4689,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       favs[k] = { title: p.title, platform: p.platform, url: p.url, image: String(p.image).startsWith('data:') ? '' : p.image,
         saved: p.price, last: p.price, at: Date.now(), q: state.query };
       toast('❤️ انحفظ في المفضلة، وبننبهك إذا تغيّر سعره');
+      try { if (window.Notification && Notification.permission === 'default' && PARTNER_FEEDS[p.platform]) Notification.requestPermission(); } catch (e) { /* عادي */ }
     }
     store.set('qarin.favs', favs); updateFavCount(); render();
   }
@@ -4740,7 +4778,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (fromApp && !isStandalone() && !IN_APP) {
       if (IS_IOS) setTimeout(openInstall, 900); else setTimeout(() => { $('instBar').hidden = false; }, 900);
     } else setTimeout(maybeShowInstBar, 4000);
-    $('favFab').addEventListener('click', () => { renderFavs(); openModal('favModal'); });
+    $('favFab').addEventListener('click', () => { $('favFab').classList.remove('has-drop'); renderFavs(); openModal('favModal'); });
     $('cmpGo').addEventListener('click', () => { if (cmp.length >= 2) { renderCmp(); openModal('cmpModal'); } });
     $('cmpClear').addEventListener('click', () => { cmp = []; updateCmpBar(); render(); });
     $('starsPick').addEventListener('click', e => {
@@ -4867,6 +4905,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       gone.forEach(k => { KEYS.splice(KEYS.indexOf(k), 1); state.platforms.delete(k); const el = document.getElementById('pf-' + k); if (el) el.closest('label').remove(); });
       drawHeroChips();
     });
+    setTimeout(favAutoCheck, 2500);
     // متاجر القهوة العمانية في مجموعة تنفتح (عشان الشريط الجانبي ما يطول)
     const pill = k => `<label class="check" for="pf-${k}"><input type="checkbox" id="pf-${k}" data-plat="${k}" checked>
       <span class="dot" style="background:${PLATFORMS[k].color}"></span>${PLATFORMS[k].name}</label>`;
