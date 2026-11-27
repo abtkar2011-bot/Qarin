@@ -623,6 +623,8 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
 .vs-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .vs-head h2 { font-size: 17px; margin: 0; }
 .vs-head span { color: var(--muted); font-size: 13px; }
+.os-link { display: block; margin: 16px auto 4px; max-width: 560px; text-align: center; padding: 12px 16px; border: 1.5px dashed var(--line); border-radius: 16px; color: var(--fg); font-weight: 700; text-decoration: none; }
+.os-link:hover { border-color: var(--accent); color: var(--accent); }
 .vs-note { margin: 0; color: var(--muted); font-size: 13px; }
 .vs-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 44%); gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
 @media (min-width: 760px) { .vs-row { grid-auto-columns: 190px; } }
@@ -4093,7 +4095,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     if (!list.length) {
       box.innerHTML = html + (state.priceMin != null || state.priceMax != null
         ? '<div class="empty">ما في منتجات بهالسعر. وسّع نطاق السعر أو امسحه.</div>'
-        : '<div class="empty">لا توجد منتجات تطابق الفلاتر الحالية. جرّب تقليل الحد الأدنى للتقييم أو إلغاء فلتر الشحن المجاني.</div>');
+        : '<div class="empty">لا توجد منتجات تطابق الفلاتر الحالية. جرّب تقليل الحد الأدنى للتقييم أو إلغاء فلتر الشحن المجاني.</div>') + sooqLink();
       return;
     }
     const sum = summarize(list);
@@ -4109,8 +4111,13 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
       `<div><div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" class="tab" role="tab" id="tab-${k}" aria-controls="panel-${k}" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div>
         <div class="panel${state.tab === 'cards' ? ' on' : ''}" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards"><div class="grid">${ordered.map(productCard).join('')}</div>${moreN > 0 ? `<button type="button" class="tool-btn more-btn" data-more>عرض المزيد (<bdi class="num">${moreN}</bdi> منتج ثاني)</button>` : ''}</div>
         <div class="panel${state.tab === 'compare' ? ' on' : ''}" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">${platformsHtml(sum)}${barsHtml(sum)}</div>
-        <div class="panel${state.tab === 'table' ? ' on' : ''}" id="panel-table" role="tabpanel" aria-labelledby="tab-table">${tableHtml(list)}</div></div>`;
+        <div class="panel${state.tab === 'table' ? ' on' : ''}" id="panel-table" role="tabpanel" aria-labelledby="tab-table">${tableHtml(list)}</div></div>` + sooqLink();
     box.innerHTML = html;
+  }
+  // السوق المفتوح (إعلانات مستعمل في عُمان): ما عندهم واجهة للمنتجات، فنعطي رابط بحث بنفس الكلمة
+  function sooqLink() {
+    if (state.coffeeMode || state.perfMode || !state.query || /^https?:/i.test(state.query)) return '';
+    return `<a class="os-link" href="https://om.opensooq.com/ar/find?term=${encodeURIComponent(state.query)}" target="_blank" rel="noopener">🔁 تبيه مستعمل؟ شوف «${esc(state.query)}» في السوق المفتوح ↗</a>`;
   }
 
   // ================= الأقسام =================
