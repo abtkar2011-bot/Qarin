@@ -24,7 +24,9 @@ const DAY = Math.floor(today.getTime() / 864e5);               // رقم الي�
 const dateAr = today.toISOString().slice(0, 10);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const omr = v => (Math.round(v * 1000) / 1000).toFixed(3);
-const link = (k, u) => AFF[k] ? AFF[k] + '?ulp=' + encodeURIComponent(u) : u;
+// المتاجر بدون أفلييت: علامة قارِن (utm) عشان المتجر يعرف إن الزيارة جته من قارِن
+const utm = u => { try { const x = new URL(u); if (!x.searchParams.has('utm_source')) { x.searchParams.set('utm_source', 'qarin'); x.searchParams.set('utm_medium', 'referral'); x.searchParams.set('utm_campaign', 'price_compare'); } return x.toString(); } catch (e) { return u; } };
+const link = (k, u) => AFF[k] ? AFF[k] + '?ulp=' + encodeURIComponent(u) : utm(u);
 
 // ---- كل المنتجات ----
 const items = [];

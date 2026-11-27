@@ -2079,7 +2079,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     pkinds: { perfume: new Set(['perfume', 'oil', 'mist', 'set']), perfumes: new Set(['perfume', 'oil', 'mist', 'set']), fragrance: new Set(['perfume', 'oil', 'mist', 'set']), fragrances: new Set(['perfume', 'oil', 'mist', 'set']),
       incense: new Set(['bakhoor']), bakhoor: new Set(['bakhoor']) } };
   const PARTNER_FEEDS = {
-    vperfumes: Object.assign({ file: 'data/p/vperfumes.json', aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/' }, PERF_FEED),
+    vperfumes: Object.assign({ file: 'data/p/vperfumes.json' }, PERF_FEED, { aff: 'https://wbbsv.com/g/ax1gp3o9dz683a5815ddbe59cac899/' }),  // aff بعد PERF_FEED عشان ما ينمسح
     // متاجر Admitad العالمية الصغيرة: تطلع بس لما البحث عن شي يبيعونه
     openhagen: { file: 'data/p/openhagen.json', perUsd: () => 1, aff: 'https://plrvq.com/g/4dcmqmvxpp683a5815dd0ad4f263fe/',
       gate: /(guitar|ukulele|bass|violin|wall ?mount|hanger|speaker|record|vinyl|جيتار|قيتار|غيتار|يوكوليلي|حامل|تعليق|معلاق|سماعة|مكبر صوت|اسطوان|ديكور)/i, generic: /^(products?|original)$/, titleOnly: true },
@@ -2251,6 +2251,10 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     let p7 = 0; for (const [day, v] of arr) if (day <= d.day - 7) p7 = c(v);
     return [d.day - d.since, Math.min(...vals), Math.max(...vals), p7, ...arr.flatMap(([day, v]) => [d.day - day, c(v)])];
   }
+  // علامة قارِن في روابط المتاجر (بدون أفلييت): المتجر يشوف في إحصائياته إن الزيارة والطلب جوه من قارِن
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign'];
+  const withUtm = u => { try { const x = new URL(u); if (!x.searchParams.has('utm_source')) { x.searchParams.set('utm_source', 'qarin'); x.searchParams.set('utm_medium', 'referral'); x.searchParams.set('utm_campaign', 'price_compare'); } return x.toString(); } catch (e) { return u; } };
+  const noUtm = u => { try { const x = new URL(u); UTM_KEYS.forEach(k => x.searchParams.delete(k)); return x.toString(); } catch (e) { return u; } };
   // منتج من سطر في ملف المتجر الشريك (البحث بالكلمات والبحث بنفس الشكل يستخدمونه)
   function partnerProduct(k, row) {
     const F = PARTNER_FEEDS[k], [t, price, img, url, tags, orig, rate, nrev] = row;
@@ -2259,7 +2263,7 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
     const free = !!(PARTNER_INFO[k] && PARTNER_INFO[k].freeOverOmr && usd * OMR_PER_USD >= PARTNER_INFO[k].freeOverOmr - 1e-9);
     const rated = rate > 0 && nrev > 0;  // تقييم حقيقي من صفحة المنتج (Spirit Hub)
     const p = { platform: k, title: t, price: usd, unrated: !rated, partner: true, rating: rated ? rate : PRIOR_RATING, reviews: rated ? nrev : 0,
-      url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : url), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
+      url: safeUrl(F.aff ? F.aff + '?ulp=' + encodeURIComponent(url) : withUtm(url)), image: safeUrl(img) || placeholder('🛍️', makeRng(k, t)),
       original: orig > price ? orig / F.perUsd() : null, orders: null, shipping: '', freeShip: free, nativePrice: null, real: true,
       shipCost: free ? 0 : null, total: usd, score: 0, adj: 0, badges: [], rawUrl: url };
     p.hist = partnerHist(k, url, F);
@@ -4652,12 +4656,12 @@ body.perf-view .hero, body.perf-view .search-row, body.perf-view .src-line, body
   async function favAutoCheck() {
     const keys = Object.keys(favs).filter(k => PARTNER_FEEDS[favs[k].platform]);
     if (!keys.length) return;
-    const raw = u => { try { const x = new URL(u); return x.searchParams.get('ulp') || u; } catch (e) { return u; } };
+    const raw = u => { try { const x = new URL(u); return noUtm(x.searchParams.get('ulp') || u); } catch (e) { return u; } };
     const drops = [];
     for (const k of keys) {
       const f = favs[k], F = PARTNER_FEEDS[f.platform], d = await loadPartner(f.platform);
       if (!d || !Array.isArray(d.items)) continue;
-      const u = raw(f.url), row = d.items.find(r => r[3] === u);
+      const u = raw(f.url), row = d.items.find(r => r[3] === u || noUtm(r[3]) === u);
       if (!row || !(row[1] > 0)) continue;
       const now = row[1] / F.perUsd();
       if (Math.abs(now - f.last) / f.last >= 0.01 && now < f.last) drops.push([f, f.last, now]);
