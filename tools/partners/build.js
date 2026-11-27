@@ -160,7 +160,7 @@ function parseOdoo(html, base, store = 'bun al qassab | بن القصاب | coff
   return out;
 }
 async function bunalqassab() {
-  const B = 'https://bunalqassab.com', items = new Map();
+  const B = 'https://www.bunalqassab.com', items = new Map(); // بدون www ما يفتح (من نوفمبر 2026)
   for (const c of [''].concat(Object.keys(BQ_CATS))) {
     const html = await get(B + (c ? '/shop/category/' + c : '/shop') + '?ppg=200');
     for (const it of parseOdoo(html, B)) { const x = items.get(it.u) || (items.set(it.u, it), it); if (c) x.tags += ' | ' + BQ_CATS[c]; }
