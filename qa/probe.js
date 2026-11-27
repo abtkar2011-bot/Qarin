@@ -1,27 +1,34 @@
+// فحص الموقع المنشور الحقيقي: أخطاء، CSP، بحث، أقسام، صفحات
 const fs = require('fs'); const OUT = process.env.OUT || 'probe-out'; fs.mkdirSync(OUT, { recursive: true });
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36';
-const S = { copper: 'https://copperroastery.com', souqalbon: 'https://souqalbon.com', bunalqassab: 'https://www.bunalqassab.com', epanda: 'https://www.epandaom.com', fooh: 'https://fooh.store',
-  amouage: 'https://amouage.com', swissarabian: 'https://om.swissarabian.com', asgharali: 'https://om.asgharali.com', omanluxury: 'https://omanluxury.store', alhajis: 'https://alhajisoman.com',
-  oudbank: 'https://oudbank.com', boulevard: 'https://boulevardperfumes.com', oudworlds: 'https://oudworlds.com', artal: 'https://artalofficial.com', nawader: 'https://nwaderoud.com',
-  alkhanjar: 'https://www.alkhanjar.om', ibraq: 'https://oman.ibraqperfumes.com', almajed: 'https://om.almajed4oud.com', mahaseel: 'https://mahaseelalbon.com', muthalath: 'https://www.muthalathstore.com',
-  barista: 'https://barista-oman.kushk.om', rawasi: 'https://www.rawasiom.com', sura: 'https://www.suraroastery.om', yield: 'https://yield-oman.kyte.site', spirithub: 'https://www.spirithubcafe.com' };
-const PATHS = ['', '/contact', '/contact-us', '/contactus', '/pages/contact', '/pages/contact-us', '/policies/contact-information', '/ar/contactus', '/ar/contact-us', '/about-us', '/pages/about-us', '/policies/privacy-policy', '/policies/refund-policy'];
-const BAD = /\.(png|jpe?g|gif|webp|svg|css|js)$|sentry|example\.|wixpress|domain\.com|email\.com|yourdomain|@2x|godaddy|u003e|shopify\.com$|cloudflare/i;
+const { chromium, devices } = require('playwright');
+const S = 'https://abtkar2011-bot.github.io/Qarin/';
+const lines = []; const L = (...a) => { const s = a.join(' '); console.log(s); lines.push(s); fs.writeFileSync(OUT + '/report.txt', lines.join('\n')); };
 (async () => {
-  const out = {};
-  await Promise.all(Object.entries(S).map(async ([k, B]) => {
-    const found = {}; const phones = new Set();
-    for (const p of PATHS) {
-      try {
-        const r = await fetch(B + p, { headers: { 'user-agent': UA, 'accept-language': 'ar,en' }, redirect: 'follow', signal: AbortSignal.timeout(20000) });
-        if (!r.ok) continue; const t = (await r.text()).replace(/&#64;|&#x40;|\[at\]|\(at\)/gi, '@');
-        for (const m of t.matchAll(/mailto:([^"'?<>\s]+)/gi)) { const e = decodeURIComponent(m[1]).toLowerCase(); if (!BAD.test(e)) (found[e] = found[e] || new Set()).add(p || '/'); }
-        for (const m of t.matchAll(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}/g)) { const e = m[0].toLowerCase(); if (!BAD.test(e)) (found[e] = found[e] || new Set()).add(p || '/'); }
-        for (const m of t.matchAll(/(?:wa\.me\/|api\.whatsapp\.com\/send\?phone=)(\d{8,15})/g)) phones.add(m[1]);
-      } catch (e) { /* skip */ }
-    }
-    out[k] = { site: B, emails: Object.fromEntries(Object.entries(found).map(([e, s]) => [e, [...s].slice(0, 4)])), whatsapp: [...phones] };
-  }));
-  fs.writeFileSync(OUT + '/report.json', JSON.stringify(out, null, 1)); fs.writeFileSync(OUT + '/report.txt', 'ok');
-  console.log(JSON.stringify(out).slice(0, 3000));
+  const b = await chromium.launch();
+  for (const dev of ['iPhone 13', 'Desktop Chrome']) {
+    const ctx = await b.newContext({ ...devices[dev], locale: 'ar-OM' });
+    await ctx.addInitScript(() => { localStorage.setItem('qarin.instHide', String(Date.now())); });
+    const p = await ctx.newPage(); p.setDefaultTimeout(9000);
+    const errs = [], csp = [], bad = []; let i18n = false;
+    p.on('pageerror', e => errs.push(e.message.slice(0, 140)));
+    p.on('console', m => { const t = m.text(); if (/Content.Security.Policy|Refused to/i.test(t)) csp.push(t.slice(0, 220)); });
+    p.on('response', r => { if (r.url().startsWith(S) && r.status() >= 400) bad.push(r.status() + ' ' + r.url().replace(S, '').slice(0, 80)); });
+    p.on('request', r => { if (r.url().includes('i18n.js')) i18n = true; });
+    p.on('popup', pp => pp.close().catch(() => { }));
+    const step = async (name, fn) => { const t0 = Date.now(); try { const r = await fn(); L(dev, 'OK', name, JSON.stringify(r || ''), (Date.now() - t0) + 'ms'); } catch (e) { L(dev, 'FAIL', name, e.message.split('\n')[0].slice(0, 150)); } };
+    await step('home', async () => { await p.goto(S + '?t=' + Date.now()); await p.waitForTimeout(3000); const csp1 = await p.evaluate(() => !!document.querySelector('meta[http-equiv="Content-Security-Policy"]')); return { csp: csp1, i18nLoaded: i18n }; });
+    for (const q of ['سماعات لاسلكية', 'ايفون 15', 'dji neo 2 combo']) await step('search ' + q, async () => { await p.fill('#q', q); await p.press('#q', 'Enter'); await p.waitForTimeout(9000); const n = await p.locator('.pcard').count(); const stores = await p.locator('.pcard .pstore span').evaluateAll(a => [...new Set(a.map(x => x.textContent))].slice(0, 6)); if (!n) throw new Error('no results'); return { n, stores }; });
+    await step('perfume', async () => { await p.goto(S + '#perfume'); await p.waitForTimeout(3000); await p.fill('#pfQ', 'dior sauvage'); await p.press('#pfQ', 'Enter'); await p.waitForTimeout(7000); const n = await p.locator('.pcard').count(); if (!n) throw new Error('no perfume'); return { n, codes: await p.locator('.xcode').count(), hist: await p.locator('.hist').count() }; });
+    await step('coffee', async () => { await p.goto(S + '#coffee'); await p.waitForTimeout(3000); await p.fill('#cfQ', 'قهوة اثيوبية'); await p.press('#cfQ', 'Enter'); await p.waitForTimeout(7000); const n = await p.locator('.pcard').count(); const bq = await p.locator('.pcard .pstore span', { hasText: 'بن القصاب' }).count(); if (!n) throw new Error('no coffee'); return { n, bunalqassab: bq }; });
+    await step('coupons', async () => { await p.goto(S + 'coupons.html'); await p.waitForTimeout(2500); return { n: await p.locator('.cp').count(), pinned: await p.locator('.cp.pin').count() }; });
+    await step('deals', async () => { await p.goto(S + 'deals.html'); await p.waitForTimeout(1500); return { n: await p.locator('.c').count() }; });
+    await step('compare', async () => { await p.goto(S + 'compare/'); await p.waitForTimeout(1500); return { links: await p.locator('a[href$=".html"]').count() }; });
+    await step('admin', async () => { await p.goto(S + 'admin/'); await p.waitForTimeout(1500); await p.fill('#pass', 'x'); await p.click('#go'); await p.waitForTimeout(3000); return { msg: (await p.locator('#err').innerText()).slice(0, 60) }; });
+    await step('stats', async () => { await p.goto(S + 'stats.html'); await p.waitForTimeout(2500); return { top: await p.locator('#top .hrow').count() }; });
+    L(dev, 'pageerrors', JSON.stringify(errs.slice(0, 6)));
+    L(dev, 'csp', JSON.stringify([...new Set(csp)].slice(0, 6)));
+    L(dev, 'http>=400', JSON.stringify([...new Set(bad)].slice(0, 8)));
+    await ctx.close();
+  }
+  await b.close();
 })();
