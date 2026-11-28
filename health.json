@@ -1,0 +1,314 @@
+{
+ "at": "2026-11-28T11:22:49.819Z",
+ "event": "schedule",
+ "run": "https://github.com/abtkar2011-bot/Qarin/actions/runs/46135224975",
+ "steps": {
+  "partners": "success",
+  "prints": "success",
+  "seo": "success",
+  "aliexpress": ""
+ },
+ "products": 7993,
+ "storesOn": 29,
+ "prints": 7985,
+ "coupons": 229,
+ "pages": 74,
+ "deals": 30,
+ "warn": [
+  "muthalath",
+  "artal"
+ ],
+ "off": [],
+ "stores": [
+  {
+   "k": "muthalath",
+   "name": "مثلث",
+   "group": "قهوة",
+   "n": 450,
+   "age": 1,
+   "prints": 450,
+   "status": "warn",
+   "msg": "too few items: 0 — نعرض قائمة عمرها 1 يوم"
+  },
+  {
+   "k": "artal",
+   "name": "أرتال",
+   "group": "عطور",
+   "n": 4,
+   "age": 0.98,
+   "prints": 4,
+   "status": "warn",
+   "msg": "too few items: 0 — نعرض قائمة عمرها 1 يوم"
+  },
+  {
+   "k": "alhajis",
+   "name": "الحاجي",
+   "group": "عطور",
+   "n": 1748,
+   "age": 0.02,
+   "prints": 1748,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "epanda",
+   "name": "ePanda",
+   "group": "قهوة",
+   "n": 1088,
+   "age": 0.03,
+   "prints": 1088,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "vperfumes",
+   "name": "V Perfumes",
+   "group": "عطور",
+   "n": 967,
+   "age": 0.03,
+   "prints": 967,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "boulevard",
+   "name": "بوليفارد",
+   "group": "عطور",
+   "n": 689,
+   "age": 0.02,
+   "prints": 689,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "mahaseel",
+   "name": "محاصيل البن",
+   "group": "قهوة",
+   "n": 484,
+   "age": 0.02,
+   "prints": 484,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "souqalbon",
+   "name": "سوق البن",
+   "group": "قهوة",
+   "n": 395,
+   "age": 0.03,
+   "prints": 388,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "oudworlds",
+   "name": "عالم العود",
+   "group": "عطور",
+   "n": 378,
+   "age": 0.02,
+   "prints": 378,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "barista",
+   "name": "Barista Oman",
+   "group": "قهوة",
+   "n": 223,
+   "age": 0.02,
+   "prints": 223,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "copper",
+   "name": "Copper Roastery",
+   "group": "قهوة",
+   "n": 181,
+   "age": 0.03,
+   "prints": 180,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "swissarabian",
+   "name": "سويس أرابيان",
+   "group": "عطور",
+   "n": 170,
+   "age": 0.02,
+   "prints": 170,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "almajed",
+   "name": "الماجد للعود",
+   "group": "عطور",
+   "n": 151,
+   "age": 0,
+   "prints": 151,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "ibraq",
+   "name": "إبراق",
+   "group": "عطور",
+   "n": 145,
+   "age": 0.02,
+   "prints": 145,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "dermazone",
+   "name": "DermaZone",
+   "group": "متاجر",
+   "n": 131,
+   "age": 0.03,
+   "prints": 131,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "alkhanjar",
+   "name": "الخنجر للعطور",
+   "group": "عطور",
+   "n": 111,
+   "age": 0,
+   "prints": 111,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "amouage",
+   "name": "أمواج",
+   "group": "عطور",
+   "n": 106,
+   "age": 0.02,
+   "prints": 106,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "woodestic",
+   "name": "Woodestic",
+   "group": "متاجر",
+   "n": 85,
+   "age": 0,
+   "prints": 85,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "oudbank",
+   "name": "بنك العود",
+   "group": "عطور",
+   "n": 79,
+   "age": 0.02,
+   "prints": 79,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "nawader",
+   "name": "نوادر العود",
+   "group": "عطور",
+   "n": 74,
+   "age": 0,
+   "prints": 74,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "yield",
+   "name": "Yield",
+   "group": "قهوة",
+   "n": 72,
+   "age": 0.03,
+   "prints": 72,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "asgharali",
+   "name": "أصغر علي",
+   "group": "عطور",
+   "n": 57,
+   "age": 0.02,
+   "prints": 57,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "omanluxury",
+   "name": "عمان لكشري",
+   "group": "عطور",
+   "n": 41,
+   "age": 0.02,
+   "prints": 41,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "openhagen",
+   "name": "Openhagen",
+   "group": "متاجر",
+   "n": 34,
+   "age": 0,
+   "prints": 34,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "spirithub",
+   "name": "Spirit Hub",
+   "group": "قهوة",
+   "n": 34,
+   "age": 0.03,
+   "prints": 34,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "fooh",
+   "name": "فوح",
+   "group": "قهوة",
+   "n": 34,
+   "age": 0.03,
+   "prints": 34,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "bunalqassab",
+   "name": "بن القصاب",
+   "group": "قهوة",
+   "n": 28,
+   "age": 0.03,
+   "prints": 28,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "sura",
+   "name": "سورا",
+   "group": "قهوة",
+   "n": 20,
+   "age": 0.03,
+   "prints": 20,
+   "status": "ok",
+   "msg": ""
+  },
+  {
+   "k": "rawasi",
+   "name": "رواسي",
+   "group": "قهوة",
+   "n": 14,
+   "age": 0.03,
+   "prints": 14,
+   "status": "ok",
+   "msg": ""
+  }
+ ]
+}
